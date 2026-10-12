@@ -41,10 +41,7 @@ export type { AppCategoryChipProps, CategoryType } from './AppCategoryChip';
 export { default as AppNumberInput } from './AppNumberInput';
 export type { AppNumberInputProps } from './AppNumberInput';
 
-export {
-  default as AppFilterChip,
-  AppFilterChipGroup,
-} from './AppFilterChip';
+export { default as AppFilterChip, AppFilterChipGroup } from './AppFilterChip';
 export type {
   AppFilterChipProps,
   AppFilterChipGroupProps,
@@ -57,3 +54,5 @@ export type { AppInfiniteScrollTriggerProps } from './AppInfiniteScrollTrigger';
 export * from '../table';
 export * from '../layout';
 export * from '../icons';
+
+export { default as AppImageUploader } from './AppImageUploader';

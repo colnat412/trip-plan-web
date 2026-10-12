@@ -13,10 +13,18 @@
   },
   "tripFeature": {
     "description": "This route is connected and ready for its business UI to be developed.",
-    "expenses": { "title": "Expenses" },
-    "scan": { "title": "Scan receipt" },
-    "settlement": { "title": "Settlement" },
-    "ai": { "title": "AI assistant" }
+    "expenses": {
+      "title": "Expenses"
+    },
+    "scan": {
+      "title": "Scan receipt"
+    },
+    "settlement": {
+      "title": "Settlement"
+    },
+    "ai": {
+      "title": "AI assistant"
+    }
   },
   "overview": {
     "activeTrip": "Selected trip",
@@ -262,7 +270,15 @@
     "saveChanges": "Save Changes",
     "cancel": "Cancel",
     "saveSuccess": "Profile updated successfully!",
-    "saveNote": "Note: Profile update API is being completed on the backend."
+    "saveNote": "Note: Profile update API is being completed on the backend.",
+    "close": "Close",
+    "saveAvatar": "Save",
+    "avatarSaved": "Avatar updated.",
+    "avatarFailed": "Unable to save avatar. Please try again.",
+    "avatarUnauthorized": "Your session expired. Please sign in again.",
+    "avatarUnavailable": "This upload is unavailable. Please select the image again.",
+    "avatarTooLarge": "The image exceeds the size limit.",
+    "avatarOnlyNote": "You can only change your avatar."
   },
   "userMenu": {
     "profile": "My Profile",
@@ -779,5 +795,15 @@
     "tipsTitle": "Pro Tips for Better Plans",
     "tip1": "Be specific in your notes, e.g. \"night street food stalls\" or \"catch sunrise on tea hills\".",
     "tip2": "After AI generates the plan, you can still drag to reorder, edit spots, or remove activities in the Plan page!"
+  },
+  "imageUpload": {
+    "choose": "Choose image",
+    "remove": "Remove image",
+    "hint": "JPEG, PNG or WebP, up to 5 MB.",
+    "invalidType": "Choose a JPEG, PNG or WebP image.",
+    "invalidSize": "Choose a non-empty image up to 5 MB."
+  },
+  "dialog": {
+    "close": "Close dialog"
   }
 }

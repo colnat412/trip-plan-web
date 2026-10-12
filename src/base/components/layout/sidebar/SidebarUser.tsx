@@ -32,15 +32,12 @@ const SidebarUser = ({ user: defaultUser }: SidebarUserProps) => {
   const { logoutMutation } = useLogout();
 
   const rawUser =
-    (defaultUser as { data?: UserProfile })?.data ??
-    defaultUser ??
-    (currentUser as { data?: UserProfile })?.data ??
-    currentUser;
+    currentUser ?? (defaultUser as { data?: UserProfile })?.data ?? defaultUser;
 
   const displayName = rawUser?.name || 'User';
   const displayEmailOrRole = rawUser?.role || 'Member';
   const displayInitials = getUserInitials(rawUser?.name);
-  const avatarSrc = rawUser?.avatarUrl || '/avatar.jpg';
+  const avatarSrc = rawUser?.avatarUrl || undefined;
 
   const handleOpenMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

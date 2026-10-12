@@ -1,9 +1,4 @@
-export const AUTH_COOKIE_NAMES = [
-  'access_token',
-  'refresh_token',
-  'auth_token',
-  'session_token',
-] as const;
+export const AUTH_COOKIE_NAMES = ['access_token', 'refresh_token'] as const;
 
 export const PUBLIC_AUTH_PATHS = [
   '/login',

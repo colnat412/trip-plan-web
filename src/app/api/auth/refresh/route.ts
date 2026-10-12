@@ -2,7 +2,9 @@ import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
 const NEXT_PUBLIC_IDENTITY_SERVICE_URL =
-  process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || 'http://localhost:8888';
+  process.env.IDENTITY_SERVICE_URL ||
+  process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL ||
+  'http://localhost:8888';
 
 export async function POST(request: NextRequest) {
   try {
@@ -49,11 +51,16 @@ export async function POST(request: NextRequest) {
           },
           { status: error.response.status },
         );
-        errorResponse.cookies.set('access_token', '', { path: '/', maxAge: 0 });
-        errorResponse.cookies.set('refresh_token', '', {
-          path: '/',
-          maxAge: 0,
-        });
+        if (error.response.status === 401 || error.response.status === 403) {
+          errorResponse.cookies.set('access_token', '', {
+            path: '/',
+            maxAge: 0,
+          });
+          errorResponse.cookies.set('refresh_token', '', {
+            path: '/',
+            maxAge: 0,
+          });
+        }
         return errorResponse;
       }
       throw error;
@@ -62,6 +69,13 @@ export async function POST(request: NextRequest) {
     const identityData = identityResponse.data;
     const accessToken =
       identityData?.data?.accessToken || identityData?.accessToken;
+
+    if (typeof accessToken !== 'string' || !accessToken) {
+      return NextResponse.json(
+        { status: 502, message: 'Invalid refresh response', data: null },
+        { status: 502 },
+      );
+    }
 
     const response = NextResponse.json(
       {

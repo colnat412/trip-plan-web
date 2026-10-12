@@ -1,6 +1,12 @@
 'use client';
 
-import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  type ReactNode,
+} from 'react';
 import type { ApiError } from '@/base/api';
 import type { UserProfile } from '@/features/auth/types';
 import useCurrentUser from '../hooks/useCurrentUser';
@@ -10,13 +16,22 @@ interface UserContextValue {
   isLoading: boolean;
   isFetching: boolean;
   error: ApiError | null;
+  updateUser: (user: UserProfile) => void;
   refetchUser: () => Promise<unknown>;
 }
 
 const UserContext = createContext<UserContextValue | null>(null);
 
-export function UserProvider({ children }: { children: ReactNode }) {
-  const { user, isLoading, isFetching, error, refetch } = useCurrentUser();
+export const UserProvider = ({ children }: { children: ReactNode }) => {
+  const { user, isLoading, isFetching, error, refetch, replaceData } =
+    useCurrentUser();
+
+  const updateUser = useCallback(
+    (profile: UserProfile) => {
+      replaceData({ status: 200, message: 'Success', data: profile });
+    },
+    [replaceData],
+  );
 
   const value = useMemo<UserContextValue>(
     () => ({
@@ -25,12 +40,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
       isFetching,
       error,
       refetchUser: refetch,
+      updateUser,
     }),
-    [user, isLoading, isFetching, error, refetch],
+    [user, isLoading, isFetching, error, refetch, updateUser],
   );
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
-}
+};
 
 export function useUserContext(): UserContextValue {
   const context = useContext(UserContext);
@@ -39,3 +55,5 @@ export function useUserContext(): UserContextValue {
   }
   return context;
 }
+
+export default UserProvider;

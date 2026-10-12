@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   Box,
   Dialog,
@@ -23,6 +24,8 @@ export interface AppDialogProps {
   actions?: ReactNode;
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   fullWidth?: boolean;
+  closeDisabled?: boolean;
+  closeLabel?: string;
 }
 
 const AppDialog = ({
@@ -35,11 +38,14 @@ const AppDialog = ({
   actions,
   maxWidth = 'sm',
   fullWidth = true,
+  closeDisabled = false,
+  closeLabel,
 }: AppDialogProps) => {
+  const t = useTranslations('dialog');
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={closeDisabled ? undefined : onClose}
       fullWidth={fullWidth}
       maxWidth={maxWidth}
       slotProps={{
@@ -101,7 +107,12 @@ const AppDialog = ({
           </Box>
         </Stack>
 
-        <IconButton onClick={onClose} size="small" aria-label="Close dialog">
+        <IconButton
+          onClick={onClose}
+          disabled={closeDisabled}
+          size="small"
+          aria-label={closeLabel ?? t('close')}
+        >
           <CloseRoundedIcon fontSize="small" />
         </IconButton>
       </DialogTitle>

@@ -15,6 +15,7 @@ export const axiosClient = axios.create({
 });
 
 let isRefreshing = false;
+let isRedirectingToLogin = false;
 let failedQueue: Array<{
   resolve: (value?: unknown) => void;
   reject: (reason?: unknown) => void;
@@ -51,6 +52,7 @@ axiosClient.interceptors.response.use(
       !originalRequest._retry &&
       !isAuthEndpoint
     ) {
+      originalRequest._retry = true;
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -59,7 +61,6 @@ axiosClient.interceptors.response.use(
           .catch((err) => Promise.reject(err));
       }
 
-      originalRequest._retry = true;
       isRefreshing = true;
 
       try {
@@ -82,7 +83,15 @@ axiosClient.interceptors.response.use(
         processQueue(refreshError);
         isRefreshing = false;
 
-        if (typeof window !== 'undefined') {
+        const sessionRejected =
+          axios.isAxiosError(refreshError) &&
+          (refreshError.response?.status === 401 ||
+            refreshError.response?.status === 403);
+        if (
+          sessionRejected &&
+          !isRedirectingToLogin &&
+          typeof window !== 'undefined'
+        ) {
           const currentPath = window.location.pathname;
           const isPublicPage = PUBLIC_PATHS.some(
             (path) =>
@@ -93,6 +102,7 @@ axiosClient.interceptors.response.use(
             currentPath !== '/register' &&
             !isPublicPage
           ) {
+            isRedirectingToLogin = true;
             // eslint-disable-next-line @next/next/no-location-assign-relative-destination
             window.location.href = '/login';
           }

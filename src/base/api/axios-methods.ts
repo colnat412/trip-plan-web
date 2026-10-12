@@ -16,11 +16,7 @@ export async function axiosPost<TResponse, TPayload = unknown>(
   payload: TPayload,
   config?: AxiosRequestConfig,
 ): Promise<TResponse> {
-  const response = await axiosClient.post<TResponse>(
-    endPoint,
-    payload,
-    config,
-  );
+  const response = await axiosClient.post<TResponse>(endPoint, payload, config);
 
   return response.data;
 }
@@ -45,5 +41,18 @@ export async function axiosDelete<TResponse, TPayload = unknown>(
     data: payload,
   });
 
+  return response.data;
+}
+
+export async function axiosPatch<TResponse, TPayload = unknown>(
+  endPoint: string,
+  payload: TPayload,
+  config?: AxiosRequestConfig,
+): Promise<TResponse> {
+  const response = await axiosClient.patch<TResponse>(
+    endPoint,
+    payload,
+    config,
+  );
   return response.data;
 }

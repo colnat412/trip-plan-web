@@ -13,10 +13,18 @@
   },
   "tripFeature": {
     "description": "Trang đã được kết nối route và đang chờ phát triển giao diện nghiệp vụ.",
-    "expenses": { "title": "Chi tiêu" },
-    "scan": { "title": "Quét hóa đơn" },
-    "settlement": { "title": "Quyết toán" },
-    "ai": { "title": "Trợ lý AI" }
+    "expenses": {
+      "title": "Chi tiêu"
+    },
+    "scan": {
+      "title": "Quét hóa đơn"
+    },
+    "settlement": {
+      "title": "Quyết toán"
+    },
+    "ai": {
+      "title": "Trợ lý AI"
+    }
   },
   "overview": {
     "activeTrip": "Chuyến đi đang chọn",
@@ -262,7 +270,15 @@
     "saveChanges": "Lưu thay đổi",
     "cancel": "Hủy",
     "saveSuccess": "Cập nhật thông tin thành công!",
-    "saveNote": "Lưu ý: API cập nhật thông tin đang được hoàn thiện ở backend."
+    "saveNote": "Lưu ý: API cập nhật thông tin đang được hoàn thiện ở backend.",
+    "close": "Đóng",
+    "saveAvatar": "Lưu",
+    "avatarSaved": "Đã cập nhật ảnh đại diện.",
+    "avatarFailed": "Không thể lưu ảnh đại diện. Vui lòng thử lại.",
+    "avatarUnauthorized": "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.",
+    "avatarUnavailable": "Ảnh không còn khả dụng. Vui lòng chọn lại ảnh.",
+    "avatarTooLarge": "Ảnh vượt quá dung lượng cho phép.",
+    "avatarOnlyNote": "Bạn có thể thay đổi ảnh đại diện. Các thông tin khác vui lòng liên hệ QTV."
   },
   "userMenu": {
     "profile": "Thông tin tài khoản",
@@ -779,5 +795,15 @@
     "tipsTitle": "Mẹo Nhỏ Để Lịch Trình Hay Hơn",
     "tip1": "Bạn có thể mô tả cụ thể: \"thích ẩm thực đường phố về đêm\" hoặc \"muốn chụp ảnh bình minh tại đồi chè\".",
     "tip2": "Sau khi AI tạo lịch trình xong, bạn vẫn có thể tự do kéo thả đổi thứ tự, chỉnh sửa từng địa điểm hoặc xóa các hoạt động tùy thích tại trang Kế hoạch!"
+  },
+  "imageUpload": {
+    "choose": "Chọn ảnh",
+    "remove": "Bỏ ảnh",
+    "hint": "JPEG, PNG hoặc WebP, tối đa 5 MB.",
+    "invalidType": "Vui lòng chọn ảnh JPEG, PNG hoặc WebP.",
+    "invalidSize": "Ảnh phải có dữ liệu và không vượt quá 5 MB."
+  },
+  "dialog": {
+    "close": "Đóng hộp thoại"
   }
 }

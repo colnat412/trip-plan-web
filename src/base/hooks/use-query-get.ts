@@ -46,7 +46,13 @@ const useQueryGet = <TResponse>({
   const mountedRef = useRef(false);
   const requestVersionRef = useRef(0);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const requestRef = useRef({ queryKey, endPoint, options, getEndPoint, config });
+  const requestRef = useRef({
+    queryKey,
+    endPoint,
+    options,
+    getEndPoint,
+    config,
+  });
 
   const queryKeyValue = JSON.stringify(queryKey);
 
@@ -128,8 +134,7 @@ const useQueryGet = <TResponse>({
       } catch (requestError: unknown) {
         const apiError = normalizeApiError(requestError);
         const isCurrentRequest =
-          mountedRef.current &&
-          requestVersionRef.current === requestVersion;
+          mountedRef.current && requestVersionRef.current === requestVersion;
 
         if (isCurrentRequest && !localAbortController.signal.aborted) {
           setError(apiError);
@@ -142,8 +147,7 @@ const useQueryGet = <TResponse>({
       }
 
       const isCurrentRequest =
-        mountedRef.current &&
-        requestVersionRef.current === requestVersion;
+        mountedRef.current && requestVersionRef.current === requestVersion;
 
       if (isCurrentRequest && !localAbortController.signal.aborted) {
         setData(responseData);
@@ -155,10 +159,7 @@ const useQueryGet = <TResponse>({
       localAbortController.signal.removeEventListener('abort', onLocalAbort);
       currentEntry.subscribers.delete(localAbortController);
 
-      if (
-        mountedRef.current &&
-        requestVersionRef.current === requestVersion
-      ) {
+      if (mountedRef.current && requestVersionRef.current === requestVersion) {
         setIsFetching(false);
         abortControllerRef.current = null;
       }
@@ -177,6 +178,15 @@ const useQueryGet = <TResponse>({
     return () => window.clearTimeout(timeoutId);
   }, [enabled, queryKeyValue, refetch]);
 
+  const replaceData = useCallback((responseData: TResponse) => {
+    requestVersionRef.current += 1;
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+    setData(responseData);
+    setError(null);
+    setIsFetching(false);
+  }, []);
+
   const clearError = useCallback(() => {
     setError(null);
   }, []);
@@ -189,6 +199,7 @@ const useQueryGet = <TResponse>({
     isLoading: isFetching && data === null,
     refetch,
     clearError,
+    replaceData,
   };
 };
 

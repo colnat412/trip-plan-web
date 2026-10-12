@@ -2193,3 +2193,21 @@ If the user has already supplied a specific task, do not block on a broad questi
 2. **Offline-first & Service Worker Caching**: Hỗ trợ xem lại lịch trình và hóa đơn khi mất kết nối mạng.
 
 
+
+### Profile avatar upload integration (2026-10-12)
+
+- Profile now uses `AppDialog`, `AppImageUploader`, `AppButton`, `AppTextField`, and `AppToast`. Only avatar editing is enabled; other profile data is read-only until its backend API exists.
+- `AppImageUploader` and `useUploadFile` live in base and support future trip-cover integration. JPG/PNG/WebP, max 5 MiB, local preview with object URL cleanup. Selection is local until Save; closing before Save sends no upload.
+- Browser calls same-origin BFF through shared Axios/mutation hooks. POST `/api/uploads` forwards multipart; PATCH/DELETE `/api/users/me/avatar` forward to Identity with Bearer token read from HttpOnly cookie. Configure server-only `IDENTITY_SERVICE_URL` (base URL without `/api`); legacy environment name is a compatibility fallback.
+- BFF bounds multipart buffering to 5 MiB + 64 KiB, checks file and purpose, and forwards upstream statuses including 401 for existing refresh flow. Identity remains responsible for actual file-content validation, ownership and transaction rules.
+- Avatar save uploads first, then attaches uploadId. A failed attach retries the same upload for the same selected File. Mutation response updates UserContext immediately; base query `replaceData` invalidates older in-flight GET responses. Sidebar prefers current context over initial props and uses initials when avatar is absent.
+- Dialog dismissal and controls are disabled while saving; errors retain the selection. UI strings exist in VI/EN. Successful save publishes the returned profile to UserContext, refreshes it in the background and closes the dialog; the success toast lives outside the dialog so it remains visible.
+- Apply Identity migrations 001 and 002 before use. Trip cover endpoints/UI and automatic Cloudinary cleanup are not part of this frontend change. Failed saves/abandoned pending uploads still require backend cleanup.
+- Validation: TypeScript and ESLint; skip smoke test per project instruction. See `walkthrough.md` for manual acceptance steps and deployment configuration.
+
+### Refresh redirect loop fix (2026-10-12)
+
+- Observed Identity ECONNREFUSED during refresh causing client navigation to login while middleware still detected session cookies and redirected back to overview.
+- Refresh transport/5xx errors now remain API errors without navigation or cookie deletion. Only definitive 401/403 rejection redirects once to login. Queued requests are marked retried before waiting, limiting each request to one replay.
+- Middleware recognizes only access_token and refresh_token, the two cookies actually managed by auth BFF. Refresh BFF prefers server-only IDENTITY_SERVICE_URL and rejects successful responses missing an access token with 502.
+- Regression tests: `node tests/auth-refresh.test.mjs` (transport errors, rejected sessions, concurrent 401 requests).
