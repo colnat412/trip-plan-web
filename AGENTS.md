@@ -500,6 +500,16 @@ Server page/layout → server/static components → client form → shared hook 
 
 For server-side data fetching, prefer direct server-only calls from Server Components or a server-only API module. Do not import a browser Axios instance that uses `baseURL: '/api'` into a Server Component because a relative URL has no browser origin on the server. If Axios is used server-side, create a separate server-only client with a validated absolute internal URL and explicitly forward required request cookies/headers.
 
+### Debounce for live API inputs — required for future work
+
+- Before adding or changing a search/autocomplete/live-validation input, check whether typing triggers API calls or expensive work. For continuous text input, use the shared `useDebouncedValue` exported from `@/base/hooks`, default 300ms. Keep the displayed input state immediate and debounce the query value, not the input itself.
+- Do not introduce feature-local debounce timers or add a second debounce to a flow that already uses the shared hook. Choose a different delay only for a concrete requirement and explain it.
+- Debounce belongs at the live-input/query boundary. Explicit actions (Apply/Enter, Save, dropdown/chip selection, sorting, pagination, clear/reset) should remain immediate; do not debounce all form fields or every request globally.
+- Query keys must include the settled term and other request parameters (for example locale). Pause stale requests during debounce, hide results for another term, and use the existing query cancellation/version guards so late responses cannot overwrite the current search. Cancel timers/requests on unmount; honor minimum input lengths required by the API.
+- `useQueryGet.isStale` indicates retained data belongs to a different query key; existing `data` retention is preserved for other consumers. Errors are exposed only for their query key. Search consumers should handle request failure without an indefinite loading indicator.
+- Server autocomplete should not apply an additional client text filter that removes backend-ranked or accent-insensitive matches. Preserve a stable selected option while results change so MUI does not reset a user's input.
+- Verify rapid typing, clear/reset, errors, out-of-order responses and unmount. Current unit coverage: `node tests/query-debounce.test.mjs`. Skip smoke test remains in effect.
+
 ### Shared hooks
 
 The user wants reusable custom hooks. Separate a generic async-request hook from feature-specific hooks:
@@ -2235,3 +2245,52 @@ If the user has already supplied a specific task, do not block on a broad questi
 - UploadAttachmentService requires the calling resource transaction (MANDATORY); resource authorization remains in TripService. This preserves one database transaction, while providing a single boundary for future attachment users or a future Identity API adapter.
 - Identity remains responsible for file upload/Cloudinary. No new HTTP endpoint or schema migration is introduced by this refactor. Shared database coupling still exists; replacing it with remote claims needs idempotency and failure reconciliation.
 - Validation: `mvn test` passes 18 unit tests (6 trip cover, 5 upload module, 7 existing Hashids). Upload repository assertions check ownership/purpose SQL, enum casts and lowercase bound values. No live PostgreSQL integration or smoke test was run.
+
+
+### Customer navigation layout (2026-10-13)
+
+- The active application shell supersedes the fixed-sidebar examples above: AppShell uses a vertical Flexbox with AppTopBar (including AppTripBar), scrollable main and AppBottomNavigation. Header/bottom navigation occupy normal flow (`flexShrink: 0`); main uses `flex: 1`, `minHeight: 0` and `overflowY: auto`. No positioning, CSS Grid or child margins were introduced for the new layout.
+- At the shared 1440px breakpoint navigation is horizontal in the header. Below 1440px, four primary links plus More appear in bottom navigation; More exposes settlement and AI through AppDialog. Both use route definitions from the existing sidebar config and typed navigation IDs/translations. Selected route and nested routes use the shared `isNavigationActive` helper.
+- AppTripSwitcher reads existing TripContext: cover/name/date, searchable trip selection, create and all-trips actions, loading/error/retry states. AppTripBar puts member access near the trip and shows sharing settings for its owner. The switcher now queries paginated trip search while open; it does not add budget queries. Existing overview/expense budget displays remain available.
+- Header account entry reuses SidebarUser in compact mode and SidebarUserMenu. Shared AppPopover supports normal Tab navigation through profile, locale, theme and logout. Preferences have 44px touch targets. UserContext remains the avatar/profile source.
+- AppBrand preserves the user's Trip Plan/AI branding; SidebarBrand re-exports it for existing auth/sidebar consumers. Existing sidebar components are compatibility consumers, not mounted by AppShell. Public/auth/share routes retain their shell exclusion through the existing sidebarDisabledPaths prop.
+- All new visible labels/accessibility labels use navigation VI/EN keys. New components live in base, one component per file, arrow/default exports, palette colors and px/Flexbox sizing. AppPageContainer continues to own page spacing; header and body use fluid full width with aligned responsive gutters (12/16/24/32px), without a global maxWidth.
+- Viewport allows zoom and uses viewportFit=cover; header, main, bottom bar and fullscreen dialogs handle safe-area insets. Bottom navigation does not overlay page actions.
+- AppDialog adds opt-in mobileFullScreen below sm (600px); create/edit trip and profile opt in. CreateTripDialog now uses AppDialog with footer actions and an HTML form association, keeping creation callbacks/validation intact. Confirmation dialogs retain their normal sizing.
+- Scope is responsive customer navigation, not installable/offline PWA infrastructure. Validation and manual acceptance are documented in walkthrough.md; skip smoke test as instructed.
+- Final validation for customer navigation: TypeScript, full ESLint, 31 navigation translation keys and production build all pass. Build needed an approved rerun outside sandbox to fetch existing Google Fonts. No browser/real-device visual verification was performed; skip smoke test remains in effect.
+
+### Fluid body and unified header refinement (2026-10-13)
+
+- Per user review, removed the global 1440px cap from body/header and combined the former trip row into AppTopBar. Brand and trip controls share a left Flexbox group; avatar remains on the right. AppPageContainer owns responsive page gutters and full body width.
+- Overview content uses equal columns from md and 7:5 category/recent columns from xl; mobile stacks them. Banner spacing/heading/donut scale with breakpoints, and long trip names wrap safely.
+- AppTripSwitcher has a full-width bordered trigger in its bounded header slot and opens an anchored AppPopover with search, independently scrolling results and footer actions. Result name/destination/dates use separate lines. Mobile uses compact logo/date and places sharing/member controls inside the trip dropdown; desktop shows labeled-accessible icons beside it.
+- AppPopover is a shared base primitive also consumed by SidebarUserMenu, with viewport-bounded width/height, keyboard focus via MUI Popover and optional header/footer slots.
+- DESKTOP_NAV_BREAKPOINT=1440 is the single source for desktop/bottom-nav visibility, leaving room for trip controls in one header row. This breakpoint does not cap body width.
+
+Validation for the fluid body/unified header refinement: TypeScript, full ESLint and production build pass. Smoke test skipped; visual browser/device acceptance remains the manual review steps above.
+
+### Trip dropdown UI polish (2026-10-13)
+
+- AppPopover header uses 12px gutters matching content/footer and an 8px title/search gap. Heading is 14px; shared account popover has no header and retains its layout.
+- Trip search is placeholder-only with explicit aria-label, search adornment, 44px height and clear control. Clearing restores focus to the input. Selected trip rows have an explicit primary border/checkmark; avatars do not shrink, and long names/destinations expose title text.
+- Dropdown styling does not change selectTrip; search now uses the backend as described below. TypeScript passes; full ESLint reports no errors and 3 unused-symbol warnings in the unrelated MyBalanceCard.tsx. Smoke test skipped; latest screenshot review is not automated browser verification.
+
+### Backend trip search in switcher (2026-10-13)
+
+- Removed local trip text filtering from AppTripSwitcher. It mounts feature TripSwitcherResults only while the popover is open. useTripSwitcherSearch calls the existing GET /trip/my-trips with search/page/size through the shared BFF and useInfiniteQueryGet. Core TripSpecifications already searches name OR destination, case-insensitively, restricted to ACTIVE, non-deleted membership/trips. No backend endpoint/migration change was needed.
+- Shared base useDebouncedValue delays search 300ms; page size is 20 and AppInfiniteScrollTrigger loads subsequent pages. Pending input hides old results, query keys include search/tripsVersion, and existing infinite-query abort/version guards handle stale requests; closing unmounts results and cancels requests/timers. Loading, empty, error/retry and next-page loading states are distinct.
+- TripContext now resolves selected IDs missing from its initial 100 trips using useTripDetail. Matching response ID guards against displaying another selection's stale data; failed detail requests are not used as activeTrip. refreshKey=tripsVersion refreshes the selected detail after mutations. Existing selectTrip signature stays unchanged.
+- Backend search covers all matching pages, not just the initial context cache; selection outside those 100 trips remains valid. Search loading text exists in VI/EN. Smoke tests remain skipped; see walkthrough.md for validation and manual acceptance.
+
+Backend switcher search validation: TypeScript and production build pass; full ESLint reports 0 errors and the 3 unrelated unused-symbol warnings in MyBalanceCard.tsx. Smoke/browser tests were not run per project instruction.
+
+### Shared debounce audit (2026-10-13)
+
+- MyTrips live top search now debounces 300ms and gates the query while waiting; UI input updates immediately. Table Apply, dropdown/chip filters and sort bypass debounce; empty search clears immediately. Pending/stale results do not leave pagination controls active, and request errors have retry UI.
+- DestinationAutocomplete replaces separate fetch/timer paths with useDestinationSearch/useQueryGet. Typed queries debounce, clearing returns popular destinations immediately, stale results are hidden and selected option identity no longer changes when search results arrive.
+- LocationAutocompleteInput replaces its local 320ms/raw-Axios path with usePlacesSearch/useQueryGet and the same 300ms hook. Places require two typed characters and include locale in the key; selecting/resetting does not issue an extra lookup. Free-text location entry remains supported.
+- Trip switcher already uses shared debounce and remains unchanged. Expense/table filters use explicit Apply; form inputs and route-optimization dropdown actions do not need typing debounce. Timer scheduling for query setup, success toasts and copied indicators is not search debounce.
+- Added query metadata and 7 unit regressions for debounce, stale results/errors, cancellation, minimum length, popular reset and stopping loading on error. Unrelated user edits (including MyBalanceCard.tsx) were preserved.
+
+Shared debounce audit validation: 7 unit cases, TypeScript and production build pass; full ESLint has no errors and 3 unrelated MyBalanceCard.tsx unused-symbol warnings. Browser/smoke tests were skipped.

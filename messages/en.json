@@ -1,4 +1,43 @@
 {
+  "navigation": {
+    "searchingTrips": "Searching trips…",
+    "clearSearch": "Clear search",
+    "brandName": "Trip Plan",
+    "brandTag": "AI",
+    "homeLink": "Trip Plan · Home",
+    "main": "Main navigation",
+    "items": {
+      "overview": "Home",
+      "trips": "My trips",
+      "plan": "Itinerary",
+      "expenses": "Expenses",
+      "settlement": "Split costs",
+      "ai": "AI assistant"
+    },
+    "mobile": {
+      "overview": "Home",
+      "trips": "Trips",
+      "plan": "Itinerary",
+      "expenses": "Expenses"
+    },
+    "more": "More",
+    "moreDescription": "More tools for your trip",
+    "account": "Account",
+    "accountMenu": "Open account menu",
+    "chooseTrip": "Choose a trip",
+    "chooseTripDescription": "Choose a journey to view its itinerary, expenses and members.",
+    "switchTrip": "Switch trip, currently selected {name}",
+    "selectTrip": "Select trip {name}",
+    "searchTrips": "Search by name or destination",
+    "noMatchingTrips": "No matching trips found.",
+    "noTrip": "Start a new journey",
+    "createTrip": "Create trip",
+    "allTrips": "View all trips",
+    "members": "Members",
+    "shareTrip": "Share",
+    "tripLoadError": "Could not load your trips.",
+    "retry": "Try again"
+  },
   "preferences": {
     "language": "Language",
     "theme": "Theme",

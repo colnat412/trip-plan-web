@@ -1,12 +1,6 @@
 'use client';
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Autocomplete,
   type AutocompleteInputChangeReason,
@@ -20,6 +14,7 @@ import WhatshotRoundedIcon from '@mui/icons-material/WhatshotRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppTextField } from '@/base/components/ui';
+import useDestinationSearch from '../hooks/useDestinationSearch';
 import type { DestinationItem } from '@/app/api/trip/destinations/route';
 
 export interface DestinationAutocompleteProps {
@@ -44,49 +39,9 @@ const DestinationAutocomplete = ({
   placeholder,
 }: DestinationAutocompleteProps) => {
   const t = useTranslations('trip');
-  const [options, setOptions] = useState<DestinationItem[]>([]);
-  const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const fetchDestinations = useCallback(async (query: string) => {
-    setLoading(true);
-    try {
-      const url = query
-        ? `/api/trip/destinations?q=${encodeURIComponent(query)}`
-        : '/api/trip/destinations';
-      const res = await fetch(url);
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data?.destinations)) {
-          setOptions(data.destinations);
-        }
-      }
-    } catch {
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    let ignore = false;
-    const loadPopular = async () => {
-      try {
-        const res = await fetch('/api/trip/destinations');
-        if (res.ok && !ignore) {
-          const data = await res.json();
-          if (Array.isArray(data?.destinations)) {
-            setOptions(data.destinations);
-          }
-        }
-      } catch {}
-    };
-
-    loadPopular();
-    return () => {
-      ignore = true;
-    };
-  }, []);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { options, loading } = useDestinationSearch(searchQuery, !disabled);
 
   const handleInputChange = (
     _event: React.SyntheticEvent,
@@ -95,37 +50,27 @@ const DestinationAutocomplete = ({
   ) => {
     setInputValue(newInputValue);
 
-    if (reason === 'input') {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-      debounceTimerRef.current = setTimeout(() => {
-        fetchDestinations(newInputValue.trim());
-      }, 300);
-    } else if (reason === 'clear') {
-      fetchDestinations('');
-      onChange('');
+    if (reason === 'input' || reason === 'clear') {
+      setSearchQuery(newInputValue);
     }
+    if (reason === 'clear') onChange('');
   };
 
   const currentOption = useMemo<DestinationItem | null>(() => {
     if (!value) return null;
-    const found = options.find(
-      (opt) => opt.label.toLowerCase() === value.toLowerCase(),
-    );
-    if (found) return found;
     return {
       id: 'custom-selected',
       name: value,
       country: '',
       label: value,
     };
-  }, [value, options]);
+  }, [value]);
 
   return (
     <Autocomplete<DestinationItem, false, false, false>
       disabled={disabled}
       options={options}
+      filterOptions={(items) => items}
       loading={loading}
       value={currentOption}
       inputValue={inputValue}

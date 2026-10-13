@@ -1,4 +1,43 @@
 {
+  "navigation": {
+    "searchingTrips": "Đang tìm chuyến đi…",
+    "clearSearch": "Xóa nội dung tìm kiếm",
+    "brandName": "Trip Plan",
+    "brandTag": "AI",
+    "homeLink": "Trip Plan · Trang chủ",
+    "main": "Điều hướng chính",
+    "items": {
+      "overview": "Trang chủ",
+      "trips": "Chuyến đi",
+      "plan": "Lịch trình",
+      "expenses": "Chi tiêu",
+      "settlement": "Chia tiền",
+      "ai": "Trợ lý AI"
+    },
+    "mobile": {
+      "overview": "Trang chủ",
+      "trips": "Chuyến đi",
+      "plan": "Lịch trình",
+      "expenses": "Chi tiêu"
+    },
+    "more": "Thêm",
+    "moreDescription": "Các tiện ích cho chuyến đi của bạn",
+    "account": "Tài khoản",
+    "accountMenu": "Mở menu tài khoản",
+    "chooseTrip": "Chọn chuyến đi",
+    "chooseTripDescription": "Chọn hành trình để xem lịch trình, chi tiêu và thành viên.",
+    "switchTrip": "Đổi chuyến đi, đang chọn {name}",
+    "selectTrip": "Chọn chuyến đi {name}",
+    "searchTrips": "Tìm theo tên hoặc điểm đến",
+    "noMatchingTrips": "Không tìm thấy chuyến đi phù hợp.",
+    "noTrip": "Bắt đầu một hành trình mới",
+    "createTrip": "Tạo chuyến đi",
+    "allTrips": "Xem tất cả chuyến đi",
+    "members": "Thành viên",
+    "shareTrip": "Chia sẻ",
+    "tripLoadError": "Chưa thể tải chuyến đi.",
+    "retry": "Thử lại"
+  },
   "preferences": {
     "language": "Ngôn ngữ",
     "theme": "Giao diện",

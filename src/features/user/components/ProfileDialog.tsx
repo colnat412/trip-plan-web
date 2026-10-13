@@ -20,6 +20,7 @@ const ProfileDialog = ({ open, onClose, user }: ProfileDialogProps) => {
   return (
     <>
       <AppDialog
+        mobileFullScreen
         open={open}
         onClose={onClose}
         closeDisabled={busy}

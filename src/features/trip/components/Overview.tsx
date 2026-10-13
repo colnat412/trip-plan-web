@@ -24,7 +24,7 @@ const Overview = () => {
           height={240}
           sx={{ borderRadius: '20px' }}
         />
-        <Stack direction={{ xs: 'column', lg: 'row' }} spacing={3}>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
           <Skeleton
             variant="rounded"
             width="100%"
@@ -59,7 +59,8 @@ const Overview = () => {
       <Box
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', lg: 'row' },
+          flexDirection: { xs: 'column', md: 'row' },
+          width: '100%',
           gap: 3,
           alignItems: 'stretch',
         }}
@@ -68,9 +69,9 @@ const Overview = () => {
           component="section"
           spacing={2.5}
           sx={{
-            flex: '1 1 52%',
+            flex: { xs: '1 1 auto', md: '1 1 0', xl: '7 1 0' },
             minWidth: 0,
-            p: { xs: 2, md: 2.5 },
+            p: { xs: 2, md: 2.5, xl: 3 },
             border: 1,
             borderColor: 'divider',
             borderRadius: '20px',
@@ -93,9 +94,9 @@ const Overview = () => {
           component="section"
           spacing={1}
           sx={{
-            flex: '1 1 48%',
+            flex: { xs: '1 1 auto', md: '1 1 0', xl: '5 1 0' },
             minWidth: 0,
-            p: { xs: 2, md: 2.5 },
+            p: { xs: 2, md: 2.5, xl: 3 },
             border: 1,
             borderColor: 'divider',
             borderRadius: '20px',

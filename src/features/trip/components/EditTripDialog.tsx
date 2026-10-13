@@ -28,6 +28,7 @@ const EditTripDialog = ({
   return (
     <>
       <AppDialog
+        mobileFullScreen
         open={open && Boolean(trip)}
         onClose={onClose}
         closeDisabled={busy}

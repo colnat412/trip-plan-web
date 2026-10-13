@@ -11,6 +11,7 @@ import {
 } from 'react';
 import type { ApiError } from '@/base/api';
 import useMyTrips from '../hooks/useMyTrips';
+import useTripDetail from '../hooks/useTripDetail';
 import type { Trip } from '../types';
 
 export type TripMutationEvent = 'created' | 'updated' | 'deleted' | 'general';
@@ -78,7 +79,30 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     [refetch],
   );
 
+  const needsSelectedDetail =
+    selectedTripId !== null &&
+    !trips.some((trip) => String(trip.id) === String(selectedTripId));
+  const selectedDetail = useTripDetail({
+    tripId: selectedTripId,
+    enabled: needsSelectedDetail,
+    refreshKey: tripsVersion,
+  });
+  const selectedTrip =
+    !selectedDetail.error &&
+    selectedDetail.trip &&
+    String(selectedDetail.trip.id) === String(selectedTripId)
+      ? selectedDetail.trip
+      : null;
+  const contextLoading =
+    isLoading ||
+    (needsSelectedDetail && !selectedTrip && !selectedDetail.error);
+  const contextFetching =
+    isFetching || (needsSelectedDetail && selectedDetail.isFetching);
+  const contextError =
+    error ?? (needsSelectedDetail ? selectedDetail.error : null);
+
   const activeTrip = useMemo(() => {
+    if (needsSelectedDetail) return selectedTrip;
     if (!trips || trips.length === 0) return null;
 
     if (selectedTripId !== null) {
@@ -90,7 +114,7 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     if (inProgressTrip) return inProgressTrip;
 
     return trips[0];
-  }, [trips, selectedTripId]);
+  }, [trips, selectedTripId, needsSelectedDetail, selectedTrip]);
 
   const selectTrip = useCallback((tripId: string | number) => {
     setSelectedTripId(tripId);
@@ -123,9 +147,9 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
       activeTrip,
       selectedTripId,
       selectTrip,
-      isLoading,
-      isFetching,
-      error,
+      isLoading: contextLoading,
+      isFetching: contextFetching,
+      error: contextError,
       refetchTrips,
       subscribeTrips,
       tripsVersion,
@@ -142,9 +166,9 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
       activeTrip,
       selectedTripId,
       selectTrip,
-      isLoading,
-      isFetching,
-      error,
+      contextLoading,
+      contextFetching,
+      contextError,
       refetchTrips,
       subscribeTrips,
       tripsVersion,

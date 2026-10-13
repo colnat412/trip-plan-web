@@ -1,20 +1,20 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Autocomplete,
   Box,
   Chip,
   CircularProgress,
   InputAdornment,
-  TextField,
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
 import EditLocationOutlinedIcon from '@mui/icons-material/EditLocationOutlined';
-import axios from 'axios';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
+import { AppTextField } from '@/base/components/ui';
+import usePlacesSearch from '../hooks/usePlacesSearch';
 
 export interface PlacePrediction {
   placeId: string;
@@ -46,55 +46,19 @@ const LocationAutocompleteInput = ({
   fullWidth = true,
 }: LocationAutocompleteInputProps) => {
   const theme = useTheme();
-  const locale = useLocale();
   const t = useTranslations('plan.dialog');
 
   const [prevValue, setPrevValue] = useState<string>(value || '');
   const [inputValue, setInputValue] = useState<string>(value || '');
-  const [options, setOptions] = useState<PlacePrediction[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { options: displayOptions, loading: isLoading } =
+    usePlacesSearch(searchQuery);
 
   if ((value || '') !== prevValue) {
     setPrevValue(value || '');
     setInputValue(value || '');
+    if ((value || '') !== inputValue) setSearchQuery('');
   }
-
-  // Debounced search query
-  useEffect(() => {
-    const trimmed = inputValue.trim();
-    if (!trimmed || trimmed.length < 2) {
-      return;
-    }
-
-    let isMounted = true;
-    const timer = setTimeout(async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get<{ predictions: PlacePrediction[] }>(
-          `/api/maps/places?q=${encodeURIComponent(trimmed)}&lang=${locale === 'en' ? 'en' : 'vi'}`,
-        );
-
-        if (isMounted && Array.isArray(response.data?.predictions)) {
-          setOptions(response.data.predictions);
-        }
-      } catch (err) {
-        console.warn('Place autocomplete search failed:', err);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    }, 320);
-
-    return () => {
-      isMounted = false;
-      clearTimeout(timer);
-    };
-  }, [inputValue, locale]);
-
-  const displayOptions = useMemo(() => {
-    return inputValue.trim().length >= 2 ? options : [];
-  }, [inputValue, options]);
 
   const selectedValue = useMemo(() => {
     return value || '';
@@ -136,10 +100,12 @@ const LocationAutocompleteInput = ({
       onInputChange={(_event, newInputValue, reason) => {
         setInputValue(newInputValue);
         if (reason === 'input' || reason === 'clear') {
+          setSearchQuery(newInputValue);
           onChange(newInputValue);
         }
       }}
       onChange={(_event, newValue) => {
+        setSearchQuery('');
         if (!newValue) {
           onChange('');
           setInputValue('');
@@ -250,7 +216,7 @@ const LocationAutocompleteInput = ({
         );
       }}
       renderInput={(params) => (
-        <TextField
+        <AppTextField
           id={params.id}
           disabled={params.disabled}
           fullWidth={fullWidth ?? params.fullWidth}

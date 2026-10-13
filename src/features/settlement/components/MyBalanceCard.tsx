@@ -155,13 +155,13 @@ const MyBalanceCard = ({
             </Typography>
           </Stack>
 
-          <AppButton
+          {/* <AppButton
             intent="primary"
             startIcon={<AddRoundedIcon sx={{ fontSize: '18px' }} />}
             onClick={onOpenRecordPayment}
           >
             {t('recordPayment')}
-          </AppButton>
+          </AppButton> */}
         </Box>
 
         <Box

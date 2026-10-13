@@ -2,13 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Box } from '@mui/material';
 
 import {
   AppPageContainer,
+  AppButton,
   type ColumnFilterValue,
   type TableSortState,
 } from '@/base/components/ui';
+import { useDebouncedValue } from '@/base/hooks';
 import useMyTrips from '../hooks/useMyTrips';
 import { useTripContext } from '../context/TripContext';
 import MyTripsHeader from './my-trips/MyTripsHeader';
@@ -22,6 +25,7 @@ import type { Trip } from '../types';
 
 const MyTrips = () => {
   const router = useRouter();
+  const tNavigation = useTranslations('navigation');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
   const [sort, setSort] = useState<TableSortState | null>(null);
@@ -30,7 +34,11 @@ const MyTrips = () => {
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
   const [deletingTrip, setDeletingTrip] = useState<Trip | null>(null);
 
-  const search = typeof filters.name === 'string' ? filters.name : undefined;
+  const [debounceSearch, setDebounceSearch] = useState(false);
+  const search = typeof filters.name === 'string' ? filters.name.trim() : '';
+  const debouncedSearch = useDebouncedValue(search);
+  const querySearch = debounceSearch && search ? debouncedSearch : search;
+  const isDebouncing = search !== querySearch;
   const destination =
     typeof filters.destination === 'string' ? filters.destination : undefined;
   const currency =
@@ -46,16 +54,18 @@ const MyTrips = () => {
         ? filters.status.join(',')
         : undefined;
 
-  const { trips, pagination, isLoading, isFetching, refetch } = useMyTrips({
-    page,
-    size: rowsPerPage,
-    search,
-    destination,
-    currency,
-    status,
-    sortBy: sort?.columnId,
-    sortDirection: sort?.direction,
-  });
+  const { trips, pagination, isLoading, isFetching, isStale, error, refetch } =
+    useMyTrips({
+      page,
+      size: rowsPerPage,
+      search: querySearch,
+      enabled: !isDebouncing,
+      destination,
+      currency,
+      status,
+      sortBy: sort?.columnId,
+      sortDirection: sort?.direction,
+    });
   const {
     activeTrip,
     selectTrip,
@@ -75,13 +85,13 @@ const MyTrips = () => {
         setSort(null);
 
         if (!hasCustomState) {
-          void refetch();
+          if (!isDebouncing) void refetch().catch(() => undefined);
         }
       } else {
-        void refetch();
+        if (!isDebouncing) void refetch().catch(() => undefined);
       }
     });
-  }, [subscribeTrips, page, filters, sort, refetch]);
+  }, [subscribeTrips, page, filters, sort, refetch, isDebouncing]);
 
   const handleSelectTrip = useCallback(
     (trip: Trip) => {
@@ -92,12 +102,14 @@ const MyTrips = () => {
   );
 
   const handleSortChange = useCallback((newSort: TableSortState | null) => {
+    setDebounceSearch(false);
     setSort(newSort);
     setPage(0);
   }, []);
 
   const handleFilterChange = useCallback(
     (newFilters: Record<string, ColumnFilterValue>) => {
+      setDebounceSearch(false);
       setFilters(newFilters);
       setPage(0);
     },
@@ -126,6 +138,7 @@ const MyTrips = () => {
   );
 
   const handleFilterUpdate = useCallback((patch: Partial<TripFilterValues>) => {
+    setDebounceSearch('search' in patch);
     setFilters((prev) => {
       const next = { ...prev };
       if ('search' in patch) {
@@ -173,11 +186,34 @@ const MyTrips = () => {
         onViewModeChange={setViewMode}
       />
 
-      {viewMode === 'grid' ? (
+      {error && !isDebouncing ? (
+        <Box
+          role="alert"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 1,
+          }}
+        >
+          <Box component="span" sx={{ color: 'error.main', fontSize: '14px' }}>
+            {tNavigation('tripLoadError')}
+          </Box>
+          <AppButton
+            intent="text"
+            size="small"
+            onClick={() => {
+              void refetch().catch(() => undefined);
+            }}
+          >
+            {tNavigation('retry')}
+          </AppButton>
+        </Box>
+      ) : viewMode === 'grid' ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
           <TripCardGrid
             trips={trips}
-            isLoading={isLoading}
+            isLoading={isLoading || isStale || isDebouncing}
             activeTripId={activeTrip?.id ?? null}
             onSelectTrip={handleSelectTrip}
             onCreateTrip={openCreateTrip}
@@ -185,7 +221,7 @@ const MyTrips = () => {
             onDeleteTrip={setDeletingTrip}
           />
 
-          {totalCount > 0 && (
+          {totalCount > 0 && !isDebouncing && !isStale && (
             <TripGridPagination
               count={totalCount}
               page={page}
@@ -201,8 +237,8 @@ const MyTrips = () => {
       ) : (
         <TripTable
           trips={trips}
-          isLoading={isLoading}
-          isFetching={isFetching}
+          isLoading={isLoading || isStale || isDebouncing}
+          isFetching={isFetching || isDebouncing}
           activeTripId={activeTrip?.id ?? null}
           onSelectTrip={handleSelectTrip}
           onCreateTrip={openCreateTrip}
@@ -213,7 +249,7 @@ const MyTrips = () => {
           filters={filters}
           onFilterChange={handleFilterChange}
           pagination={
-            totalCount > 0
+            totalCount > 0 && !isDebouncing && !isStale
               ? {
                   page,
                   pageSize: rowsPerPage,

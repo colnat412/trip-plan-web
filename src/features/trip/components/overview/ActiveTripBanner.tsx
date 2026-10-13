@@ -50,13 +50,14 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
     <Box
       component="section"
       sx={{
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
-        gap: 3,
+        gap: { xs: 2, md: 3 },
         overflow: 'hidden',
         borderRadius: '20px',
-        px: { xs: 2.5, md: 4 },
-        py: 3.5,
+        px: { xs: 2, sm: 3, xl: 4 },
+        py: { xs: 2.5, md: 3 },
         color: '#FFFFFF',
         background:
           'linear-gradient(120deg, #1E3A8A 0%, #167A91 55%, #287E68 100%)',
@@ -72,7 +73,7 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
           alignItems: 'center',
         }}
       >
-        <Stack spacing={1.25} sx={{ minWidth: 0 }}>
+        <Stack spacing={1.25} sx={{ minWidth: 0, flex: '1 1 280px' }}>
           <Stack
             direction="row"
             spacing={1}
@@ -96,8 +97,9 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
             component="h2"
             sx={{
               fontFamily: 'var(--font-display)',
-              fontSize: { xs: '32px', md: '40px' },
+              fontSize: { xs: '28px', md: '36px', xl: '40px' },
               lineHeight: 1.1,
+              overflowWrap: 'anywhere',
             }}
           >
             {trip.name}
@@ -146,8 +148,8 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
 
         <Box
           sx={{
-            width: '140px',
-            height: '140px',
+            width: { xs: 140, xl: 160 },
+            height: { xs: 140, xl: 160 },
             p: '8px',
             display: 'flex',
             alignItems: 'center',

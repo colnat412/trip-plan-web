@@ -66,7 +66,7 @@ const AppPreferences = () => {
           bgcolor: 'action.hover',
           '& .MuiToggleButton-root': {
             minWidth: 42,
-            minHeight: 34,
+            minHeight: 44,
             px: 1,
             borderColor: 'divider',
             color: 'text.secondary',
@@ -88,8 +88,8 @@ const AppPreferences = () => {
           aria-label={isDarkMode ? t('light') : t('dark')}
           onClick={() => setMode(isDarkMode ? 'light' : 'dark')}
           sx={{
-            width: 36,
-            height: 36,
+            width: 44,
+            height: 44,
             border: 1,
             borderColor: 'divider',
             bgcolor: 'background.paper',

@@ -1,17 +1,11 @@
 'use client';
 
-import {
-  CircularProgress,
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Typography,
-} from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 import { useTranslations } from 'next-intl';
+import { AppButton, AppPopover } from '@/base/components/ui';
+import AppPreferences from '../../preferences/AppPreferences';
 
 interface SidebarUserMenuProps {
   anchorEl: HTMLElement | null;
@@ -20,6 +14,9 @@ interface SidebarUserMenuProps {
   onOpenProfile: () => void;
   onLogout: () => void;
   isLoggingOut: boolean;
+  headerMenu?: boolean;
+  userName?: string;
+  userEmail?: string;
 }
 
 const SidebarUserMenu = ({
@@ -29,115 +26,102 @@ const SidebarUserMenu = ({
   onOpenProfile,
   onLogout,
   isLoggingOut,
+  headerMenu = false,
+  userName,
+  userEmail,
 }: SidebarUserMenuProps) => {
   const t = useTranslations('userMenu');
-
+  const tNavigation = useTranslations('navigation');
   return (
-    <Menu
+    // Popover allows natural Tab navigation through profile, language and theme controls.
+    <AppPopover
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}
+      label={tNavigation('account')}
+      width={272}
       anchorOrigin={{
-        vertical: 'top',
+        vertical: headerMenu ? 'bottom' : 'top',
         horizontal: 'right',
       }}
       transformOrigin={{
-        vertical: 'bottom',
+        vertical: headerMenu ? 'top' : 'bottom',
         horizontal: 'right',
       }}
-      slotProps={{
-        paper: {
-          sx: {
-            minWidth: 200,
-            borderRadius: '12px',
-            p: 0.5,
-            boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
-            border: 1,
-            borderColor: 'divider',
-          },
-        },
-      }}
     >
-      <MenuItem
-        onClick={() => {
-          onClose();
-          onOpenProfile();
-        }}
-        sx={{
-          borderRadius: '8px',
-          py: 1,
-          px: 1.5,
-          gap: 1.5,
-        }}
-      >
-        <ListItemIcon sx={{ minWidth: 0, color: 'text.secondary' }}>
-          <PersonOutlineRoundedIcon fontSize="small" />
-        </ListItemIcon>
-        <ListItemText
-          primary={
-            <Typography
-              sx={{ fontSize: '13px', fontWeight: 600, color: 'text.primary' }}
-            >
-              {t('profile')}
+      <Stack spacing={1}>
+        {headerMenu && (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 0.5,
+              px: 1,
+              py: 1,
+              minWidth: 0,
+            }}
+          >
+            <Typography noWrap sx={{ fontWeight: 800, fontSize: '14px' }}>
+              {userName}
             </Typography>
-          }
-        />
-      </MenuItem>
-
-      <Divider sx={{ my: 0.5 }} />
-
-      <MenuItem
-        onClick={onLogout}
-        disabled={isLoggingOut}
-        sx={{
-          borderRadius: '8px',
-          py: 1,
-          px: 1.5,
-          gap: 1.5,
-          '&:hover': {
-            bgcolor: (theme) => {
-              const palette = theme.vars?.palette ?? theme.palette;
-              return palette.error.light
-                ? 'rgba(220, 38, 38, 0.08)'
-                : 'action.hover';
-            },
-          },
-        }}
-      >
-        <ListItemIcon
+            {userEmail && (
+              <Typography
+                noWrap
+                sx={{ color: 'text.secondary', fontSize: '12px' }}
+              >
+                {userEmail}
+              </Typography>
+            )}
+          </Box>
+        )}
+        <AppButton
+          autoFocus
+          type="button"
+          intent="text"
+          size="small"
+          startIcon={<PersonOutlineRoundedIcon />}
+          onClick={() => {
+            onClose();
+            onOpenProfile();
+          }}
           sx={{
-            minWidth: 0,
-            color: (theme) => {
-              const palette = theme.vars?.palette ?? theme.palette;
-              return palette.error.main;
+            width: '100%',
+            minHeight: 48,
+            justifyContent: 'flex-start',
+            color: 'text.primary',
+          }}
+        >
+          {t('profile')}
+        </AppButton>
+        {headerMenu && (
+          <Box sx={{ px: 1, py: 1 }}>
+            <AppPreferences />
+          </Box>
+        )}
+        <Divider />
+        <AppButton
+          type="button"
+          intent="text"
+          size="small"
+          loading={isLoggingOut}
+          disabled={isLoggingOut}
+          startIcon={<LogoutRoundedIcon />}
+          onClick={onLogout}
+          sx={{
+            width: '100%',
+            minHeight: 48,
+            justifyContent: 'flex-start',
+            color: 'error.main',
+            '&:hover': {
+              bgcolor: (theme) =>
+                `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).error.main} 8%, transparent)`,
             },
           }}
         >
-          {isLoggingOut ? (
-            <CircularProgress size={18} color="inherit" />
-          ) : (
-            <LogoutRoundedIcon fontSize="small" />
-          )}
-        </ListItemIcon>
-        <ListItemText
-          primary={
-            <Typography
-              sx={{
-                fontSize: '13px',
-                fontWeight: 700,
-                color: (theme) => {
-                  const palette = theme.vars?.palette ?? theme.palette;
-                  return palette.error.main;
-                },
-              }}
-            >
-              {isLoggingOut ? t('loggingOut') : t('logout')}
-            </Typography>
-          }
-        />
-      </MenuItem>
-    </Menu>
+          {isLoggingOut ? t('loggingOut') : t('logout')}
+        </AppButton>
+      </Stack>
+    </AppPopover>
   );
 };
-
 export default SidebarUserMenu;

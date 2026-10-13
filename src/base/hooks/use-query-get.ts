@@ -41,7 +41,9 @@ const useQueryGet = <TResponse>({
   config,
 }: UseQueryGetParams<TResponse>) => {
   const [data, setData] = useState<TResponse | null>(null);
+  const [dataQueryKey, setDataQueryKey] = useState<string | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
+  const [errorQueryKey, setErrorQueryKey] = useState<string | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const mountedRef = useRef(false);
   const requestVersionRef = useRef(0);
@@ -138,6 +140,7 @@ const useQueryGet = <TResponse>({
 
         if (isCurrentRequest && !localAbortController.signal.aborted) {
           setError(apiError);
+          setErrorQueryKey(serializedQueryKey);
           await Promise.allSettled([
             currentRequest.options?.onError?.(apiError),
           ]);
@@ -151,6 +154,7 @@ const useQueryGet = <TResponse>({
 
       if (isCurrentRequest && !localAbortController.signal.aborted) {
         setData(responseData);
+        setDataQueryKey(serializedQueryKey);
         await currentRequest.options?.onSuccess?.(responseData);
       }
 
@@ -183,6 +187,7 @@ const useQueryGet = <TResponse>({
     abortControllerRef.current?.abort();
     abortControllerRef.current = null;
     setData(responseData);
+    setDataQueryKey(JSON.stringify(requestRef.current.queryKey));
     setError(null);
     setIsFetching(false);
   }, []);
@@ -194,7 +199,8 @@ const useQueryGet = <TResponse>({
   return {
     queryKey,
     data,
-    error,
+    isStale: dataQueryKey !== queryKeyValue,
+    error: errorQueryKey === queryKeyValue ? error : null,
     isFetching,
     isLoading: isFetching && data === null,
     refetch,

@@ -7,3 +7,5 @@ export type { MutationCallbacks, MutationKey } from './use-mutation-request';
 
 export { default as useUploadFile } from './use-upload-file';
 export { default as useMutationRequest } from './use-mutation-request';
+
+export { default as useDebouncedValue } from './use-debounced-value';

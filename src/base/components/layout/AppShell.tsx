@@ -1,11 +1,11 @@
 'use client';
 
-import { Box, Drawer } from '@mui/material';
+import { Box } from '@mui/material';
 import { usePathname } from 'next/navigation';
-import React, { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import AppSidebar from './AppSidebar';
 import AppTopBar from './AppTopBar';
+import AppBottomNavigation from './AppBottomNavigation';
 import CreateTripHost from './CreateTripHost';
 import TripMembersHost from './TripMembersHost';
 import GlobalLoadingHost from './GlobalLoadingHost';
@@ -19,20 +19,10 @@ export interface AppShellProps {
 
 const AppShell = ({ children, sidebarDisabledPaths = [] }: AppShellProps) => {
   const pathname = usePathname();
-  const showSidebar = !sidebarDisabledPaths.some(
+  const showNavigation = !sidebarDisabledPaths.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`),
   );
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const handleDrawerToggle = () => {
-    setMobileOpen((prev) => !prev);
-  };
-
-  const handleDrawerClose = () => {
-    setMobileOpen(false);
-  };
-
-  if (!showSidebar) {
+  if (!showNavigation) {
     return <>{children}</>;
   }
 
@@ -42,66 +32,33 @@ const AppShell = ({ children, sidebarDisabledPaths = [] }: AppShellProps) => {
         <Box
           sx={{
             display: 'flex',
+            flexDirection: 'column',
             bgcolor: 'background.paper',
             height: '100dvh',
             overflow: 'hidden',
+            minWidth: 0,
           }}
         >
+          <AppTopBar />
           <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              flexShrink: 0,
-            }}
-          >
-            <AppSidebar />
-          </Box>
-
-          <Drawer
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerClose}
-            ModalProps={{
-              keepMounted: true,
-            }}
-            sx={{
-              display: { xs: 'block', md: 'none' },
-              '& .MuiDrawer-paper': {
-                boxSizing: 'border-box',
-                width: 250,
-                borderRight: 1,
-                borderColor: 'divider',
-              },
-            }}
-          >
-            <AppSidebar
-              onClose={handleDrawerClose}
-              sx={{ width: '100%', borderRight: 0 }}
-            />
-          </Drawer>
-
-          <Box
+            component="main"
+            id="main-content"
+            tabIndex={-1}
             sx={{
               minWidth: 0,
-              height: '100dvh',
-              display: 'flex',
-              flexDirection: 'column',
+              minHeight: 0,
               flex: 1,
-              overflow: 'hidden',
+              overflowY: 'auto',
+              bgcolor: 'action.hover',
+              scrollbarGutter: 'stable',
+              overscrollBehaviorY: 'contain',
+              pl: 'env(safe-area-inset-left, 0px)',
+              pr: 'env(safe-area-inset-right, 0px)',
             }}
           >
-            <AppTopBar onToggleMobileMenu={handleDrawerToggle} />
-            <Box
-              component="main"
-              sx={{
-                minWidth: 0,
-                minHeight: 0,
-                flexGrow: 1,
-                overflowY: 'auto',
-              }}
-            >
-              {children}
-            </Box>
+            {children}
           </Box>
+          <AppBottomNavigation />
           <CreateTripHost />
           <TripMembersHost />
           <GlobalLoadingHost />

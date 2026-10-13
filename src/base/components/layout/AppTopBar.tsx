@@ -1,158 +1,76 @@
 'use client';
 
-import React from 'react';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import DocumentScannerRoundedIcon from '@mui/icons-material/DocumentScannerRounded';
-import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
-import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
-import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
-import SmartToyRoundedIcon from '@mui/icons-material/SmartToyRounded';
-import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import { Box, IconButton, Stack, Typography } from '@mui/material';
+import Link from 'next/link';
+import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
+import AppBrand from './AppBrand';
+import AppTripBar from './AppTripBar';
+import AppDesktopNavigation from './AppDesktopNavigation';
+import SidebarUser from './sidebar/SidebarUser';
 
-import { AppButton } from '@/base/components/ui';
-import { useTripContext } from '@/features/trip/context/TripContext';
-
-export interface AppTopBarProps {
-  onToggleMobileMenu?: () => void;
-}
-
-const PAGE_MESSAGE_KEYS = {
-  '/': 'overview',
-  '/overview': 'overview',
-  '/trips': 'trips',
-  '/plan': 'plan',
-  '/expenses': 'expenses',
-  '/scan': 'scan',
-  '/settlement': 'settlement',
-  '/ai': 'ai',
-} as const;
-
-const PAGE_ICONS: Record<string, React.ReactNode> = {
-  overview: (
-    <HomeRoundedIcon sx={{ color: 'primary.main', fontSize: '20px' }} />
-  ),
-  trips: (
-    <FlightTakeoffRoundedIcon
-      sx={{ color: 'primary.main', fontSize: '20px' }}
-    />
-  ),
-  plan: (
-    <CalendarMonthRoundedIcon
-      sx={{ color: 'primary.main', fontSize: '20px' }}
-    />
-  ),
-  expenses: (
-    <SavingsRoundedIcon sx={{ color: 'primary.main', fontSize: '20px' }} />
-  ),
-  scan: (
-    <DocumentScannerRoundedIcon
-      sx={{ color: 'primary.main', fontSize: '20px' }}
-    />
-  ),
-  settlement: (
-    <HandshakeRoundedIcon sx={{ color: 'primary.main', fontSize: '20px' }} />
-  ),
-  ai: <SmartToyRoundedIcon sx={{ color: 'primary.main', fontSize: '20px' }} />,
-};
-
-const AppTopBar = ({ onToggleMobileMenu }: AppTopBarProps) => {
-  const pathname = usePathname();
-  const t = useTranslations('topBar');
-  const tPageTitle = useTranslations('sidebar');
-  const tTrip = useTranslations('trip');
-  const { openCreateTrip, openMembers, activeTrip } = useTripContext();
-
-  const matchedPath = Object.keys(PAGE_MESSAGE_KEYS).find(
-    (path) =>
-      pathname === path || (path !== '/' && pathname.startsWith(`${path}/`)),
-  ) as keyof typeof PAGE_MESSAGE_KEYS | undefined;
-  const titleKey = matchedPath ? PAGE_MESSAGE_KEYS[matchedPath] : 'overview';
-  const pageTitle = titleKey === 'ai' ? 'AI' : tPageTitle(titleKey);
-  const pageIcon = PAGE_ICONS[titleKey] ?? PAGE_ICONS.overview;
-
+const AppTopBar = () => {
+  const t = useTranslations('navigation');
   return (
     <Box
       component="header"
       sx={{
-        minHeight: 64,
+        flexShrink: 0,
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 2,
-        px: { xs: 2, md: 3 },
-        py: 1,
+        justifyContent: 'center',
         bgcolor: 'background.paper',
         borderBottom: 1,
         borderColor: 'divider',
+        pt: 'env(safe-area-inset-top, 0px)',
+        pl: 'env(safe-area-inset-left, 0px)',
+        pr: 'env(safe-area-inset-right, 0px)',
       }}
     >
-      <Stack
-        direction="row"
-        spacing={1}
-        sx={{ alignItems: 'center', minWidth: 0 }}
+      <Box
+        sx={{
+          width: '100%',
+          minWidth: 0,
+          minHeight: 64,
+          px: { xs: 1.5, sm: 2, md: 3, xl: 4 },
+          py: 0.5,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: { xs: 1, sm: 2 },
+        }}
       >
-        <IconButton
-          color="inherit"
-          aria-label="open navigation menu"
-          edge="start"
-          onClick={onToggleMobileMenu}
+        <Box
           sx={{
-            display: { xs: 'flex', md: 'none' },
-            p: 0.75,
-            color: 'text.secondary',
-            '&:hover': { color: 'text.primary', bgcolor: 'action.hover' },
+            display: 'flex',
+            alignItems: 'center',
+            gap: { xs: 1, sm: 2, lg: 3 },
+            flex: 1,
+            minWidth: 0,
           }}
         >
-          <MenuRoundedIcon sx={{ fontSize: '22px' }} />
-        </IconButton>
-        {pageIcon}
-        <Typography
-          component="h1"
-          sx={{
-            color: 'text.primary',
-            fontSize: '18px',
-            fontWeight: 800,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {pageTitle}
-        </Typography>
-      </Stack>
-
-      <Stack
-        direction="row"
-        spacing={1}
-        sx={{ alignItems: 'center', flexShrink: 0 }}
-      >
-        <AppButton
-          size="small"
-          intent="primary"
-          startIcon={<FlightTakeoffRoundedIcon />}
-          onClick={openCreateTrip}
-          sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
-        >
-          {tTrip('createTrip')}
-        </AppButton>
-
-        <AppButton
-          size="small"
-          intent="secondary"
-          startIcon={<GroupRoundedIcon />}
-          onClick={() => openMembers(true)}
-          disabled={!activeTrip}
-        >
-          <Box component="span" sx={{ display: { xs: 'none', md: 'inline' } }}>
-            {t('inviteMember')}
+          <Box
+            component={Link}
+            href="/overview"
+            aria-label={t('homeLink')}
+            sx={{
+              display: 'inline-flex',
+              minHeight: 44,
+              alignItems: 'center',
+              flexShrink: 0,
+              borderRadius: '12px',
+              '&:focus-visible': {
+                outline: '2px solid',
+                outlineColor: 'primary.main',
+              },
+            }}
+          >
+            <AppBrand compactOnMobile />
           </Box>
-        </AppButton>
-      </Stack>
+          <AppTripBar />
+        </Box>
+        <AppDesktopNavigation />
+        <SidebarUser compact />
+      </Box>
     </Box>
   );
 };
-
 export default AppTopBar;

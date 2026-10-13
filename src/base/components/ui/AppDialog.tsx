@@ -11,7 +11,9 @@ import {
   IconButton,
   Stack,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 export interface AppDialogProps {
@@ -26,6 +28,7 @@ export interface AppDialogProps {
   fullWidth?: boolean;
   closeDisabled?: boolean;
   closeLabel?: string;
+  mobileFullScreen?: boolean;
 }
 
 const AppDialog = ({
@@ -40,19 +43,30 @@ const AppDialog = ({
   fullWidth = true,
   closeDisabled = false,
   closeLabel,
+  mobileFullScreen = false,
 }: AppDialogProps) => {
   const t = useTranslations('dialog');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen = mobileFullScreen && isMobile;
   return (
     <Dialog
       open={open}
       onClose={closeDisabled ? undefined : onClose}
       fullWidth={fullWidth}
+      fullScreen={fullScreen}
       maxWidth={maxWidth}
       slotProps={{
         paper: {
           sx: {
-            borderRadius: '20px',
-            p: { xs: 1, sm: 2 },
+            borderRadius: fullScreen ? 0 : '20px',
+            p: fullScreen ? 0 : { xs: 1, sm: 2 },
+            ...(fullScreen && {
+              pt: 'env(safe-area-inset-top, 0px)',
+              pb: 'env(safe-area-inset-bottom, 0px)',
+              pl: 'env(safe-area-inset-left, 0px)',
+              pr: 'env(safe-area-inset-right, 0px)',
+            }),
           },
         },
       }}
@@ -66,7 +80,11 @@ const AppDialog = ({
           pb: 1.5,
         }}
       >
-        <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+        <Stack
+          direction="row"
+          spacing={1.5}
+          sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}
+        >
           {icon && (
             <Box
               sx={{
@@ -84,7 +102,7 @@ const AppDialog = ({
               {icon}
             </Box>
           )}
-          <Box>
+          <Box sx={{ minWidth: 0 }}>
             <Typography
               component="h2"
               sx={{
@@ -112,6 +130,7 @@ const AppDialog = ({
           disabled={closeDisabled}
           size="small"
           aria-label={closeLabel ?? t('close')}
+          sx={{ width: 44, height: 44, flexShrink: 0 }}
         >
           <CloseRoundedIcon fontSize="small" />
         </IconButton>

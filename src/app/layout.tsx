@@ -24,7 +24,7 @@ const monoFont = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Trip Budget Plan',
+  title: 'Trip Plan',
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },
@@ -37,8 +37,7 @@ export const metadata: Metadata = {
 export const viewport: import('next').Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  viewportFit: 'cover',
 };
 
 // add path name to hide sidebar here

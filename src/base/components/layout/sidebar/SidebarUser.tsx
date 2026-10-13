@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 import useLogout from '@/features/auth/hooks/useLogout';
 import { useUserContext } from '@/features/user/context/UserContext';
@@ -22,10 +23,15 @@ import type { UserProfile } from '@/features/auth/types';
 
 export interface SidebarUserProps {
   user?: Partial<SidebarUserData> | UserProfile;
+  compact?: boolean;
 }
 
-const SidebarUser = ({ user: defaultUser }: SidebarUserProps) => {
+const SidebarUser = ({
+  user: defaultUser,
+  compact = false,
+}: SidebarUserProps) => {
   const router = useRouter();
+  const t = useTranslations('navigation');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const { user: currentUser, isLoading } = useUserContext();
@@ -34,8 +40,8 @@ const SidebarUser = ({ user: defaultUser }: SidebarUserProps) => {
   const rawUser =
     currentUser ?? (defaultUser as { data?: UserProfile })?.data ?? defaultUser;
 
-  const displayName = rawUser?.name || 'User';
-  const displayEmailOrRole = rawUser?.role || 'Member';
+  const displayName = rawUser?.name || t('account');
+  const displayEmailOrRole = rawUser?.role || rawUser?.email || t('account');
   const displayInitials = getUserInitials(rawUser?.name);
   const avatarSrc = rawUser?.avatarUrl || undefined;
 
@@ -61,6 +67,7 @@ const SidebarUser = ({ user: defaultUser }: SidebarUserProps) => {
   };
 
   if (isLoading && !currentUser) {
+    if (compact) return <Skeleton variant="circular" width={44} height={44} />;
     return (
       <Stack
         direction="row"
@@ -83,74 +90,104 @@ const SidebarUser = ({ user: defaultUser }: SidebarUserProps) => {
 
   return (
     <>
-      <Stack
-        direction="row"
-        spacing={1.25}
-        onClick={handleOpenMenu}
-        sx={{
-          height: '100%',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          px: 1,
-          py: 0.75,
-          borderRadius: '12px',
-          cursor: 'pointer',
-          transition: 'background-color 0.15s ease',
-          '&:hover': {
-            bgcolor: 'action.hover',
-          },
-        }}
-      >
-        <Stack
-          direction="row"
-          spacing={1.25}
-          sx={{ alignItems: 'center', minWidth: 0 }}
+      {compact ? (
+        <IconButton
+          onClick={handleOpenMenu}
+          disabled={logoutMutation.isPending}
+          aria-label={t('accountMenu')}
+          aria-haspopup="dialog"
+          aria-expanded={Boolean(anchorEl)}
+          sx={{ width: 44, height: 44, flexShrink: 0, color: 'text.primary' }}
         >
           <Avatar
             src={avatarSrc}
+            alt={displayName}
             sx={{
               width: 36,
               height: 36,
-              bgcolor: 'primary.light',
-              fontSize: 13,
-              fontWeight: 700,
+              bgcolor: 'action.selected',
+              color: 'primary.main',
+              fontSize: '13px',
+              fontWeight: 800,
             }}
           >
             {displayInitials}
           </Avatar>
-          <Box sx={{ minWidth: 0 }}>
-            <Typography
-              variant="body2"
-              noWrap
-              sx={{ fontWeight: 800, color: 'text.primary', fontSize: '13px' }}
-            >
-              {displayName}
-            </Typography>
-            <Typography
-              variant="caption"
-              noWrap
+        </IconButton>
+      ) : (
+        <Stack
+          direction="row"
+          spacing={1.25}
+          onClick={handleOpenMenu}
+          sx={{
+            height: '100%',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            px: 1,
+            py: 0.75,
+            borderRadius: '12px',
+            cursor: 'pointer',
+            transition: 'background-color 0.15s ease',
+            '&:hover': {
+              bgcolor: 'action.hover',
+            },
+          }}
+        >
+          <Stack
+            direction="row"
+            spacing={1.25}
+            sx={{ alignItems: 'center', minWidth: 0 }}
+          >
+            <Avatar
+              src={avatarSrc}
               sx={{
-                display: 'block',
-                color: 'text.secondary',
-                fontSize: '11px',
+                width: 36,
+                height: 36,
+                bgcolor: 'primary.light',
+                fontSize: 13,
+                fontWeight: 700,
               }}
             >
-              {displayEmailOrRole}
-            </Typography>
-          </Box>
-        </Stack>
+              {displayInitials}
+            </Avatar>
+            <Box sx={{ minWidth: 0 }}>
+              <Typography
+                variant="body2"
+                noWrap
+                sx={{
+                  fontWeight: 800,
+                  color: 'text.primary',
+                  fontSize: '13px',
+                }}
+              >
+                {displayName}
+              </Typography>
+              <Typography
+                variant="caption"
+                noWrap
+                sx={{
+                  display: 'block',
+                  color: 'text.secondary',
+                  fontSize: '11px',
+                }}
+              >
+                {displayEmailOrRole}
+              </Typography>
+            </Box>
+          </Stack>
 
-        <IconButton
-          size="small"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleOpenMenu(e);
-          }}
-          sx={{ color: 'text.secondary', p: 0.5 }}
-        >
-          <UnfoldMoreRoundedIcon sx={{ fontSize: '16px' }} />
-        </IconButton>
-      </Stack>
+          <IconButton
+            size="small"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpenMenu(e);
+            }}
+            sx={{ color: 'text.secondary', p: 0.5 }}
+          >
+            <UnfoldMoreRoundedIcon sx={{ fontSize: '16px' }} />
+          </IconButton>
+        </Stack>
+      )}
 
       <SidebarUserMenu
         anchorEl={anchorEl}
@@ -159,6 +196,9 @@ const SidebarUser = ({ user: defaultUser }: SidebarUserProps) => {
         onOpenProfile={() => setProfileOpen(true)}
         onLogout={handleLogout}
         isLoggingOut={logoutMutation.isPending}
+        headerMenu={compact}
+        userName={displayName}
+        userEmail={rawUser?.email}
       />
 
       <ProfileDialog
