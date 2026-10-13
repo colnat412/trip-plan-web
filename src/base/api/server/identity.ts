@@ -3,7 +3,7 @@ import axios from 'axios';
 import { NextResponse, type NextRequest } from 'next/server';
 
 const identityClient = axios.create({
-  baseURL: `${(process.env.IDENTITY_SERVICE_URL || process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || 'http://localhost:8888').replace(/\/$/, '')}/api`,
+  baseURL: `${process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL}/api`,
   timeout: 90_000,
 });
 

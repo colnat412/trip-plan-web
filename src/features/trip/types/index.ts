@@ -14,6 +14,7 @@ export interface Trip {
   name: string;
   destination: string;
   description: string | null;
+  coverUrl?: string | null;
   startDate: string;
   endDate: string;
   baseCurrency: string;
@@ -48,6 +49,7 @@ export interface PublicTripData {
   name: string;
   destination: string;
   description: string | null;
+  coverUrl?: string | null;
   startDate: string;
   endDate: string;
   baseCurrency: string;
@@ -89,6 +91,8 @@ export interface CreateTripPayload {
 }
 
 export interface UpdateTripPayload {
+  coverUploadId?: string;
+  removeCover?: boolean;
   name?: string;
   destination?: string;
   description?: string;

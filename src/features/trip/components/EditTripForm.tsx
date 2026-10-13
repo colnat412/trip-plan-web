@@ -1,11 +1,12 @@
 'use client';
 
-import { type FormEvent, useState } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { Box, DialogActions, MenuItem, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import {
   AppButton,
+  AppImageUploader,
   AppTextArea,
   AppTextField,
   AppToast,
@@ -18,6 +19,7 @@ interface EditTripFormProps {
   trip: Trip;
   onClose: () => void;
   onSuccess?: (updatedTrip: Trip) => void;
+  onBusyChange: (busy: boolean) => void;
 }
 
 interface TripFormErrors {
@@ -32,10 +34,15 @@ const CURRENCY_OPTIONS = [
   { value: 'USD', label: 'USD' },
 ];
 
-const EditTripForm = ({ trip, onClose, onSuccess }: EditTripFormProps) => {
+const EditTripForm = ({
+  trip,
+  onClose,
+  onSuccess,
+  onBusyChange,
+}: EditTripFormProps) => {
   const t = useTranslations('trip');
-  const tMyTrips = useTranslations('myTrips');
 
+  const [coverFile, setCoverFile] = useState<File | null | undefined>();
   const [name, setName] = useState(trip.name);
   const [destination, setDestination] = useState(trip.destination);
   const [startDate, setStartDate] = useState(trip.startDate);
@@ -59,6 +66,11 @@ const EditTripForm = ({ trip, onClose, onSuccess }: EditTripFormProps) => {
   const { updateTrip, isPending } = useUpdateTrip({
     tripId: trip.id,
   });
+
+  useEffect(() => {
+    onBusyChange(isPending);
+    return () => onBusyChange(false);
+  }, [isPending, onBusyChange]);
 
   const validate = (): boolean => {
     const newErrors: TripFormErrors = {};
@@ -88,12 +100,13 @@ const EditTripForm = ({ trip, onClose, onSuccess }: EditTripFormProps) => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!validate()) {
+    if (isPending || !validate()) {
       return;
     }
 
     updateTrip(
       {
+        coverFile,
         name: name.trim(),
         destination: destination.trim(),
         description: description.trim() ? description.trim() : undefined,
@@ -104,17 +117,11 @@ const EditTripForm = ({ trip, onClose, onSuccess }: EditTripFormProps) => {
       },
       {
         onSuccess: (response) => {
-          setToastMessage(tMyTrips('updateSuccess'));
-          const updated = response.data;
-          setTimeout(() => {
-            if (updated) {
-              onSuccess?.(updated);
-            }
-            onClose();
-          }, 800);
+          onSuccess?.(response.data);
+          onClose();
         },
         onError: (err) => {
-          setToastMessage(err.message || 'Error updating trip');
+          setToastMessage(err.message || t('updateFailed'));
         },
       },
     );
@@ -124,7 +131,7 @@ const EditTripForm = ({ trip, onClose, onSuccess }: EditTripFormProps) => {
     <>
       <AppToast
         open={Boolean(toastMessage)}
-        severity="success"
+        severity="error"
         message={toastMessage || ''}
         onClose={() => setToastMessage(null)}
       />
@@ -135,112 +142,141 @@ const EditTripForm = ({ trip, onClose, onSuccess }: EditTripFormProps) => {
         onSubmit={handleSubmit}
         sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}
       >
-        <AppTextField
-          label={t('name')}
-          placeholder={t('namePlaceholder')}
-          required
-          value={name}
-          error={Boolean(errors.name)}
-          helperText={errors.name}
-          slotProps={{ inputLabel: { shrink: true } }}
-          onChange={(e) => {
-            setName(e.target.value);
-            if (errors.name) {
-              setErrors((prev) => ({ ...prev, name: undefined }));
-            }
+        <Box
+          component="fieldset"
+          disabled={isPending}
+          sx={{
+            border: 0,
+            p: 0,
+            m: 0,
+            minWidth: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2.5,
           }}
-        />
-
-        <DestinationAutocomplete
-          required
-          value={destination}
-          error={Boolean(errors.destination)}
-          helperText={errors.destination}
-          onChange={(val) => {
-            setDestination(val);
-            if (errors.destination) {
-              setErrors((prev) => ({ ...prev, destination: undefined }));
-            }
-          }}
-        />
-
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+        >
+          <AppImageUploader
+            src={trip.coverUrl}
+            alt={t('coverImage')}
+            fallback={trip.name.slice(0, 1)}
+            variant="cover"
+            disabled={isPending}
+            onChange={setCoverFile}
+          />
           <AppTextField
-            label={t('startDate')}
-            type="date"
+            disabled={isPending}
+            label={t('name')}
+            placeholder={t('namePlaceholder')}
             required
-            value={startDate}
-            error={Boolean(errors.startDate)}
-            helperText={errors.startDate}
+            value={name}
+            error={Boolean(errors.name)}
+            helperText={errors.name}
             slotProps={{ inputLabel: { shrink: true } }}
             onChange={(e) => {
-              setStartDate(e.target.value);
-              if (errors.startDate) {
-                setErrors((prev) => ({ ...prev, startDate: undefined }));
+              setName(e.target.value);
+              if (errors.name) {
+                setErrors((prev) => ({ ...prev, name: undefined }));
               }
             }}
           />
 
-          <AppTextField
-            label={t('endDate')}
-            type="date"
+          <DestinationAutocomplete
+            disabled={isPending}
             required
-            value={endDate}
-            error={Boolean(errors.endDate)}
-            helperText={errors.endDate}
-            slotProps={{ inputLabel: { shrink: true } }}
-            onChange={(e) => {
-              setEndDate(e.target.value);
-              if (errors.endDate) {
-                setErrors((prev) => ({ ...prev, endDate: undefined }));
+            value={destination}
+            error={Boolean(errors.destination)}
+            helperText={errors.destination}
+            onChange={(val) => {
+              setDestination(val);
+              if (errors.destination) {
+                setErrors((prev) => ({ ...prev, destination: undefined }));
               }
             }}
           />
-        </Stack>
 
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <AppTextField
-              select
-              label={t('baseCurrency')}
-              value={baseCurrency}
+              disabled={isPending}
+              label={t('startDate')}
+              type="date"
+              required
+              value={startDate}
+              error={Boolean(errors.startDate)}
+              helperText={errors.startDate}
               slotProps={{ inputLabel: { shrink: true } }}
-              onChange={(e) => setBaseCurrency(e.target.value)}
-            >
-              {CURRENCY_OPTIONS.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </AppTextField>
-          </Box>
+              onChange={(e) => {
+                setStartDate(e.target.value);
+                if (errors.startDate) {
+                  setErrors((prev) => ({ ...prev, startDate: undefined }));
+                }
+              }}
+            />
 
-          <Box sx={{ flex: 1, minWidth: 0 }}>
             <AppTextField
-              select
-              label={t('statusLabel')}
-              value={status}
+              disabled={isPending}
+              label={t('endDate')}
+              type="date"
+              required
+              value={endDate}
+              error={Boolean(errors.endDate)}
+              helperText={errors.endDate}
               slotProps={{ inputLabel: { shrink: true } }}
-              onChange={(e) => setStatus(e.target.value as TripStatus)}
-            >
-              {STATUS_OPTIONS.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </AppTextField>
-          </Box>
-        </Stack>
+              onChange={(e) => {
+                setEndDate(e.target.value);
+                if (errors.endDate) {
+                  setErrors((prev) => ({ ...prev, endDate: undefined }));
+                }
+              }}
+            />
+          </Stack>
 
-        <AppTextArea
-          label={t('description')}
-          placeholder={t('descriptionPlaceholder')}
-          value={description}
-          minRows={3}
-          maxRows={5}
-          slotProps={{ inputLabel: { shrink: true } }}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <AppTextField
+                disabled={isPending}
+                select
+                label={t('baseCurrency')}
+                value={baseCurrency}
+                slotProps={{ inputLabel: { shrink: true } }}
+                onChange={(e) => setBaseCurrency(e.target.value)}
+              >
+                {CURRENCY_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </AppTextField>
+            </Box>
+
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <AppTextField
+                disabled={isPending}
+                select
+                label={t('statusLabel')}
+                value={status}
+                slotProps={{ inputLabel: { shrink: true } }}
+                onChange={(e) => setStatus(e.target.value as TripStatus)}
+              >
+                {STATUS_OPTIONS.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </AppTextField>
+            </Box>
+          </Stack>
+
+          <AppTextArea
+            disabled={isPending}
+            label={t('description')}
+            placeholder={t('descriptionPlaceholder')}
+            value={description}
+            minRows={3}
+            maxRows={5}
+            slotProps={{ inputLabel: { shrink: true } }}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </Box>
 
         <DialogActions sx={{ px: 0, pt: 1, gap: 1.5 }}>
           <AppButton
@@ -257,7 +293,7 @@ const EditTripForm = ({ trip, onClose, onSuccess }: EditTripFormProps) => {
             size="medium"
             loading={isPending}
           >
-            {tMyTrips('saveChanges')}
+            {t('saveChanges')}
           </AppButton>
         </DialogActions>
       </Box>

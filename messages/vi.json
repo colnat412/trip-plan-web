@@ -126,6 +126,9 @@
     "hello": "XIN CHÀO 2026"
   },
   "trip": {
+    "coverImage": "Ảnh đại diện chuyến đi",
+    "updateFailed": "Không thể cập nhật chuyến đi. Vui lòng thử lại.",
+    "saveChanges": "Lưu thay đổi",
     "createTitle": "Tạo chuyến đi mới",
     "createDescription": "Lên kế hoạch và quản lý chi tiêu cho hành trình của bạn",
     "name": "Tên chuyến đi",

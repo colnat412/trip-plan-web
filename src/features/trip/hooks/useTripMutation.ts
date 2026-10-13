@@ -1,17 +1,24 @@
 'use client';
 
-import type { ApiResponse } from '@/base/api';
+import { useRef } from 'react';
+import { axiosPut, type ApiResponse } from '@/base/api';
 import {
   useMutationPost,
+  useMutationRequest,
+  useUploadFile,
   useMutationPut,
   type MutationCallbacks,
 } from '@/base/hooks';
 import { tripMutationKeys } from '../constants/trip-keys';
 import type { CreateTripPayload, Trip, UpdateTripPayload } from '../types';
 
+type UpdateTripWithCoverPayload = UpdateTripPayload & {
+  coverFile?: File | null;
+};
+
 export interface UseUpdateTripParams {
   tripId: number | string;
-  options?: MutationCallbacks<ApiResponse<Trip>, UpdateTripPayload>;
+  options?: MutationCallbacks<ApiResponse<Trip>, UpdateTripWithCoverPayload>;
 }
 
 export interface UseDeleteTripParams {
@@ -37,9 +44,46 @@ export function useCreateTrip(
 }
 
 export function useUpdateTrip({ tripId, options }: UseUpdateTripParams) {
-  const updateMutation = useMutationPut<ApiResponse<Trip>, UpdateTripPayload>({
+  const upload = useUploadFile();
+  const pendingUpload = useRef<{
+    file: File;
+    tripId: number | string;
+    uploadId: string;
+  } | null>(null);
+  const updateMutation = useMutationRequest<
+    ApiResponse<Trip>,
+    UpdateTripWithCoverPayload
+  >({
     mutationKey: tripMutationKeys.update(tripId),
-    endPoint: `/trip/${tripId}`,
+    mutationFn: async ({ coverFile, ...payload }) => {
+      if (coverFile) {
+        if (
+          pendingUpload.current?.file !== coverFile ||
+          pendingUpload.current?.tripId !== tripId
+        ) {
+          const response = await upload.mutateAsync({
+            file: coverFile,
+            purpose: 'TRIP_COVER',
+          });
+          pendingUpload.current = {
+            file: coverFile,
+            tripId,
+            uploadId: response.data.uploadId,
+          };
+        }
+        payload.coverUploadId = pendingUpload.current.uploadId;
+        payload.removeCover = false;
+      } else if (coverFile === null) {
+        payload.removeCover = true;
+      }
+      // Keep the uploadID on failure so Save can retry without uploading again.
+      const response = await axiosPut<ApiResponse<Trip>>(
+        `/trip/${tripId}`,
+        payload,
+      );
+      pendingUpload.current = null;
+      return response;
+    },
     options,
   });
 

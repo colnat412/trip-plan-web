@@ -126,6 +126,9 @@
     "hello": "HELLO 2026"
   },
   "trip": {
+    "coverImage": "Trip cover image",
+    "updateFailed": "Could not update trip. Please try again.",
+    "saveChanges": "Save changes",
     "createTitle": "Create New Trip",
     "createDescription": "Plan and manage budget for your journey",
     "name": "Trip Name",

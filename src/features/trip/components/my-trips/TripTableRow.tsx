@@ -1,6 +1,13 @@
 'use client';
 
-import { Box, Stack, TableCell, TableRow, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Stack,
+  TableCell,
+  TableRow,
+  Typography,
+} from '@mui/material';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
@@ -77,7 +84,10 @@ const TripTableRow = ({
     >
       <TableCell sx={{ py: 2 }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-          <Box
+          <Avatar
+            src={trip.coverUrl ?? undefined}
+            alt={trip.name}
+            variant="rounded"
             sx={{
               width: 36,
               height: 36,
@@ -91,7 +101,7 @@ const TripTableRow = ({
             }}
           >
             <FlightTakeoffRoundedIcon sx={{ fontSize: '18px' }} />
-          </Box>
+          </Avatar>
           <Box sx={{ minWidth: 0 }}>
             <Typography
               noWrap

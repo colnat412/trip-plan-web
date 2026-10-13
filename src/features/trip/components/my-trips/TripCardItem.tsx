@@ -1,6 +1,13 @@
 'use client';
 
-import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  IconButton,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
@@ -78,29 +85,24 @@ const TripCardItem = ({
           bgcolor: 'action.hover',
         }}
       >
-        <Box
+        <Avatar
+          src={trip.coverUrl ?? undefined}
+          alt={trip.name}
+          variant="square"
           sx={{
             position: 'absolute',
-            top: 0,
-            left: 0,
+            inset: 0,
             width: '100%',
             height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 0.75,
+            bgcolor: 'action.hover',
             color: 'text.secondary',
           }}
         >
-          <PhotoCameraOutlinedIcon sx={{ fontSize: 28, opacity: 0.45 }} />
-          <Typography
-            variant="caption"
-            sx={{ fontWeight: 600, fontSize: '11.5px', opacity: 0.85 }}
-          >
-            {t('noPhoto') || 'Chưa có ảnh'}
-          </Typography>
-        </Box>
+          <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+            <PhotoCameraOutlinedIcon sx={{ fontSize: 28, opacity: 0.45 }} />
+            <Typography variant="caption">{t('noPhoto')}</Typography>
+          </Stack>
+        </Avatar>
 
         <Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 1 }}>
           <TripStatusChip status={trip.status} />

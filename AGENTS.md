@@ -2211,3 +2211,27 @@ If the user has already supplied a specific task, do not block on a broad questi
 - Refresh transport/5xx errors now remain API errors without navigation or cookie deletion. Only definitive 401/403 rejection redirects once to login. Queued requests are marked retried before waiting, limiting each request to one replay.
 - Middleware recognizes only access_token and refresh_token, the two cookies actually managed by auth BFF. Refresh BFF prefers server-only IDENTITY_SERVICE_URL and rejects successful responses missing an access token with 502.
 - Regression tests: `node tests/auth-refresh.test.mjs` (transport errors, rejected sessions, concurrent 401 requests).
+
+
+### Trip cover upload integration (2026-10-13)
+
+- Edit trip reuses `AppImageUploader` (`variant="cover"`) and `useUploadFile` (`TRIP_COVER`). Selection stays local until Save; unchanged cover sends no upload; remove uses `removeCover: true`.
+- `useUpdateTrip` uploads first, then sends `coverUploadId` with existing PUT `/api/trip/{id}`. Retry retains the upload ID for the same File/trip after a failed update. Dialog dismissal and form controls are disabled throughout upload and save.
+- Core retains active-membership/owner-only authorization. `TripCoverService` claims only the caller's `pending` TRIP_COVER upload, takes URL from storage metadata, and marks replaced uploads `delete_pending` within the trip transaction. Current upload ID is idempotent; optimistic trip version conflicts roll back the upload changes.
+- Core uploads module encapsulates the existing shared database (`public.uploads`) through UploadRepository/JdbcTemplate in the JPA transaction; no cross-service foreign keys. This creates schema coupling with Identity upload status/purpose names.
+- Trip/public-trip responses expose `coverUrl`; trip grid/table render images with fallback. Existing trip refresh subscriptions update the list after saving. VI/EN labels and error/success toast behavior are included.
+- Apply `trip-budget/tripbudget-core/src/main/resources/db/migration/V3__add_trip_cover.sql` before starting the updated Core. Core has ddl-auto=validate and no Flyway dependency; this file is not automatically executed. Identity uploads table must already exist.
+- TypeScript and targeted ESLint pass; Maven tests pass (13 total, including 6 cover tests). Smoke test skipped by project instruction. Cloudinary cleanup worker and live PostgreSQL/browser acceptance remain deployment verification; see `walkthrough.md`.
+
+### Trip cover enum value fix (2026-10-13)
+
+- Identity `UploadStatusEnum` uses uppercase member names but lowercase persisted values: PENDING=`pending`, ATTACHED=`attached`, DELETE_PENDING=`delete_pending`. Core SQL must use these lowercase values; upload purposes such as TRIP_COVER remain uppercase.
+- Fixed TripCoverService attach/cleanup SQL after PostgreSQL rejected uppercase PENDING. Regression assertions now check both attach and cleanup SQL status literals; earlier JdbcTemplate mocks did not catch invalid enum labels. No database enum migration is required.
+
+### Core uploads module refactor (2026-10-13)
+
+- Core now has `uploads/enums/UploadStatus`, `UploadPurpose`, `uploads/repositories/UploadRepository` and `uploads/services/UploadAttachmentService`. TripCoverService coordinates trip state without SQL or JdbcTemplate.
+- UploadRepository owns atomic pending claims and cleanup transitions. Status parameters use explicit database values (`pending`, `attached`, `delete_pending`) and PostgreSQL enum casts; purpose uses Identity names. Both operations constrain caller ownership and purpose.
+- UploadAttachmentService requires the calling resource transaction (MANDATORY); resource authorization remains in TripService. This preserves one database transaction, while providing a single boundary for future attachment users or a future Identity API adapter.
+- Identity remains responsible for file upload/Cloudinary. No new HTTP endpoint or schema migration is introduced by this refactor. Shared database coupling still exists; replacing it with remote claims needs idempotency and failure reconciliation.
+- Validation: `mvn test` passes 18 unit tests (6 trip cover, 5 upload module, 7 existing Hashids). Upload repository assertions check ownership/purpose SQL, enum casts and lowercase bound values. No live PostgreSQL integration or smoke test was run.
