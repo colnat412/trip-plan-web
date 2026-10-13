@@ -22,7 +22,6 @@ import {
 
 import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
 import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
-import SidebarBrand from '@/base/components/layout/sidebar/SidebarBrand';
 import useLogin from '@/features/auth/hooks/useLogin';
 import AppPreferences from '@/base/components/preferences/AppPreferences';
 import GoogleAuthButton from './GoogleAuthButton';
@@ -129,8 +128,6 @@ const Login = () => {
           '& .MuiTypography-root': { color: 'inherit' },
         }}
       >
-        <SidebarBrand />
-
         <Stack spacing={1} sx={{ maxWidth: 560 }}>
           <Typography
             component="p"
@@ -333,7 +330,11 @@ const Login = () => {
             <Box
               component={Link}
               href="/register"
-              sx={{ color: 'primary.main', fontWeight: 700, textDecoration: 'none' }}
+              sx={{
+                color: 'primary.main',
+                fontWeight: 700,
+                textDecoration: 'none',
+              }}
             >
               {t('login.createAccount')}
             </Box>

@@ -23,7 +23,6 @@ import {
 
 import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
 import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
-import SidebarBrand from '@/base/components/layout/sidebar/SidebarBrand';
 import AppPreferences from '@/base/components/preferences/AppPreferences';
 import useRegister from '@/features/auth/hooks/useRegister';
 import useVerifyOtp from '@/features/auth/hooks/useVerifyOtp';
@@ -227,8 +226,6 @@ const Register = () => {
           '& .MuiTypography-root': { color: 'inherit' },
         }}
       >
-        <SidebarBrand />
-
         <Stack spacing={1} sx={{ maxWidth: 560 }}>
           <Typography
             component="p"
