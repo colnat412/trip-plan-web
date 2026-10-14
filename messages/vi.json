@@ -800,6 +800,19 @@
       "resetDaySuccess": "Đã đặt lại và xóa toàn bộ hoạt động trong ngày!",
       "aiGenerateSuccess": "Đã tạo lịch trình bằng AI thành công!",
       "error": "Đã có lỗi xảy ra. Vui lòng thử lại sau."
+    },
+    "print": {
+      "button": "In / Lưu PDF",
+      "loading": "Đang tải toàn bộ lịch trình...",
+      "loadError": "Không thể tải lịch trình.",
+      "retry": "Thử lại",
+      "day": "Ngày {number}",
+      "time": "Thời gian",
+      "activity": "Hoạt động / Địa điểm",
+      "estimatedCost": "Chi phí dự kiến",
+      "emptyDay": "Ngày này chưa có hoạt động.",
+      "emptyPlan": "Chuyến đi chưa có lịch trình.",
+      "printError": "Không thể mở hộp thoại in. Vui lòng thử lại."
     }
   },
   "aiPlanner": {

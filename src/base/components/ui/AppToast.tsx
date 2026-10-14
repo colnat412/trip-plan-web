@@ -24,7 +24,7 @@ const AppToast = ({
   message,
   onClose,
   severity = 'info',
-  autoHideDuration = 4_000,
+  autoHideDuration = 3_000,
   position = { vertical: 'top', horizontal: 'right' },
 }: AppToastProps) => {
   return (

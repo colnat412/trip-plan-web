@@ -2294,3 +2294,11 @@ Backend switcher search validation: TypeScript and production build pass; full E
 - Added query metadata and 7 unit regressions for debounce, stale results/errors, cancellation, minimum length, popular reset and stopping loading on error. Unrelated user edits (including MyBalanceCard.tsx) were preserved.
 
 Shared debounce audit validation: 7 unit cases, TypeScript and production build pass; full ESLint has no errors and 3 unrelated MyBalanceCard.tsx unused-symbol warnings. Browser/smoke tests were skipped.
+
+
+### Shared toast duration (2026-10-13)
+
+- AppToast defaults to autoHideDuration=3000ms for all severities. Existing consumers use this shared default; no feature overrides exist. Keep future toasts on the shared default unless a specific requirement calls for a different duration.
+- Snackbar timeout calls the consumer onClose to clear its open/message state. MUI hover/focus/window-blur timer behavior remains unchanged.
+
+Toast duration validation: TypeScript and targeted AppToast ESLint pass. Smoke/browser tests skipped per project instruction.

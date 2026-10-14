@@ -44,6 +44,7 @@ export const viewport: import('next').Viewport = {
 const sidebarDisabledPaths: readonly string[] = [
   ...PUBLIC_AUTH_PATHS,
   ...PUBLIC_PATHS,
+  '/print',
 ];
 
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {

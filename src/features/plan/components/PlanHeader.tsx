@@ -6,6 +6,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
+import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 import { Share } from '@mui/icons-material';
 import { useTranslations } from 'next-intl';
 
@@ -26,6 +27,7 @@ export interface PlanHeaderProps {
   onOpenShare?: () => void;
   onOpenActivityLogs?: () => void;
   readOnly?: boolean;
+  onOpenPrint?: () => void;
 }
 
 const PlanHeader = ({
@@ -42,6 +44,7 @@ const PlanHeader = ({
   onOpenShare,
   onOpenActivityLogs,
   readOnly = false,
+  onOpenPrint,
 }: PlanHeaderProps) => {
   const t = useTranslations('plan');
 
@@ -175,6 +178,17 @@ const PlanHeader = ({
           gap: { xs: 1, sm: 1.25 },
         }}
       >
+        {onOpenPrint && (
+          <AppButton
+            intent="secondary"
+            size="small"
+            onClick={onOpenPrint}
+            startIcon={<PictureAsPdfRoundedIcon />}
+            sx={secondaryBtnSx}
+          >
+            {t('print.button')}
+          </AppButton>
+        )}
         {onOpenActivityLogs && (
           <AppButton
             intent="secondary"

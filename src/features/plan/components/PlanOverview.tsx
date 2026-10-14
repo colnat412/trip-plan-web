@@ -46,12 +46,13 @@ import PlanDayTabs from './PlanDayTabs';
 import PlanHeader from './PlanHeader';
 import ActivityLogDialog from './ActivityLogDialog';
 import AiPlannerDialog from './AiPlannerDialog';
+import { useRouter } from 'next/navigation';
 
 const PlanOverview = () => {
   const t = useTranslations('plan');
   const { activeTrip } = useTripContext();
   const tripId = activeTrip?.id;
-
+  const router = useRouter();
   // only get selected day
   const {
     plan: overview,
@@ -417,6 +418,9 @@ const PlanOverview = () => {
           onOpenShare={() => setShareDialogOpen(true)}
           onOpenActivityLogs={() => setActivityLogOpen(true)}
           readOnly={isViewer}
+          onOpenPrint={() =>
+            router.push(`/print/plan/${encodeURIComponent(String(tripId))}`)
+          }
         />
       )}
 

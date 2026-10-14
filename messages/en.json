@@ -800,6 +800,19 @@
       "resetDaySuccess": "All activities for this day have been cleared!",
       "aiGenerateSuccess": "AI plan generated successfully!",
       "error": "An error occurred. Please try again."
+    },
+    "print": {
+      "button": "Print / Save PDF",
+      "loading": "Loading the full itinerary...",
+      "loadError": "Unable to load the itinerary.",
+      "retry": "Retry",
+      "day": "Day {number}",
+      "time": "Time",
+      "activity": "Activity / Location",
+      "estimatedCost": "Estimated cost",
+      "emptyDay": "No activities planned for this day.",
+      "emptyPlan": "This trip has no itinerary yet.",
+      "printError": "Unable to open the print dialog. Please try again."
     }
   },
   "aiPlanner": {
