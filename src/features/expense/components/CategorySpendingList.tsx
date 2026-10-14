@@ -183,7 +183,7 @@ const CategorySpendingList = ({
               </Typography>
             )}
 
-            {onOpenSetBudget && (
+            {/* {onOpenSetBudget && (
               <AppButton
                 size="small"
                 intent="secondary"
@@ -199,7 +199,7 @@ const CategorySpendingList = ({
               >
                 {t('adjustBudget')}
               </AppButton>
-            )}
+            )} */}
           </Stack>
         </Stack>
 

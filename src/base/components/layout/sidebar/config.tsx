@@ -50,7 +50,7 @@ export const DEFAULT_SIDEBAR_MENU: SidebarMenuItem[] = [
     messageKey: 'settlement',
     icon: <HandshakeOutlinedIcon />,
   },
-  { id: 'ai', href: '/ai', label: 'AI', icon: <SmartToyOutlinedIcon /> },
+  // { id: 'ai', href: '/ai', label: 'AI', icon: <SmartToyOutlinedIcon /> },
 ];
 
 export const DEFAULT_SIDEBAR_TRIP: SidebarTrip = {
