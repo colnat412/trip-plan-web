@@ -4,6 +4,9 @@ export interface UserProfile {
   name: string;
   role?: string;
   avatarUrl?: string | null;
+  policiesAcceptedAt?: string | null;
+  policiesVersion?: string | null;
+  requiredPolicyVersion?: string;
 }
 
 export interface LoginPayload {

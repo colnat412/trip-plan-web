@@ -2302,3 +2302,36 @@ Shared debounce audit validation: 7 unit cases, TypeScript and production build 
 - Snackbar timeout calls the consumer onClose to clear its open/message state. MUI hover/focus/window-blur timer behavior remains unchanged.
 
 Toast duration validation: TypeScript and targeted AppToast ESLint pass. Smoke/browser tests skipped per project instruction.
+
+
+### First-use policy acceptance (2026-10-15)
+
+- All authenticated application pages, including `/print`, now render inside `UserProvider` → `PolicyAcceptanceGate`. TripProvider and protected UI mount only after `/auth/me` reports a stored acceptance. Login/register, public share and `/legal/{terms,content,privacy}` remain available without acceptance.
+- The screen has three unchecked, independently labeled checkboxes; each document opens in AppDialog. All three are required. Decline signs out. Acceptance uses shared Axios/mutation hooks; errors preserve choices, controls are disabled during save/logout, and the returned profile updates UserContext immediately.
+- Identity owns POST `/api/users/me/policies/accept`, authenticates the caller and validates explicit true for terms/content/privacy, exact published version and VI/EN locale. An atomic conditional update stores the first server timestamp/version/locale and preserves them on retries. No user ID or timestamp is accepted from the browser. Auth profile/login/Google/OTP and avatar responses all include acceptance metadata.
+- Apply `trip-budget/tripbudget-identity/migrations/002__add_policy_acceptance.sql` to the shared database BEFORE deploying updated Identity/Core. It adds nullable acceptance columns plus a completeness constraint. Both services use manual schema migration; this file does not auto-run. Existing accounts start unaccepted and must confirm once, too.
+- Identity JwtAuthGuard blocks protected business APIs with 403 `POLICY_ACCEPTANCE_REQUIRED`. Auth endpoints (including me/refresh/logout) and the authenticated acceptance endpoint are exempt from the consent requirement. Core PolicyAcceptanceFilter runs after JWT/session validation and reads acceptance from public.users using the existing shared-database boundary. Anonymous public reads continue normally. AI receipt/map BFF endpoints independently validate session and acceptance with Identity before calling external services; outages fail closed.
+- `POLICY_VERSION='2026-10-14'` identifies the three documents together and must match between frontend and Identity. First acceptance is the current requirement: previously accepted versions remain valid; automatic re-consent and an acceptance history are NOT implemented. Keep published content immutable and archive it before replacing versions. A server/frontend version mismatch blocks new acceptance.
+- Policy content in messages/vi.json and en.json is starter product copy, not finalized operator policy. Before release, confirm operator identity/support contact, actual data processing/retention/deletion, provider details and final text. These cannot be inferred from the repo. The UI never forces a camera or AI permission, and privacy is labeled as read/acknowledged.
+- UI refinement: local paper/action.hover surfaces replace the global blue background.default on the acceptance/loading/error/legal pages. Shared AppCard/Button/Dialog/Checkbox, per-policy icons, selected borders, 0/3 counter, locale/theme preferences, safe-area spacing and mobile document dialogs. The global theme remains unchanged.
+- Validation: frontend TypeScript and targeted ESLint; 3 policy gate/BFF unit regressions and 3 auth refresh regressions; Identity build, 5 policy unit tests and targeted ESLint. Full frontend lint has 0 errors and 5 unrelated unused-symbol warnings. Core tests use JDK interface stubs instead of Mockito agent attachment. Browser/smoke and live database verification are not performed.
+
+
+### Compact policy acknowledgement screen (2026-10-15)
+
+- Replaced tall policy cards with three compact checkbox rows and a separate 44px Read button per row. Checkbox labels retain explicit agreement/acknowledgement and the exact policy name; no preselection, bulk acceptance or scroll-to-end requirement was added. Icons hide on small viewports to preserve text width.
+- Removed repeated card titles/summaries and the extra welcome row from the acknowledgement screen. The complete documents and summaries remain in the translations; full document text is unchanged and opens in AppDialog.
+- Reduced page/panel gaps and padding, centered the natural-height panel, shortened supporting VI/EN copy and placed actions on one row from sm. Keyboard order matches visual order. Mobile actions stack, content wraps, and short/zoomed viewports can still scroll naturally. No fixed height, hidden overflow or clipped content is used to claim a universal no-scroll layout.
+- This is a presentation-only change. API payload, database columns, first-acceptance idempotency, version, backend enforcement and public document routes remain unchanged. Desktop layout is intended to fit common laptop viewports; actual device/browser visual acceptance remains manual (smoke tests skipped).
+
+
+### Mandatory policy popup supersedes standalone screen (2026-10-15)
+
+- Renamed PolicyAcceptanceView to PolicyAcceptanceDialog. The gate now opens a single AppDialog over a neutral branded shell after login or direct protected navigation. It does not redirect to a separate consent page and still defers TripProvider/protected children until acceptance is saved.
+- Three compact acknowledgement rows remain unchecked initially. The dialog footer contains Continue and Decline/sign out, outside the scrollable document body. Opening a document replaces the body/title of the same popup; Back to acknowledgement restores the choices. There are no stacked dialogs and no scroll-to-end requirement.
+- AppDialog has an opt-in hideCloseButton prop (default false). With closeDisabled it supplies no dismissal callback, so neither Escape nor backdrop clicks can close it (compatible with the installed MUI 9 API). In acknowledgement mode there is no X, Escape or backdrop dismissal. While reading a document, X/Escape/backdrop return to acknowledgement, without dismissing the mandatory popup. Existing closable dialog behavior remains available.
+- The popup remains a bounded dialog on mobile rather than becoming a full-page route. On short/zoomed viewports only the dialog content scrolls as needed; footer actions remain in DialogActions. Browser/device no-scroll verification is manual, not claimed by unit tests.
+- The decorative background header contains AppBrand only. Language follows the existing account/browser locale; underlying controls are not presented as actionable through a modal backdrop.
+- Backend endpoints, migration, version and first-acceptance storage are unchanged. This supersedes the page-centered presentation described above. Frontend regressions cover pending/accepted/error gates, AI/maps access and mandatory versus ordinary dialog dismissal.
+
+Mandatory policy popup validation: TypeScript, targeted ESLint and all 4 policy regressions pass, including mandatory/ordinary modal dismissal and protected-content gating. Backend behavior is unchanged. No live browser/device visual check or smoke test was performed.

@@ -6,7 +6,7 @@ export const PUBLIC_AUTH_PATHS = [
   '/forgot-password',
 ] as const;
 
-export const PUBLIC_PATHS = ['/share'] as const;
+export const PUBLIC_PATHS = ['/share', '/legal'] as const;
 
 export const DEFAULT_AUTH_REDIRECT_PATH = '/overview';
 export const DEFAULT_UNAUTH_REDIRECT_PATH = '/login';

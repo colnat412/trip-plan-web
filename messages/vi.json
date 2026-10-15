@@ -860,5 +860,91 @@
   },
   "dialog": {
     "close": "Đóng hộp thoại"
+  },
+  "legal": {
+    "title": "Trước khi bắt đầu chuyến đi",
+    "description": "Vui lòng đọc và xác nhận cả ba chính sách để tiếp tục sử dụng Trip Plan. Bạn có thể mở từng tài liệu trước khi quyết định.",
+    "version": "Phiên bản {version}",
+    "read": "Đọc {name}",
+    "continue": "Đồng ý và tiếp tục",
+    "decline": "Đăng xuất",
+    "recordNotice": "Trip Plan lưu thời điểm, phiên bản và ngôn ngữ của lần xác nhận đầu tiên trên tài khoản của bạn.",
+    "saveError": "Không thể hoàn tất thao tác. Vui lòng thử lại; trạng thái xác nhận của bạn chưa được cập nhật trên màn hình.",
+    "loadError": "Không thể kiểm tra trạng thái tài khoản. Vui lòng thử lại.",
+    "loading": "Đang kiểm tra tài khoản...",
+    "retry": "Thử lại",
+    "versionMismatch": "Phiên bản chính sách đã thay đổi hoặc dịch vụ chưa được cập nhật. Vui lòng tải lại trang; nếu vẫn gặp lỗi, hãy liên hệ người vận hành.",
+    "documents": {
+      "terms": {
+        "title": "Điều khoản sử dụng",
+        "summary": "Quy tắc sử dụng tài khoản, lập kế hoạch và quản lý chi tiêu trên Trip Plan.",
+        "accept": "Tôi đồng ý với Điều khoản sử dụng.",
+        "scope": {
+          "title": "Phạm vi dịch vụ",
+          "body": "Trip Plan giúp bạn tạo chuyến đi, quản lý lịch trình, ghi nhận chi tiêu, chia tiền và sử dụng các tính năng AI. Các khoản chi và quyết toán trong ứng dụng là dữ liệu ghi nhận; ứng dụng không thực hiện chuyển tiền hoặc đặt dịch vụ thay bạn."
+        },
+        "responsibility": {
+          "title": "Trách nhiệm tài khoản",
+          "body": "Bạn chịu trách nhiệm bảo vệ thông tin đăng nhập, cung cấp dữ liệu phù hợp và kiểm tra người được mời vào chuyến đi. Không truy cập tài khoản của người khác hoặc tìm cách vượt qua quyền truy cập của ứng dụng."
+        },
+        "handling": {
+          "title": "Kế hoạch và kết quả AI",
+          "body": "Lịch trình, chi phí dự kiến và nội dung AI có thể thiếu hoặc sai. Hãy kiểm tra địa điểm, thời gian, số tiền và thông tin hóa đơn trước khi sử dụng hoặc lưu. Các quyết định đặt vé, thanh toán và đi lại do bạn thực hiện."
+        },
+        "choices": {
+          "title": "Xác nhận và ngừng sử dụng",
+          "body": "Để sử dụng tài khoản, bạn phải xác nhận ba chính sách được hiển thị. Nếu không đồng ý, bạn có thể đăng xuất. Lần xác nhận đầu tiên được lưu với phiên bản tài liệu và thời điểm trên máy chủ."
+        }
+      },
+      "content": {
+        "title": "Chính sách nội dung",
+        "summary": "Yêu cầu đối với ghi chú, hình ảnh, hóa đơn và nội dung được chia sẻ.",
+        "accept": "Tôi đồng ý với Chính sách nội dung.",
+        "scope": {
+          "title": "Nội dung bạn cung cấp",
+          "body": "Chính sách này áp dụng cho tên chuyến đi, lịch trình, ghi chú, ảnh đại diện, ảnh bìa, hóa đơn và yêu cầu gửi đến AI. Chỉ tải lên nội dung bạn có quyền sử dụng và thông tin cần thiết cho chuyến đi."
+        },
+        "responsibility": {
+          "title": "Nội dung không được phép",
+          "body": "Không đăng nội dung nhằm lừa đảo, quấy rối, đe dọa, xâm phạm quyền riêng tư hoặc quyền của người khác; không tải mã độc hay nội dung nhằm phá hoại hệ thống. Không công khai giấy tờ định danh, thông tin thanh toán hoặc dữ liệu cá nhân của người khác khi chưa được phép."
+        },
+        "handling": {
+          "title": "Chia sẻ và nội dung AI",
+          "body": "Kiểm tra quyền chia sẻ chuyến đi và những thông tin mà thành viên hoặc người có liên kết có thể xem. Bạn cần kiểm tra nội dung do AI tạo trước khi lưu hoặc chia sẻ và không sử dụng AI để tạo nội dung vi phạm các quy tắc trên."
+        },
+        "choices": {
+          "title": "Xử lý nội dung",
+          "body": "Người vận hành có thể hạn chế nội dung hoặc quyền truy cập khi phát hiện việc sử dụng sai mục đích. Nếu phát hiện nội dung không phù hợp, liên hệ người vận hành qua kênh hỗ trợ được công bố của dịch vụ."
+        }
+      },
+      "privacy": {
+        "title": "Quyền riêng tư",
+        "summary": "Cách dữ liệu tài khoản, chuyến đi và tệp tải lên được sử dụng.",
+        "accept": "Tôi đã đọc và xác nhận Chính sách quyền riêng tư.",
+        "scope": {
+          "title": "Dữ liệu được xử lý",
+          "body": "Trip Plan xử lý thông tin tài khoản như tên, email và ảnh đại diện; dữ liệu chuyến đi, thành viên, lịch trình, chi tiêu và quyết toán; cùng các tệp bạn tải lên. Hệ thống lưu phiên đăng nhập và thời điểm, phiên bản, ngôn ngữ xác nhận chính sách để vận hành tài khoản."
+        },
+        "responsibility": {
+          "title": "Mục đích và quyền truy cập",
+          "body": "Dữ liệu được dùng để đăng nhập, hiển thị và quản lý chuyến đi, chia sẻ với người được cấp quyền và xử lý yêu cầu bạn thực hiện. Chuyến đi được chia sẻ công khai có thể hiển thị thông tin theo cấu hình chia sẻ; hãy kiểm tra trước khi gửi liên kết."
+        },
+        "handling": {
+          "title": "Nhà cung cấp và tính năng tùy chọn",
+          "body": "Ảnh tải lên được xử lý qua Cloudinary. Khi bạn dùng AI, nội dung yêu cầu hoặc hóa đơn được gửi đến dịch vụ AI và Google Gemini để xử lý. Tìm địa điểm và tính khoảng cách có thể gửi địa điểm đến Google Maps hoặc các dịch vụ OpenStreetMap. Đăng nhập Google sử dụng thông tin hồ sơ do Google cung cấp. Quyền truy cập camera chỉ được yêu cầu khi bạn chọn chụp ảnh."
+        },
+        "choices": {
+          "title": "Lựa chọn của bạn",
+          "body": "Bạn có thể chọn không dùng camera hoặc tính năng AI, thay đổi cấu hình chia sẻ và đăng xuất. Không gửi thông tin nhạy cảm không cần thiết trong ảnh hoặc yêu cầu AI. Với yêu cầu liên quan đến dữ liệu cá nhân hoặc ngừng sử dụng tài khoản, hãy liên hệ người vận hành qua kênh hỗ trợ được công bố."
+        }
+      }
+    },
+    "eyebrow": "CHÀO MỪNG ĐẾN VỚI TRIP PLAN",
+    "readDocument": "Xem nội dung",
+    "acceptedCount": "Đã xác nhận {count}/{total}",
+    "readShort": "Đọc",
+    "compactDescription": "Đọc và xác nhận các chính sách dưới đây để bắt đầu sử dụng Trip Plan.",
+    "compactRecordNotice": "Lựa chọn được lưu một lần trên tài khoản, cùng phiên bản và thời điểm xác nhận.",
+    "backToAcceptance": "Quay lại xác nhận"
   }
 }

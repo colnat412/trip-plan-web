@@ -59,3 +59,4 @@ export { default as AppImageUploader } from './AppImageUploader';
 
 export { default as AppPopover } from './AppPopover';
 export type { AppPopoverProps } from './AppPopover';
+export { default as AppCheckbox } from './AppCheckbox';

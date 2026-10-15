@@ -860,5 +860,91 @@
   },
   "dialog": {
     "close": "Close dialog"
+  },
+  "legal": {
+    "title": "Before your journey begins",
+    "description": "Please read and acknowledge all three policies to continue using Trip Plan. Open each document before making your decision.",
+    "version": "Version {version}",
+    "read": "Read {name}",
+    "continue": "Agree and continue",
+    "decline": "Sign out",
+    "recordNotice": "Trip Plan records the time, version and language of your first acceptance on your account.",
+    "saveError": "Unable to complete the action. Please retry; your acceptance has not been updated on this screen.",
+    "loadError": "Unable to check your account status. Please retry.",
+    "loading": "Checking your account...",
+    "retry": "Retry",
+    "versionMismatch": "The policy version has changed or a service needs updating. Reload this page; if the issue persists, contact the operator.",
+    "documents": {
+      "terms": {
+        "title": "Terms of Use",
+        "summary": "Rules for accounts, travel planning and expense management on Trip Plan.",
+        "accept": "I agree to the Terms of Use.",
+        "scope": {
+          "title": "Service scope",
+          "body": "Trip Plan helps you create trips, manage itineraries, record expenses, split costs and use AI features. Expenses and settlements are records; the application does not transfer money or book services on your behalf."
+        },
+        "responsibility": {
+          "title": "Account responsibility",
+          "body": "Protect your login details, provide appropriate information and check who is invited to your trips. Do not access another person’s account or bypass the application’s access controls."
+        },
+        "handling": {
+          "title": "Plans and AI results",
+          "body": "Itineraries, estimated costs and AI content may be incomplete or incorrect. Check locations, times, amounts and receipt details before using or saving them. You make your own booking, payment and travel decisions."
+        },
+        "choices": {
+          "title": "Acceptance and stopping use",
+          "body": "Using your account requires acknowledging the three displayed policies. If you disagree, you may sign out. Your first acceptance is recorded with the document version and server timestamp."
+        }
+      },
+      "content": {
+        "title": "Content Policy",
+        "summary": "Requirements for notes, images, receipts and shared content.",
+        "accept": "I agree to the Content Policy.",
+        "scope": {
+          "title": "Content you provide",
+          "body": "This policy covers trip names, itineraries, notes, avatars, cover images, receipts and requests sent to AI. Upload only content you have permission to use and information needed for your trip."
+        },
+        "responsibility": {
+          "title": "Prohibited content",
+          "body": "Do not post content intended to defraud, harass, threaten or violate another person’s privacy or rights; do not upload malware or content intended to damage the system. Do not publicly share another person’s identity documents, payment details or personal data without permission."
+        },
+        "handling": {
+          "title": "Sharing and AI content",
+          "body": "Check trip sharing settings and what members or people with a link can view. Review AI-generated content before saving or sharing it, and do not use AI to create content that violates these rules."
+        },
+        "choices": {
+          "title": "Content handling",
+          "body": "The operator may restrict content or access when misuse is identified. If you find inappropriate content, contact the operator through the service’s published support channel."
+        }
+      },
+      "privacy": {
+        "title": "Privacy Policy",
+        "summary": "How account information, trip data and uploaded files are used.",
+        "accept": "I have read and acknowledge the Privacy Policy.",
+        "scope": {
+          "title": "Data processed",
+          "body": "Trip Plan processes account information such as name, email and avatar; trip, member, itinerary, expense and settlement data; and uploaded files. The system stores login sessions and the time, version and language of policy acceptance to operate accounts."
+        },
+        "responsibility": {
+          "title": "Purposes and access",
+          "body": "Data is used to sign in, display and manage trips, share with authorized people and process your requests. Publicly shared trips may expose information according to their sharing settings; check them before sending a link."
+        },
+        "handling": {
+          "title": "Providers and optional features",
+          "body": "Uploaded images are processed through Cloudinary. When you use AI, request content or receipts are sent to the AI service and Google Gemini for processing. Place search and distance calculations may send locations to Google Maps or OpenStreetMap services. Google sign-in uses profile information supplied by Google. Camera permission is requested only when you choose to take a photo."
+        },
+        "choices": {
+          "title": "Your choices",
+          "body": "You may choose not to use the camera or AI features, change sharing settings and sign out. Avoid sending unnecessary sensitive information in images or AI requests. For personal-data requests or stopping account use, contact the operator through the service’s published support channel."
+        }
+      }
+    },
+    "eyebrow": "WELCOME TO TRIP PLAN",
+    "readDocument": "Read policy",
+    "acceptedCount": "{count}/{total} acknowledged",
+    "readShort": "Read",
+    "compactDescription": "Read and acknowledge the policies below to start using Trip Plan.",
+    "compactRecordNotice": "Your acceptance is saved once on your account with the policy version and timestamp.",
+    "backToAcceptance": "Back to acknowledgement"
   }
 }

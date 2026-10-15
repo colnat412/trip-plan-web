@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
+import { requirePolicyAcceptance } from '@/base/api/server/policy-access';
 
 interface DistanceElement {
   distance: {
@@ -289,6 +290,8 @@ const calculateHeuristicDistance = (
 };
 
 export async function POST(request: NextRequest) {
+  const denied = await requirePolicyAcceptance(request);
+  if (denied) return denied;
   try {
     const body = await request.json().catch(() => ({}));
     const origins: string[] = Array.isArray(body.origins)

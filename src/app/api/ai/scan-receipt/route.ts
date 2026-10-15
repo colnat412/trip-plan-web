@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { requirePolicyAcceptance } from '@/base/api/server/policy-access';
 
 const AI_SERVICE_URL =
   process.env.AI_SERVICE_URL ||
@@ -10,6 +11,8 @@ const AI_SERVICE_INTERNAL_KEY =
   process.env.NEXT_PUBLIC_AI_SERVICE_INTERNAL_KEY;
 
 export async function POST(request: NextRequest) {
+  const denied = await requirePolicyAcceptance(request);
+  if (denied) return denied;
   try {
     const accessToken = request.cookies.get('access_token')?.value;
 

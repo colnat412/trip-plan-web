@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
+import { requirePolicyAcceptance } from '@/base/api/server/policy-access';
 
 export interface PlacePrediction {
   placeId: string;
@@ -13,6 +14,8 @@ export interface PlacePrediction {
 const placeCache = new Map<string, PlacePrediction[]>();
 
 export async function GET(request: NextRequest) {
+  const denied = await requirePolicyAcceptance(request);
+  if (denied) return denied;
   try {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q')?.trim() || '';

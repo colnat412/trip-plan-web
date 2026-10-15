@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   Box,
@@ -27,6 +27,7 @@ export interface AppDialogProps {
   maxWidth?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   fullWidth?: boolean;
   closeDisabled?: boolean;
+  hideCloseButton?: boolean;
   closeLabel?: string;
   mobileFullScreen?: boolean;
 }
@@ -42,10 +43,13 @@ const AppDialog = ({
   maxWidth = 'sm',
   fullWidth = true,
   closeDisabled = false,
+  hideCloseButton = false,
   closeLabel,
   mobileFullScreen = false,
 }: AppDialogProps) => {
   const t = useTranslations('dialog');
+  const titleId = useId();
+  const descriptionId = useId();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const fullScreen = mobileFullScreen && isMobile;
@@ -53,6 +57,8 @@ const AppDialog = ({
     <Dialog
       open={open}
       onClose={closeDisabled ? undefined : onClose}
+      aria-labelledby={titleId}
+      aria-describedby={description ? descriptionId : undefined}
       fullWidth={fullWidth}
       fullScreen={fullScreen}
       maxWidth={maxWidth}
@@ -104,6 +110,7 @@ const AppDialog = ({
           )}
           <Box sx={{ minWidth: 0 }}>
             <Typography
+              id={titleId}
               component="h2"
               sx={{
                 fontFamily: 'var(--font-display)',
@@ -116,6 +123,7 @@ const AppDialog = ({
             </Typography>
             {description && (
               <Typography
+                id={descriptionId}
                 variant="caption"
                 sx={{ color: 'text.secondary', display: 'block' }}
               >
@@ -125,15 +133,17 @@ const AppDialog = ({
           </Box>
         </Stack>
 
-        <IconButton
-          onClick={onClose}
-          disabled={closeDisabled}
-          size="small"
-          aria-label={closeLabel ?? t('close')}
-          sx={{ width: 44, height: 44, flexShrink: 0 }}
-        >
-          <CloseRoundedIcon fontSize="small" />
-        </IconButton>
+        {!hideCloseButton && (
+          <IconButton
+            onClick={onClose}
+            disabled={closeDisabled}
+            size="small"
+            aria-label={closeLabel ?? t('close')}
+            sx={{ width: 44, height: 44, flexShrink: 0 }}
+          >
+            <CloseRoundedIcon fontSize="small" />
+          </IconButton>
+        )}
       </DialogTitle>
 
       <DialogContent
