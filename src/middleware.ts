@@ -11,6 +11,10 @@ import {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  if (pathname === '/manifest.webmanifest') {
+    return NextResponse.next();
+  }
+
   // Not auth with public path
   const isPublicPath = PUBLIC_PATHS.some(
     (publicPath) =>

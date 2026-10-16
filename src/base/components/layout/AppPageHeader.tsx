@@ -50,6 +50,7 @@ const AppPageHeader = ({
         <Stack
           direction="row"
           spacing={1}
+          useFlexGap
           sx={{ alignItems: 'center', flexWrap: 'wrap' }}
         >
           {icon && (
@@ -74,6 +75,8 @@ const AppPageHeader = ({
                 fontWeight: 800,
                 color: 'text.primary',
                 letterSpacing: '-0.5px',
+                minWidth: 0,
+                overflowWrap: 'anywhere',
               }}
             >
               {title}
@@ -123,12 +126,14 @@ const AppPageHeader = ({
       {actions && (
         <Stack
           direction="row"
-          spacing={1.5}
+          spacing={1}
+          useFlexGap
           sx={{
             alignItems: 'center',
             flexShrink: 0,
             flexWrap: 'wrap',
-            gap: 1,
+            minWidth: 0,
+            maxWidth: '100%',
             alignSelf: { xs: 'stretch', sm: 'auto' },
           }}
         >

@@ -17,6 +17,7 @@ import { useState, useTransition } from 'react';
 import { axiosPut } from '@/base/api';
 import { AppToast } from '@/base/components/ui';
 import type { AppLocale } from '@/i18n/config';
+import AppInstallButton from '@/base/components/pwa/AppInstallButton';
 
 const AppPreferences = () => {
   const t = useTranslations('preferences');
@@ -99,6 +100,7 @@ const AppPreferences = () => {
           {isDarkMode ? <LightModeOutlinedIcon /> : <DarkModeOutlinedIcon />}
         </IconButton>
       </Tooltip>
+      <AppInstallButton />
     </Stack>
   );
 };

@@ -213,7 +213,7 @@ const Register = () => {
           flexShrink: 1,
           flexBasis: 0,
           minWidth: 0,
-          minHeight: { xs: '300px', md: '100svh' },
+          minHeight: { xs: '200px', sm: '240px', md: '100svh' },
           overflow: 'hidden',
           bgcolor: 'primary.dark',
           justifyContent: 'space-between',
@@ -230,7 +230,8 @@ const Register = () => {
           <Typography
             component="p"
             sx={{
-              fontSize: '40px',
+              fontSize: { xs: '28px', sm: '36px', md: '40px' },
+              lineHeight: 1.3,
               fontFamily: 'var(--font-display)',
               fontWeight: 700,
             }}
@@ -277,7 +278,7 @@ const Register = () => {
                 sx={{
                   color: 'text.primary',
                   fontFamily: 'var(--font-display)',
-                  fontSize: '32px',
+                  fontSize: { xs: '26px', sm: '32px' },
                   fontWeight: 600,
                 }}
               >

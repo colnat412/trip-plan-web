@@ -38,6 +38,17 @@
     "tripLoadError": "Chưa thể tải chuyến đi.",
     "retry": "Thử lại"
   },
+  "pwa": {
+    "install": "Cài ứng dụng",
+    "iosTitle": "Cài Trip Plan",
+    "iosDescription": "Thêm Trip Plan vào màn hình chính để mở nhanh hơn.",
+    "iosShare": "1. Mở menu Chia sẻ của trình duyệt.",
+    "iosAdd": "2. Chọn Thêm vào Màn hình chính.",
+    "iosConfirm": "3. Xác nhận tên Trip Plan rồi chọn Thêm.",
+    "iosBrowserHint": "Nếu không thấy tùy chọn này, hãy mở trang bằng Safari và thử lại.",
+    "understood": "Đã hiểu",
+    "installError": "Chưa thể mở lời mời cài đặt. Hãy thử cài từ menu của trình duyệt."
+  },
   "preferences": {
     "language": "Ngôn ngữ",
     "theme": "Giao diện",
@@ -276,7 +287,7 @@
     "all": "Tất cả",
     "allDestinations": "Khu vực",
     "allCurrencies": "Tiền tệ",
-    "popularKeywords": "Gần / Gợi ý:",
+    "popularKeywords": "Gợi ý:",
     "resultsLabel": "kết quả",
     "sortBy": "Sắp xếp:",
     "sortNewest": "Mới nhất",

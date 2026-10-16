@@ -78,10 +78,12 @@ const AppDialog = ({
       }}
     >
       <DialogTitle
+        component="div"
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          gap: 1,
           p: { xs: 2, sm: 2.5 },
           pb: 1.5,
         }}
@@ -117,6 +119,7 @@ const AppDialog = ({
                 fontSize: { xs: '18px', sm: '20px' },
                 fontWeight: 700,
                 color: 'text.primary',
+                overflowWrap: 'anywhere',
               }}
             >
               {title}
@@ -125,7 +128,7 @@ const AppDialog = ({
               <Typography
                 id={descriptionId}
                 variant="caption"
-                sx={{ color: 'text.secondary', display: 'block' }}
+                sx={{ color: 'text.secondary', display: 'block', overflowWrap: 'anywhere' }}
               >
                 {description}
               </Typography>
@@ -159,7 +162,23 @@ const AppDialog = ({
       </DialogContent>
 
       {actions && (
-        <DialogActions sx={{ p: 2, gap: 1.5 }}>{actions}</DialogActions>
+        <DialogActions
+          disableSpacing
+          sx={{
+            px: { xs: 2, sm: 2.5 },
+            py: 2,
+            gap: 1.5,
+            flexWrap: 'wrap',
+            '& > .MuiButton-root': {
+              flex: { xs: '1 1 auto', sm: '0 1 auto' },
+              minWidth: 0,
+              maxWidth: '100%',
+              overflowWrap: 'anywhere',
+            },
+          }}
+        >
+          {actions}
+        </DialogActions>
       )}
     </Dialog>
   );

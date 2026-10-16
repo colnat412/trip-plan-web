@@ -35,6 +35,16 @@ Every technical answer must explain:
 
 Do not only paste code. Explain immediately near the relevant code. Use beginner-friendly language without hiding important technical details.
 
+For each proposed approach, explain the underlying problem, why this project benefits,
+the end-to-end flow, and the advantages and disadvantages against relevant alternatives.
+Distinguish installed/coded capabilities from a proposed implementation guide.
+
+Preserve the user's chosen primary button gradient:
+`linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`.
+The design skill's no-gradient house rule does not override this project preference.
+Keep the gradient for normal, hover and active states; disabled states use their own
+theme colors. Review readability and interaction separately from stylistic preferences.
+
 When diagnosing a bug:
 
 1. Identify the actual error message.
@@ -2335,3 +2345,28 @@ Toast duration validation: TypeScript and targeted AppToast ESLint pass. Smoke/b
 - Backend endpoints, migration, version and first-acceptance storage are unchanged. This supersedes the page-centered presentation described above. Frontend regressions cover pending/accepted/error gates, AI/maps access and mandatory versus ordinary dialog dismissal.
 
 Mandatory policy popup validation: TypeScript, targeted ESLint and all 4 policy regressions pass, including mandatory/ordinary modal dismissal and protected-content gating. Backend behavior is unchanged. No live browser/device visual check or smoke test was performed.
+
+
+### Delete trip request validation fix (2026-10-15)
+
+- Core PUT `/trip/delete/{id}` no longer declares `@Valid @RequestBody UpdateTripRequest`. Existing frontend/BFF sends `{}` for deletion, so the old controller incorrectly rejected name, destination, startDate and endDate before reaching TripService.
+- Delete accepts the trip path ID and @CurrentUser only, and returns ApiResponse<Void> with data=null. Existing soft-delete, owner/membership checks and public share invalidation are unchanged. Frontend/BFF URLs and HTTP method remain compatible; update still validates UpdateTripRequest.
+- Three MockMvc regressions verify bodyless delete, existing empty-JSON delete, and rejection of an empty update request. A clean Maven test run passes all 10 current tests. An initial incremental run picked up a broken IDE-generated TripController constructor reporting Flexible Constructor Bodies; `mvn clean test -q` regenerated valid bytecode and passed. No live trip was deleted and no smoke test was run.
+
+### PWA audit and shared UI refinements (2026-10-16)
+
+- Initial PWA audit found no manifest or service worker. This initial status is superseded by the installation milestone below. `docs/pwa-guide.vi.md` tracks the implemented install flow and the proposed offline work separately.
+- The user explicitly requested using `.agents/skills/design-taste-frontend/SKILL.md` to review/fix UI, not editing the skill. Its landing-page image/motion quotas do not fit authenticated application screens; preserve the established MUI system and report the limits of the review.
+- AppButton uses the user's original primary gradient (restored after their review) and MUI's native loading support to retain the label/layout; ordinary buttons no longer expose toggle semantics by default. Focus is visible. Dark primary.contrastText is #0F172A against #60A5FA; selected button backgrounds use primary.main, including disabled-state overrides.
+- AppDialog uses a div title wrapper around its h2, gap-based wrapping actions and long-text wrapping. AppPageHeader uses Stack useFlexGap for wrapping rows. Bottom navigation has larger wrapping labels and a 72px bar plus safe-area padding.
+- Login/register brand panels have smaller mobile minimum heights and responsive typography. Existing copy, auth logic and policy dismissal rules remain intact.
+- ESLint excludes installed `.agents/skills/**` tooling from application rules. TypeScript and production build pass; full ESLint has 0 errors and 6 pre-existing unused-symbol warnings. Build required network access for Google Fonts and still reports the existing middleware-to-proxy deprecation.
+- Login was visually inspected before/after at 390, 768 and 1440px: no horizontal overflow or captured console errors; mobile headline wrapping improved. Shared authenticated screens, dark-mode rendering, loading transitions and real-device acceptance remain manual checks. No smoke test was run.
+
+### PWA installation milestone (2026-10-16)
+
+- User added manifest.ts and the exact /manifest.webmanifest middleware exemption. Preserve those changes. Added 192px and 512px PNG icons exported from src/app/icon.svg using existing Sharp, retaining the logo/gradient. No dependency added.
+- Root AppInstallListener captures beforeinstallprompt/appinstalled and display-mode changes independently of account-menu mounting. Shared install-store uses stable snapshots via useSyncExternalStore in AppInstallButton. SSR snapshot hides install UI until capability is known.
+- AppPreferences shows an icon-only download/install button alongside VNI/ENG and light/dark controls, with translated tooltip and aria-label, covering login/register and the compact account menu. Native prompt runs only on click and consumes each event once; concurrent clicks are guarded, rejection has a localized toast, and dismissal requires a fresh browser event. iOS/iPad desktop-mode detection opens localized manual instructions in AppDialog.
+- Hide install action when no supported prompt exists (except iOS instructions), in insecure contexts, in standalone/fullscreen, or after appinstalled in the current session. This is not universal detection of every prior installation from a separate browser session. No offline worker/cache or push implemented.
+- Validation: TypeScript and production build pass; all 6 installation lifecycle regressions pass; full ESLint has 0 errors and 6 existing warnings. PNG dimensions/format and 9 PWA VI/EN translation keys checked. Actual OS installation/device/browser acceptance remains manual. Skip smoke tests.

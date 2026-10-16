@@ -7,6 +7,7 @@ import { getLocale } from 'next-intl/server';
 import { AppShell } from '@/base/components/layout';
 import { PUBLIC_AUTH_PATHS, PUBLIC_PATHS } from '@/base/constants';
 import AppThemeProvider from '@/base/providers/AppThemProvider';
+import AppInstallListener from '@/base/components/pwa/AppInstallListener';
 
 import './globals.css';
 
@@ -58,6 +59,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
     >
       <body>
         <InitColorSchemeScript attribute="data" defaultMode="light" />
+        <AppInstallListener />
         <NextIntlClientProvider>
           <AppThemeProvider>
             <AppShell sidebarDisabledPaths={sidebarDisabledPaths}>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, ButtonProps, CircularProgress } from "@mui/material";
+import { Button, ButtonProps } from "@mui/material";
 
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
@@ -27,19 +27,25 @@ function getSelectedStyles(selected: boolean): SxProps<Theme> {
 
     return {
       color: palette.primary.contrastText,
-      background: palette.background.default,
-      borderColor: palette.background.default,
+      background: palette.primary.main,
+      borderColor: palette.primary.main,
 
       "&:hover": {
         color: palette.primary.contrastText,
-        background: palette.background.default,
-        borderColor: palette.background.default,
+        background: palette.primary.main,
+        borderColor: palette.primary.main,
         filter: "brightness(0.92)",
       },
 
       "&:active": {
-        background: palette.background.default,
+        background: palette.primary.main,
         filter: "brightness(0.85)",
+      },
+      "&.Mui-disabled": {
+        color: palette.action.disabled,
+        background: palette.action.disabledBackground,
+        borderColor: palette.action.disabledBackground,
+        filter: "none",
       },
     };
   };
@@ -54,6 +60,10 @@ function getButtonStyles(
     const primaryGradient = `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
     const commonStyles = {
       ...(round && { borderRadius: "999px" }),
+      "&.Mui-focusVisible": {
+        outline: `2px solid ${palette.primary.main}`,
+        outlineOffset: "3px",
+      },
     };
 
     switch (intent) {
@@ -75,7 +85,7 @@ function getButtonStyles(
           },
 
           "&.Mui-disabled": {
-            color: palette.primary.contrastText,
+            color: palette.action.disabled,
             background: palette.action.disabledBackground,
             filter: "none",
           },
@@ -184,35 +194,38 @@ const AppButton = ({
   intent = "primary",
   loading = false,
   round = false,
-  selected = false,
+  selected,
   disabled = false,
   size = "large",
   startIcon,
+  loadingPosition = "center",
   sx,
   ...buttonProps
 }: AppButtonProps) => {
-  const loadingIcon = (
-    <CircularProgress
-      size={size === "small" ? 14 : 18}
-      thickness={5}
-      color="inherit"
-    />
-  );
-
   return (
     <Button
       {...buttonProps}
       size={size}
       disabled={disabled || loading}
-      aria-pressed={selected}
-      startIcon={loading ? loadingIcon : startIcon}
+      loading={loading}
+      loadingPosition={loadingPosition}
+      aria-busy={loading || undefined}
+      aria-pressed={buttonProps['aria-pressed'] ?? selected}
+      startIcon={startIcon}
       sx={[
         getButtonStyles(intent, round),
-        getSelectedStyles(selected),
+        getSelectedStyles(selected ?? false),
         ...(Array.isArray(sx) ? sx : [sx]),
+        // Keep MUI's centered loader readable without exposing the retained label.
+        ...(loading && loadingPosition === "center"
+          ? [{
+              '&.MuiButton-loading': { color: 'transparent' },
+              '& .MuiButton-loadingIndicator': { color: 'text.primary' },
+            }]
+          : []),
       ]}
     >
-      {!loading ? children : undefined}
+      {children}
     </Button>
   );
 };

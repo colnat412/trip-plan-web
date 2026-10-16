@@ -62,6 +62,7 @@ const appTheme = createTheme({
           main: '#60A5FA',
           light: '#38BDF8',
           dark: '#1E3A8A',
+          contrastText: '#0F172A',
         },
         info: {
           main: '#38BDF8',

@@ -47,7 +47,7 @@ const AppBottomNavigation = () => {
           showLabels
           value={value}
           sx={{
-            height: 64,
+            height: 72,
             bgcolor: 'transparent',
             width: '100%',
             '& .MuiBottomNavigationAction-root': {
@@ -58,7 +58,13 @@ const AppBottomNavigation = () => {
               gap: 0.5,
             },
             '& .MuiBottomNavigationAction-label, & .MuiBottomNavigationAction-label.Mui-selected':
-              { fontSize: '10px', fontWeight: 700, whiteSpace: 'nowrap' },
+              {
+                fontSize: { xs: '11px', sm: '12px' },
+                fontWeight: 700,
+                whiteSpace: 'normal',
+                lineHeight: 1.25,
+                maxWidth: '100%',
+              },
             '& .Mui-focusVisible': {
               outline: '2px solid',
               outlineColor: 'primary.main',

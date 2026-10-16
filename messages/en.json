@@ -38,6 +38,17 @@
     "tripLoadError": "Could not load your trips.",
     "retry": "Try again"
   },
+  "pwa": {
+    "install": "Install app",
+    "iosTitle": "Install Trip Plan",
+    "iosDescription": "Add Trip Plan to your Home Screen for quicker access.",
+    "iosShare": "1. Open your browser's Share menu.",
+    "iosAdd": "2. Choose Add to Home Screen.",
+    "iosConfirm": "3. Confirm the name Trip Plan and tap Add.",
+    "iosBrowserHint": "If this option is missing, open this page in Safari and try again.",
+    "understood": "Got it",
+    "installError": "Could not open the installation prompt. Try installing from your browser's menu."
+  },
   "preferences": {
     "language": "Language",
     "theme": "Theme",
@@ -276,7 +287,7 @@
     "all": "All",
     "allDestinations": "Location",
     "allCurrencies": "Currency",
-    "popularKeywords": "Near / Suggested:",
+    "popularKeywords": "Suggested:",
     "resultsLabel": "results",
     "sortBy": "Sort by:",
     "sortNewest": "Newest",

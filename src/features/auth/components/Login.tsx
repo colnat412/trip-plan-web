@@ -115,7 +115,7 @@ const Login = () => {
           flexShrink: 1,
           flexBasis: 0,
           minWidth: 0,
-          minHeight: { xs: '340px', md: '100svh' },
+          minHeight: { xs: '200px', sm: '240px', md: '100svh' },
           overflow: 'hidden',
           bgcolor: 'primary.dark',
           justifyContent: 'space-between',
@@ -131,7 +131,11 @@ const Login = () => {
         <Stack spacing={1} sx={{ maxWidth: 560 }}>
           <Typography
             component="p"
-            sx={{ fontSize: '40px', fontFamily: 'var(--font-display)' }}
+            sx={{
+              fontSize: { xs: '28px', sm: '36px', md: '40px' },
+              lineHeight: 1.3,
+              fontFamily: 'var(--font-display)',
+            }}
           >
             {t('login.slogan')}
           </Typography>
@@ -172,7 +176,7 @@ const Login = () => {
             sx={{
               color: 'text.primary',
               fontFamily: 'var(--font-display)',
-              fontSize: '32px',
+              fontSize: { xs: '26px', sm: '32px' },
               fontWeight: 600,
             }}
           >
