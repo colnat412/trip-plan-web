@@ -67,9 +67,9 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
         spacing={1}
         sx={{ alignItems: 'center', flexWrap: 'wrap' }}
       >
-        <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+        {/* <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
           {error ? t('tripLoadError') : t('noTrip')}
-        </Typography>
+        </Typography> */}
         <AppButton
           size="small"
           intent="text"
