@@ -254,7 +254,7 @@ const Login = () => {
                   '& .MuiFormControlLabel-label': { fontSize: '14px' },
                 }}
               />
-              <Typography
+              {/* <Typography
                 component={Link}
                 href="#"
                 sx={{
@@ -265,7 +265,7 @@ const Login = () => {
                 }}
               >
                 {t('login.forgotPassword')}
-              </Typography>
+              </Typography> */}
             </Stack>
 
             <AppButton
