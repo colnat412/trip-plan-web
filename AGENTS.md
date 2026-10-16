@@ -2370,3 +2370,17 @@ Mandatory policy popup validation: TypeScript, targeted ESLint and all 4 policy 
 - AppPreferences shows an icon-only download/install button alongside VNI/ENG and light/dark controls, with translated tooltip and aria-label, covering login/register and the compact account menu. Native prompt runs only on click and consumes each event once; concurrent clicks are guarded, rejection has a localized toast, and dismissal requires a fresh browser event. iOS/iPad desktop-mode detection opens localized manual instructions in AppDialog.
 - Hide install action when no supported prompt exists (except iOS instructions), in insecure contexts, in standalone/fullscreen, or after appinstalled in the current session. This is not universal detection of every prior installation from a separate browser session. No offline worker/cache or push implemented.
 - Validation: TypeScript and production build pass; all 6 installation lifecycle regressions pass; full ESLint has 0 errors and 6 existing warnings. PNG dimensions/format and 9 PWA VI/EN translation keys checked. Actual OS installation/device/browser acceptance remains manual. Skip smoke tests.
+
+### Login banner redesign (2026-10-16)
+
+- Login.tsx now composes a separate LoginBrandPanel with the existing AppBrand, a local decorative login-journey.svg bay/sailboat illustration, a theme-based gradient overlay and localized copy. The existing register illustration remains a separate asset.
+- The banner uses Flexbox and responsive typography. Mobile shows brand/headline; desktop also shows supporting copy and itinerary/expense highlights. Banner corner radius is restrained to 12px following user feedback; avoid large rounded corners on this panel.
+- All 7 login.banner keys match in VI/EN. Existing authentication, preferences and PWA controls continue through the existing components. Preserve the user's primary button gradient.
+- TypeScript and targeted ESLint pass. SVG successfully rasterized and visually inspected; full browser layout/device acceptance remains manual. No smoke test was run.
+
+### Mobile PWA icon and default name fix (2026-10-16)
+
+- The old Apple PNG had transparent rounded corners; ordinary manifest icons had white corners and no dedicated maskable alternative. Generate installation assets from src/app/icon.svg with scripts/generate-pwa-icons.mjs: keep brand gradient/airplane, remove the source rounded background for full-bleed opaque PNGs, and use a slightly smaller mark for a dedicated 512px maskable icon.
+- Manifest keeps any-purpose 192/512 icons and adds the separate maskable 512 icon. Icon URLs use ?v=2. Apple icon remains src/app/apple-icon.png at 180px, linked automatically by Next.js rather than a duplicate manual metadata.icons.apple entry.
+- metadata.appleWebApp.title explicitly suggests Trip Plan; manifest name/short_name already do so. There is no web API to prevent users editing a home-screen label. The OS/launcher still controls the final outer icon shape.
+- PNG pixel checks verify dimensions, opacity, absence of black pixels, and the entire white maskable mark inside the 40%-radius safe circle. A circular-mask preview is inspected. Real-device rendering/reinstallation remains manual; skip smoke test.

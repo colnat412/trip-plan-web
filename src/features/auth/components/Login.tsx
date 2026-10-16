@@ -25,6 +25,7 @@ import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
 import useLogin from '@/features/auth/hooks/useLogin';
 import AppPreferences from '@/base/components/preferences/AppPreferences';
 import GoogleAuthButton from './GoogleAuthButton';
+import LoginBrandPanel from './LoginBrandPanel';
 import { useTranslations } from 'next-intl';
 
 interface LoginFormErrors {
@@ -107,45 +108,7 @@ const Login = () => {
         onClose={loginMutation.clearError}
       />
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          flexGrow: 1.15,
-          flexShrink: 1,
-          flexBasis: 0,
-          minWidth: 0,
-          minHeight: { xs: '200px', sm: '240px', md: '100svh' },
-          overflow: 'hidden',
-          bgcolor: 'primary.dark',
-          justifyContent: 'space-between',
-          p: { xs: 3, md: 4 },
-          color: 'common.white',
-          backgroundImage:
-            'linear-gradient(180deg, rgba(6, 28, 68, 0.48) 0%, rgba(6, 28, 68, 0.08) 42%, rgba(6, 28, 68, 0.78) 100%), url("/login-travel.svg")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          '& .MuiTypography-root': { color: 'inherit' },
-        }}
-      >
-        <Stack spacing={1} sx={{ maxWidth: 560 }}>
-          <Typography
-            component="p"
-            sx={{
-              fontSize: { xs: '28px', sm: '36px', md: '40px' },
-              lineHeight: 1.3,
-              fontFamily: 'var(--font-display)',
-            }}
-          >
-            {t('login.slogan')}
-          </Typography>
-          <Typography
-            sx={{ color: 'rgba(255,255,255,.82) !important', fontSize: '16px' }}
-          >
-            {t('login.sloganDescription')}
-          </Typography>
-        </Stack>
-      </Box>
+      <LoginBrandPanel />
 
       <Box
         sx={{

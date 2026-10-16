@@ -119,6 +119,15 @@
     "noInProgressTripDesc": "Chỉ các chuyến đi có trạng thái Đang đi mới hiển thị tại đây."
   },
   "login": {
+    "banner": {
+      "label": "Khám phá hành trình cùng Trip Plan",
+      "eyebrow": "Cùng nhau, đi xa hơn",
+      "headline": "Bớt lo chi phí.",
+      "headlineAccent": "Thêm nhiều kỷ niệm.",
+      "description": "Từ lịch trình đến từng khoản chi, cùng sắp xếp để thảnh thơi tận hưởng chuyến đi.",
+      "planning": "Lịch trình trong tầm tay",
+      "expenses": "Chi tiêu rõ ràng"
+    },
     "slogan": "Đi xa hơn, chi tiêu thông minh hơn.",
     "sloganDescription": "Lập kế hoạch ngân sách và tận hưởng trọn vẹn mọi hành trình.",
     "title": "Chào mừng bạn trở lại",

@@ -26,12 +26,14 @@ const monoFont = DM_Mono({
 
 export const metadata: Metadata = {
   title: 'Trip Plan',
+  appleWebApp: {
+    title: 'Trip Plan',
+  },
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },
       { url: '/favicon.ico', sizes: 'any' },
     ],
-    apple: '/apple-icon.png',
   },
 };
 

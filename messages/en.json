@@ -119,6 +119,15 @@
     "noInProgressTripDesc": "Only trips in 'In Progress' status are displayed here."
   },
   "login": {
+    "banner": {
+      "label": "Explore your next journey with Trip Plan",
+      "eyebrow": "Go further, together",
+      "headline": "Less money worries.",
+      "headlineAccent": "More memories.",
+      "description": "Bring your plans and shared expenses together, so you can relax and enjoy the journey.",
+      "planning": "Your itinerary, at hand",
+      "expenses": "Every expense, clear"
+    },
     "slogan": "Go further, spend smarter.",
     "sloganDescription": "Plan your budget and fully enjoy every journey.",
     "title": "Welcome back",
