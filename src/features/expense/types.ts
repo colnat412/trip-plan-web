@@ -53,6 +53,7 @@ export interface Expense {
   status: ExpenseStatus;
   note?: string;
   receiptUrl?: string;
+  receiptUploadId?: string;
   activityId?: number | string;
   createdAt: string;
   updatedAt: string;
@@ -91,6 +92,9 @@ export interface CreateExpensePayload {
   splitType?: SplitType;
   note?: string;
   receiptUrl?: string;
+  receiptUploadId?: string;
+  /** Browser-only selection; stripped by the mutation hook before sending JSON. */
+  receiptFile?: File | null;
   payerId?: number | string;
   activityId?: number | string;
   splits?: SplitItemPayload[];
@@ -105,6 +109,9 @@ export interface UpdateExpensePayload {
   splitType?: SplitType;
   note?: string;
   receiptUrl?: string;
+  receiptUploadId?: string;
+  receiptFile?: File | null;
+  removeReceipt?: boolean;
   payerId?: number | string;
   activityId?: number | string;
   splits?: SplitItemPayload[];

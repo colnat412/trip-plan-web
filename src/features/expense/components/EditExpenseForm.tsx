@@ -18,6 +18,7 @@ import type {
   SplitType,
   UpdateExpensePayload,
 } from '../types';
+import ReceiptImageField from './ReceiptImageField';
 import SplitAllocationSection, {
   type SplitMember,
 } from './SplitAllocationSection';
@@ -82,7 +83,7 @@ const EditExpenseForm = ({
   const [payerId, setPayerId] = useState<string | number | ''>(
     expense.payerId || '',
   );
-  const [receiptUrl, setReceiptUrl] = useState(expense.receiptUrl || '');
+  const [receiptFile, setReceiptFile] = useState<File | null | undefined>(undefined);
   const [note, setNote] = useState(expense.note || '');
 
   const splitsRef = useRef<SplitItemPayload[]>(initialSplits);
@@ -128,7 +129,7 @@ const EditExpenseForm = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (isLoading || !validate()) return;
 
     onSubmit({
       title: title.trim(),
@@ -138,7 +139,7 @@ const EditExpenseForm = ({
       expenseDate,
       splitType,
       payerId: payerId ? payerId : undefined,
-      receiptUrl: receiptUrl.trim() || undefined,
+      receiptFile,
       note: note.trim() || undefined,
       splits: splitsRef.current.length > 0 ? splitsRef.current : undefined,
     });
@@ -248,12 +249,7 @@ const EditExpenseForm = ({
         />
       )}
 
-      <AppTextField
-        label={tForm('receiptUrlLabel')}
-        placeholder={tForm('receiptUrlPlaceholder')}
-        value={receiptUrl}
-        onChange={(e) => setReceiptUrl(e.target.value)}
-      />
+      <ReceiptImageField src={expense.receiptUrl} disabled={isLoading} onChange={setReceiptFile} />
 
       <AppTextField
         label={tForm('noteLabel')}

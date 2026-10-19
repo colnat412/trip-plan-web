@@ -1,9 +1,9 @@
 'use client';
 
 import type { ApiResponse } from '@/base/api';
+import useExpenseReceiptMutation from './useExpenseReceiptMutation';
 import {
   useMutationPost,
-  useMutationPut,
   useMutationDelete,
   type MutationCallbacks,
 } from '@/base/hooks';
@@ -38,13 +38,8 @@ export interface UseSetBudgetParams {
 }
 
 export function useCreateExpense({ tripId, options }: UseCreateExpenseParams) {
-  const createMutation = useMutationPost<
-    ApiResponse<Expense>,
-    CreateExpensePayload
-  >({
-    mutationKey: ['expenses', 'create', tripId],
-    endPoint: `/trip/${tripId}/expenses`,
-    options,
+  const createMutation = useExpenseReceiptMutation<CreateExpensePayload>({
+    tripId, method: 'POST', options,
   });
 
   return {
@@ -60,13 +55,8 @@ export function useUpdateExpense({
   expenseId,
   options,
 }: UseUpdateExpenseParams) {
-  const updateMutation = useMutationPut<
-    ApiResponse<Expense>,
-    UpdateExpensePayload
-  >({
-    mutationKey: ['expenses', 'update', tripId, expenseId],
-    endPoint: `/trip/${tripId}/expenses/${expenseId}`,
-    options,
+  const updateMutation = useExpenseReceiptMutation<UpdateExpensePayload>({
+    tripId, expenseId, method: 'PUT', options,
   });
 
   return {

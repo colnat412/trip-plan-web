@@ -521,6 +521,14 @@
       "deleteError": "Không thể xóa khoản chi. Vui lòng thử lại.",
       "setBudgetSuccess": "Đã lưu hạn mức ngân sách thành công!",
       "setBudgetError": "Không thể lưu ngân sách. Vui lòng thử lại."
+    },
+    "receipt": {
+      "label": "Ảnh hóa đơn (tùy chọn)",
+      "title": "Hóa đơn / Chứng từ",
+      "description": "Đính kèm ảnh hóa đơn nếu có. Ảnh chỉ được tải lên khi bạn lưu khoản chi.",
+      "imageAlt": "Ảnh hóa đơn của khoản chi",
+      "open": "Mở hóa đơn",
+      "previewError": "Không thể xem trước ảnh. Bạn có thể mở liên kết hóa đơn bên dưới."
     }
   },
   "members": {

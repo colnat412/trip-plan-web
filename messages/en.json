@@ -521,6 +521,14 @@
       "deleteError": "Failed to delete expense. Please try again.",
       "setBudgetSuccess": "Budget limit saved successfully!",
       "setBudgetError": "Failed to save budget. Please try again."
+    },
+    "receipt": {
+      "label": "Receipt image (optional)",
+      "title": "Receipt / Supporting document",
+      "description": "Attach a receipt image if available. It is uploaded only when you save the expense.",
+      "imageAlt": "Expense receipt image",
+      "open": "Open receipt",
+      "previewError": "The image preview is unavailable. You can open the receipt link below."
     }
   },
   "members": {

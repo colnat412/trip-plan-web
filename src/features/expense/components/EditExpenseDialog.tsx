@@ -35,6 +35,7 @@ const EditExpenseDialog = ({
     <AppDialog
       open={open}
       onClose={onClose}
+      closeDisabled={isLoading}
       title={t('dialog.editTitle')}
       icon={<EditRoundedIcon color="primary" />}
       maxWidth="sm"

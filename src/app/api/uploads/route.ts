@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     return identityError(400, 'Invalid image');
   }
   if (file.size > MAX_IMAGE_BYTES) return identityError(413, 'File too large');
-  if (purpose !== 'PROFILE_AVATAR' && purpose !== 'TRIP_COVER')
+  if (purpose !== 'PROFILE_AVATAR' && purpose !== 'TRIP_COVER' && purpose !== 'EXPENSE_RECEIPT')
     return identityError(400, 'Invalid purpose');
   if ([...form.keys()].length !== 2)
     return identityError(400, 'Unexpected fields');

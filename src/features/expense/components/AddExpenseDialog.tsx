@@ -34,6 +34,7 @@ const AddExpenseDialog = ({
     <AppDialog
       open={open}
       onClose={onClose}
+      closeDisabled={isLoading}
       title={t('dialog.addTitle')}
       icon={<ReceiptLongRoundedIcon />}
       maxWidth="sm"

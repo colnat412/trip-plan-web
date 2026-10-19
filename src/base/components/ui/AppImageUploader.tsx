@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Avatar, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { IMAGE_MIME_TYPES, MAX_IMAGE_BYTES } from '@/base/types';
@@ -9,10 +9,10 @@ import AppButton from './AppButton';
 interface AppImageUploaderProps {
   src?: string | null;
   alt: string;
-  fallback?: string;
+  fallback?: ReactNode;
   disabled?: boolean;
   onChange: (file: File | null) => void;
-  variant?: 'avatar' | 'cover';
+  variant?: 'avatar' | 'cover' | 'receipt';
 }
 
 const AppImageUploader = ({
@@ -37,15 +37,20 @@ const AppImageUploader = ({
   const displayed = removed ? undefined : (preview ?? src ?? undefined);
 
   return (
-    <Stack spacing={1.5} sx={{ alignItems: 'flex-start' }}>
+    <Stack spacing={1.5} sx={{ alignItems: 'flex-start', ...(variant === 'receipt' ? { width: '100%', minWidth: 0 } : {}) }}>
       <Avatar
         src={displayed}
         alt={alt}
-        variant={variant === 'cover' ? 'rounded' : 'circular'}
+        variant={variant === 'avatar' ? 'circular' : 'rounded'}
         sx={{
-          width: variant === 'cover' ? '100%' : 80,
-          height: variant === 'cover' ? 160 : 80,
-          bgcolor: 'primary.light',
+          width: variant === 'avatar' ? 80 : '100%',
+          height: variant === 'receipt' ? 240 : variant === 'cover' ? 160 : 80,
+          bgcolor: variant === 'receipt' ? 'action.hover' : 'primary.light',
+          color: variant === 'receipt' ? 'text.secondary' : 'primary.contrastText',
+          ...(variant === 'receipt' ? {
+            border: 1, borderColor: 'divider',
+            '& .MuiAvatar-img': { objectFit: 'contain' },
+          } : {}),
           fontSize: 24,
         }}
       >
@@ -76,7 +81,7 @@ const AppImageUploader = ({
           onChange(file);
         }}
       />
-      <Stack direction="row" spacing={1}>
+      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
         <AppButton
           type="button"
           intent="secondary"

@@ -7,7 +7,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import HourglassEmptyRoundedIcon from '@mui/icons-material/HourglassEmptyRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
-import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
+import ExpenseReceiptPreview from './ExpenseReceiptPreview';
 import { useTranslations } from 'next-intl';
 import { AppDialog, AppButton, AppCategoryChip } from '@/base/components/ui';
 import { formatCurrency, formatDate } from '@/base/utils';
@@ -437,39 +437,7 @@ const ExpenseDetailDialog = ({
           </Stack>
         )}
 
-        {expense.receiptUrl && (
-          <Stack spacing={0.75}>
-            <Typography
-              sx={{
-                fontSize: '12px',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                color: 'text.secondary',
-              }}
-            >
-              {t('dialog.receipt')}
-            </Typography>
-            <Box
-              component="a"
-              href={expense.receiptUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 0.75,
-                fontSize: '13px',
-                color: 'primary.main',
-                textDecoration: 'none',
-                '&:hover': { textDecoration: 'underline' },
-              }}
-            >
-              <OpenInNewRoundedIcon sx={{ fontSize: 16 }} />
-              {expense.receiptUrl}
-            </Box>
-          </Stack>
-        )}
+        {expense.receiptUrl && <ExpenseReceiptPreview key={expense.receiptUrl} src={expense.receiptUrl} />}
       </Stack>
     </AppDialog>
   );
