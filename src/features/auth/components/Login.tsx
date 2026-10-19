@@ -286,7 +286,7 @@ const Login = () => {
 
           <GoogleAuthButton text="signin_with" />
 
-          <Stack
+          {/* <Stack
             spacing={'4px'}
             direction={'row'}
             sx={{ justifyContent: 'center' }}
@@ -306,6 +306,7 @@ const Login = () => {
               {t('login.createAccount')}
             </Box>
           </Stack>
+          temp hide */}
         </Box>
       </Box>
     </Box>
