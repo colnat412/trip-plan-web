@@ -3,9 +3,7 @@
 import { Chip } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 
 import type { TripMemberRole } from '../../types/member.types';
 
@@ -25,17 +23,9 @@ const RoleBadge = ({ role }: RoleBadgeProps) => {
       color: 'secondary' as const,
       icon: <SecurityRoundedIcon sx={{ fontSize: '14px' }} />,
     },
-    EDITOR: {
-      color: 'info' as const,
-      icon: <EditRoundedIcon sx={{ fontSize: '14px' }} />,
-    },
     MEMBER: {
       color: 'success' as const,
       icon: <GroupRoundedIcon sx={{ fontSize: '14px' }} />,
-    },
-    VIEWER: {
-      color: 'default' as const,
-      icon: <VisibilityRoundedIcon sx={{ fontSize: '14px' }} />,
     },
   }[role] || {
     color: 'default' as const,

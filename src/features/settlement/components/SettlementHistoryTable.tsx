@@ -26,11 +26,13 @@ import type { Settlement } from '../types';
 
 export interface SettlementHistoryTableProps {
   settlements: Settlement[];
+  canDelete?: (settlement: Settlement) => boolean;
   onDelete?: (settlement: Settlement) => void;
 }
 
 const SettlementHistoryTable = ({
   settlements,
+  canDelete,
   onDelete,
 }: SettlementHistoryTableProps) => {
   const t = useTranslations('settlement');
@@ -282,7 +284,8 @@ const SettlementHistoryTable = ({
 
                   {onDelete && (
                     <TableCell align="right" sx={{ py: 1.75, px: 2.5 }}>
-                      <Tooltip title={t('deleteConfirm.title')}>
+                      {(canDelete?.(s) ?? true) && (
+                        <Tooltip title={t('deleteConfirm.title')}>
                         <IconButton
                           size="small"
                           onClick={() => setSelectedSettlement(s)}
@@ -293,7 +296,8 @@ const SettlementHistoryTable = ({
                         >
                           <DeleteOutlineRoundedIcon sx={{ fontSize: '18px' }} />
                         </IconButton>
-                      </Tooltip>
+                        </Tooltip>
+                      )}
                     </TableCell>
                   )}
                 </TableRow>

@@ -37,6 +37,7 @@ export interface ExpenseTableProps {
   onFilterChange?: (filters: Record<string, ColumnFilterValue>) => void;
   tableMaxHeight?: number | string;
   readOnly?: boolean;
+  canManageExpense?: (expense: Expense) => boolean;
 }
 
 const ExpenseTable = ({
@@ -55,6 +56,7 @@ const ExpenseTable = ({
   onFilterChange,
   tableMaxHeight,
   readOnly = false,
+  canManageExpense,
 }: ExpenseTableProps) => {
   const t = useTranslations('expense');
   const tTable = useTranslations('expense.table');
@@ -268,19 +270,23 @@ const ExpenseTable = ({
                         },
                       ]
                     : []),
-                  {
-                    id: 'edit',
-                    label: t('row.edit'),
-                    icon: <EditRoundedIcon fontSize="small" />,
-                    onClick: () => onEdit(expense),
-                  },
-                  {
-                    id: 'delete',
-                    label: t('row.delete'),
-                    icon: <DeleteOutlineRoundedIcon fontSize="small" />,
-                    danger: true,
-                    onClick: () => onDelete(expense),
-                  },
+                  ...(canManageExpense?.(expense) === false
+                    ? []
+                    : [
+                        {
+                          id: 'edit',
+                          label: t('row.edit'),
+                          icon: <EditRoundedIcon fontSize="small" />,
+                          onClick: () => onEdit(expense),
+                        },
+                        {
+                          id: 'delete',
+                          label: t('row.delete'),
+                          icon: <DeleteOutlineRoundedIcon fontSize="small" />,
+                          danger: true,
+                          onClick: () => onDelete(expense),
+                        },
+                      ]),
                 ];
 
                 return <AppActionMenu items={menuItems} />;
@@ -289,7 +295,7 @@ const ExpenseTable = ({
           ]
         : []),
     ],
-    [t, tTable, onViewDetail, onEdit, onDelete, readOnly],
+    [t, tTable, onViewDetail, onEdit, onDelete, readOnly, canManageExpense],
   );
 
   return (

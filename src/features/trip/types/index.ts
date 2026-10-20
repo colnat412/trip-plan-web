@@ -28,7 +28,7 @@ export interface Trip {
 }
 
 export type TripVisibility = 'PRIVATE' | 'PUBLIC';
-export type TripPublicRole = 'VIEWER' | 'EDITOR';
+export type TripPublicRole = 'MEMBER';
 
 export interface TripShareSettings {
   tripId: string;

@@ -14,6 +14,7 @@ import {
   AppToast,
   type AppToastSeverity,
 } from '@/base/components/ui';
+import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import {
   useCreateSettlement,
@@ -43,6 +44,8 @@ const SettlementOverview = () => {
 
   const currentTrip = activeTrip || trips[0];
   const tripId = currentTrip?.id;
+  const { actorId, canWrite, canManage, canManageRecord } =
+    useTripPermissions(tripId);
 
   const {
     summary,
@@ -84,6 +87,9 @@ const SettlementOverview = () => {
   });
 
   const handleOpenRecordPayment = (prefill?: SuggestedSettlement) => {
+    if (!canWrite || (prefill && !canManage && prefill.fromUserId !== actorId)) {
+      return;
+    }
     if (prefill) {
       setDialogInitialData({
         payerId: prefill.fromUserId,
@@ -92,7 +98,7 @@ const SettlementOverview = () => {
         currency: prefill.currency,
       });
     } else {
-      setDialogInitialData(undefined);
+      setDialogInitialData(canManage ? undefined : { payerId: actorId });
     }
     setDialogOpen(true);
   };
@@ -180,6 +186,7 @@ const SettlementOverview = () => {
           <AppButton
             intent="primary"
             startIcon={<HandshakeRoundedIcon sx={{ fontSize: '18px' }} />}
+            disabled={!canWrite}
             onClick={() => handleOpenRecordPayment()}
           >
             {t('recordPayment')}
@@ -210,6 +217,9 @@ const SettlementOverview = () => {
 
         <SuggestedSettlementsList
           suggestedSettlements={summary?.suggestedSettlements ?? []}
+          canSettle={(item) =>
+            canWrite && (canManage || item.fromUserId === actorId)
+          }
           onSettle={(settlement) => handleOpenRecordPayment(settlement)}
         />
       </Stack>
@@ -221,6 +231,9 @@ const SettlementOverview = () => {
 
       <SettlementHistoryTable
         settlements={summary?.settlementHistory ?? []}
+        canDelete={(item) =>
+          canManageRecord(item.createdBy) && (canManage || item.payerId === actorId)
+        }
         onDelete={handleDeleteSettlement}
       />
 
@@ -229,6 +242,7 @@ const SettlementOverview = () => {
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
           members={memberOptions}
+          fixedPayerId={!canManage ? actorId : undefined}
           initialData={dialogInitialData}
           currency={currency}
           isLoading={isCreating}

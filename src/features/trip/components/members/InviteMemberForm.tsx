@@ -5,7 +5,6 @@ import { Box, Stack, Typography, type SelectChangeEvent } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
 
 import AppTextField from '@/base/components/ui/AppTextField';
@@ -56,15 +55,6 @@ const InviteMemberForm = ({
       label: t('roles.MEMBER'),
       icon: (
         <GroupRoundedIcon sx={{ fontSize: '18px', color: 'success.main' }} />
-      ),
-    },
-    {
-      value: 'VIEWER',
-      label: t('roles.VIEWER'),
-      icon: (
-        <VisibilityRoundedIcon
-          sx={{ fontSize: '18px', color: 'text.secondary' }}
-        />
       ),
     },
   ];

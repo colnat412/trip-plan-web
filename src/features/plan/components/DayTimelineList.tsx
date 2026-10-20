@@ -27,6 +27,7 @@ export interface DayTimelineListProps {
   onOpenOptimizeRoute?: () => void;
   onResetDayActivities?: () => void;
   readOnly?: boolean;
+  canDeleteActivity?: (activity: PlanActivity) => boolean;
 }
 
 const DayTimelineList = ({
@@ -42,6 +43,7 @@ const DayTimelineList = ({
   onConvertToExpense,
   onResetDayActivities,
   readOnly = false,
+  canDeleteActivity,
 }: DayTimelineListProps) => {
   const locale = useLocale();
   const t = useTranslations('plan');
@@ -184,7 +186,11 @@ const DayTimelineList = ({
                 activity={activity}
                 currency={currency}
                 onEdit={onEditActivity}
-                onDelete={onDeleteActivity}
+                onDelete={
+                  canDeleteActivity?.(activity) === false
+                    ? undefined
+                    : onDeleteActivity
+                }
                 onToggleStatus={onToggleStatus}
                 onConvertToExpense={onConvertToExpense}
                 readOnly={readOnly}

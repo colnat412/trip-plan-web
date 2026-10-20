@@ -23,6 +23,7 @@ export interface SuggestedSettlement {
 }
 
 export interface Settlement {
+  createdBy: string | null;
   id: string;
   tripId: string;
   payerId: string;

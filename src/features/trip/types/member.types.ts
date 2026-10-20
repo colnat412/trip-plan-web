@@ -1,4 +1,4 @@
-export type TripMemberRole = 'OWNER' | 'VICE' | 'EDITOR' | 'MEMBER' | 'VIEWER';
+export type TripMemberRole = 'OWNER' | 'VICE' | 'MEMBER';
 
 export type TripMemberStatus = 'INVITED' | 'ACTIVE' | 'LEFT' | 'REMOVED';
 

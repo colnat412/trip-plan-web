@@ -232,10 +232,8 @@
       "publicTitle": "Public (Anyone with link)",
       "publicDesc": "Anyone with the link can access without prior invitation.",
       "publicRoleLabel": "Role for people with link",
-      "viewerDesc": "Can view itinerary and activities (Read-only).",
-      "editorDesc": "Can edit and add activities to itinerary.",
-      "roleViewer": "Viewer",
-      "roleEditor": "Editor",
+      "memberDesc": "People join as Members after approval by the Owner or Vice.",
+      "roleMember": "Member",
       "shareLinkTitle": "Share link",
       "copyBtn": "Copy",
       "copiedBtn": "Copied",
@@ -548,16 +546,12 @@
     "roles": {
       "OWNER": "Trip Owner",
       "VICE": "Vice Host",
-      "EDITOR": "Editor",
-      "MEMBER": "Member",
-      "VIEWER": "Viewer"
+      "MEMBER": "Member"
     },
     "roleDescriptions": {
-      "OWNER": "Full control over the trip, member management and settings.",
-      "VICE": "Can approve members, manage budget limits and itinerary.",
-      "EDITOR": "Can add, edit, delete expenses and budgets.",
-      "MEMBER": "Can contribute to itinerary, create expenses and split bills.",
-      "VIEWER": "Can only view trip details and expenses."
+      "OWNER": "Full control of trip settings and Vice assignments.",
+      "VICE": "Manage members, budgets, itinerary and expenses; cannot change Vice roles.",
+      "MEMBER": "Collaborate on the itinerary and add expenses; edit/delete only own expenses and delete only own activities."
     },
     "statuses": {
       "ACTIVE": "Active",
@@ -844,6 +838,7 @@
     }
   },
   "aiPlanner": {
+    "managerRequired": "Only the trip Owner or Vice can use AI to generate an itinerary.",
     "badge": "SMART ASSISTANT",
     "provider": "Powered by Google Gemini",
     "title": "AI-Powered Trip Planning",

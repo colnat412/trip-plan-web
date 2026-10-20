@@ -44,7 +44,6 @@ const TripMembersDialog = ({
   onClose,
   tripId,
   tripName = '',
-  tripOwnerId,
   initialShowInvite = false,
 }: TripMembersDialogProps) => {
   const t = useTranslations('members');
@@ -72,7 +71,7 @@ const TripMembersDialog = ({
     severity: 'success',
   });
 
-  const { members, isLoading, refetch } = useTripMembers({
+  const { members, isLoading, isStale, error, refetch } = useTripMembers({
     tripId,
     enabled: open,
   });
@@ -81,30 +80,22 @@ const TripMembersDialog = ({
     rawUser?.id !== undefined ? String(rawUser.id) : undefined;
   const currentUserEmail = rawUser?.email?.toLowerCase().trim();
 
-  const currentMember = members.find((m) => {
-    if (currentUserId && String(m.userId) === currentUserId) return true;
-    if (currentUserEmail && m.email?.toLowerCase().trim() === currentUserEmail)
-      return true;
-    return false;
-  });
+  const currentMember =
+    !isStale && !error
+      ? members.find((member) =>
+          (currentUserId && String(member.userId) === currentUserId) ||
+          (currentUserEmail && member.email?.toLowerCase().trim() === currentUserEmail),
+        )
+      : undefined;
 
   const isCurrentUserOwner =
-    currentMember?.role === 'OWNER' ||
-    (tripOwnerId !== undefined &&
-      currentUserId !== undefined &&
-      String(tripOwnerId) === currentUserId) ||
-    (!currentMember && members.length === 1 && members[0]?.role === 'OWNER') ||
-    (!currentMember && !isLoading);
-
-  const currentUserRole: TripMemberRole = isCurrentUserOwner
-    ? 'OWNER'
-    : (currentMember?.role ?? 'MEMBER');
-
+    currentMember?.status === 'ACTIVE' && currentMember.role === 'OWNER';
+  const currentUserRole: TripMemberRole =
+    currentMember?.status === 'ACTIVE' ? currentMember.role : 'MEMBER';
   const canManageMembers =
-    isCurrentUserOwner ||
-    currentUserRole === 'VICE' ||
-    currentUserRole === 'EDITOR' ||
-    (!currentMember && !isLoading);
+    currentMember?.status === 'ACTIVE' &&
+    (currentUserRole === 'OWNER' || currentUserRole === 'VICE');
+  const isInviteVisible = showInviteForm && canManageMembers;
 
   const { inviteMember, isPending: isInviting } = useInviteMember({
     tripId,
@@ -197,6 +188,7 @@ const TripMembersDialog = ({
   });
 
   const handleInviteSubmit = (payload: InviteMemberPayload) => {
+    if (!canManageMembers) return;
     inviteMember(payload);
   };
 
@@ -220,6 +212,7 @@ const TripMembersDialog = ({
   };
 
   const handleUpdateRoleSubmit = (role: TripMemberRole) => {
+    if (!isCurrentUserOwner) return;
     updateRole({ role });
   };
 
@@ -245,7 +238,7 @@ const TripMembersDialog = ({
         fullWidth
       >
         <Stack spacing={2.5}>
-          {!showInviteForm && (
+          {!isInviteVisible && (
             <Box
               sx={{
                 display: 'flex',
@@ -273,7 +266,7 @@ const TripMembersDialog = ({
             </Box>
           )}
 
-          {showInviteForm && (
+          {isInviteVisible && (
             <InviteMemberForm
               onSubmit={handleInviteSubmit}
               onCancel={() => setShowInviteForm(false)}
@@ -287,7 +280,7 @@ const TripMembersDialog = ({
             isLoading={isLoading}
             isCurrentUserOwner={isCurrentUserOwner}
             currentUserRole={currentUserRole}
-            currentUserId={currentUserId}
+            currentUserId={currentMember?.userId}
             onEditRole={(m) => setEditingMember(m)}
             onRemove={(m) => setRemovingMember(m)}
             onLeave={() => setIsLeaving(true)}

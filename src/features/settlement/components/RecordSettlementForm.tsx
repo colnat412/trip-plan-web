@@ -19,6 +19,7 @@ export interface RecordSettlementFormProps {
   members: { userId: string; name: string }[];
   initialData?: Partial<CreateSettlementRequest>;
   currency: string;
+  fixedPayerId?: string;
   isLoading: boolean;
   onSubmit: (data: CreateSettlementRequest) => void;
   onCancel: () => void;
@@ -28,6 +29,7 @@ const RecordSettlementForm = ({
   members,
   initialData,
   currency,
+  fixedPayerId,
   isLoading,
   onSubmit,
   onCancel,
@@ -36,7 +38,7 @@ const RecordSettlementForm = ({
   const tDialog = useTranslations('settlement.dialog');
 
   const [payerId, setPayerId] = useState(
-    initialData?.payerId || (members[0]?.userId ?? ''),
+    fixedPayerId || initialData?.payerId || (members[0]?.userId ?? ''),
   );
   const [payeeId, setPayeeId] = useState(
     initialData?.payeeId || (members.length > 1 ? members[1]?.userId : ''),
@@ -144,7 +146,12 @@ const RecordSettlementForm = ({
               label={tDialog('payerLabel')}
               value={payerId}
               onChange={(e) => setPayerId(String(e.target.value))}
-              options={memberOptions}
+              options={
+                fixedPayerId
+                  ? memberOptions.filter((item) => item.value === fixedPayerId)
+                  : memberOptions
+              }
+              disabled={Boolean(fixedPayerId)}
               fullWidth
             />
           </Box>

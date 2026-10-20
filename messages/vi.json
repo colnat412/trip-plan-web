@@ -232,10 +232,8 @@
       "publicTitle": "Công khai (Bất kỳ ai có liên kết)",
       "publicDesc": "Bất kỳ ai có liên kết đều có thể truy cập mà không cần được mời trước.",
       "publicRoleLabel": "Vai trò của người có liên kết",
-      "viewerDesc": "Chỉ xem lịch trình và danh sách hoạt động (Chỉ đọc).",
-      "editorDesc": "Có thể chỉnh sửa và thêm hoạt động vào lịch trình.",
-      "roleViewer": "Xem",
-      "roleEditor": "Chỉnh sửa",
+      "memberDesc": "Người tham gia nhận vai trò Thành viên sau khi được Chủ hoặc Phó duyệt.",
+      "roleMember": "Thành viên",
       "shareLinkTitle": "Liên kết chia sẻ",
       "copyBtn": "Sao chép",
       "copiedBtn": "Đã chép",
@@ -547,21 +545,17 @@
     "cancel": "Hủy",
     "roles": {
       "OWNER": "Chủ chuyến đi",
-      "VICE": "Phó trip",
-      "EDITOR": "Người chỉnh sửa",
-      "MEMBER": "Thành viên",
-      "VIEWER": "Người xem"
+      "VICE": "Phó chuyến đi",
+      "MEMBER": "Thành viên"
     },
     "roleDescriptions": {
-      "OWNER": "Toàn quyền quản lý chuyến đi, mời và phân quyền thành viên.",
-      "VICE": "Duyệt thành viên, thiết lập ngân sách và lịch trình.",
-      "EDITOR": "Được thêm, sửa, xóa các khoản chi tiêu và hạn mức.",
-      "MEMBER": "Được tạo khoản chi, đóng góp vào lịch trình và tham gia chia tiền.",
-      "VIEWER": "Chỉ có quyền xem thông tin chuyến đi và chi phí (Chỉ đọc)."
+      "OWNER": "Toàn quyền quản lý chuyến đi và phân quyền Phó.",
+      "VICE": "Quản lý thành viên, ngân sách, lịch trình và chi tiêu; không đổi quyền Phó.",
+      "MEMBER": "Cùng lập lịch trình, thêm chi tiêu; chỉ sửa/xóa chi tiêu mình tạo và xóa hoạt động mình tạo."
     },
     "statuses": {
       "ACTIVE": "Đang tham gia",
-      "INVITED": "Chờ chủ phòng duyệt",
+      "INVITED": "Chờ duyệt",
       "LEFT": "Đã rời nhóm",
       "REMOVED": "Đã bị xóa"
     },
@@ -844,6 +838,7 @@
     }
   },
   "aiPlanner": {
+    "managerRequired": "Chỉ Chủ hoặc Phó chuyến đi được dùng AI để tạo lịch trình.",
     "badge": "TRỢ LÝ THÔNG MINH",
     "provider": "Powered by Google Gemini",
     "title": "Lập Lịch Trình Tự Động Bằng AI",

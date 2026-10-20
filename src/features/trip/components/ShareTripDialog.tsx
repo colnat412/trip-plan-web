@@ -8,10 +8,8 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
-  MenuItem,
   Radio,
   RadioGroup,
-  Select,
   Stack,
   Tooltip,
   Typography,
@@ -22,8 +20,6 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppButton, AppDialog } from '@/base/components/ui';
@@ -32,7 +28,8 @@ import {
   useUpdateShareSettings,
   useRegenerateShareToken,
 } from '../hooks/useTripShare';
-import type { TripPublicRole, TripVisibility } from '../types';
+import type { TripVisibility } from '../types';
+import { useTripPermissions } from '../hooks/useTripPermissions';
 import { Share } from '@mui/icons-material';
 
 export interface ShareTripDialogProps {
@@ -49,6 +46,7 @@ const ShareTripDialog = ({
   tripName,
 }: ShareTripDialogProps) => {
   const theme = useTheme();
+  const { canManage } = useTripPermissions(tripId, open);
   const t = useTranslations('trip.share');
 
   const { shareSettings, isLoading } = useTripShareSettings({
@@ -59,15 +57,13 @@ const ShareTripDialog = ({
   const [userVisibility, setUserVisibility] = useState<TripVisibility | null>(
     null,
   );
-  const [userRole, setUserRole] = useState<TripPublicRole | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
 
   const visibility = userVisibility ?? shareSettings?.visibility ?? 'PRIVATE';
-  const publicRole = userRole ?? shareSettings?.publicRole ?? 'VIEWER';
+  const publicRole = 'MEMBER' as const;
 
   const handleClose = () => {
     setUserVisibility(null);
-    setUserRole(null);
     setCopied(false);
     onClose();
   };
@@ -108,6 +104,7 @@ const ShareTripDialog = ({
   };
 
   const handleSave = () => {
+    if (!canManage) return;
     updateShareSettings({
       visibility,
       publicRole,
@@ -115,6 +112,7 @@ const ShareTripDialog = ({
   };
 
   const handleRegenerate = () => {
+    if (!canManage) return;
     if (window.confirm(t('confirmRegenerate'))) {
       regenerateShareToken({});
     }
@@ -137,7 +135,12 @@ const ShareTripDialog = ({
           <AppButton intent="secondary" onClick={handleClose}>
             {t('cancel')}
           </AppButton>
-          <AppButton intent="primary" onClick={handleSave} loading={isUpdating}>
+          <AppButton
+            intent="primary"
+            onClick={handleSave}
+            loading={isUpdating}
+            disabled={!canManage}
+          >
             {t('saveChanges')}
           </AppButton>
         </Stack>
@@ -195,10 +198,11 @@ const ShareTripDialog = ({
                     boxShadow: 'none',
                   },
                 }}
-                onClick={() => setUserVisibility('PRIVATE')}
+                onClick={() => canManage && setUserVisibility('PRIVATE')}
               >
                 <FormControlLabel
                   value="PRIVATE"
+                  disabled={!canManage}
                   control={<Radio size="small" />}
                   label={
                     <Box
@@ -264,10 +268,11 @@ const ShareTripDialog = ({
                     boxShadow: 'none',
                   },
                 }}
-                onClick={() => setUserVisibility('PUBLIC')}
+                onClick={() => canManage && setUserVisibility('PUBLIC')}
               >
                 <FormControlLabel
                   value="PUBLIC"
+                  disabled={!canManage}
                   control={<Radio size="small" />}
                   label={
                     <Box
@@ -329,94 +334,13 @@ const ShareTripDialog = ({
                       <Typography
                         sx={{ fontSize: '11px', color: 'text.secondary' }}
                       >
-                        {publicRole === 'VIEWER'
-                          ? t('viewerDesc')
-                          : t('editorDesc')}
+                        {t('memberDesc')}
                       </Typography>
                     </Box>
 
-                    <Select
-                      size="small"
-                      value={publicRole}
-                      onChange={(e) =>
-                        setUserRole(e.target.value as TripPublicRole)
-                      }
-                      renderValue={(selected) => (
-                        <Box
-                          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
-                        >
-                          {selected === 'EDITOR' ? (
-                            <EditRoundedIcon
-                              sx={{ fontSize: '16px', color: 'primary.main' }}
-                            />
-                          ) : (
-                            <VisibilityRoundedIcon
-                              sx={{ fontSize: '16px', color: 'text.secondary' }}
-                            />
-                          )}
-                          <Typography
-                            component="span"
-                            sx={{ fontSize: '13px', fontWeight: 600 }}
-                          >
-                            {selected === 'EDITOR'
-                              ? t('roleEditor')
-                              : t('roleViewer')}
-                          </Typography>
-                        </Box>
-                      )}
-                      sx={{
-                        minWidth: 145,
-                        minHeight: 38,
-                        height: 38,
-                        fontSize: '13px',
-                        fontWeight: 600,
-                        borderRadius: '10px',
-                        bgcolor: 'background.paper',
-                        '& .MuiSelect-select': {
-                          py: '6px',
-                          px: '12px',
-                          display: 'flex',
-                          alignItems: 'center',
-                        },
-                        '& .MuiOutlinedInput-notchedOutline': {
-                          borderColor: alpha(theme.palette.divider, 0.8),
-                        },
-                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                          borderColor: 'primary.main',
-                        },
-                      }}
-                    >
-                      <MenuItem
-                        value="VIEWER"
-                        sx={{
-                          fontSize: '13px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          py: 1,
-                        }}
-                      >
-                        <VisibilityRoundedIcon
-                          sx={{ fontSize: '16px', color: 'text.secondary' }}
-                        />
-                        <span>{t('roleViewer')}</span>
-                      </MenuItem>
-                      <MenuItem
-                        value="EDITOR"
-                        sx={{
-                          fontSize: '13px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          py: 1,
-                        }}
-                      >
-                        <EditRoundedIcon
-                          sx={{ fontSize: '16px', color: 'primary.main' }}
-                        />
-                        <span>{t('roleEditor')}</span>
-                      </MenuItem>
-                    </Select>
+                    <Typography sx={{ fontSize: '13px', fontWeight: 600 }}>
+                      {t('roleMember')}
+                    </Typography>
                   </Box>
                 )}
               </Box>
@@ -447,7 +371,7 @@ const ShareTripDialog = ({
                   component="button"
                   type="button"
                   onClick={handleRegenerate}
-                  disabled={isRegenerating}
+                  disabled={isRegenerating || !canManage}
                   sx={{
                     display: 'inline-flex',
                     alignItems: 'center',

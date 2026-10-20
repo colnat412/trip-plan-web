@@ -14,8 +14,7 @@ import {
   type AppToastSeverity,
 } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
-import { useUserContext } from '@/features/user/context/UserContext';
-import { useTripMembers } from '@/features/trip/hooks/useTripMembers';
+import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import AddExpenseDialog from '@/features/expense/components/AddExpenseDialog';
 import type { CreateExpensePayload } from '@/features/expense/types';
 import ShareTripDialog from '@/features/trip/components/ShareTripDialog';
@@ -59,26 +58,8 @@ const PlanOverview = () => {
     isLoading,
     refetch,
   } = useTripPlan({ tripId, includeActivities: false });
-  const { user } = useUserContext();
-  const { members } = useTripMembers({ tripId });
-
-  const currentUserId = user?.id !== undefined ? String(user.id) : undefined;
-  const currentUserEmail = user?.email?.toLowerCase().trim();
-
-  const currentMember = members.find((m) => {
-    if (currentUserId && String(m.userId) === currentUserId) return true;
-    if (currentUserEmail && m.email?.toLowerCase().trim() === currentUserEmail)
-      return true;
-    return false;
-  });
-
-  const isOwner =
-    currentMember?.role === 'OWNER' ||
-    (activeTrip?.ownerId !== undefined &&
-      currentUserId !== undefined &&
-      String(activeTrip.ownerId) === currentUserId);
-
-  const isViewer = !isOwner && currentMember?.role === 'VIEWER';
+  const { members, canWrite, canManage, canManageRecord } =
+    useTripPermissions(tripId);
 
   const [selectedDayId, setSelectedDayId] = useState<string>('');
   const [addActivityOpen, setAddActivityOpen] = useState(false);
@@ -414,10 +395,10 @@ const PlanOverview = () => {
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
           onAddActivity={() => setAddActivityOpen(true)}
           onOpenChecklist={() => setChecklistOpen(true)}
-          onOpenAiPlanner={() => setAiPlannerOpen(true)}
-          onOpenShare={() => setShareDialogOpen(true)}
+          onOpenAiPlanner={canManage ? () => setAiPlannerOpen(true) : undefined}
+          onOpenShare={canManage ? () => setShareDialogOpen(true) : undefined}
           onOpenActivityLogs={() => setActivityLogOpen(true)}
-          readOnly={isViewer}
+          readOnly={!canWrite}
           onOpenPrint={() =>
             router.push(`/print/plan/${encodeURIComponent(String(tripId))}`)
           }
@@ -465,12 +446,15 @@ const PlanOverview = () => {
           destinationContext={activeTrip?.destination}
           onAddActivity={() => setAddActivityOpen(true)}
           onEditActivity={(activity) => setEditingActivity(activity)}
+          canDeleteActivity={(activity) => canManageRecord(activity.createdBy)}
           onDeleteActivity={(activity) => setDeletingActivity(activity)}
           onToggleStatus={handleToggleActivityStatus}
           onConvertToExpense={handleConvertToExpense}
           onOpenOptimizeRoute={() => void handleOpenOptimizeRoute()}
-          onResetDayActivities={() => setResetDayConfirmOpen(true)}
-          readOnly={isViewer}
+          onResetDayActivities={
+            canManage ? () => setResetDayConfirmOpen(true) : undefined
+          }
+          readOnly={!canWrite}
         />
       )}
 
@@ -525,7 +509,7 @@ const PlanOverview = () => {
         onToggle={handleToggleChecklist}
         onDelete={handleDeleteChecklist}
         isLoading={isCreatingChecklist}
-        readOnly={isViewer}
+        readOnly={!canWrite}
       />
 
       <OptimizeRouteDialog

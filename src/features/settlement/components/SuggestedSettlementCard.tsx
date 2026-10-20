@@ -13,7 +13,7 @@ import type { SuggestedSettlement } from '../types';
 
 export interface SuggestedSettlementCardProps {
   settlement: SuggestedSettlement;
-  onSettle: (settlement: SuggestedSettlement) => void;
+  onSettle?: (settlement: SuggestedSettlement) => void;
 }
 
 const SuggestedSettlementCard = ({
@@ -107,14 +107,16 @@ const SuggestedSettlementCard = ({
           {formatCurrency(settlement.amount, settlement.currency)}
         </Typography>
 
-        <AppButton
-          size="medium"
-          intent="primary"
-          startIcon={<PaymentRoundedIcon sx={{ fontSize: '16px' }} />}
-          onClick={() => onSettle(settlement)}
-        >
-          {t('settleBtn')}
-        </AppButton>
+        {onSettle && (
+          <AppButton
+            size="medium"
+            intent="primary"
+            startIcon={<PaymentRoundedIcon sx={{ fontSize: '16px' }} />}
+            onClick={() => onSettle(settlement)}
+          >
+            {t('settleBtn')}
+          </AppButton>
+        )}
       </Box>
     </AppCard>
   );

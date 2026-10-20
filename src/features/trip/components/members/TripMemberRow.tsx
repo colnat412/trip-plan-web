@@ -41,27 +41,12 @@ const TripMemberRow = ({
     currentUserId !== undefined &&
     String(member.userId) === String(currentUserId);
   const isTargetOwner = member.role === 'OWNER';
-  const isTargetVice = member.role === 'VICE' || member.role === 'EDITOR';
-
-  const canAccept =
-    (isCurrentUserOwner ||
-      currentUserRole === 'VICE' ||
-      currentUserRole === 'EDITOR') &&
-    member.status === 'INVITED';
-
-  const canEditRole =
-    !isSelf &&
-    !isTargetOwner &&
-    (isCurrentUserOwner ||
-      ((currentUserRole === 'VICE' || currentUserRole === 'EDITOR') &&
-        !isTargetVice));
-
-  const canRemove =
-    !isSelf &&
-    !isTargetOwner &&
-    (isCurrentUserOwner ||
-      ((currentUserRole === 'VICE' || currentUserRole === 'EDITOR') &&
-        !isTargetVice));
+  const isTargetVice = member.role === 'VICE';
+  const canAccept = member.status === 'INVITED' &&
+    (isCurrentUserOwner || (currentUserRole === 'VICE' && member.role === 'MEMBER'));
+  const canEditRole = !isSelf && !isTargetOwner && isCurrentUserOwner;
+  const canRemove = !isSelf && !isTargetOwner &&
+    (isCurrentUserOwner || (currentUserRole === 'VICE' && !isTargetVice));
 
   const menuItems: AppActionMenuItem[] = [];
 

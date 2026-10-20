@@ -14,6 +14,7 @@ export interface RecordSettlementDialogProps {
   members: { userId: string; name: string }[];
   initialData?: Partial<CreateSettlementRequest>;
   currency: string;
+  fixedPayerId?: string;
   isLoading: boolean;
   onSubmit: (data: CreateSettlementRequest) => void;
 }
@@ -24,6 +25,7 @@ const RecordSettlementDialog = ({
   members,
   initialData,
   currency,
+  fixedPayerId,
   isLoading,
   onSubmit,
 }: RecordSettlementDialogProps) => {
@@ -39,6 +41,7 @@ const RecordSettlementDialog = ({
     >
       <RecordSettlementForm
         members={members}
+        fixedPayerId={fixedPayerId}
         initialData={initialData}
         currency={currency}
         isLoading={isLoading}

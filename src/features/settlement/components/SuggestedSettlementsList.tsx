@@ -11,12 +11,14 @@ import type { SuggestedSettlement } from '../types';
 
 export interface SuggestedSettlementsListProps {
   suggestedSettlements: SuggestedSettlement[];
+  canSettle?: (settlement: SuggestedSettlement) => boolean;
   onSettle: (settlement: SuggestedSettlement) => void;
 }
 
 const SuggestedSettlementsList = ({
   suggestedSettlements,
   onSettle,
+  canSettle,
 }: SuggestedSettlementsListProps) => {
   const t = useTranslations('settlement');
 
@@ -52,7 +54,7 @@ const SuggestedSettlementsList = ({
         <SuggestedSettlementCard
           key={`${item.fromUserId}-${item.toUserId}-${idx}`}
           settlement={item}
-          onSettle={onSettle}
+          onSettle={canSettle?.(item) === false ? undefined : onSettle}
         />
       ))}
     </Stack>

@@ -15,8 +15,6 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import LoginRoundedIcon from '@mui/icons-material/LoginRounded';
 import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded';
 import HourglassEmptyRoundedIcon from '@mui/icons-material/HourglassEmptyRounded';
@@ -268,21 +266,8 @@ const PublicTripView = ({
                     />
                     <Chip
                       size="small"
-                      icon={
-                        trip.publicRole === 'EDITOR' ? (
-                          <EditRoundedIcon sx={{ fontSize: '14px' }} />
-                        ) : (
-                          <VisibilityRoundedIcon sx={{ fontSize: '14px' }} />
-                        )
-                      }
-                      label={
-                        trip.publicRole === 'EDITOR'
-                          ? t('roleEditor')
-                          : t('roleViewer')
-                      }
-                      color={
-                        trip.publicRole === 'EDITOR' ? 'success' : 'default'
-                      }
+                      label={t('roleMember')}
+                      color="success"
                       sx={{ height: 24, fontSize: '11px', fontWeight: 700 }}
                     />
                   </Stack>

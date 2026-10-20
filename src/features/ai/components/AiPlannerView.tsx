@@ -36,19 +36,9 @@ import {
   type AppToastSeverity,
 } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
+import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import { useGenerateAiPlan } from '@/features/plan/hooks/usePlanMutation';
 import DestinationAutocomplete from '@/features/trip/components/DestinationAutocomplete';
-
-// const PREFERENCE_CHIPS = [
-//   '🍜 Ẩm thực & đặc sản bản địa',
-//   '☕ Cafe view đẹp & check-in',
-//   '🌿 Nghỉ dưỡng & thư giãn nhẹ nhàng',
-//   '💰 Tối ưu ngân sách sinh viên',
-//   '🏛️ Lịch sử & danh lam thắng cảnh',
-//   '🌊 Trải nghiệm ngoài trời & trekking',
-//   '🛍️ Mua sắm chợ đêm & quà lưu niệm',
-//   '🌙 Trải nghiệm ẩm thực đêm',
-// ];
 
 const AiPlannerView = () => {
   const router = useRouter();
@@ -57,6 +47,7 @@ const AiPlannerView = () => {
 
   const currentTrip = activeTrip || trips[0] || null;
   const tripId = currentTrip?.id;
+  const { canManage } = useTripPermissions(tripId);
 
   const tripDays = (() => {
     if (!currentTrip?.startDate || !currentTrip?.endDate) return 3;
@@ -106,6 +97,10 @@ const AiPlannerView = () => {
   // };
 
   const handleGenerate = async () => {
+    if (!canManage) {
+      showToast(t('managerRequired'), 'error');
+      return;
+    }
     if (!tripId) {
       showToast('Vui lòng chọn hoặc tạo một chuyến đi trước.', 'error');
       return;
@@ -489,6 +484,9 @@ const AiPlannerView = () => {
                 </Alert>
               )}
 
+              {currentTrip && !canManage && (
+                <Alert severity="info">{t('managerRequired')}</Alert>
+              )}
               <Stack
                 direction={{ xs: 'column', sm: 'row' }}
                 spacing={2}
@@ -508,7 +506,12 @@ const AiPlannerView = () => {
                   intent="primary"
                   size="large"
                   onClick={handleGenerate}
-                  disabled={isPending || !destination.trim() || !currentTrip}
+                  disabled={
+                    isPending ||
+                    !destination.trim() ||
+                    !currentTrip ||
+                    !canManage
+                  }
                   startIcon={
                     isPending ? (
                       <CircularProgress size={20} color="inherit" />

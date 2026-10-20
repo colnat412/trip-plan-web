@@ -17,6 +17,7 @@ export type ChecklistCategory =
   | 'OTHER';
 
 export interface PlanActivity {
+  createdBy: string | null;
   id: string;
   dayId: string;
   tripId: string;

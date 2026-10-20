@@ -38,6 +38,7 @@ export interface ExpenseSplit {
 }
 
 export interface Expense {
+  createdBy: string | null;
   id: number | string;
   tripId: number | string;
   payerId: number | string;
