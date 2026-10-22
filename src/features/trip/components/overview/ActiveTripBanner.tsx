@@ -1,17 +1,21 @@
 'use client';
 
 import { Box, Stack, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
+import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
+import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
+import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import { useTranslations } from 'next-intl';
 
-import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
-import TripSummaryMetric from './TripSummaryMetric';
-import { AppButton } from '@/base/components/ui';
+import { AppButton, AppLinearProgress } from '@/base/components/ui';
 import { formatCurrency, formatDateRange } from '@/base/utils';
-import { useTripContext } from '../../context/TripContext';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
-import useTripExpenses from '@/features/expense/hooks/useTripExpenses';
-import TripStatusBadge from '../TripStatusBadge';
+import { useTripContext } from '../../context/TripContext';
+import { useTripMembers } from '../../hooks/useTripMembers';
 import type { Trip } from '../../types';
+import TripStatusBadge from '../TripStatusBadge';
+import TripSummaryMetric from './TripSummaryMetric';
 
 interface ActiveTripBannerProps {
   trip: Trip;
@@ -21,21 +25,14 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
   const t = useTranslations('overview');
   const tMembers = useTranslations('members');
   const { openMembers } = useTripContext();
-  const dateRangeStr = formatDateRange(trip.startDate, trip.endDate);
-
   const { summary } = useTripBudgetSummary({ tripId: trip.id });
-  const { pagination } = useTripExpenses({ tripId: trip.id, page: 0, size: 1 });
+  const { activeMembers } = useTripMembers({ tripId: trip.id });
 
   const totalSpent = summary?.actualSpent ?? 0;
   const totalBudget = summary?.totalBudget ?? 0;
   const remaining = summary?.remainingBudget ?? 0;
-  const isOver = totalSpent > totalBudget;
-
-  const donutBorderColor = isOver
-    ? 'error.main'
-    : (summary?.percentageUsed ?? 0) > 85
-      ? 'secondary.main'
-      : 'success.main';
+  const percentageUsed = summary?.percentageUsed ?? 0;
+  const isOver = totalBudget > 0 && totalSpent > totalBudget;
 
   let days = 1;
   if (trip.startDate && trip.endDate) {
@@ -43,50 +40,69 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
       new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime();
     days = Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1);
   }
-  const avgPerDay = totalSpent / days;
-  const expenseCount = pagination?.totalElements ?? 0;
+
+  const progressColor = isOver ? 'error.light' : 'primary.light';
 
   return (
     <Box
       component="section"
-      sx={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: { xs: 2, md: 3 },
-        overflow: 'hidden',
-        borderRadius: '20px',
-        px: { xs: 2, sm: 3, xl: 4 },
-        py: { xs: 2.5, md: 3 },
-        color: '#FFFFFF',
-        background:
-          'linear-gradient(120deg, #1E3A8A 0%, #167A91 55%, #287E68 100%)',
-        boxShadow: '0 18px 45px rgba(15, 23, 42, 0.16)',
+      sx={(theme) => {
+        const palette = theme.vars?.palette ?? theme.palette;
+        const overlay = `linear-gradient(90deg, ${alpha(theme.palette.primary.dark, 0.96)} 0%, ${alpha(theme.palette.primary.main, 0.8)} 42%, ${alpha(theme.palette.primary.light, 0.2)} 72%, ${alpha(theme.palette.primary.dark, 0.12)} 100%)`;
+        const fallback = `linear-gradient(120deg, ${palette.primary.dark}, ${palette.primary.main} 48%, ${palette.primary.light})`;
+
+        return {
+          width: '100%',
+          minHeight: { xs: 440, sm: 420, md: 0 },
+          flex: { md: '0.9 1 0' },
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          gap: { xs: 4, md: 3 },
+          overflow: 'hidden',
+          borderRadius: '16px',
+          border: 1,
+          borderColor: alpha(theme.palette.common.white, 0.14),
+          p: { xs: 2, sm: 3, md: 4 },
+          color: theme.palette.common.white,
+          backgroundColor: palette.primary.dark,
+          backgroundImage: trip.coverUrl
+            ? `${overlay}, url(${JSON.stringify(trip.coverUrl)})`
+            : fallback,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          '@media (max-height: 820px)': {
+            flex: { md: '0.96 1 0' },
+            gap: 2,
+            p: 2,
+          },
+        };
       }}
     >
       <Box
         sx={{
           display: 'flex',
-          flexWrap: 'wrap',
-          gap: 3,
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: 'flex-start',
         }}
       >
-        <Stack spacing={1.25} sx={{ minWidth: 0, flex: '1 1 280px' }}>
+        <Stack spacing={1.5} sx={{ minWidth: 0, maxWidth: 820 }}>
           <Stack
             direction="row"
             spacing={1}
+            useFlexGap
             sx={{ alignItems: 'center', flexWrap: 'wrap' }}
           >
             <Typography
-              sx={{
-                color: 'rgba(255,255,255,0.72)',
-                fontSize: '11px',
-                fontWeight: 800,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-              }}
+              sx={(theme) => ({
+                color: theme.palette.common.white,
+                bgcolor: alpha(theme.palette.primary.light, 0.28),
+                border: `1px solid ${alpha(theme.palette.common.white, 0.12)}`,
+                borderRadius: '999px',
+                px: 1.25,
+                py: 0.5,
+                fontSize: '12px',
+                fontWeight: 600,
+              })}
             >
               {t('activeTrip')}
             </Typography>
@@ -94,12 +110,18 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
           </Stack>
 
           <Typography
-            component="h2"
+            component="h1"
             sx={{
               fontFamily: 'var(--font-display)',
-              fontSize: { xs: '28px', md: '36px', xl: '40px' },
-              lineHeight: 1.1,
+              fontSize: { xs: '34px', sm: '44px', lg: '52px' },
+              fontWeight: 700,
+              lineHeight: 1.2,
+              color: 'inherit',
               overflowWrap: 'anywhere',
+              '@media (max-height: 820px)': {
+                fontSize: { md: '38px' },
+                lineHeight: 1.1,
+              },
             }}
           >
             {trip.name}
@@ -108,119 +130,172 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
           <Stack
             direction="row"
             spacing={1.5}
-            sx={{ alignItems: 'center', flexWrap: 'wrap', pt: 0.5 }}
+            useFlexGap
+            sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}
           >
-            <Typography
-              sx={{ color: 'rgba(255,255,255,0.72)', fontSize: '13px' }}
+            <Stack
+              direction="row"
+              spacing={0.75}
+              sx={{ alignItems: 'center', minWidth: 0 }}
             >
-              {trip.destination}
-              {dateRangeStr ? ` · ${dateRangeStr}` : ''}
-              {trip.baseCurrency ? ` · ${trip.baseCurrency}` : ''}
-            </Typography>
+              <LocationOnRoundedIcon sx={{ flexShrink: 0, fontSize: '18px' }} />
+              <Typography
+                sx={(theme) => ({
+                  color: alpha(theme.palette.common.white, 0.86),
+                  fontSize: { xs: '13px', sm: '15px' },
+                  overflowWrap: 'anywhere',
+                })}
+              >
+                {[
+                  trip.destination,
+                  formatDateRange(trip.startDate, trip.endDate),
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </Typography>
+            </Stack>
 
             <AppButton
+              intent="secondary"
               size="small"
               onClick={() => openMembers(false)}
-              startIcon={<GroupRoundedIcon sx={{ fontSize: '14px' }} />}
-              sx={{
-                minHeight: '28px',
-                px: '10px',
-                py: '4px',
-                borderRadius: '8px',
-                bgcolor: 'rgba(255,255,255,0.15)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255,255,255,0.25)',
-                fontSize: '12px',
-                fontWeight: 700,
-                lineHeight: 1.4,
-                textTransform: 'none',
-                transition: 'all 0.2s',
+              startIcon={<GroupRoundedIcon sx={{ fontSize: '18px' }} />}
+              sx={(theme) => ({
+                flexShrink: 0,
+                color: theme.palette.common.white,
+                bgcolor: alpha(theme.palette.common.white, 0.12),
+                borderColor: alpha(theme.palette.common.white, 0.28),
                 '&:hover': {
-                  bgcolor: 'rgba(255,255,255,0.28)',
-                  borderColor: 'rgba(255,255,255,0.4)',
+                  color: theme.palette.common.white,
+                  bgcolor: alpha(theme.palette.common.white, 0.2),
+                  borderColor: alpha(theme.palette.common.white, 0.28),
                 },
-              }}
+              })}
             >
               {tMembers('dialogTitle')}
             </AppButton>
           </Stack>
         </Stack>
+      </Box>
 
-        <Box
+      <Box
+        sx={(theme) => ({
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          alignItems: 'stretch',
+          gap: { xs: 2.5, md: 0 },
+          p: { xs: 2, sm: 2.5, md: 3 },
+          borderRadius: '14px',
+          bgcolor: alpha(theme.palette.primary.dark, 0.52),
+          border: `1px solid ${alpha(theme.palette.common.white, 0.2)}`,
+          backdropFilter: 'blur(16px)',
+          '@media (max-height: 820px)': {
+            p: 1.5,
+          },
+        })}
+      >
+        <Stack
+          spacing={1.25}
           sx={{
-            width: { xs: 140, xl: 160 },
-            height: { xs: 140, xl: 160 },
-            p: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            borderRadius: '50%',
-            border: '10px solid',
-            borderColor: donutBorderColor,
-            bgcolor: 'rgba(7,18,37,0.18)',
-            textAlign: 'center',
+            flex: { md: '1.35 1 0' },
+            minWidth: 0,
+            pr: { md: 3 },
           }}
         >
-          <Stack spacing={0.25} sx={{ alignItems: 'center' }}>
+          <Typography
+            sx={(theme) => ({
+              color: alpha(theme.palette.common.white, 0.78),
+              fontSize: { xs: '12px', sm: '14px' },
+            })}
+          >
+            {t('spent')}
+          </Typography>
+          <Stack
+            direction="row"
+            spacing={1}
+            useFlexGap
+            sx={{ alignItems: 'baseline', flexWrap: 'wrap' }}
+          >
             <Typography
               sx={{
-                color: 'rgba(255,255,255,0.7)',
-                fontSize: '10px',
-                fontWeight: 800,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-              }}
-            >
-              {t('spent')}
-            </Typography>
-            <Typography
-              sx={{
+                color: isOver ? 'error.light' : 'inherit',
                 fontFamily: 'var(--font-mono)',
-                fontSize: '14px',
-                fontWeight: 800,
-                lineHeight: 1.2,
+                fontSize: { xs: '24px', sm: '30px' },
+                fontWeight: 700,
+                lineHeight: 1.15,
+                '@media (max-height: 820px)': {
+                  fontSize: { md: '22px' },
+                },
               }}
             >
               {formatCurrency(totalSpent, trip.baseCurrency)}
             </Typography>
             <Typography
-              sx={{
-                color: 'rgba(255,255,255,0.7)',
-                fontSize: '12px',
+              sx={(theme) => ({
+                color: alpha(theme.palette.common.white, 0.82),
                 fontFamily: 'var(--font-mono)',
-              }}
+                fontSize: { xs: '13px', sm: '16px' },
+                fontWeight: 500,
+              })}
             >
               / {formatCurrency(totalBudget, trip.baseCurrency)}
             </Typography>
           </Stack>
-        </Box>
-      </Box>
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
+            <AppLinearProgress
+              value={totalBudget > 0 ? percentageUsed : 0}
+              height={8}
+              barColor={progressColor}
+              sx={(theme) => ({
+                flexGrow: 1,
+                bgcolor: alpha(theme.palette.common.white, 0.22),
+              })}
+            />
+            <Typography
+              sx={(theme) => ({
+                flexShrink: 0,
+                color: alpha(theme.palette.common.white, 0.82),
+                fontFamily: 'var(--font-mono)',
+                fontSize: '13px',
+                fontWeight: 700,
+              })}
+            >
+              {Math.round(percentageUsed)}%
+            </Typography>
+          </Stack>
+        </Stack>
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 2,
-          px: '16px',
-          py: '12px',
-          borderRadius: '14px',
-          bgcolor: 'rgba(255,255,255,0.1)',
-        }}
-      >
-        <TripSummaryMetric
-          label={t('remaining')}
-          value={formatCurrency(remaining, trip.baseCurrency)}
-          danger={isOver}
-        />
-        <TripSummaryMetric
-          label={t('averagePerDay')}
-          value={formatCurrency(avgPerDay, trip.baseCurrency)}
-        />
-        <TripSummaryMetric
-          label={t('expenseCount')}
-          value={String(expenseCount)}
-        />
+        <Box
+          sx={{
+            display: 'flex',
+            flex: { md: '2 1 0' },
+            flexDirection: { xs: 'column', sm: 'row' },
+            gap: { xs: 2, sm: 0 },
+            minWidth: 0,
+          }}
+        >
+          <TripSummaryMetric
+            inverted
+            label={t('remaining')}
+            value={formatCurrency(remaining, trip.baseCurrency)}
+            danger={isOver}
+            icon={<AccountBalanceWalletRoundedIcon />}
+          />
+          <TripSummaryMetric
+            inverted
+            label={t('averagePerDay')}
+            value={formatCurrency(totalSpent / days, trip.baseCurrency)}
+            icon={<BarChartRoundedIcon />}
+            divider
+          />
+          <TripSummaryMetric
+            inverted
+            label={t('memberCount')}
+            value={String(activeMembers.length)}
+            icon={<GroupRoundedIcon />}
+            divider
+          />
+        </Box>
       </Box>
     </Box>
   );

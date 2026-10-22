@@ -59,20 +59,14 @@ const TripCardItem = ({
         flexDirection: 'column',
         borderRadius: '14px',
         overflow: 'hidden',
-        bgcolor: 'background.paper',
         border: '1.5px solid',
         borderColor: isActive ? 'primary.main' : 'divider',
-        boxShadow: (theme) =>
-          isActive ? `0 0 0 1px ${theme.palette.primary.main}` : 'none',
-        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+        bgcolor: isActive ? 'action.selected' : 'background.paper',
+        transition: 'background-color 0.15s, border-color 0.15s',
         cursor: 'pointer',
         '&:hover': {
-          transform: 'translateY(-2px)',
           borderColor: 'primary.main',
-          boxShadow: (theme) =>
-            theme.palette.mode === 'dark'
-              ? '0 10px 24px rgba(0, 0, 0, 0.45)'
-              : '0 10px 24px rgba(30, 58, 138, 0.09)',
+          bgcolor: 'action.hover',
         },
       }}
     >
@@ -265,8 +259,8 @@ const TripCardItem = ({
               borderRadius: '5px',
               fontSize: '10.5px',
               fontWeight: 700,
-              bgcolor: isActive ? 'primary.main' : 'action.hover',
-              color: isActive ? 'primary.contrastText' : 'text.secondary',
+              bgcolor: 'action.hover',
+              color: isActive ? 'primary.main' : 'text.secondary',
               whiteSpace: 'nowrap',
             }}
           >

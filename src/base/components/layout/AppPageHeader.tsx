@@ -71,8 +71,8 @@ const AppPageHeader = ({
               component="h1"
               sx={{
                 fontFamily: 'var(--font-display)',
-                fontSize: { xs: '24px', sm: '28px' },
-                fontWeight: 800,
+                fontSize: '24px',
+                fontWeight: 700,
                 color: 'text.primary',
                 letterSpacing: '-0.5px',
                 minWidth: 0,
@@ -95,9 +95,7 @@ const AppPageHeader = ({
                   py: 0.2,
                   borderRadius: '999px',
                   bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-                  border: 1,
-                  borderColor: (theme) =>
-                    alpha(theme.palette.primary.main, 0.2),
+                  border: 0,
                   fontSize: '12px',
                   fontWeight: 700,
                   color: 'primary.main',

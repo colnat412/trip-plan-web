@@ -7,7 +7,6 @@ import {
   Stack,
   Typography,
   CircularProgress,
-  InputAdornment,
   MenuItem,
   Select,
   FormControl,
@@ -15,19 +14,15 @@ import {
   Alert,
 } from '@mui/material';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
-import AccessTimeOutlinedIcon from '@mui/icons-material/AccessTimeOutlined';
-import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
-import AltRouteOutlinedIcon from '@mui/icons-material/AltRouteOutlined';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { useTranslations } from 'next-intl';
 
 import {
   AppPageContainer,
+  AppPageHeader,
   AppCard,
   AppButton,
   AppTextField,
@@ -137,149 +132,32 @@ const AiPlannerView = () => {
     }
   };
 
-  const capabilities = [
-    {
-      icon: (
-        <AccessTimeOutlinedIcon sx={{ color: 'primary.main', fontSize: 28 }} />
-      ),
-      title: t('cap1Title'),
-      desc: t('cap1Desc'),
-    },
-    {
-      icon: (
-        <SavingsOutlinedIcon sx={{ color: 'success.main', fontSize: 28 }} />
-      ),
-      title: t('cap2Title'),
-      desc: t('cap2Desc'),
-    },
-    {
-      icon: (
-        <AltRouteOutlinedIcon sx={{ color: 'warning.main', fontSize: 28 }} />
-      ),
-      title: t('cap3Title'),
-      desc: t('cap3Desc'),
-    },
-  ];
-
   return (
     <AppPageContainer>
-      <Box
-        sx={{
-          width: '100%',
-          p: { xs: 3, md: 4 },
-          borderRadius: '24px',
-          background:
-            'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.08) 50%, rgba(245, 158, 11, 0.08) 100%)',
-          border: '1px solid',
-          borderColor: 'primary.light',
-          display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          alignItems: { xs: 'flex-start', md: 'center' },
-          justifyContent: 'space-between',
-          gap: 2.5,
-        }}
-      >
-        <Box sx={{ maxWidth: 640 }}>
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{ alignItems: 'center', mb: 1 }}
-          >
-            <Box
-              sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 0.8,
-                px: 1.5,
-                py: 0.5,
-                borderRadius: '20px',
-                bgcolor: 'primary.main',
-                color: '#fff',
-                fontSize: '12px',
-                fontWeight: 700,
-                letterSpacing: '0.3px',
-              }}
-            >
-              <AutoAwesomeRoundedIcon sx={{ fontSize: 16 }} />
-              {t('badge')}
-            </Box>
-            {/* <Typography
-              variant="caption"
-              sx={{ color: 'text.secondary', fontWeight: 600 }}
-            >
-              {t('provider')}
-            </Typography> */}
-          </Stack>
-
-          <Typography
-            component="h1"
-            sx={{
-              fontSize: { xs: '24px', sm: '30px' },
-              fontWeight: 800,
-              fontFamily: 'var(--font-display)',
-              color: 'text.primary',
-              letterSpacing: '-0.5px',
-              mb: 1,
-            }}
-          >
-            {t('title')}
-          </Typography>
-
-          <Typography
-            sx={{ color: 'text.secondary', fontSize: '14px', lineHeight: 1.6 }}
-          >
-            {t('subtitle')}
-          </Typography>
-        </Box>
-
-        {currentTrip && (
-          <AppCard
-            sx={{
-              minWidth: { xs: '100%', sm: 260 },
-              p: 2,
-              borderRadius: '16px',
-              bgcolor: 'background.paper',
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
-          >
-            <Typography
-              variant="caption"
-              sx={{ color: 'text.secondary', fontWeight: 600 }}
-            >
-              {t('activeTripLabel')}
-            </Typography>
-            <Typography
-              variant="subtitle1"
-              noWrap
-              sx={{ fontWeight: 700, color: 'primary.main', mt: 0.3 }}
-            >
-              {currentTrip.name}
-            </Typography>
-            {currentTrip.destination && (
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                📍 {currentTrip.destination}
-              </Typography>
-            )}
+      <AppPageHeader
+        icon={<AutoAwesomeRoundedIcon />}
+        title={t('title')}
+        badge={currentTrip?.name}
+        subtitle={t('subtitle')}
+        actions={
+          currentTrip ? (
             <AppButton
               intent="secondary"
               size="small"
               onClick={() => router.push('/plan')}
               endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: 16 }} />}
-              sx={{ mt: 1.5, width: '100%' }}
             >
               {t('viewPlanBtn')}
             </AppButton>
-          </AppCard>
-        )}
-      </Box>
+          ) : undefined
+        }
+      />
 
       <Box
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', lg: 'row' },
           gap: 3,
-          mt: 0.5,
           alignItems: 'flex-start',
         }}
       >
@@ -287,14 +165,14 @@ const AiPlannerView = () => {
           <AppCard
             sx={{
               p: { xs: 2.5, sm: 3.5 },
-              borderRadius: '20px',
+              borderRadius: '16px',
               border: '1px solid',
               borderColor: 'divider',
             }}
           >
             <Typography
               variant="h6"
-              sx={{ fontWeight: 800, color: 'text.primary', mb: 0.5 }}
+              sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}
             >
               {t('formTitle')}
             </Typography>
@@ -343,18 +221,6 @@ const AiPlannerView = () => {
                   disabled
                   helperText={t('daysDisabledHelper')}
                   fullWidth
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <CalendarMonthOutlinedIcon
-                            fontSize="small"
-                            sx={{ color: 'primary.main' }}
-                          />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
                 />
 
                 <AppTextField
@@ -366,18 +232,6 @@ const AiPlannerView = () => {
                   }
                   disabled={isPending}
                   fullWidth
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PeopleAltOutlinedIcon
-                            fontSize="small"
-                            sx={{ color: 'primary.main' }}
-                          />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
                 />
               </Stack>
 
@@ -535,106 +389,28 @@ const AiPlannerView = () => {
         </Box>
 
         <Box sx={{ flex: { xs: '1 1 auto', lg: 1 }, width: '100%' }}>
-          <Stack spacing={3}>
-            <AppCard
-              sx={{
-                p: 3,
-                borderRadius: '20px',
-                border: '1px solid',
-                borderColor: 'divider',
-              }}
-            >
-              <Typography
-                variant="subtitle1"
-                sx={{ fontWeight: 800, color: 'text.primary', mb: 2.5 }}
-              >
-                {t('capabilitiesTitle')}
-              </Typography>
-
-              <Stack spacing={2.5}>
-                {capabilities.map((cap, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      display: 'flex',
-                      gap: 2,
-                      alignItems: 'flex-start',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        p: 1.2,
-                        borderRadius: '12px',
-                        bgcolor: 'action.hover',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
-                      }}
-                    >
-                      {cap.icon}
-                    </Box>
-                    <Box>
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: 700, color: 'text.primary', mb: 0.3 }}
-                      >
-                        {cap.title}
-                      </Typography>
-                      <Typography
-                        variant="caption"
-                        sx={{ color: 'text.secondary', lineHeight: 1.5 }}
-                      >
-                        {cap.desc}
-                      </Typography>
-                    </Box>
-                  </Box>
-                ))}
-              </Stack>
-            </AppCard>
-
-            <AppCard
-              sx={{
-                p: 3,
-                borderRadius: '20px',
-                border: '1px solid',
-                borderColor: 'primary.light',
-                bgcolor: 'background.paper',
-              }}
-            >
-              <Stack
-                direction="row"
-                spacing={1}
-                sx={{ alignItems: 'center', mb: 1 }}
-              >
+          <AppCard variant="outlined" sx={{ p: 3, borderRadius: '16px' }}>
+            <Stack spacing={2}>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <LightbulbOutlinedIcon sx={{ color: 'warning.main' }} />
-                <Typography variant="subtitle2" sx={{ fontWeight: 800 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
                   {t('tipsTitle')}
                 </Typography>
               </Stack>
               <Typography
-                variant="caption"
-                sx={{
-                  color: 'text.secondary',
-                  display: 'block',
-                  lineHeight: 1.6,
-                }}
+                variant="body2"
+                sx={{ color: 'text.secondary', lineHeight: 1.7 }}
               >
-                • {t('tip1')}
-                <br />• {t('tip2')}
+                {t('tip1')}
               </Typography>
-
-              <AppButton
-                intent="secondary"
-                size="small"
-                onClick={() => router.push('/plan')}
-                endIcon={<ArrowForwardRoundedIcon />}
-                sx={{ mt: 2, width: '100%' }}
+              <Typography
+                variant="body2"
+                sx={{ color: 'text.secondary', lineHeight: 1.7 }}
               >
-                {t('viewPlanBtn')}
-              </AppButton>
-            </AppCard>
-          </Stack>
+                {t('tip2')}
+              </Typography>
+            </Stack>
+          </AppCard>
         </Box>
       </Box>
 

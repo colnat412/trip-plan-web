@@ -1,6 +1,7 @@
 'use client';
 
-import { Box, Divider, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Divider, Stack, Typography } from '@mui/material';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 import { useTranslations } from 'next-intl';
@@ -17,6 +18,8 @@ interface SidebarUserMenuProps {
   headerMenu?: boolean;
   userName?: string;
   userEmail?: string;
+  userAvatarUrl?: string;
+  userInitials?: string;
 }
 
 const SidebarUserMenu = ({
@@ -29,17 +32,18 @@ const SidebarUserMenu = ({
   headerMenu = false,
   userName,
   userEmail,
+  userAvatarUrl,
+  userInitials,
 }: SidebarUserMenuProps) => {
   const t = useTranslations('userMenu');
   const tNavigation = useTranslations('navigation');
   return (
-    // Popover allows natural Tab navigation through profile, language and theme controls.
     <AppPopover
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}
       label={tNavigation('account')}
-      width={272}
+      width={320}
       anchorOrigin={{
         vertical: headerMenu ? 'bottom' : 'top',
         horizontal: 'right',
@@ -49,77 +53,135 @@ const SidebarUserMenu = ({
         horizontal: 'right',
       }}
     >
-      <Stack spacing={1}>
+      <Stack spacing={0}>
         {headerMenu && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 0.5,
-              px: 1,
-              py: 1,
-              minWidth: 0,
-            }}
+          <Stack
+            direction="row"
+            spacing={1.25}
+            sx={{ alignItems: 'center', minWidth: 0, px: 1, py: 1 }}
           >
-            <Typography noWrap sx={{ fontWeight: 800, fontSize: '14px' }}>
-              {userName}
-            </Typography>
-            {userEmail && (
+            <Avatar
+              src={userAvatarUrl}
+              alt=""
+              sx={{
+                width: 48,
+                height: 48,
+                flexShrink: 0,
+                bgcolor: 'action.selected',
+                color: 'primary.main',
+                fontSize: '14px',
+                fontWeight: 800,
+              }}
+            >
+              {userInitials}
+            </Avatar>
+            <Stack spacing={0.25} sx={{ minWidth: 0 }}>
               <Typography
                 noWrap
-                sx={{ color: 'text.secondary', fontSize: '12px' }}
+                sx={{
+                  color: 'text.primary',
+                  fontSize: '15px',
+                  fontWeight: 800,
+                }}
               >
-                {userEmail}
+                {userName || t('profile')}
               </Typography>
-            )}
-          </Box>
+              {userEmail && (
+                <Typography
+                  noWrap
+                  sx={{ color: 'text.secondary', fontSize: '12px' }}
+                >
+                  {userEmail}
+                </Typography>
+              )}
+            </Stack>
+          </Stack>
         )}
-        <AppButton
-          autoFocus
-          type="button"
-          intent="text"
-          size="small"
-          startIcon={<PersonOutlineRoundedIcon />}
-          onClick={() => {
-            onClose();
-            onOpenProfile();
-          }}
-          sx={{
-            width: '100%',
-            minHeight: 48,
-            justifyContent: 'flex-start',
-            color: 'text.primary',
-          }}
-        >
-          {t('profile')}
-        </AppButton>
+
+        {headerMenu && <Divider />}
+
+        {headerMenu ? (
+          <AppButton
+            autoFocus
+            type="button"
+            intent="text"
+            size="small"
+            startIcon={<PersonOutlineRoundedIcon />}
+            endIcon={<ChevronRightRoundedIcon />}
+            onClick={() => {
+              onClose();
+              onOpenProfile();
+            }}
+            sx={{
+              width: '100%',
+              minHeight: 44,
+              justifyContent: 'flex-start',
+              px: 1,
+              color: 'text.primary',
+              bgcolor: 'transparent',
+              '& .MuiButton-startIcon': {
+                flexShrink: 0,
+              },
+              '& .MuiButton-endIcon': {
+                flexShrink: 0,
+                color: 'text.secondary',
+              },
+              '&:hover': {
+                color: 'text.primary',
+                bgcolor: 'action.selected',
+              },
+            }}
+          >
+            <Box component="span" sx={{ flex: 1, textAlign: 'left' }}>
+              {t('profile')}
+            </Box>
+          </AppButton>
+        ) : (
+          <AppButton
+            autoFocus
+            type="button"
+            intent="text"
+            size="small"
+            startIcon={<PersonOutlineRoundedIcon />}
+            onClick={() => {
+              onClose();
+              onOpenProfile();
+            }}
+            sx={{
+              width: '100%',
+              minHeight: 48,
+              justifyContent: 'flex-start',
+              color: 'text.primary',
+            }}
+          >
+            {t('profile')}
+          </AppButton>
+        )}
         {headerMenu && (
-          <Box sx={{ px: 1, py: 1 }}>
-            <AppPreferences />
-          </Box>
+          <>
+            <Divider />
+            <AppPreferences menuLayout />
+          </>
         )}
         <Divider />
-        <AppButton
-          type="button"
-          intent="text"
-          size="small"
-          loading={isLoggingOut}
-          disabled={isLoggingOut}
-          startIcon={<LogoutRoundedIcon />}
-          onClick={onLogout}
-          sx={{
-            width: '100%',
-            minHeight: 48,
-            justifyContent: 'flex-start',
-            color: 'error.main',
-            '&:hover': {
-              bgcolor: (theme) =>
-                `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).error.main} 8%, transparent)`,
-            },
-          }}
-        >
-          {isLoggingOut ? t('loggingOut') : t('logout')}
-        </AppButton>
+        <Box sx={{ px: 0.5, pt: 1.5, pb: 0.5 }}>
+          <AppButton
+            type="button"
+            intent="danger"
+            size="small"
+            loading={isLoggingOut}
+            disabled={isLoggingOut}
+            startIcon={<LogoutRoundedIcon />}
+            onClick={onLogout}
+            sx={{
+              width: '100%',
+              minHeight: 48,
+              justifyContent: 'flex-start',
+            }}
+          >
+            {isLoggingOut ? t('loggingOut') : t('logout')}
+          </AppButton>
+        </Box>
       </Stack>
     </AppPopover>
   );

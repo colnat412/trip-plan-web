@@ -4,9 +4,13 @@ import { Box, Stack, Typography } from '@mui/material';
 
 interface AppBrandProps {
   compactOnMobile?: boolean;
+  showTag?: boolean;
 }
 
-const AppBrand = ({ compactOnMobile = false }: AppBrandProps) => {
+const AppBrand = ({
+  compactOnMobile = false,
+  showTag = true,
+}: AppBrandProps) => {
   const t = useTranslations('navigation');
   return (
     <Stack
@@ -16,8 +20,8 @@ const AppBrand = ({ compactOnMobile = false }: AppBrandProps) => {
     >
       <Box
         sx={{
-          width: 38,
-          height: 38,
+          width: showTag ? 38 : 42,
+          height: showTag ? 38 : 42,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -42,16 +46,23 @@ const AppBrand = ({ compactOnMobile = false }: AppBrandProps) => {
         }}
       >
         <Typography
-          sx={{ color: 'text.primary', fontWeight: 800, lineHeight: 1.2 }}
+          sx={{
+            color: 'text.primary',
+            fontSize: showTag ? '16px' : '21px',
+            fontWeight: 800,
+            lineHeight: 1.2,
+          }}
         >
           {t('brandName')}
         </Typography>
-        <Typography
-          variant="caption"
-          sx={{ color: 'primary.light', lineHeight: 1 }}
-        >
-          {t('brandTag')}
-        </Typography>
+        {showTag ? (
+          <Typography
+            variant="caption"
+            sx={{ color: 'primary.light', lineHeight: 1 }}
+          >
+            {t('brandTag')}
+          </Typography>
+        ) : null}
       </Box>
     </Stack>
   );

@@ -199,6 +199,8 @@ const SidebarUser = ({
         headerMenu={compact}
         userName={displayName}
         userEmail={rawUser?.email}
+        userAvatarUrl={avatarSrc}
+        userInitials={displayInitials}
       />
 
       <ProfileDialog

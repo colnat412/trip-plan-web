@@ -29,7 +29,7 @@ const AppTopBar = () => {
         sx={{
           width: '100%',
           minWidth: 0,
-          minHeight: 64,
+          minHeight: 72,
           px: { xs: 1.5, sm: 2, md: 3, xl: 4 },
           py: 0.5,
           display: 'flex',
@@ -63,7 +63,7 @@ const AppTopBar = () => {
               },
             }}
           >
-            <AppBrand compactOnMobile />
+            <AppBrand compactOnMobile showTag={false} />
           </Box>
           <AppTripBar />
         </Box>

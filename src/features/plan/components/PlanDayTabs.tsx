@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Box, ButtonBase, Typography } from '@mui/material';
-import { alpha } from '@mui/material/styles';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import { useTranslations } from 'next-intl';
 
@@ -60,20 +59,15 @@ const PlanDayTabs = ({
               borderRadius: '14px',
               border: 1,
               borderColor: isSelected ? 'primary.main' : 'divider',
-              bgcolor: isSelected ? 'primary.main' : 'background.paper',
-              color: isSelected ? 'primary.contrastText' : 'text.primary',
+              bgcolor: isSelected ? 'action.selected' : 'background.paper',
+              color: isSelected ? 'primary.main' : 'text.primary',
               minWidth: 120,
               minHeight: 74,
               flexShrink: 0,
               textAlign: 'left',
-              transition: 'all 0.2s ease',
-              boxShadow: (theme) => {
-                return isSelected
-                  ? `0 6px 16px ${alpha(theme.palette.primary.main, 0.16)}`
-                  : `0 2px 4px ${alpha(theme.palette.text.primary, 0.04)}`;
-              },
+              transition: 'background-color 0.15s, border-color 0.15s',
               '&:hover': {
-                bgcolor: isSelected ? 'primary.main' : 'action.hover',
+                bgcolor: 'action.hover',
                 borderColor: 'primary.main',
               },
             }}
@@ -105,12 +99,8 @@ const PlanDayTabs = ({
                   borderRadius: '999px',
                   fontSize: '11px',
                   fontWeight: 700,
-                  bgcolor: (theme) => {
-                    return isSelected
-                      ? alpha(theme.palette.primary.contrastText, 0.2)
-                      : (theme.vars?.palette ?? theme.palette).action.hover;
-                  },
-                  color: isSelected ? 'primary.contrastText' : 'text.secondary',
+                  bgcolor: 'background.paper',
+                  color: isSelected ? 'primary.main' : 'text.secondary',
                 }}
               >
                 {day.totalActivities}
@@ -123,7 +113,7 @@ const PlanDayTabs = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: 0.5,
-                  opacity: isSelected ? 0.9 : 0.75,
+                opacity: 0.8,
                   fontSize: '11px',
                   minHeight: '16px',
                 }}
@@ -140,12 +130,10 @@ const PlanDayTabs = ({
                 fontSize: '11px',
                 fontWeight: 700,
                 fontFamily: 'var(--font-mono)',
-                color: isSelected
-                  ? 'primary.contrastText'
-                  : day.totalEstimatedCost && day.totalEstimatedCost > 0
+                color: day.totalEstimatedCost && day.totalEstimatedCost > 0
                     ? 'success.main'
                     : 'text.secondary',
-                opacity: isSelected ? 0.95 : 0.8,
+                opacity: 0.9,
               }}
             >
               {formatCurrency(day.totalEstimatedCost ?? 0, currency)}

@@ -35,23 +35,22 @@ function getCardStyles(
       elevated: {
         backgroundColor: palette.background.paper,
         color: palette.text.primary,
-        border: 'none',
-        boxShadow:
-          'rgba(0, 0, 0, 0.05) 0px 1px 3px, rgba(0, 0, 0, 0.04) 0px 0px 0px 1px',
+        border: `1px solid ${palette.divider}`,
+        boxShadow: 'none',
       },
 
       primary: {
-        color: palette.primary.contrastText,
-        background: `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`,
-        border: 'none',
-        boxShadow: `0 8px 24px color-mix(in srgb, ${palette.primary.main} 18%, transparent)`,
+        color: palette.text.primary,
+        backgroundColor: `color-mix(in srgb, ${palette.primary.main} 7%, ${palette.background.paper})`,
+        border: `1px solid color-mix(in srgb, ${palette.primary.main} 20%, ${palette.divider})`,
+        boxShadow: 'none',
       },
 
       danger: {
-        color: palette.primary.contrastText,
-        background: `linear-gradient(135deg, ${palette.secondary.dark}, ${palette.secondary.main})`,
-        border: 'none',
-        boxShadow: `0 8px 24px color-mix(in srgb, ${palette.primary.main} 18%, transparent)`,
+        color: palette.error.dark,
+        backgroundColor: `color-mix(in srgb, ${palette.error.main} 8%, ${palette.background.paper})`,
+        border: `1px solid color-mix(in srgb, ${palette.error.main} 22%, ${palette.divider})`,
+        boxShadow: 'none',
       },
 
       transparent: {
@@ -100,27 +99,19 @@ function getCardStyles(
       borderRadius: '14px',
       overflow: 'hidden',
       cursor: 'default',
-      transition: 'box-shadow 0.15s',
+      transition: 'background-color 0.15s, border-color 0.15s',
 
       ...variantStyles[variant],
 
       ...(interactive && {
         cursor: 'pointer',
-        transition: theme.transitions.create(
-          ['transform', 'box-shadow', 'border-color'],
-          {
-            duration: 150,
-          },
-        ),
+        transition: theme.transitions.create(['background-color', 'border-color'], {
+          duration: 150,
+        }),
 
         '&:hover': {
-          transform: 'translateY(-1px)',
           borderColor: palette.primary.main,
-          boxShadow: `0 8px 24px color-mix(in srgb, ${palette.primary.main} 14%, transparent)`,
-        },
-
-        '&:active': {
-          transform: 'translateY(0)',
+          backgroundColor: `color-mix(in srgb, ${palette.primary.main} 3%, ${palette.background.paper})`,
         },
 
         '&:focus-visible': {

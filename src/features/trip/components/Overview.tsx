@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
@@ -17,25 +18,38 @@ const Overview = () => {
 
   if (isLoading) {
     return (
-      <AppPageContainer>
+      <AppPageContainer
+        sx={{
+          height: { md: '100%' },
+          minHeight: { md: 0 },
+          overflow: { md: 'hidden' },
+        }}
+      >
         <Skeleton
           variant="rounded"
           width="100%"
-          height={240}
-          sx={{ borderRadius: '20px' }}
+          sx={{
+            flex: { md: '0.9 1 0' },
+            minHeight: { xs: 365, md: 0 },
+            borderRadius: '16px',
+          }}
         />
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
+        <Stack
+          direction={{ xs: 'column', md: 'row' }}
+          spacing={3}
+          sx={{ flex: { md: '1.1 1 0' }, minHeight: { md: 0 } }}
+        >
           <Skeleton
             variant="rounded"
             width="100%"
             height={300}
-            sx={{ borderRadius: '20px' }}
+            sx={{ borderRadius: '16px' }}
           />
           <Skeleton
             variant="rounded"
             width="100%"
             height={300}
-            sx={{ borderRadius: '20px' }}
+            sx={{ borderRadius: '16px' }}
           />
         </Stack>
       </AppPageContainer>
@@ -53,7 +67,17 @@ const Overview = () => {
   const currentTrip = activeTrip || trips[0];
 
   return (
-    <AppPageContainer>
+    <AppPageContainer
+      sx={{
+        height: { md: '100%' },
+        minHeight: { md: 0 },
+        overflow: { md: 'hidden' },
+        '@media (max-height: 820px)': {
+          p: 2,
+          gap: 2,
+        },
+      }}
+    >
       <ActiveTripBanner trip={currentTrip} />
 
       <Box
@@ -63,44 +87,73 @@ const Overview = () => {
           width: '100%',
           gap: 3,
           alignItems: 'stretch',
+          flex: { md: '1.1 1 0' },
+          minHeight: { md: 0 },
+          '@media (max-height: 820px)': {
+            flex: { md: '1.04 1 0' },
+            gap: 2,
+          },
         }}
       >
         <Stack
           component="section"
-          spacing={2.5}
+          spacing={0}
           sx={{
             flex: { xs: '1 1 auto', md: '1 1 0', xl: '7 1 0' },
             minWidth: 0,
             p: { xs: 2, md: 2.5, xl: 3 },
             border: 1,
             borderColor: 'divider',
-            borderRadius: '20px',
+            borderRadius: '16px',
             bgcolor: 'background.paper',
+            overflow: 'hidden',
+            height: { md: '100%' },
+            gap: 2.5,
+            '@media (max-height: 820px)': {
+              gap: 1,
+              p: 2,
+            },
           }}
         >
           <Typography
             component="h2"
-            sx={{ color: 'text.primary', fontSize: '17px', fontWeight: 800 }}
+            sx={{ color: 'text.primary', fontSize: '18px', fontWeight: 700 }}
           >
             {t('spendingByCategory')}
           </Typography>
-          <CategoryList
-            tripId={currentTrip.id}
-            currency={currentTrip.baseCurrency}
-          />
+          <Box
+            sx={{
+              flex: 1,
+              minHeight: 0,
+              overflowY: { xs: 'visible', md: 'auto' },
+              pr: { md: 0.5 },
+              scrollbarGutter: 'stable',
+            }}
+          >
+            <CategoryList
+              tripId={currentTrip.id}
+              currency={currentTrip.baseCurrency}
+            />
+          </Box>
         </Stack>
 
         <Stack
           component="section"
-          spacing={1}
+          spacing={0}
           sx={{
             flex: { xs: '1 1 auto', md: '1 1 0', xl: '5 1 0' },
             minWidth: 0,
             p: { xs: 2, md: 2.5, xl: 3 },
             border: 1,
             borderColor: 'divider',
-            borderRadius: '20px',
+            borderRadius: '16px',
             bgcolor: 'background.paper',
+            overflow: 'hidden',
+            height: { md: '100%' },
+            gap: 1,
+            '@media (max-height: 820px)': {
+              p: 2,
+            },
           }}
         >
           <Stack
@@ -110,7 +163,7 @@ const Overview = () => {
           >
             <Typography
               component="h2"
-              sx={{ color: 'text.primary', fontSize: '17px', fontWeight: 800 }}
+              sx={{ color: 'text.primary', fontSize: '18px', fontWeight: 700 }}
             >
               {t('recentTitle')}
             </Typography>
@@ -122,16 +175,30 @@ const Overview = () => {
                 fontSize: '12px',
                 fontWeight: 700,
                 textDecoration: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.5,
                 '&:hover': { textDecoration: 'underline' },
               }}
             >
-              {t('viewAll')} →
+              {t('viewAll')}
+              <ChevronRightRoundedIcon sx={{ fontSize: '18px' }} />
             </Typography>
           </Stack>
-          <RecentExpenseList
-            tripId={currentTrip.id}
-            currency={currentTrip.baseCurrency}
-          />
+          <Box
+            sx={{
+              flex: 1,
+              minHeight: 0,
+              overflowY: { xs: 'visible', md: 'auto' },
+              pr: { md: 0.5 },
+              scrollbarGutter: 'stable',
+            }}
+          >
+            <RecentExpenseList
+              tripId={currentTrip.id}
+              currency={currentTrip.baseCurrency}
+            />
+          </Box>
         </Stack>
       </Box>
     </AppPageContainer>

@@ -95,13 +95,14 @@ function getButtonStyles(
         return {
           ...commonStyles,
 
-          color: palette.primary.main,
+          color: palette.text.primary,
           backgroundColor: palette.background.paper,
-          border: `1px solid ${palette.primary.main}`,
+          border: `1px solid ${palette.divider}`,
 
           "&:hover": {
-            color: palette.primary.main,
-            borderColor: palette.primary.light,
+            color: palette.text.primary,
+            backgroundColor: palette.action.hover,
+            borderColor: palette.divider,
           },
 
           "&:active": {
@@ -145,13 +146,13 @@ function getButtonStyles(
           ...commonStyles,
 
           color: palette.error.main,
-          backgroundColor: palette.background.paper,
-          border: `1px solid ${palette.error.main}`,
+          backgroundColor: `color-mix(in srgb, ${palette.error.main} 10%, transparent)`,
+          border: "1px solid transparent",
 
           "&:hover": {
             color: palette.error.dark,
             backgroundColor: `color-mix(in srgb, ${palette.error.main} 12%, transparent)`,
-            borderColor: palette.error.dark,
+            borderColor: "transparent",
           },
 
           "&:active": {

@@ -24,6 +24,7 @@ const AppBottomNavigation = () => {
   const inMore = MORE_NAVIGATION_ITEMS.some((item) =>
     isNavigationActive(pathname, item.href),
   );
+  const hasMoreNavigation = MORE_NAVIGATION_ITEMS.length > 0;
   const value = moreOpen || inMore ? 'more' : primary?.id;
 
   return (
@@ -56,11 +57,22 @@ const AppBottomNavigation = () => {
               minHeight: 48,
               px: 0.5,
               gap: 0.5,
+              color: 'text.secondary',
+              '&.Mui-selected': {
+                color: 'primary.main',
+              },
+              '& .MuiSvgIcon-root': {
+                color: 'inherit',
+                transition: 'color 0.15s ease',
+              },
+              '&.Mui-selected .MuiSvgIcon-root': {
+                color: 'primary.main',
+              },
             },
             '& .MuiBottomNavigationAction-label, & .MuiBottomNavigationAction-label.Mui-selected':
               {
                 fontSize: { xs: '11px', sm: '12px' },
-                fontWeight: 700,
+                fontWeight: 600,
                 whiteSpace: 'normal',
                 lineHeight: 1.25,
                 maxWidth: '100%',
@@ -83,21 +95,25 @@ const AppBottomNavigation = () => {
               aria-current={primary?.id === item.id ? 'page' : undefined}
             />
           ))}
-          <BottomNavigationAction
-            value="more"
-            label={t('more')}
-            icon={<MoreHorizRoundedIcon />}
-            onClick={() => setMoreOpen(true)}
-            aria-haspopup="dialog"
-            aria-expanded={moreOpen}
-            aria-current={inMore ? 'true' : undefined}
-          />
+          {hasMoreNavigation && (
+            <BottomNavigationAction
+              value="more"
+              label={t('more')}
+              icon={<MoreHorizRoundedIcon />}
+              onClick={() => setMoreOpen(true)}
+              aria-haspopup="dialog"
+              aria-expanded={moreOpen}
+              aria-current={inMore ? 'true' : undefined}
+            />
+          )}
         </BottomNavigation>
       </Box>
-      <AppMoreNavigationDialog
-        open={moreOpen}
-        onClose={() => setMoreOpen(false)}
-      />
+      {hasMoreNavigation && (
+        <AppMoreNavigationDialog
+          open={moreOpen}
+          onClose={() => setMoreOpen(false)}
+        />
+      )}
     </>
   );
 };

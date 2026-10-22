@@ -35,7 +35,7 @@ interface StatusThemeConfig {
 
 const STATUS_CONFIG_MAP: Record<TripStatus, StatusThemeConfig> = {
   COMPLETED: { variant: 'success', labelKey: 'completed' },
-  IN_PROGRESS: { variant: 'warning', labelKey: 'inProgress' },
+  IN_PROGRESS: { variant: 'success', labelKey: 'inProgress' },
   PLANNING: { variant: 'info', labelKey: 'planning' },
   CONFIRMED: { variant: 'primary', labelKey: 'confirmed' },
   ARCHIVED: { variant: 'neutral', labelKey: 'archived' },

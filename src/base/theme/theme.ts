@@ -122,13 +122,13 @@ const appTheme = createTheme({
       defaultProps: { disableElevation: true },
       styleOverrides: {
         root: {
-          minHeight: 44,
-          paddingInline: 20,
+          minHeight: 42,
+          paddingInline: 16,
           borderRadius: 12,
           textTransform: 'none',
-          fontWeight: 700,
+          fontWeight: 600,
         },
-        sizeLarge: { minHeight: 50, fontSize: '16px' },
+        sizeLarge: { minHeight: 46, fontSize: '15px' },
       },
     },
     MuiOutlinedInput: {
@@ -137,7 +137,7 @@ const appTheme = createTheme({
           const palette = theme.vars?.palette ?? theme.palette;
 
           return {
-            minHeight: 50,
+            minHeight: 44,
             borderRadius: 12,
             backgroundColor: palette.background.paper,
             '&:hover .MuiOutlinedInput-notchedOutline': {
@@ -151,7 +151,7 @@ const appTheme = createTheme({
             },
           };
         },
-        input: { padding: '14px 16px' },
+        input: { padding: '11px 14px' },
       },
     },
     MuiInputLabel: {
@@ -178,11 +178,31 @@ const appTheme = createTheme({
           const palette = theme.vars?.palette ?? theme.palette;
 
           return {
-            borderRadius: 20,
+            borderRadius: 16,
             border: `1px solid ${palette.divider}`,
-            boxShadow: '0 24px 70px rgba(0, 0, 0, 0.18)',
+            boxShadow: 'none',
           };
         },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        rounded: { borderRadius: 16 },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        head: {
+          fontSize: '12px',
+          fontWeight: 700,
+          textTransform: 'none',
+          letterSpacing: 0,
+        },
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: { borderRadius: 10, fontWeight: 600 },
       },
     },
   },

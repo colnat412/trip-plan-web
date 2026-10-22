@@ -11,9 +11,9 @@ const NAVIGATION_IDS = [
   'settlement',
   'ai',
 ] as const;
-const PRIMARY_IDS = ['overview', 'trips', 'plan', 'expenses'] as const;
 type NavigationId = (typeof NAVIGATION_IDS)[number];
-type PrimaryNavigationId = (typeof PRIMARY_IDS)[number];
+
+const MAX_MOBILE_NAVIGATION_ACTIONS = 5;
 
 export interface AppNavigationItem {
   id: NavigationId;
@@ -26,10 +26,16 @@ export const APP_NAVIGATION_ITEMS: AppNavigationItem[] =
     const id = NAVIGATION_IDS.find((id) => id === item.id);
     return id ? [{ id, href: item.href, icon: item.icon }] : [];
   });
-export const PRIMARY_NAVIGATION_ITEMS = APP_NAVIGATION_ITEMS.filter(
-  (item): item is AppNavigationItem & { id: PrimaryNavigationId } =>
-    PRIMARY_IDS.some((id) => id === item.id),
+
+const directNavigationCount =
+  APP_NAVIGATION_ITEMS.length <= MAX_MOBILE_NAVIGATION_ACTIONS
+    ? APP_NAVIGATION_ITEMS.length
+    : MAX_MOBILE_NAVIGATION_ACTIONS - 1;
+
+export const PRIMARY_NAVIGATION_ITEMS = APP_NAVIGATION_ITEMS.slice(
+  0,
+  directNavigationCount,
 );
-export const MORE_NAVIGATION_ITEMS = APP_NAVIGATION_ITEMS.filter(
-  (item) => !PRIMARY_IDS.some((id) => id === item.id),
+export const MORE_NAVIGATION_ITEMS = APP_NAVIGATION_ITEMS.slice(
+  directNavigationCount,
 );

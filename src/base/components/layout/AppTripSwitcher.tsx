@@ -55,7 +55,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
       <Skeleton
         variant="rounded"
         width="100%"
-        height={52}
+        height={56}
         sx={{ borderRadius: '12px' }}
       />
     );
@@ -101,7 +101,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
           minWidth: 0,
           width: '100%',
           maxWidth: '100%',
-          minHeight: 52,
+          minHeight: 56,
           px: 1.5,
           color: 'text.primary',
           bgcolor: 'action.hover',
@@ -138,7 +138,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
           <Box sx={{ minWidth: 0, flex: 1, textAlign: 'left' }}>
             <Typography
               noWrap
-              sx={{ fontWeight: 800, fontSize: '14px', color: 'text.primary' }}
+              sx={{ fontWeight: 700, fontSize: '15px', color: 'text.primary' }}
             >
               {activeTrip.name}
             </Typography>

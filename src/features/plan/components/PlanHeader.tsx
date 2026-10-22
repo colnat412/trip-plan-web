@@ -7,10 +7,11 @@ import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
+import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { Share } from '@mui/icons-material';
 import { useTranslations } from 'next-intl';
 
-import { AppButton } from '@/base/components/ui';
+import { AppActionMenu, AppButton } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 
 export interface PlanHeaderProps {
@@ -47,6 +48,7 @@ const PlanHeader = ({
   onOpenPrint,
 }: PlanHeaderProps) => {
   const t = useTranslations('plan');
+  const tNavigation = useTranslations('navigation');
 
   const secondaryBtnSx = {
     flex: { xs: '1 1 calc(50% - 4px)', sm: 'initial' },
@@ -178,41 +180,6 @@ const PlanHeader = ({
           gap: { xs: 1, sm: 1.25 },
         }}
       >
-        {onOpenPrint && (
-          <AppButton
-            intent="secondary"
-            size="small"
-            onClick={onOpenPrint}
-            startIcon={<PictureAsPdfRoundedIcon />}
-            sx={secondaryBtnSx}
-          >
-            {t('print.button')}
-          </AppButton>
-        )}
-        {onOpenActivityLogs && (
-          <AppButton
-            intent="secondary"
-            size="small"
-            startIcon={<HistoryRoundedIcon />}
-            onClick={onOpenActivityLogs}
-            sx={secondaryBtnSx}
-          >
-            {t('activityLogBtn')}
-          </AppButton>
-        )}
-
-        {!readOnly && onOpenShare && (
-          <AppButton
-            intent="secondary"
-            size="small"
-            startIcon={<Share />}
-            onClick={onOpenShare}
-            sx={secondaryBtnSx}
-          >
-            {t('shareBtn')}
-          </AppButton>
-        )}
-
         <AppButton
           intent="secondary"
           size="small"
@@ -247,6 +214,48 @@ const PlanHeader = ({
           >
             {t('addActivity')}
           </AppButton>
+        )}
+
+        {(onOpenPrint || onOpenActivityLogs || (!readOnly && onOpenShare)) && (
+          <AppActionMenu
+            ariaLabel={tNavigation('more')}
+            trigger={
+              <AppButton
+                intent="secondary"
+                size="small"
+                startIcon={<MoreHorizRoundedIcon />}
+                sx={secondaryBtnSx}
+              >
+                {tNavigation('more')}
+              </AppButton>
+            }
+            items={[
+              ...(onOpenActivityLogs
+                ? [{
+                    id: 'activity-log',
+                    label: t('activityLogBtn'),
+                    icon: <HistoryRoundedIcon fontSize="small" />,
+                    onClick: onOpenActivityLogs,
+                  }]
+                : []),
+              ...(!readOnly && onOpenShare
+                ? [{
+                    id: 'share',
+                    label: t('shareBtn'),
+                    icon: <Share fontSize="small" />,
+                    onClick: onOpenShare,
+                  }]
+                : []),
+              ...(onOpenPrint
+                ? [{
+                    id: 'print',
+                    label: t('print.button'),
+                    icon: <PictureAsPdfRoundedIcon fontSize="small" />,
+                    onClick: onOpenPrint,
+                  }]
+                : []),
+            ]}
+          />
         )}
       </Box>
     </Box>

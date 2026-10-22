@@ -20,6 +20,7 @@ const RecentExpenseList = ({
   currency = 'VND',
 }: RecentExpenseListProps) => {
   const tExpense = useTranslations('expense');
+  const tOverview = useTranslations('overview');
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
   const { expenses, isLoading } = useTripExpenses({
@@ -40,9 +41,15 @@ const RecentExpenseList = ({
           >
             <Skeleton
               variant="rounded"
-              width={40}
-              height={40}
-              sx={{ borderRadius: '10px' }}
+              width={46}
+              height={46}
+              sx={{
+                borderRadius: '10px',
+                '@media (max-height: 820px)': {
+                  width: 38,
+                  height: 38,
+                },
+              }}
             />
             <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
               <Skeleton variant="text" width="60%" height={20} />
@@ -96,7 +103,7 @@ const RecentExpenseList = ({
         {expenses.map((expense, index) => {
           const config =
             CATEGORY_CONFIG[expense.category] || CATEGORY_CONFIG.OTHER;
-          const payerText = expense.payerName || 'Member';
+          const payerText = expense.payerName || tOverview('defaultMember');
           const dateText = formatDate(expense.expenseDate, 'DD/MM');
 
           return (
@@ -109,8 +116,11 @@ const RecentExpenseList = ({
                 justifyContent: 'flex-start',
                 textAlign: 'left',
                 borderRadius: '12px',
-                p: 1,
-                mx: -1,
+                px: 0.5,
+                py: 0.75,
+                '@media (max-height: 820px)': {
+                  py: 0.5,
+                },
                 borderBottom: index < expenses.length - 1 ? 1 : 0,
                 borderColor: 'divider',
                 transition: 'background-color 0.15s',
@@ -129,8 +139,8 @@ const RecentExpenseList = ({
               >
                 <Box
                   sx={{
-                    width: 40,
-                    height: 40,
+                    width: 46,
+                    height: 46,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -138,7 +148,12 @@ const RecentExpenseList = ({
                     borderRadius: '10px',
                     color: config.color,
                     bgcolor: config.bg,
-                    '& svg': { fontSize: '20px' },
+                    '& svg': { fontSize: '22px' },
+                    '@media (max-height: 820px)': {
+                      width: 38,
+                      height: 38,
+                      '& svg': { fontSize: '20px' },
+                    },
                   }}
                 >
                   {config.icon}

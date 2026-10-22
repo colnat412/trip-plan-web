@@ -24,7 +24,10 @@ const CategoryList = ({
 
   if (isLoading) {
     return (
-      <Stack spacing={2}>
+      <Stack
+        spacing={0}
+        sx={{ gap: '14px', '@media (max-height: 820px)': { gap: 1.25 } }}
+      >
         {Array.from({ length: 4 }).map((_, i) => (
           <Stack
             key={i}
@@ -34,9 +37,15 @@ const CategoryList = ({
           >
             <Skeleton
               variant="rounded"
-              width={38}
-              height={38}
-              sx={{ borderRadius: '10px' }}
+              width={46}
+              height={46}
+              sx={{
+                borderRadius: '10px',
+                '@media (max-height: 820px)': {
+                  width: 38,
+                  height: 38,
+                },
+              }}
             />
             <Stack spacing={0.75} sx={{ flexGrow: 1 }}>
               <Skeleton variant="text" width="50%" height={18} />
@@ -90,7 +99,10 @@ const CategoryList = ({
   }
 
   return (
-    <Stack spacing={2}>
+    <Stack
+      spacing={0}
+      sx={{ gap: '14px', '@media (max-height: 820px)': { gap: 1.25 } }}
+    >
       {activeCategories.map((categoryItem) => {
         const config =
           CATEGORY_CONFIG[categoryItem.category] || CATEGORY_CONFIG.OTHER;
@@ -114,8 +126,8 @@ const CategoryList = ({
           >
             <Box
               sx={{
-                width: 38,
-                height: 38,
+                width: 46,
+                height: 46,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -123,7 +135,12 @@ const CategoryList = ({
                 borderRadius: '10px',
                 color: config.color,
                 bgcolor: config.bg,
-                '& svg': { fontSize: '20px' },
+                '& svg': { fontSize: '22px' },
+                '@media (max-height: 820px)': {
+                  width: 38,
+                  height: 38,
+                  '& svg': { fontSize: '20px' },
+                },
               }}
             >
               {config.icon}
@@ -135,7 +152,10 @@ const CategoryList = ({
                 sx={{ alignItems: 'center', justifyContent: 'space-between' }}
               >
                 <Typography
+                  noWrap
                   sx={{
+                    minWidth: 0,
+                    flex: 1,
                     color: 'text.primary',
                     fontSize: '14px',
                     fontWeight: 700,
@@ -144,7 +164,9 @@ const CategoryList = ({
                   {categoryLabel}
                 </Typography>
                 <Typography
+                  noWrap
                   sx={{
+                    flexShrink: 0,
                     color: 'text.secondary',
                     fontFamily: 'var(--font-mono)',
                     fontSize: '12px',
@@ -157,17 +179,19 @@ const CategoryList = ({
                 value={percent}
                 height={6}
                 trackColor="action.hover"
-                barColor={isOverLimit ? '#EF4444' : config.color}
+                barColor={isOverLimit ? 'error.main' : config.color}
               />
             </Stack>
             <Typography
               sx={{
-                width: 34,
+                width: 40,
                 flexShrink: 0,
                 color: 'text.secondary',
                 fontSize: '11px',
                 textAlign: 'right',
                 fontFamily: 'var(--font-mono)',
+                fontVariantNumeric: 'tabular-nums',
+                whiteSpace: 'nowrap',
               }}
             >
               {percent}%
