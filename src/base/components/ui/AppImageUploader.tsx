@@ -13,6 +13,7 @@ interface AppImageUploaderProps {
   disabled?: boolean;
   onChange: (file: File | null) => void;
   variant?: 'avatar' | 'cover' | 'receipt';
+  showHint?: boolean;
 }
 
 const AppImageUploader = ({
@@ -22,6 +23,7 @@ const AppImageUploader = ({
   disabled = false,
   onChange,
   variant = 'avatar',
+  showHint = true,
 }: AppImageUploaderProps) => {
   const t = useTranslations('imageUpload');
   const input = useRef<HTMLInputElement>(null);
@@ -106,13 +108,15 @@ const AppImageUploader = ({
           {t('remove')}
         </AppButton>
       </Stack>
-      <Typography
-        variant="caption"
-        color={error ? 'error' : 'text.secondary'}
-        role={error ? 'alert' : undefined}
-      >
-        {error || t('hint')}
-      </Typography>
+      {(error || showHint) && (
+        <Typography
+          variant="caption"
+          color={error ? 'error' : 'text.secondary'}
+          role={error ? 'alert' : undefined}
+        >
+          {error || t('hint')}
+        </Typography>
+      )}
     </Stack>
   );
 };

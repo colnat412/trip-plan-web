@@ -326,6 +326,8 @@
     "fullName": "Họ và tên",
     "fullNamePlaceholder": "Nhập họ và tên",
     "fullNameRequired": "Vui lòng nhập họ và tên.",
+    "fullNameTooLong": "Họ và tên không được vượt quá 100 ký tự.",
+    "saveFailed": "Không thể lưu thông tin tài khoản. Vui lòng thử lại.",
     "email": "Email",
     "phone": "Số điện thoại",
     "phonePlaceholder": "Ví dụ: 0912 345 678",

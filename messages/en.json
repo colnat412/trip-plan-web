@@ -326,6 +326,8 @@
     "fullName": "Full Name",
     "fullNamePlaceholder": "Enter full name",
     "fullNameRequired": "Please enter full name.",
+    "fullNameTooLong": "Full name must not exceed 100 characters.",
+    "saveFailed": "Unable to save your profile. Please try again.",
     "email": "Email",
     "phone": "Phone Number",
     "phonePlaceholder": "e.g. +84 912 345 678",

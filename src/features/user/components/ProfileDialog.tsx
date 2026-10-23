@@ -44,7 +44,7 @@ const ProfileDialog = ({ open, onClose, user }: ProfileDialogProps) => {
       <AppToast
         open={saved}
         severity="success"
-        message={t('avatarSaved')}
+        message={t('saveSuccess')}
         onClose={() => setSaved(false)}
       />
     </>

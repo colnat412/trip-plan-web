@@ -1,7 +1,7 @@
 'use client';
 
 import { type FormEvent, useRef, useState } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import {
   AppButton,
@@ -13,6 +13,7 @@ import { getUserInitials } from '@/base/utils';
 import { ApiError } from '@/base/api';
 import { useUserContext } from '../context/UserContext';
 import useAvatarMutation from '../hooks/useAvatarMutation';
+import useProfileMutation from '../hooks/useProfileMutation';
 import type { SidebarUser } from '@/base/components/layout/sidebar/types';
 import type { UserProfile } from '@/features/auth/types';
 
@@ -32,6 +33,11 @@ const ProfileForm = ({
   const { user: currentUser, updateUser, refetchUser } = useUserContext();
   const profile = currentUser ?? user;
   const mutation = useAvatarMutation();
+  const profileMutation = useProfileMutation();
+  const [name, setName] = useState(profile?.name || '');
+  const [nameError, setNameError] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const nameChanged = name.trim() !== (profile?.name || '');
   const [selection, setSelection] = useState<File | null | undefined>(
     undefined,
   );
@@ -43,13 +49,29 @@ const ProfileForm = ({
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (selection === undefined || submitting.current) return;
+    if (submitting.current || (!nameChanged && selection === undefined)) return;
+    const trimmedName = name.trim();
+    if (!trimmedName || Array.from(trimmedName).length > 100) {
+      setNameError(t(!trimmedName ? 'fullNameRequired' : 'fullNameTooLong'));
+      return;
+    }
     submitting.current = true;
+    setIsSaving(true);
     onBusyChange(true);
     let saved = false;
+    let savingAvatar = false;
     try {
-      const result = await mutation.mutateAsync(selection);
-      updateUser(result.data);
+      if (nameChanged) {
+        const result = await profileMutation.mutateAsync({ name: trimmedName });
+        updateUser(result.data);
+        setName(result.data.name);
+      }
+      if (selection !== undefined) {
+        savingAvatar = true;
+        const result = await mutation.mutateAsync(selection);
+        updateUser(result.data);
+        setSelection(undefined);
+      }
       void refetchUser().catch(() => undefined);
       saved = true;
     } catch (error) {
@@ -57,46 +79,51 @@ const ProfileForm = ({
       const key =
         status === 401
           ? 'avatarUnauthorized'
-          : status === 409 || status === 404
-            ? 'avatarUnavailable'
-            : status === 413
-              ? 'avatarTooLarge'
-              : 'avatarFailed';
+          : !savingAvatar
+            ? 'saveFailed'
+            : status === 409 || status === 404
+              ? 'avatarUnavailable'
+              : status === 413
+                ? 'avatarTooLarge'
+                : 'avatarFailed';
       setToast({ message: t(key), severity: 'error' });
     } finally {
       submitting.current = false;
+      setIsSaving(false);
       onBusyChange(false);
     }
     if (saved) onSaved();
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      aria-busy={mutation.isPending}
-    >
+    <Box component="form" onSubmit={handleSubmit} aria-busy={isSaving}>
       <Stack spacing={2.5}>
         <AppImageUploader
           src={profile?.avatarUrl}
           alt={profile?.name || t('title')}
           fallback={getUserInitials(profile?.name || '')}
-          disabled={mutation.isPending}
+          disabled={isSaving}
+          showHint={false}
           onChange={setSelection}
         />
         <AppTextField
           label={t('fullName')}
-          value={profile?.name || ''}
-          disabled
+          value={name}
+          placeholder={t('fullNamePlaceholder')}
+          required
+          disabled={isSaving}
+          error={Boolean(nameError)}
+          helperText={nameError}
+          onChange={(event) => {
+            setName(event.target.value);
+            setNameError('');
+          }}
         />
         <AppTextField
           label={t('email')}
           value={profile?.email || ''}
           disabled
         />
-        <Typography variant="caption" color="text.secondary">
-          {t('avatarOnlyNote')}
-        </Typography>
         <Stack
           direction="row"
           spacing={1.5}
@@ -105,18 +132,18 @@ const ProfileForm = ({
           <AppButton
             type="button"
             intent="secondary"
-            disabled={mutation.isPending}
+            disabled={isSaving}
             onClick={onClose}
           >
             {t('close')}
           </AppButton>
           <AppButton
             type="submit"
-            loading={mutation.isPending}
-            disabled={selection === undefined}
-            aria-label={t('saveAvatar')}
+            loading={isSaving}
+            disabled={!nameChanged && selection === undefined}
+            aria-label={t('saveChanges')}
           >
-            {t('saveAvatar')}
+            {t('saveChanges')}
           </AppButton>
         </Stack>
       </Stack>
