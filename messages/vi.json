@@ -706,6 +706,7 @@
     }
   },
   "plan": {
+    "activityActions": "Thao tác với {title}",
     "map": {
       "title": "Điểm dừng trong ngày",
       "description": "Chọn một điểm dừng để xem vị trí trên bản đồ.",
@@ -827,6 +828,8 @@
       "emptyChecklist": "Chưa có mục nào trong danh sách chuẩn bị."
     },
     "distance": {
+      "unavailable": "Chưa có thông tin di chuyển",
+      "osmSource": "OpenStreetMap",
       "dayTotalTitle": "Lộ trình di chuyển trong ngày: {dist} ({time})",
       "dayTotalSub": "{count} chặng di chuyển giữa các địa điểm",
       "optimizeBtn": "Tối ưu lộ trình",

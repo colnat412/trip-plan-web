@@ -5,7 +5,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { AppButton } from '@/base/components/ui';
+import { AppButton, AppCard } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { ActivityStatus, PlanActivity, RouteSegment } from '../types';
 import ActivityTimelineCard from './ActivityTimelineCard';
@@ -120,7 +120,12 @@ const DayTimelineList = ({
           gap: 1.5,
         }}
       >
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+        <Stack
+          direction="row"
+          spacing={1}
+          useFlexGap
+          sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}
+        >
           <Typography
             sx={{
               fontSize: '13px',
@@ -157,7 +162,8 @@ const DayTimelineList = ({
               borderColor: 'error.light',
               '&:hover': {
                 borderColor: 'error.main',
-                bgcolor: (theme) => `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).error.main} 8%, transparent)`,
+                bgcolor: (theme) =>
+                  `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).error.main} 8%, transparent)`,
               },
             }}
           >
@@ -166,50 +172,53 @@ const DayTimelineList = ({
         )}
       </Box>
 
-      <Stack spacing={1}>
-        {activities.map((activity, idx) => {
-          const nextActivity = activities[idx + 1];
-          const hasLocationCurrent = Boolean(
-            activity.location && activity.location.trim().length > 0,
-          );
-          const hasLocationNext = Boolean(
-            nextActivity?.location && nextActivity.location.trim().length > 0,
-          );
+      <AppCard sx={{ p: { xs: 2, md: 3 }, borderRadius: '20px' }}>
+        <Stack spacing={0}>
+          {activities.map((activity, idx) => {
+            const nextActivity = activities[idx + 1];
+            const hasLocationCurrent = Boolean(
+              activity.location && activity.location.trim().length > 0,
+            );
+            const hasLocationNext = Boolean(
+              nextActivity?.location && nextActivity.location.trim().length > 0,
+            );
 
-          const segment =
-            nextActivity &&
-            segmentMap.get(`${activity.id}->${nextActivity.id}`);
+            const segment =
+              nextActivity &&
+              segmentMap.get(`${activity.id}->${nextActivity.id}`);
 
-          return (
-            <React.Fragment key={activity.id}>
-              <ActivityTimelineCard
-                activity={activity}
-                currency={currency}
-                onEdit={onEditActivity}
-                onDelete={
-                  canDeleteActivity?.(activity) === false
-                    ? undefined
-                    : onDeleteActivity
-                }
-                onToggleStatus={onToggleStatus}
-                onConvertToExpense={onConvertToExpense}
-                readOnly={readOnly}
-              />
-
-              {nextActivity && hasLocationCurrent && hasLocationNext && (
-                <ActivityDistanceConnector
-                  originLocation={activity.location!}
-                  destinationLocation={nextActivity.location!}
-                  distance={segment?.distance}
-                  duration={segment?.duration}
-                  isEstimated={segment?.isEstimated}
-                  source={segment?.source}
+            return (
+              <React.Fragment key={activity.id}>
+                <ActivityTimelineCard
+                  activity={activity}
+                  hasNext={idx < activities.length - 1}
+                  currency={currency}
+                  onEdit={onEditActivity}
+                  onDelete={
+                    canDeleteActivity?.(activity) === false
+                      ? undefined
+                      : onDeleteActivity
+                  }
+                  onToggleStatus={onToggleStatus}
+                  onConvertToExpense={onConvertToExpense}
+                  readOnly={readOnly}
                 />
-              )}
-            </React.Fragment>
-          );
-        })}
-      </Stack>
+
+                {nextActivity && hasLocationCurrent && hasLocationNext && (
+                  <ActivityDistanceConnector
+                    originLocation={activity.location!}
+                    destinationLocation={nextActivity.location!}
+                    distance={segment?.distance}
+                    duration={segment?.duration}
+                    isEstimated={segment?.isEstimated}
+                    source={segment?.source}
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </Stack>
+      </AppCard>
     </Box>
   );
 };

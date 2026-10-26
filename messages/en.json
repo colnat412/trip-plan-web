@@ -706,6 +706,7 @@
     }
   },
   "plan": {
+    "activityActions": "Actions for {title}",
     "map": {
       "title": "Stops for the day",
       "description": "Choose a stop to see its location on the map.",
@@ -827,6 +828,8 @@
       "emptyChecklist": "No items in preparation checklist yet."
     },
     "distance": {
+      "unavailable": "Travel details unavailable",
+      "osmSource": "OpenStreetMap",
       "dayTotalTitle": "Day Travel Route: {dist} ({time})",
       "dayTotalSub": "{count} travel legs between activities",
       "optimizeBtn": "Optimize Route",

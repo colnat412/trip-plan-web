@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 import { Stack, Typography } from '@mui/material';
-import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppCard, AppLocationMap } from '@/base/components/ui';
 import type { PlanActivity } from '../types';
+import ActivityTimelineCard from './ActivityTimelineCard';
 
 export interface PlanMapPanelProps {
   activities: PlanActivity[];
   destination?: string;
+  currency?: string;
   hasMore?: boolean;
   loadingMore?: boolean;
   onLoadMore?: () => void;
@@ -18,6 +19,7 @@ export interface PlanMapPanelProps {
 const PlanMapPanel = ({
   activities,
   destination = '',
+  currency = 'VND',
   hasMore,
   loadingMore,
   onLoadMore,
@@ -44,48 +46,18 @@ const PlanMapPanel = ({
           </Typography>
         </Stack>
         <AppLocationMap location={location} />
-        <Stack spacing={1}>
-          {stops.map((activity) => (
-            <AppButton
+        <Stack spacing={0}>
+          {stops.map((activity, index) => (
+            <ActivityTimelineCard
               key={activity.id}
-              intent="secondary"
-              onClick={() => setSelectedId(String(activity.id))}
-              aria-pressed={activity.id === selected?.id}
-              startIcon={<PlaceRoundedIcon />}
-              sx={{
-                justifyContent: 'flex-start',
-                textAlign: 'left',
-                minWidth: 0,
-                minHeight: 48,
-                bgcolor:
-                  activity.id === selected?.id
-                    ? 'action.selected'
-                    : 'transparent',
-                borderColor:
-                  activity.id === selected?.id ? 'primary.main' : 'divider',
-              }}
-            >
-              <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                <Typography
-                  component="span"
-                  sx={{
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    overflowWrap: 'anywhere',
-                  }}
-                >
-                  {activity.title}
-                </Typography>
-                {activity.startTime && (
-                  <Typography
-                    component="span"
-                    sx={{ fontSize: '12px', color: 'text.secondary' }}
-                  >
-                    {activity.startTime.slice(0, 5)}
-                  </Typography>
-                )}
-              </Stack>
-            </AppButton>
+              activity={activity}
+              currency={currency}
+              readOnly
+              compact
+              hasNext={index < stops.length - 1}
+              selected={String(activity.id) === String(selected?.id)}
+              onSelect={() => setSelectedId(String(activity.id))}
+            />
           ))}
           {!stops.length && (
             <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>

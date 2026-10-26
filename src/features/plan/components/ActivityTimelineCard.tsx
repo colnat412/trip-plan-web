@@ -1,23 +1,23 @@
 'use client';
 
-import React from 'react';
-import { Box, Chip, Stack, Typography } from '@mui/material';
-import { alpha } from '@mui/material/styles';
+import { Box, Stack, Typography } from '@mui/material';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
-import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
+import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import { useTranslations } from 'next-intl';
 
 import {
   AppActionMenu,
-  AppCategoryChip,
+  AppButton,
+  AppCategoryIcon,
+  AppTimelineRow,
   type AppActionMenuItem,
 } from '@/base/components/ui';
-import { formatCurrency } from '@/base/utils';
+import { formatCurrency, formatTimeRange } from '@/base/utils';
 import type { ActivityStatus, PlanActivity } from '../types';
 
 export interface ActivityTimelineCardProps {
@@ -28,6 +28,10 @@ export interface ActivityTimelineCardProps {
   onToggleStatus?: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
   onConvertToExpense?: (activity: PlanActivity) => void;
   readOnly?: boolean;
+  hasNext?: boolean;
+  compact?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
 }
 
 const ActivityTimelineCard = ({
@@ -38,20 +42,16 @@ const ActivityTimelineCard = ({
   onToggleStatus,
   onConvertToExpense,
   readOnly = false,
+  hasNext = false,
+  compact = false,
+  selected = false,
+  onSelect,
 }: ActivityTimelineCardProps) => {
   const t = useTranslations('plan');
   const tStatus = useTranslations('plan.statuses');
   const tDialog = useTranslations('plan.dialog');
-
+  const tCategory = useTranslations('expense.categories');
   const isCompleted = activity.status === 'COMPLETED';
-
-  const timeDisplay =
-    activity.startTime && activity.endTime
-      ? `${activity.startTime.slice(0, 5)} – ${activity.endTime.slice(0, 5)}`
-      : activity.startTime
-        ? activity.startTime.slice(0, 5)
-        : null;
-
   const menuItems: AppActionMenuItem[] = readOnly
     ? []
     : [
@@ -109,293 +109,193 @@ const ActivityTimelineCard = ({
       ];
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'stretch',
-        gap: { xs: 1.5, sm: 2 },
-      }}
-    >
-      <Box
-        sx={{
-          width: { xs: '72px', sm: '95px', md: '110px' },
-          flexShrink: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          pt: { xs: 2, md: 2.75 },
-        }}
-      >
-        {timeDisplay ? (
+    <AppTimelineRow
+      title={activity.title}
+      icon={<AppCategoryIcon category={activity.category} />}
+      hasNext={hasNext}
+      selected={selected}
+      onSelect={onSelect}
+      meta={
+        activity.startTime || activity.endTime ? (
           <Typography
+            component="span"
             sx={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: { xs: '11px', sm: '13px' },
+              color: 'text.primary',
+              fontSize: '12px',
               fontWeight: 700,
-              color: isCompleted ? 'text.secondary' : 'primary.main',
-              textAlign: 'right',
-              lineHeight: 1.25,
+              fontVariantNumeric: 'tabular-nums',
+              lineHeight: 1.8,
+              whiteSpace: 'nowrap',
             }}
           >
-            {activity.startTime && activity.endTime ? (
-              <>
-                <Box
-                  component="span"
-                  sx={{ display: { xs: 'block', sm: 'inline' } }}
-                >
-                  {activity.startTime.slice(0, 5)}
-                </Box>
-                <Box
-                  component="span"
-                  sx={{
-                    display: { xs: 'none', sm: 'inline' },
-                  }}
-                >
-                  {' – '}
-                </Box>
-                <Box
-                  component="span"
-                  sx={{
-                    display: { xs: 'block', sm: 'inline' },
-                    color: 'text.secondary',
-                    fontSize: { xs: '10px', sm: 'inherit' },
-                  }}
-                >
-                  {activity.endTime.slice(0, 5)}
-                </Box>
-              </>
-            ) : (
-              timeDisplay
+            {!activity.startTime && activity.endTime && (
+              <>{tDialog('endTimeLabel')}: </>
             )}
+            {formatTimeRange(activity.startTime, activity.endTime)}
           </Typography>
-        ) : (
-          <AccessTimeRoundedIcon
-            sx={{ fontSize: '18px', color: 'text.disabled' }}
+        ) : undefined
+      }
+      actions={
+        menuItems.length > 0 ? (
+          <AppActionMenu
+            ariaLabel={t('activityActions', { title: activity.title })}
+            trigger={
+              <AppButton
+                intent="text"
+                size="small"
+                aria-label={t('activityActions', { title: activity.title })}
+                sx={{
+                  minWidth: 44,
+                  minHeight: 44,
+                  px: 0,
+                  color: 'text.secondary',
+                }}
+              >
+                <MoreVertRoundedIcon sx={{ fontSize: '20px' }} />
+              </AppButton>
+            }
+            items={menuItems}
           />
+        ) : undefined
+      }
+    >
+      <Stack
+        direction="row"
+        spacing={0.75}
+        useFlexGap
+        sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+      >
+        <Typography
+          component="span"
+          sx={{
+            color: 'text.secondary',
+            fontSize: '12px',
+            overflowWrap: 'anywhere',
+          }}
+        >
+          {tCategory(activity.category)}
+        </Typography>
+        {activity.status !== 'PLANNED' && (
+          <Typography
+            component="span"
+            sx={(theme) => {
+              const palette = theme.vars?.palette ?? theme.palette;
+              const tone = isCompleted
+                ? palette.success
+                : activity.status === 'IN_PROGRESS'
+                  ? palette.primary
+                  : undefined;
+              return {
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.5,
+                px: 0.75,
+                py: 0.25,
+                borderRadius: '6px',
+                color: tone ? tone.dark : palette.text.secondary,
+                bgcolor: tone
+                  ? `color-mix(in srgb, ${tone.main} 10%, ${palette.background.paper})`
+                  : palette.action.selected,
+                fontSize: '12px',
+                fontWeight: 600,
+                lineHeight: 1.5,
+                letterSpacing: 'normal',
+                ...theme.applyStyles('dark', {
+                  color: tone ? tone.light : palette.text.secondary,
+                }),
+              };
+            }}
+          >
+            {isCompleted && (
+              <CheckCircleRoundedIcon sx={{ fontSize: '14px' }} />
+            )}
+            {tStatus(activity.status)}
+          </Typography>
         )}
-      </Box>
-
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          flexShrink: 0,
-          width: '20px',
-          pt: { xs: 2.25, md: 3 },
-        }}
-      >
-        <Box
-          sx={{
-            width: 14,
-            height: 14,
-            borderRadius: '50%',
-            bgcolor: isCompleted
-              ? 'success.main'
-              : activity.status === 'IN_PROGRESS'
-                ? 'primary.main'
-                : 'action.selected',
-            border: 2,
-            borderColor: 'background.paper',
-            boxShadow: (theme) => {
-              return `0 0 0 2px ${alpha(theme.palette.primary.main, 0.15)}`;
-            },
-            flexShrink: 0,
-          }}
-        />
-        <Box
-          sx={{
-            flexGrow: 1,
-            width: '2px',
-            bgcolor: 'divider',
-            minHeight: '24px',
-          }}
-        />
-      </Box>
-
-      <Box
-        sx={{
-          flexGrow: 1,
-          minWidth: 0,
-          p: { xs: 1.5, sm: 2, md: 3 },
-          borderRadius: '16px',
-          bgcolor: 'background.paper',
-          border: 1,
-          borderColor: (theme) => {
-            return isCompleted
-              ? alpha(theme.palette.success.main, 0.25)
-              : (theme.vars?.palette ?? theme.palette).divider;
-          },
-          boxShadow: 'none',
-        }}
-      >
+      </Stack>
+      {activity.location && (
         <Box
           sx={{
             display: 'flex',
             alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 1.5,
+            gap: 0.5,
+            color: 'text.secondary',
+            minWidth: 0,
           }}
         >
-          <Box
+          <PlaceRoundedIcon sx={{ fontSize: '14px', flexShrink: 0 }} />
+          <Typography
+            component="span"
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 0.75,
+              fontSize: '12px',
+              lineHeight: 1.5,
+              overflowWrap: 'anywhere',
               minWidth: 0,
             }}
           >
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{ alignItems: 'center', flexWrap: 'wrap' }}
-            >
-              <Typography
-                sx={{
-                  fontSize: '15px',
-                  overflowWrap: 'anywhere',
-                  fontWeight: 700,
-                  color: isCompleted ? 'text.secondary' : 'text.primary',
-                  textDecoration: isCompleted ? 'line-through' : 'none',
-                }}
-              >
-                {activity.title}
-              </Typography>
-
-              <AppCategoryChip
-                category={activity.category}
-                sx={{
-                  height: 22,
-                  fontSize: '11px',
-                }}
-              />
-
-              <Chip
-                label={tStatus(activity.status)}
-                size="small"
-                sx={{
-                  height: 22,
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  borderRadius: '6px',
-                  bgcolor: (theme) => {
-                    switch (activity.status) {
-                      case 'COMPLETED':
-                        return alpha(theme.palette.success.main, 0.12);
-                      case 'IN_PROGRESS':
-                        return alpha(theme.palette.primary.light, 0.12);
-                      case 'SKIPPED':
-                        return alpha(theme.palette.text.secondary, 0.12);
-                      default:
-                        return alpha(theme.palette.secondary.main, 0.12);
-                    }
-                  },
-                  color: (theme) => {
-                    const p = theme.vars?.palette ?? theme.palette;
-                    switch (activity.status) {
-                      case 'COMPLETED':
-                        return p.success.main;
-                      case 'IN_PROGRESS':
-                        return p.primary.light;
-                      case 'SKIPPED':
-                        return p.text.secondary;
-                      default:
-                        return p.secondary.dark;
-                    }
-                  },
-                }}
-              />
-
-              {activity.actualSpent != null &&
-                activity.estimatedCost > 0 &&
-                activity.actualSpent >= activity.estimatedCost && (
-                  <Chip
-                    icon={
-                      <ReceiptLongRoundedIcon
-                        sx={{ fontSize: '14px !important' }}
-                      />
-                    }
-                    label={t('spentChip')}
-                    size="small"
-                    sx={{
-                      height: 22,
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      borderRadius: '6px',
-                      bgcolor: (theme) => {
-                        return alpha(theme.palette.success.main, 0.12);
-                      },
-                      color: 'success.main',
-                    }}
-                  />
-                )}
-            </Stack>
-
-            {activity.location && (
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 0.5,
-                  color: 'text.secondary',
-                  fontSize: '12px',
-                }}
-              >
-                <PlaceRoundedIcon sx={{ fontSize: '14px', flexShrink: 0 }} />
-                <span>{activity.location}</span>
-              </Box>
-            )}
-
-            {activity.note && (
-              <Typography
-                variant="caption"
-                sx={{
-                  color: 'text.secondary',
-                  fontSize: '12px',
-                  lineHeight: 1.4,
-                }}
-              >
-                {activity.note}
-              </Typography>
-            )}
-
-            <Stack spacing={0.25} sx={{ pt: 0.25 }}>
-              {activity.estimatedCost > 0 && (
-                <Typography
-                  sx={{
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    fontFamily: 'var(--font-mono)',
-                    color: 'success.main',
-                  }}
-                >
-                  {t('estimatedCost', {
-                    cost: formatCurrency(activity.estimatedCost, currency),
-                  })}
-                </Typography>
-              )}
-              {activity.actualSpent != null && activity.actualSpent > 0 && (
-                <Typography
-                  sx={{
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    fontFamily: 'var(--font-mono)',
-                    color: 'primary.main',
-                  }}
-                >
-                  {t('spentChip')}:{' '}
-                  {formatCurrency(activity.actualSpent, currency)}
-                </Typography>
-              )}
-            </Stack>
-          </Box>
-
-          {!readOnly && menuItems.length > 0 && (
-            <AppActionMenu items={menuItems} size="small" />
-          )}
+            {activity.location}
+          </Typography>
         </Box>
-      </Box>
-    </Box>
+      )}
+      {!compact && activity.note && (
+        <Typography
+          component="span"
+          sx={{
+            color: 'text.secondary',
+            fontSize: '12px',
+            lineHeight: 1.6,
+            whiteSpace: 'pre-line',
+            overflowWrap: 'anywhere',
+          }}
+        >
+          {activity.note}
+        </Typography>
+      )}
+      {!compact &&
+        (activity.estimatedCost > 0 || Number(activity.actualSpent) > 0) && (
+          <Stack
+            direction="row"
+            spacing={1.5}
+            useFlexGap
+            sx={{ flexWrap: 'wrap', minWidth: 0 }}
+          >
+            {activity.estimatedCost > 0 && (
+              <Typography
+                component="span"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: '12px',
+                  overflowWrap: 'anywhere',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {t('estimatedCost', {
+                  cost: formatCurrency(activity.estimatedCost, currency),
+                })}
+              </Typography>
+            )}
+            {Number(activity.actualSpent) > 0 && (
+              <Typography
+                component="span"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: '12px',
+                  overflowWrap: 'anywhere',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {t('spentChip')}:{' '}
+                <Box
+                  component="span"
+                  sx={{ color: 'text.primary', fontWeight: 700 }}
+                >
+                  {formatCurrency(activity.actualSpent ?? 0, currency)}
+                </Box>
+              </Typography>
+            )}
+          </Stack>
+        )}
+    </AppTimelineRow>
   );
 };
 

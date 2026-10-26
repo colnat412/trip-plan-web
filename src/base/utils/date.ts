@@ -92,3 +92,12 @@ export function formatDateRange(
   }
   return startStr || endStr || '';
 }
+
+export const formatTimeRange = (
+  startTime?: string | null,
+  endTime?: string | null,
+): string =>
+  [startTime, endTime]
+    .filter((time): time is string => Boolean(time))
+    .map((time) => time.slice(0, 5))
+    .join(' - ');

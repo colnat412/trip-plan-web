@@ -97,11 +97,12 @@ const TripItineraryPreview = ({ trip }: { trip: Trip }) => {
                 {t('itineraryError')}
               </Alert>
             ) : activities.length ? (
-              <Stack spacing={1.5}>
-                {activities.slice(0, 3).map((activity) => (
+              <Stack spacing={0}>
+                {activities.slice(0, 3).map((activity, index) => (
                   <ActivityTimelineCard
                     key={activity.id}
                     activity={activity}
+                    hasNext={index < Math.min(activities.length, 3) - 1}
                     currency={trip.baseCurrency}
                     readOnly
                   />

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Comfortaa, DM_Mono } from 'next/font/google';
+import { Comfortaa } from 'next/font/google';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
@@ -14,13 +14,6 @@ import './globals.css';
 const comfortaa = Comfortaa({
   subsets: ['latin', 'latin-ext', 'vietnamese'],
   variable: '--font-comfortaa',
-  display: 'swap',
-});
-
-const monoFont = DM_Mono({
-  weight: ['400', '500'],
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-dm-mono',
   display: 'swap',
 });
 
@@ -57,7 +50,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
     <html
       lang={locale}
       suppressHydrationWarning
-      className={`${comfortaa.variable} ${monoFont.variable}`}
+      className={comfortaa.variable}
     >
       <body>
         <InitColorSchemeScript attribute="data" defaultMode="light" />

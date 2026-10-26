@@ -118,6 +118,11 @@ const appTheme = createTheme({
         a: { color: 'inherit', textDecoration: 'none' },
       },
     },
+    MuiButtonBase: {
+      styleOverrides: {
+        root: { fontFamily: 'var(--font-body)' },
+      },
+    },
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {

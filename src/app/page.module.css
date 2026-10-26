@@ -14,7 +14,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-geist-sans);
+  font-family: var(--font-body);
   background-color: var(--background);
 }
 
@@ -142,7 +142,7 @@ a.secondary {
 }
 
 .code {
-  font-family: var(--font-geist-mono);
+  font-family: var(--font-body);
   font-size: 0.9em;
   background: color-mix(in srgb, currentColor 8%, transparent);
   padding: 0.1em 0.4em;

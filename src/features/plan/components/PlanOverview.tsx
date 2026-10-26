@@ -385,12 +385,7 @@ const PlanOverview = () => {
 
   return (
     <AppPageContainer>
-      {activeTrip && (
-        <ActiveTripBanner
-          key={activeTrip.id}
-          trip={activeTrip}
-        />
-      )}
+      {activeTrip && <ActiveTripBanner key={activeTrip.id} trip={activeTrip} />}
       {isLoading || (isStale && !planError) ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Skeleton variant="text" width={220} height={40} />
@@ -574,6 +569,9 @@ const PlanOverview = () => {
             <PlanMapPanel
               key={`${tripId}:${activeDayId}`}
               activities={dayActivities}
+              currency={
+                overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
+              }
               destination={activeTrip?.destination}
               hasMore={hasMoreActivities}
               loadingMore={isFetchingMoreActivities}

@@ -71,3 +71,8 @@ export { default as AppPagination } from './AppPagination';
 
 export { default as AppAvatarStack } from './AppAvatarStack';
 export type { AppAvatarStackProps, AppAvatarStackItem } from './AppAvatarStack';
+
+export { default as AppCategoryIcon } from './AppCategoryIcon';
+export type { AppCategoryIconProps } from './AppCategoryIcon';
+export { default as AppTimelineRow } from './AppTimelineRow';
+export type { AppTimelineRowProps } from './AppTimelineRow';
