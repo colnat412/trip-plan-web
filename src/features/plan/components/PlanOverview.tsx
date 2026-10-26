@@ -1,12 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Card, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, Box, Card, Skeleton, Stack, Typography } from '@mui/material';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useTranslations } from 'next-intl';
 
 import { axiosClient } from '@/base/api';
 import {
+  AppButton,
   AppPageContainer,
   AppToast,
   AppConfirmDialog,
@@ -45,6 +46,8 @@ import PlanDayTabs from './PlanDayTabs';
 import PlanHeader from './PlanHeader';
 import ActivityLogDialog from './ActivityLogDialog';
 import AiPlannerDialog from './AiPlannerDialog';
+import PlanMapPanel from './PlanMapPanel';
+import ActiveTripBanner from '@/features/trip/components/overview/ActiveTripBanner';
 import { useRouter } from 'next/navigation';
 
 const PlanOverview = () => {
@@ -56,11 +59,14 @@ const PlanOverview = () => {
   const {
     plan: overview,
     isLoading,
+    isStale,
+    error: planError,
     refetch,
   } = useTripPlan({ tripId, includeActivities: false });
   const { members, canWrite, canManage, canManageRecord } =
     useTripPermissions(tripId);
 
+  const [mobileView, setMobileView] = useState<'timeline' | 'map'>('timeline');
   const [selectedDayId, setSelectedDayId] = useState<string>('');
   const [addActivityOpen, setAddActivityOpen] = useState(false);
   const [aiPlannerOpen, setAiPlannerOpen] = useState(false);
@@ -95,7 +101,7 @@ const PlanOverview = () => {
     setToast({ open: true, message, severity });
   };
 
-  const days = overview?.days ?? [];
+  const days = isStale ? [] : (overview?.days ?? []);
   const activeDayId =
     selectedDayId && days.some((d) => String(d.id) === String(selectedDayId))
       ? selectedDayId
@@ -119,7 +125,7 @@ const PlanOverview = () => {
 
   const refreshPlan = () => {
     void refetch().catch(() => undefined);
-    void refetchDayActivities();
+    if (selectedDay) void refetchDayActivities();
   };
 
   const handleOpenOptimizeRoute = async () => {
@@ -379,15 +385,24 @@ const PlanOverview = () => {
 
   return (
     <AppPageContainer>
-      {isLoading ? (
+      {activeTrip && (
+        <ActiveTripBanner
+          key={activeTrip.id}
+          trip={activeTrip}
+        />
+      )}
+      {isLoading || (isStale && !planError) ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Skeleton variant="text" width={220} height={40} />
-          <Skeleton variant="text" width={380} height={24} />
+          <Skeleton
+            variant="text"
+            width="100%"
+            height={24}
+            sx={{ maxWidth: 380 }}
+          />
         </Box>
-      ) : (
+      ) : !planError ? (
         <PlanHeader
-          tripName={overview?.tripName ?? activeTrip?.name ?? ''}
-          destination={overview?.destination ?? activeTrip?.destination ?? ''}
           totalDays={overview?.totalDays ?? overview?.days.length ?? 0}
           totalActivities={overview?.totalActivities ?? 0}
           completedActivities={overview?.completedActivities ?? 0}
@@ -398,14 +413,14 @@ const PlanOverview = () => {
           onOpenAiPlanner={canManage ? () => setAiPlannerOpen(true) : undefined}
           onOpenShare={canManage ? () => setShareDialogOpen(true) : undefined}
           onOpenActivityLogs={() => setActivityLogOpen(true)}
-          readOnly={!canWrite}
+          readOnly={!canWrite || Boolean(planError)}
           onOpenPrint={() =>
             router.push(`/print/plan/${encodeURIComponent(String(tripId))}`)
           }
         />
-      )}
+      ) : null}
 
-      {isLoading ? (
+      {isLoading || (isStale && !planError) ? (
         <Box sx={{ display: 'flex', gap: 1.5 }}>
           {[1, 2, 3].map((i) => (
             <Skeleton
@@ -417,54 +432,156 @@ const PlanOverview = () => {
             />
           ))}
         </Box>
-      ) : overview?.days && overview.days.length > 0 ? (
+      ) : !planError && days.length > 0 ? (
         <PlanDayTabs
-          days={overview.days}
+          days={days}
           selectedDayId={activeDayId}
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
           onSelectDay={(dayId) => setSelectedDayId(dayId)}
         />
       ) : null}
 
-      {isLoading || isLoadingActivities ? (
-        <Stack spacing={2}>
-          {[1, 2, 3].map((i) => (
-            <Skeleton
-              key={i}
-              variant="rectangular"
-              height={100}
-              sx={{ borderRadius: '16px' }}
+      <Box sx={{ width: '100%', display: { xs: 'flex', lg: 'none' }, gap: 1 }}>
+        <AppButton
+          intent="secondary"
+          aria-pressed={mobileView === 'timeline'}
+          onClick={() => setMobileView('timeline')}
+          sx={{
+            flex: 1,
+            bgcolor:
+              mobileView === 'timeline'
+                ? 'action.selected'
+                : 'background.paper',
+            borderRadius: '999px',
+          }}
+        >
+          {t('timelineView')}
+        </AppButton>
+        <AppButton
+          intent="secondary"
+          aria-pressed={mobileView === 'map'}
+          onClick={() => setMobileView('map')}
+          sx={{
+            flex: 1,
+            bgcolor:
+              mobileView === 'map' ? 'action.selected' : 'background.paper',
+            borderRadius: '999px',
+          }}
+        >
+          {t('mapView')}
+        </AppButton>
+      </Box>
+      <Box
+        sx={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: 3,
+        }}
+      >
+        <Box
+          sx={{
+            display: {
+              xs: mobileView === 'timeline' ? 'block' : 'none',
+              lg: 'block',
+            },
+            flex: '7 1 0',
+            minWidth: 0,
+          }}
+        >
+          {isLoading || (isStale && !planError) || isLoadingActivities ? (
+            <Stack spacing={2}>
+              {[1, 2, 3].map((i) => (
+                <Skeleton
+                  key={i}
+                  variant="rectangular"
+                  height={100}
+                  sx={{ borderRadius: '16px' }}
+                />
+              ))}
+            </Stack>
+          ) : planError || activitiesError ? (
+            <Alert
+              severity="error"
+              action={
+                <AppButton intent="text" onClick={refreshPlan}>
+                  {t('retry')}
+                </AppButton>
+              }
+            >
+              {t('loadError')}
+            </Alert>
+          ) : (
+            <DayTimelineList
+              activities={dayActivities}
+              totalActivities={selectedDay?.totalActivities}
+              totalEstimatedCost={selectedDay?.totalEstimatedCost}
+              currency={
+                overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
+              }
+              destinationContext={activeTrip?.destination}
+              onEditActivity={(activity) => setEditingActivity(activity)}
+              canDeleteActivity={(activity) =>
+                canManageRecord(activity.createdBy)
+              }
+              onDeleteActivity={(activity) => setDeletingActivity(activity)}
+              onToggleStatus={handleToggleActivityStatus}
+              onConvertToExpense={handleConvertToExpense}
+              onOpenOptimizeRoute={() => void handleOpenOptimizeRoute()}
+              onResetDayActivities={
+                canManage ? () => setResetDayConfirmOpen(true) : undefined
+              }
+              readOnly={!canWrite || Boolean(planError)}
             />
-          ))}
-        </Stack>
-      ) : (
-        <DayTimelineList
-          activities={dayActivities}
-          totalActivities={selectedDay?.totalActivities}
-          totalEstimatedCost={selectedDay?.totalEstimatedCost}
-          currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
-          destinationContext={activeTrip?.destination}
-          onAddActivity={() => setAddActivityOpen(true)}
-          onEditActivity={(activity) => setEditingActivity(activity)}
-          canDeleteActivity={(activity) => canManageRecord(activity.createdBy)}
-          onDeleteActivity={(activity) => setDeletingActivity(activity)}
-          onToggleStatus={handleToggleActivityStatus}
-          onConvertToExpense={handleConvertToExpense}
-          onOpenOptimizeRoute={() => void handleOpenOptimizeRoute()}
-          onResetDayActivities={
-            canManage ? () => setResetDayConfirmOpen(true) : undefined
-          }
-          readOnly={!canWrite}
-        />
-      )}
+          )}
 
-      {!isLoading && !isLoadingActivities && (
-        <AppInfiniteScrollTrigger
-          hasMore={hasMoreActivities && !activitiesError}
-          loading={isFetchingMoreActivities}
-          onLoadMore={() => void fetchMoreActivities()}
-        />
-      )}
+          {!isLoading && !isStale && !planError && !isLoadingActivities && (
+            <AppInfiniteScrollTrigger
+              hasMore={hasMoreActivities && !activitiesError}
+              loading={isFetchingMoreActivities}
+              onLoadMore={() => void fetchMoreActivities()}
+            />
+          )}
+        </Box>
+        <Box
+          sx={{
+            display: {
+              xs: mobileView === 'map' ? 'block' : 'none',
+              lg: 'block',
+            },
+            flex: '5 1 0',
+            minWidth: 0,
+          }}
+        >
+          {isLoading || (isStale && !planError) || isLoadingActivities ? (
+            <Skeleton
+              variant="rounded"
+              height={460}
+              sx={{ borderRadius: '20px' }}
+            />
+          ) : planError || activitiesError ? (
+            <Alert
+              severity="error"
+              action={
+                <AppButton intent="text" onClick={refreshPlan}>
+                  {t('retry')}
+                </AppButton>
+              }
+            >
+              {t('loadError')}
+            </Alert>
+          ) : (
+            <PlanMapPanel
+              key={`${tripId}:${activeDayId}`}
+              activities={dayActivities}
+              destination={activeTrip?.destination}
+              hasMore={hasMoreActivities}
+              loadingMore={isFetchingMoreActivities}
+              onLoadMore={() => void fetchMoreActivities()}
+            />
+          )}
+        </Box>
+      </Box>
 
       <AddActivityDialog
         open={addActivityOpen}
@@ -509,7 +626,7 @@ const PlanOverview = () => {
         onToggle={handleToggleChecklist}
         onDelete={handleDeleteChecklist}
         isLoading={isCreatingChecklist}
-        readOnly={!canWrite}
+        readOnly={!canWrite || Boolean(planError)}
       />
 
       <OptimizeRouteDialog

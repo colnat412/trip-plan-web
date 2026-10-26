@@ -50,6 +50,8 @@ const SuggestedSettlementCard = ({
           alignItems: 'center',
           gap: 1.5,
           flexWrap: 'wrap',
+          minWidth: 0,
+          overflowWrap: 'anywhere',
         }}
       >
         <Box
@@ -94,11 +96,15 @@ const SuggestedSettlementCard = ({
           justifyContent: { xs: 'space-between', sm: 'flex-end' },
           width: { xs: '100%', sm: 'auto' },
           gap: 2,
+          flexWrap: 'wrap',
+          minWidth: 0,
         }}
       >
         <Typography
           sx={{
             fontSize: '16px',
+            minWidth: 0,
+            overflowWrap: 'anywhere',
             fontWeight: 800,
             fontFamily: 'var(--font-mono)',
             color: 'primary.main',

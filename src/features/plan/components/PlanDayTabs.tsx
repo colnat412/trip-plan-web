@@ -1,11 +1,8 @@
 'use client';
 
-import React from 'react';
 import { Box, ButtonBase, Typography } from '@mui/material';
-import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import { useTranslations } from 'next-intl';
-
-import { formatCurrency, formatDate } from '@/base/utils';
+import { formatDate } from '@/base/utils';
 import type { PlanDay } from '../types';
 
 export interface PlanDayTabsProps {
@@ -18,125 +15,67 @@ export interface PlanDayTabsProps {
 const PlanDayTabs = ({
   days,
   selectedDayId,
-  currency = 'VND',
   onSelectDay,
 }: PlanDayTabsProps) => {
   const t = useTranslations('plan');
 
   return (
     <Box
+      role="group"
+      aria-label={t('chooseDay')}
       sx={{
         width: '100%',
         display: 'flex',
-        alignItems: 'center',
-        gap: 1.5,
+        gap: 1,
         overflowX: 'auto',
-        '&::-webkit-scrollbar': { height: 6 },
-        '&::-webkit-scrollbar-thumb': {
-          bgcolor: 'action.hover',
-          borderRadius: '999px',
-        },
+        py: 0.5,
+        '&::-webkit-scrollbar': { height: 4 },
       }}
     >
       {days.map((day) => {
         const isSelected = String(day.id) === String(selectedDayId);
-        const formattedDate = day.planDate
-          ? formatDate(day.planDate, 'DD/MM/YYYY')
-          : null;
-
         return (
           <ButtonBase
             key={day.id}
-            onClick={() => onSelectDay(day.id)}
+            onClick={() => onSelectDay(String(day.id))}
+            aria-pressed={isSelected}
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'flex-start',
+              alignItems: 'center',
               justifyContent: 'center',
               gap: 0.5,
               py: 1.25,
-              px: 2,
-              borderRadius: '14px',
+              px: 2.5,
+              borderRadius: '16px',
               border: 1,
               borderColor: isSelected ? 'primary.main' : 'divider',
               bgcolor: isSelected ? 'action.selected' : 'background.paper',
               color: isSelected ? 'primary.main' : 'text.primary',
-              minWidth: 120,
-              minHeight: 74,
+              minWidth: 112,
+              minHeight: 64,
               flexShrink: 0,
-              textAlign: 'left',
-              transition: 'background-color 0.15s, border-color 0.15s',
-              '&:hover': {
-                bgcolor: 'action.hover',
-                borderColor: 'primary.main',
+              '&:hover': { bgcolor: 'action.hover' },
+              '&.Mui-focusVisible': {
+                outline: '2px solid',
+                outlineColor: 'primary.main',
+                outlineOffset: -3,
               },
             }}
           >
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                width: '100%',
-                gap: 1,
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: '14px',
-                  fontWeight: isSelected ? 800 : 700,
-                  color: 'inherit',
-                }}
-              >
-                {t('dayTab', { day: day.dayNumber })}
-              </Typography>
-
-              <Box
-                component="span"
-                sx={{
-                  px: 0.75,
-                  py: 0.1,
-                  borderRadius: '999px',
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  bgcolor: 'background.paper',
-                  color: isSelected ? 'primary.main' : 'text.secondary',
-                }}
-              >
-                {day.totalActivities}
-              </Box>
-            </Box>
-
-            {formattedDate ? (
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 0.5,
-                opacity: 0.8,
-                  fontSize: '11px',
-                  minHeight: '16px',
-                }}
-              >
-                <CalendarTodayRoundedIcon sx={{ fontSize: '12px' }} />
-                <span>{formattedDate}</span>
-              </Box>
-            ) : (
-              <Box sx={{ minHeight: '16px' }} />
-            )}
-
             <Typography
-              sx={{
-                fontSize: '11px',
-                fontWeight: 700,
-                fontFamily: 'var(--font-mono)',
-                color: day.totalEstimatedCost && day.totalEstimatedCost > 0
-                    ? 'success.main'
-                    : 'text.secondary',
-                opacity: 0.9,
-              }}
+              component="span"
+              sx={{ fontSize: '14px', fontWeight: 700, color: 'inherit' }}
             >
-              {formatCurrency(day.totalEstimatedCost ?? 0, currency)}
+              {t('dayTab', { day: day.dayNumber })}
+            </Typography>
+            <Typography
+              component="span"
+              sx={{ fontSize: '12px', color: 'text.secondary' }}
+            >
+              {day.planDate
+                ? formatDate(day.planDate, 'DD/MM')
+                : t('activityCount', { count: day.totalActivities })}
             </Typography>
           </ButtonBase>
         );

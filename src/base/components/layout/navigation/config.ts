@@ -5,8 +5,8 @@ export const DESKTOP_NAV_BREAKPOINT = 1440;
 
 const NAVIGATION_IDS = [
   'overview',
-  'trips',
   'plan',
+  'trips',
   'expenses',
   'settlement',
   'ai',
@@ -22,9 +22,9 @@ export interface AppNavigationItem {
 }
 
 export const APP_NAVIGATION_ITEMS: AppNavigationItem[] =
-  DEFAULT_SIDEBAR_MENU.flatMap((item) => {
-    const id = NAVIGATION_IDS.find((id) => id === item.id);
-    return id ? [{ id, href: item.href, icon: item.icon }] : [];
+  NAVIGATION_IDS.flatMap((id) => {
+    const item = DEFAULT_SIDEBAR_MENU.find((item) => item.id === id);
+    return item ? [{ id, href: item.href, icon: item.icon }] : [];
   });
 
 const directNavigationCount =

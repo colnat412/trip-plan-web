@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Box, Chip, Stack } from '@mui/material';
+import { Alert, Box, Skeleton, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
@@ -82,9 +82,11 @@ const TripMembersDialog = ({
 
   const currentMember =
     !isStale && !error
-      ? members.find((member) =>
-          (currentUserId && String(member.userId) === currentUserId) ||
-          (currentUserEmail && member.email?.toLowerCase().trim() === currentUserEmail),
+      ? members.find(
+          (member) =>
+            (currentUserId && String(member.userId) === currentUserId) ||
+            (currentUserEmail &&
+              member.email?.toLowerCase().trim() === currentUserEmail),
         )
       : undefined;
 
@@ -232,27 +234,36 @@ const TripMembersDialog = ({
         open={open}
         onClose={onClose}
         title={t('dialogTitle')}
-        description={t('dialogSubtitle')}
         icon={<GroupRoundedIcon />}
         maxWidth="sm"
         fullWidth
       >
         <Stack spacing={2.5}>
+          <Typography
+            sx={{ fontSize: '13px', color: 'text.secondary', lineHeight: 1.6 }}
+          >
+            {t('dialogSubtitle')}
+          </Typography>
           {!isInviteVisible && (
             <Box
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: 1.5,
+                '& > .MuiButton-root': {
+                  flex: { xs: '1 0 auto', sm: '0 0 auto' },
+                },
               }}
             >
-              <Chip
-                size="small"
-                label={t('memberCount', { count: members.length })}
-                color="primary"
-                variant="outlined"
-                sx={{ fontWeight: 700, fontSize: '11px', height: '24px' }}
-              />
+              {isLoading || (isStale && !error) ? (
+                <Skeleton variant="text" width={90} />
+              ) : !error ? (
+                <Typography sx={{ color: 'text.secondary', fontSize: '13px' }}>
+                  {t('memberCount', { count: members.length })}
+                </Typography>
+              ) : null}
               {canManageMembers && (
                 <AppButton
                   intent="primary"
@@ -275,17 +286,34 @@ const TripMembersDialog = ({
             />
           )}
 
-          <TripMemberList
-            members={members}
-            isLoading={isLoading}
-            isCurrentUserOwner={isCurrentUserOwner}
-            currentUserRole={currentUserRole}
-            currentUserId={currentMember?.userId}
-            onEditRole={(m) => setEditingMember(m)}
-            onRemove={(m) => setRemovingMember(m)}
-            onLeave={() => setIsLeaving(true)}
-            onAccept={handleAcceptMember}
-          />
+          {error ? (
+            <Alert
+              severity="error"
+              action={
+                <AppButton
+                  intent="text"
+                  size="small"
+                  onClick={() => void refetch().catch(() => undefined)}
+                >
+                  {t('retry')}
+                </AppButton>
+              }
+            >
+              {t('loadError')}
+            </Alert>
+          ) : (
+            <TripMemberList
+              members={isStale ? [] : members}
+              isLoading={isLoading || isStale}
+              isCurrentUserOwner={isCurrentUserOwner}
+              currentUserRole={currentUserRole}
+              currentUserId={currentMember?.userId}
+              onEditRole={(m) => setEditingMember(m)}
+              onRemove={(m) => setRemovingMember(m)}
+              onLeave={() => setIsLeaving(true)}
+              onAccept={handleAcceptMember}
+            />
+          )}
         </Stack>
       </AppDialog>
 

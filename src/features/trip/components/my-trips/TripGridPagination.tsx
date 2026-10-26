@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Box, Pagination, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
-import { AppSelect } from '@/base/components/ui';
+import { AppPagination, AppSelect } from '@/base/components/ui';
 
 export interface TripGridPaginationProps {
   count: number;
@@ -72,7 +72,7 @@ const TripGridPagination = ({
           <Box component="span" sx={{ fontWeight: 700, color: 'text.primary' }}>
             {from} – {to}
           </Box>{' '}
-          / {count} {t('tripsUnit') || 'chuyến đi'}
+          / {count} {t('tripsUnit')}
         </Typography>
 
         <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
@@ -86,11 +86,11 @@ const TripGridPagination = ({
               whiteSpace: 'nowrap',
             }}
           >
-            {t('pageSizeLabel') || 'Hiển thị:'}
+            {t('pageSizeLabel')}
           </Typography>
           <AppSelect
             variantType="compact"
-            label="Số lượng"
+            label={t('pageSizeLabel')}
             value={rowsPerPage}
             options={sizeOptions}
             onChange={(e) => {
@@ -102,22 +102,18 @@ const TripGridPagination = ({
         </Stack>
       </Stack>
 
-      <Pagination
+      <AppPagination
         count={totalPages}
         page={page + 1}
         onChange={(_, newPage) => onPageChange(newPage - 1)}
         color="primary"
         shape="rounded"
         size="medium"
-        showFirstButton
-        showLastButton
         sx={{
           '& .MuiPaginationItem-root': {
             fontWeight: 600,
             fontSize: '13px',
             borderRadius: '8px',
-            minWidth: { xs: 28, sm: 32 },
-            height: { xs: 28, sm: 32 },
             '&.Mui-selected': {
               bgcolor: 'primary.main',
               color: 'primary.contrastText',

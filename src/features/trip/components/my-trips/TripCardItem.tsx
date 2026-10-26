@@ -245,9 +245,9 @@ const TripCardItem = ({
           sx={{
             alignItems: 'center',
             justifyContent: 'space-between',
+            flexWrap: 'wrap',
             gap: 1,
             pt: 1,
-            mt: 0.25,
             borderTop: 1,
             borderColor: 'divider',
           }}
@@ -284,7 +284,11 @@ const TripCardItem = ({
                 onSelect(trip);
               }}
               startIcon={<FlightTakeoffRoundedIcon sx={{ fontSize: '13px' }} />}
-              sx={{ minHeight: 28, height: 28, px: 1.25, fontSize: '11.5px' }}
+              sx={{
+                minHeight: { xs: 40, sm: 28 },
+                px: 1.25,
+                fontSize: '11.5px',
+              }}
             >
               {t('viewTrip')}
             </AppButton>

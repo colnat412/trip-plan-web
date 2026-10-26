@@ -36,6 +36,8 @@ const AppPageHeader = ({
         justifyContent: 'space-between',
         alignItems: { xs: 'flex-start', md: 'center' },
         gap: 2,
+        flexWrap: 'wrap',
+        minWidth: 0,
         ...sx,
       }}
     >
@@ -45,6 +47,8 @@ const AppPageHeader = ({
           flexDirection: 'column',
           gap: 0.5,
           minWidth: 0,
+          maxWidth: '100%',
+          flex: { xs: '0 1 auto', md: '1 1 240px' },
         }}
       >
         <Stack
@@ -101,7 +105,10 @@ const AppPageHeader = ({
                   color: 'primary.main',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  lineHeight: 1.2,
+                  lineHeight: 1.4,
+                  minWidth: 0,
+                  maxWidth: '100%',
+                  overflowWrap: 'anywhere',
                 }}
               >
                 {badge}
@@ -113,7 +120,13 @@ const AppPageHeader = ({
 
         {subtitle &&
           (typeof subtitle === 'string' ? (
-            <Typography sx={{ color: 'text.secondary', fontSize: '14px' }}>
+            <Typography
+              sx={{
+                color: 'text.secondary',
+                fontSize: '14px',
+                overflowWrap: 'anywhere',
+              }}
+            >
               {subtitle}
             </Typography>
           ) : (
@@ -130,6 +143,7 @@ const AppPageHeader = ({
             alignItems: 'center',
             flexShrink: 0,
             flexWrap: 'wrap',
+            '& > .MuiButton-root': { flex: { xs: '1 0 auto', sm: '0 0 auto' } },
             minWidth: 0,
             maxWidth: '100%',
             alignSelf: { xs: 'stretch', sm: 'auto' },

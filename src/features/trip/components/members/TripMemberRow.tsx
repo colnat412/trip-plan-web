@@ -42,17 +42,17 @@ const TripMemberRow = ({
     String(member.userId) === String(currentUserId);
   const isTargetOwner = member.role === 'OWNER';
   const isTargetVice = member.role === 'VICE';
-  const canAccept = member.status === 'INVITED' &&
-    (isCurrentUserOwner || (currentUserRole === 'VICE' && member.role === 'MEMBER'));
+  const canAccept =
+    member.status === 'INVITED' &&
+    (isCurrentUserOwner ||
+      (currentUserRole === 'VICE' && member.role === 'MEMBER'));
   const canEditRole = !isSelf && !isTargetOwner && isCurrentUserOwner;
-  const canRemove = !isSelf && !isTargetOwner &&
+  const canRemove =
+    !isSelf &&
+    !isTargetOwner &&
     (isCurrentUserOwner || (currentUserRole === 'VICE' && !isTargetVice));
 
   const menuItems: AppActionMenuItem[] = [];
-
-  if (canAccept && onAccept) {
-    // Buttons will be displayed inline, so we don't add accept to menu
-  }
 
   if (canEditRole) {
     menuItems.push({
@@ -88,135 +88,113 @@ const TripMemberRow = ({
 
   return (
     <Stack
-      direction="row"
-      spacing={2}
+      spacing={1.5}
       sx={{
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: { xs: 'wrap', sm: 'nowrap' },
-        p: 2,
+        p: { xs: 1.5, sm: 2 },
+        minWidth: 0,
         borderRadius: '16px',
         bgcolor: 'background.paper',
         border: 1,
         borderColor: 'divider',
-        transition: 'all 0.2s ease',
-        '&:hover': {
-          bgcolor: 'action.hover',
-          borderColor: 'primary.light',
-        },
       }}
     >
       <Stack
         direction="row"
-        spacing={1.5}
-        sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}
+        useFlexGap
+        spacing={1.25}
+        sx={{ alignItems: 'flex-start', minWidth: 0 }}
       >
         <Avatar
           src={member.avatarUrl || undefined}
           alt={member.name}
           sx={{
-            width: 42,
-            height: 42,
+            width: 40,
+            height: 40,
             bgcolor: 'primary.main',
             color: 'primary.contrastText',
-            fontWeight: 800,
+            fontWeight: 700,
             fontSize: '14px',
-            border: 2,
-            borderColor: 'background.paper',
             flexShrink: 0,
           }}
         >
           {getUserInitials(member.name || member.email)}
         </Avatar>
-
-        <Stack spacing={0.25} sx={{ minWidth: 0, flex: 1 }}>
+        <Stack spacing={0.5} sx={{ minWidth: 0, flex: 1 }}>
+          <Typography
+            sx={{
+              fontWeight: 700,
+              fontSize: '14px',
+              color: 'text.primary',
+              overflowWrap: 'anywhere',
+            }}
+          >
+            {member.name || member.email}
+          </Typography>
+          <Typography
+            title={member.email}
+            noWrap
+            sx={{ fontSize: '12px', color: 'text.secondary', minWidth: 0 }}
+          >
+            {member.email}
+          </Typography>
           <Stack
             direction="row"
-            spacing={1}
-            sx={{ alignItems: 'center', minWidth: 0 }}
+            useFlexGap
+            spacing={0.75}
+            sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}
           >
-            <Typography
-              noWrap
-              sx={{
-                fontWeight: 700,
-                fontSize: '14px',
-                color: 'text.primary',
-                flexShrink: 1,
-              }}
-            >
-              {member.name}
-            </Typography>
+            <RoleBadge role={member.role} />
             {member.status !== 'ACTIVE' && (
               <Chip
                 size="small"
                 label={t(`statuses.${member.status}`)}
                 color={member.status === 'INVITED' ? 'warning' : 'default'}
                 sx={{
-                  height: '20px',
-                  fontSize: '10px',
+                  height: 24,
+                  fontSize: '11px',
                   fontWeight: 600,
-                  borderRadius: '6px',
-                  flexShrink: 0,
+                  borderRadius: '8px',
                 }}
               />
             )}
           </Stack>
-          <Typography
-            noWrap
-            sx={{
-              fontSize: '12px',
-              color: 'text.secondary',
-            }}
-          >
-            {member.email}
-          </Typography>
         </Stack>
-      </Stack>
-
-      <Stack
-        direction="row"
-        spacing={1}
-        sx={{ alignItems: 'center', flexShrink: 0 }}
-      >
-        {canAccept && onAccept && (
-          <>
-            <AppButton
-              intent="primary"
-              size="small"
-              onClick={() => onAccept(member)}
-              sx={{
-                minWidth: 0,
-                minHeight: 0,
-                height: 24,
-                // padding: '0 8px',
-                fontSize: '12px',
-                fontWeight: 700,
-                borderRadius: '8px',
-              }}
-            >
-              {t('actions.acceptBtn')}
-            </AppButton>
-            <AppButton
-              intent="danger"
-              size="small"
-              onClick={() => onRemove(member)}
-              sx={{
-                minWidth: 0,
-                minHeight: 0,
-                height: 24,
-                padding: '0 8px',
-                fontSize: '12px',
-                fontWeight: 700,
-                borderRadius: '8px',
-              }}
-            >
-              {t('actions.rejectMember')}
-            </AppButton>
-          </>
+        {menuItems.length > 0 && (
+          <AppActionMenu
+            items={menuItems}
+            ariaLabel={t('memberActions', {
+              name: member.name || member.email,
+            })}
+            size="medium"
+          />
         )}
-        <RoleBadge role={member.role} />
-        {menuItems.length > 0 && <AppActionMenu items={menuItems} />}
       </Stack>
+      {canAccept && onAccept && (
+        <Stack
+          direction="row"
+          useFlexGap
+          spacing={1}
+          sx={{
+            flexWrap: 'wrap',
+            '& > .MuiButton-root': { flex: '1 0 auto', minHeight: 44 },
+          }}
+        >
+          <AppButton
+            intent="primary"
+            size="small"
+            onClick={() => onAccept(member)}
+          >
+            {t('actions.acceptBtn')}
+          </AppButton>
+          <AppButton
+            intent="danger"
+            size="small"
+            onClick={() => onRemove(member)}
+          >
+            {t('actions.rejectMember')}
+          </AppButton>
+        </Stack>
+      )}
     </Stack>
   );
 };

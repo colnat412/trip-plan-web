@@ -157,7 +157,18 @@ const AppConfirmDialog = ({
         </DialogContent>
 
         <DialogActions sx={{ p: 0, width: '100%', gap: 1.5, pt: 1 }}>
-          <Stack direction="row" spacing={1.5} sx={{ width: '100%' }}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={1.5}
+            useFlexGap
+            sx={{
+              width: '100%',
+              '& > .MuiButton-root': {
+                flex: { sm: '1 1 0' },
+                width: { sm: 'auto' },
+              },
+            }}
+          >
             <AppButton
               intent="secondary"
               fullWidth

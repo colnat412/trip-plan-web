@@ -1,4 +1,9 @@
 {
+  "locationMap": {
+    "title": "Bản đồ: {location}",
+    "open": "Mở trong Google Maps",
+    "empty": "Chưa có địa điểm để hiển thị bản đồ."
+  },
   "navigation": {
     "searchingTrips": "Đang tìm chuyến đi…",
     "clearSearch": "Xóa nội dung tìm kiếm",
@@ -82,6 +87,16 @@
     }
   },
   "overview": {
+    "itineraryError": "Chưa thể tải lịch trình.",
+    "budgetError": "Chưa thể tải ngân sách.",
+    "itineraryIntro": "Từng ngày, từng trải nghiệm đáng nhớ.",
+    "yourItinerary": "Hành trình của bạn",
+    "manageBudget": "Xem chi tiêu",
+    "overBudget": "Vượt ngân sách",
+    "budgetTotal": "Ngân sách dự kiến: {amount}",
+    "tripBudget": "Ngân sách chuyến đi",
+    "openItinerary": "Mở lịch trình",
+    "journeyIntro": "Những điểm đến, trải nghiệm và khoảnh khắc đang chờ bạn. Cùng lên kế hoạch cho hành trình này nhé.",
     "activeTrip": "Chuyến đi đang chọn",
     "live": "Đang đi",
     "tripMeta": "4 – 8 tháng 8, 2025 · 5 ngày · 4 thành viên",
@@ -399,6 +414,7 @@
       "allUnderControl": "Tất cả danh mục trong tầm kiểm soát"
     },
     "table": {
+      "titleLabel": "Danh sách khoản chi",
       "title": "Danh Sách Khoản Chi ({count})",
       "addExpense": "Thêm khoản chi",
       "emptyTitle": "Chưa có khoản chi tiêu nào",
@@ -540,7 +556,11 @@
     }
   },
   "members": {
-    "dialogTitle": "Thành Viên",
+    "viewMembers": "Xem danh sách {count} thành viên",
+    "memberActions": "Thao tác với {name}",
+    "retry": "Thử lại",
+    "loadError": "Chưa thể tải danh sách thành viên.",
+    "dialogTitle": "Thành viên",
     "dialogSubtitle": "Quản lý danh sách người tham gia, phân quyền và mời bạn bè cùng chia sẻ chi phí.",
     "memberCount": "{count} thành viên",
     "inviteBtn": "Mời thành viên",
@@ -686,7 +706,20 @@
     }
   },
   "plan": {
-    "pageTitle": "Kế hoạch chuyến đi",
+    "map": {
+      "title": "Điểm dừng trong ngày",
+      "description": "Chọn một điểm dừng để xem vị trí trên bản đồ.",
+      "noStops": "Thêm địa điểm vào hoạt động để xem các điểm dừng tại đây.",
+      "loadMore": "Tải thêm hoạt động"
+    },
+    "loadError": "Chưa thể tải lịch trình. Vui lòng thử lại.",
+    "retry": "Thử lại",
+    "itinerarySummary": "{days} ngày · {activities} hoạt động · {completed} đã hoàn thành",
+    "activityCount": "{count} hoạt động",
+    "chooseDay": "Chọn ngày trong chuyến đi",
+    "mapView": "Bản đồ",
+    "timelineView": "Lịch trình",
+    "pageTitle": "Lịch trình",
     "pageSubtitle": "Lên lịch trình theo từng ngày và chuẩn bị hành lý cho chuyến đi",
     "noActiveTrip": "Vui lòng chọn một chuyến đi để xem và lập kế hoạch.",
     "addActivity": "Thêm hoạt động",

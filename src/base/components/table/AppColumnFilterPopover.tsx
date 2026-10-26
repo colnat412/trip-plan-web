@@ -274,6 +274,8 @@ function FilterPopoverForm<T>({
         sx={{
           justifyContent: 'space-between',
           alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 1,
           pt: 1,
           borderTop: 1,
           borderColor: 'divider',

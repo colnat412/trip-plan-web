@@ -1,22 +1,18 @@
 'use client';
 
-import React from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
-import { Share } from '@mui/icons-material';
+import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
 import { useTranslations } from 'next-intl';
-
-import { AppActionMenu, AppButton } from '@/base/components/ui';
+import { AppActionMenu, AppButton, AppPageHeader } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 
 export interface PlanHeaderProps {
-  tripName: string;
-  destination: string;
   totalDays: number;
   totalActivities: number;
   completedActivities: number;
@@ -32,8 +28,6 @@ export interface PlanHeaderProps {
 }
 
 const PlanHeader = ({
-  tripName,
-  destination,
   totalDays,
   totalActivities,
   completedActivities,
@@ -50,215 +44,149 @@ const PlanHeader = ({
   const t = useTranslations('plan');
   const tNavigation = useTranslations('navigation');
 
-  const secondaryBtnSx = {
-    flex: { xs: '1 1 calc(50% - 4px)', sm: 'initial' },
-    minHeight: { xs: '36px', sm: '40px' },
-    px: { xs: 1.25, sm: 2 },
-    fontSize: { xs: '12px', sm: '13px' },
-    fontWeight: 700,
-    borderRadius: { xs: '10px', sm: '12px' },
-    whiteSpace: 'nowrap',
-    '& .MuiSvgIcon-root': {
-      fontSize: { xs: '16px', sm: '18px' },
-    },
-  };
-
-  const aiBtnSx = {
-    ...secondaryBtnSx,
-    borderColor: 'primary.light',
-    color: 'primary.main',
-    '&:hover': {
-      borderColor: 'primary.main',
-      bgcolor: 'primary.50',
-    },
-  };
-
-  const primaryBtnSx = {
-    flex: { xs: '1 1 100%', sm: 'initial' },
-    minHeight: { xs: '38px', sm: '40px' },
-    px: { xs: 2, sm: 2.5 },
-    fontSize: { xs: '13px', sm: '14px' },
-    fontWeight: 700,
-    borderRadius: { xs: '10px', sm: '12px' },
-    whiteSpace: 'nowrap',
-    '& .MuiSvgIcon-root': {
-      fontSize: { xs: '18px', sm: '20px' },
-    },
-  };
-
   return (
-    <Box
-      sx={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        justifyContent: 'space-between',
-        alignItems: { xs: 'flex-start', md: 'center' },
-        gap: { xs: 1.5, sm: 2 },
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 0.5,
-          minWidth: 0,
-        }}
-      >
+    <AppPageHeader
+      title={
         <Typography
-          component="h1"
+          component="h2"
           sx={{
             fontFamily: 'var(--font-display)',
-            fontSize: { xs: '20px', sm: '26px', md: '28px' },
+            fontSize: { xs: '24px', sm: '28px' },
             fontWeight: 800,
-            color: 'text.primary',
-            letterSpacing: '-0.5px',
           }}
         >
           {t('pageTitle')}
         </Typography>
-
-        <Stack
-          direction="row"
-          spacing={0.75}
+      }
+      subtitle={
+        <Box
           sx={{
+            display: 'flex',
             alignItems: 'center',
             flexWrap: 'wrap',
-            rowGap: 0.25,
+            gap: 1,
           }}
         >
-          <Typography
-            sx={{
-              fontSize: { xs: '12.5px', sm: '13.5px' },
-              fontWeight: 700,
-              color: 'primary.main',
-            }}
-          >
-            {tripName}
-          </Typography>
-          {destination && (
-            <Typography
-              sx={{
-                fontSize: { xs: '11.5px', sm: '12.5px' },
-                color: 'text.secondary',
-              }}
-            >
-              · {destination}
-            </Typography>
-          )}
-          <Typography
-            sx={{
-              fontSize: { xs: '11.5px', sm: '12.5px' },
-              color: 'text.secondary',
-            }}
-          >
-            · {totalDays} {t('totalDays').toLowerCase()} · {totalActivities}{' '}
-            {t('totalActivities').toLowerCase()} ({completedActivities}{' '}
-            {t('completedActivities').toLowerCase()})
+          <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+            {t('itinerarySummary', {
+              days: totalDays,
+              activities: totalActivities,
+              completed: completedActivities,
+            })}
           </Typography>
           {totalEstimatedCost > 0 && (
-            <Typography
-              sx={{
-                fontSize: { xs: '11.5px', sm: '12.5px' },
-                fontWeight: 700,
-                color: 'success.main',
-              }}
-            >
+            <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
               · {t('totalEstimatedCost')}:{' '}
               {formatCurrency(totalEstimatedCost, currency)}
             </Typography>
           )}
-        </Stack>
-      </Box>
-
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignSelf: { xs: 'stretch', sm: 'auto' },
-          flexWrap: 'wrap',
-          gap: { xs: 1, sm: 1.25 },
-        }}
-      >
-        <AppButton
-          intent="secondary"
-          size="small"
-          startIcon={<ChecklistRoundedIcon />}
-          onClick={onOpenChecklist}
-          sx={secondaryBtnSx}
+        </Box>
+      }
+      actions={
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: { xs: 1, sm: 1.5 },
+            flexWrap: { xs: 'nowrap', sm: 'wrap' },
+            '& > *': { flex: { xs: '1 1 0', sm: '0 0 auto' }, minWidth: 0 },
+          }}
         >
-          {t('checklistBtn')}
-        </AppButton>
-
-        {!readOnly && onOpenAiPlanner && (
+          {!readOnly && onAddActivity && (
+            <AppButton
+              intent="primary"
+              mobileIconLabel
+              round
+              startIcon={<AddRoundedIcon />}
+              onClick={onAddActivity}
+            >
+              {t('addActivity')}
+            </AppButton>
+          )}
           <AppButton
             intent="secondary"
-            size="small"
-            startIcon={
-              <AutoAwesomeRoundedIcon sx={{ color: 'primary.main' }} />
-            }
-            onClick={onOpenAiPlanner}
-            sx={aiBtnSx}
+            mobileIconLabel
+            round
+            startIcon={<ChecklistRoundedIcon />}
+            onClick={onOpenChecklist}
           >
-            {t('aiPlannerBtn')}
+            {t('checklistBtn')}
           </AppButton>
-        )}
-
-        {!readOnly && onAddActivity && (
-          <AppButton
-            intent="primary"
-            size="small"
-            startIcon={<AddRoundedIcon />}
-            onClick={onAddActivity}
-            sx={primaryBtnSx}
-          >
-            {t('addActivity')}
-          </AppButton>
-        )}
-
-        {(onOpenPrint || onOpenActivityLogs || (!readOnly && onOpenShare)) && (
-          <AppActionMenu
-            ariaLabel={tNavigation('more')}
-            trigger={
-              <AppButton
-                intent="secondary"
-                size="small"
-                startIcon={<MoreHorizRoundedIcon />}
-                sx={secondaryBtnSx}
-              >
-                {tNavigation('more')}
-              </AppButton>
-            }
-            items={[
-              ...(onOpenActivityLogs
-                ? [{
-                    id: 'activity-log',
-                    label: t('activityLogBtn'),
-                    icon: <HistoryRoundedIcon fontSize="small" />,
-                    onClick: onOpenActivityLogs,
-                  }]
-                : []),
-              ...(!readOnly && onOpenShare
-                ? [{
-                    id: 'share',
-                    label: t('shareBtn'),
-                    icon: <Share fontSize="small" />,
-                    onClick: onOpenShare,
-                  }]
-                : []),
-              ...(onOpenPrint
-                ? [{
-                    id: 'print',
-                    label: t('print.button'),
-                    icon: <PictureAsPdfRoundedIcon fontSize="small" />,
-                    onClick: onOpenPrint,
-                  }]
-                : []),
-            ]}
-          />
-        )}
-      </Box>
-    </Box>
+          {!readOnly && onOpenAiPlanner && (
+            <AppButton
+              intent="secondary"
+              mobileIconLabel
+              round
+              startIcon={<AutoAwesomeRoundedIcon />}
+              onClick={onOpenAiPlanner}
+            >
+              {t('aiPlannerBtn')}
+            </AppButton>
+          )}
+          {(onOpenPrint ||
+            onOpenActivityLogs ||
+            (!readOnly && onOpenShare)) && (
+            <AppActionMenu
+              ariaLabel={tNavigation('more')}
+              trigger={
+                <AppButton
+                  intent="secondary"
+                  mobileIconLabel
+                  round
+                  aria-label={tNavigation('more')}
+                  startIcon={<MoreHorizRoundedIcon />}
+                  sx={{
+                    minWidth: { sm: 44 },
+                    px: { sm: 1.25 },
+                    '& .MuiButton-startIcon': { margin: 0 },
+                  }}
+                >
+                  <Box
+                    component="span"
+                    sx={{ display: { xs: 'block', sm: 'none' } }}
+                  >
+                    {tNavigation('more')}
+                  </Box>
+                </AppButton>
+              }
+              items={[
+                ...(onOpenActivityLogs
+                  ? [
+                      {
+                        id: 'activity-log',
+                        label: t('activityLogBtn'),
+                        icon: <HistoryRoundedIcon fontSize="small" />,
+                        onClick: onOpenActivityLogs,
+                      },
+                    ]
+                  : []),
+                ...(!readOnly && onOpenShare
+                  ? [
+                      {
+                        id: 'share',
+                        label: t('shareBtn'),
+                        icon: <ShareRoundedIcon fontSize="small" />,
+                        onClick: onOpenShare,
+                      },
+                    ]
+                  : []),
+                ...(onOpenPrint
+                  ? [
+                      {
+                        id: 'print',
+                        label: t('print.button'),
+                        icon: <PictureAsPdfRoundedIcon fontSize="small" />,
+                        onClick: onOpenPrint,
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+          )}
+        </Box>
+      }
+    />
   );
 };
 

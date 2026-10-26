@@ -32,7 +32,7 @@ const AppNavigationLink = ({
         gap: 1,
         minHeight: 44,
         px: 1.5,
-        borderRadius: '12px',
+        borderRadius: expanded ? '12px' : '999px',
         width: expanded ? '100%' : 'auto',
         color: active ? 'primary.main' : 'text.secondary',
         bgcolor: active ? 'action.selected' : 'transparent',
@@ -49,7 +49,7 @@ const AppNavigationLink = ({
       <Typography
         component="span"
         sx={{
-          fontSize: '13px',
+          fontSize: '14px',
           fontWeight: active ? 700 : 500,
           whiteSpace: 'nowrap',
         }}

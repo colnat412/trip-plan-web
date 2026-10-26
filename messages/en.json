@@ -1,4 +1,9 @@
 {
+  "locationMap": {
+    "title": "Map: {location}",
+    "open": "Open in Google Maps",
+    "empty": "Add a location to see it on the map."
+  },
   "navigation": {
     "searchingTrips": "Searching trips…",
     "clearSearch": "Clear search",
@@ -82,6 +87,16 @@
     }
   },
   "overview": {
+    "itineraryError": "Could not load the itinerary.",
+    "budgetError": "Could not load the budget.",
+    "itineraryIntro": "One day at a time. Plenty to look forward to.",
+    "yourItinerary": "Your journey",
+    "manageBudget": "View expenses",
+    "overBudget": "Over budget",
+    "budgetTotal": "Planned budget: {amount}",
+    "tripBudget": "Trip budget",
+    "openItinerary": "View itinerary",
+    "journeyIntro": "Places to discover, experiences to share, and moments to remember. Let’s plan this journey together.",
     "activeTrip": "Selected trip",
     "live": "Live",
     "tripMeta": "4 – 8 August, 2025 · 5 days · 4 members",
@@ -399,6 +414,7 @@
       "allUnderControl": "All categories under budget"
     },
     "table": {
+      "titleLabel": "Expenses",
       "title": "Expense List ({count})",
       "addExpense": "Add Expense",
       "emptyTitle": "No expenses yet",
@@ -540,6 +556,10 @@
     }
   },
   "members": {
+    "viewMembers": "View {count} trip members",
+    "memberActions": "Actions for {name}",
+    "retry": "Try again",
+    "loadError": "Could not load trip members.",
     "dialogTitle": "Members",
     "dialogSubtitle": "Manage participants, assign permissions, and invite friends to share expenses.",
     "memberCount": "{count} members",
@@ -686,7 +706,20 @@
     }
   },
   "plan": {
-    "pageTitle": "Trip Itinerary & Plan",
+    "map": {
+      "title": "Stops for the day",
+      "description": "Choose a stop to see its location on the map.",
+      "noStops": "Add locations to your activities to see your stops here.",
+      "loadMore": "Load more activities"
+    },
+    "loadError": "Could not load the itinerary. Please try again.",
+    "retry": "Try again",
+    "itinerarySummary": "{days} days · {activities} activities · {completed} completed",
+    "activityCount": "{count} activities",
+    "chooseDay": "Choose a trip day",
+    "mapView": "Map",
+    "timelineView": "Itinerary",
+    "pageTitle": "Itinerary",
     "pageSubtitle": "Plan day-by-day activities and manage pre-trip preparation checklist",
     "noActiveTrip": "Please select a trip to view and manage its plan.",
     "addActivity": "Add Activity",

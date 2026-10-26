@@ -18,6 +18,7 @@ const AppPageContainer = ({
     <Box
       sx={{
         width: '100%',
+        minWidth: 0,
         minHeight: '100%',
         bgcolor: 'action.hover',
         p: { xs: 2, md: 3, xl: 4 },

@@ -2,20 +2,16 @@
 
 import { Box, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
-import BarChartRoundedIcon from '@mui/icons-material/BarChartRounded';
-import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
+import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton, AppLinearProgress } from '@/base/components/ui';
-import { formatCurrency, formatDateRange } from '@/base/utils';
-import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
+import { AppAvatarStack } from '@/base/components/ui';
+import { formatDateRange } from '@/base/utils';
 import { useTripContext } from '../../context/TripContext';
 import { useTripMembers } from '../../hooks/useTripMembers';
 import type { Trip } from '../../types';
 import TripStatusBadge from '../TripStatusBadge';
-import TripSummaryMetric from './TripSummaryMetric';
 
 interface ActiveTripBannerProps {
   trip: Trip;
@@ -24,278 +20,141 @@ interface ActiveTripBannerProps {
 const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
   const t = useTranslations('overview');
   const tMembers = useTranslations('members');
-  const { openMembers } = useTripContext();
-  const { summary } = useTripBudgetSummary({ tripId: trip.id });
-  const { activeMembers } = useTripMembers({ tripId: trip.id });
-
-  const totalSpent = summary?.actualSpent ?? 0;
-  const totalBudget = summary?.totalBudget ?? 0;
-  const remaining = summary?.remainingBudget ?? 0;
-  const percentageUsed = summary?.percentageUsed ?? 0;
-  const isOver = totalBudget > 0 && totalSpent > totalBudget;
-
-  let days = 1;
-  if (trip.startDate && trip.endDate) {
-    const diff =
-      new Date(trip.endDate).getTime() - new Date(trip.startDate).getTime();
-    days = Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)) + 1);
-  }
-
-  const progressColor = isOver ? 'error.light' : 'primary.light';
+  const { openMembers, isMembersOpen } = useTripContext();
+  const { activeMembers, isLoading, isStale, error } = useTripMembers({
+    tripId: trip.id,
+    enabled: !isMembersOpen,
+  });
 
   return (
     <Box
       component="section"
-      sx={(theme) => {
-        const palette = theme.vars?.palette ?? theme.palette;
-        const overlay = `linear-gradient(90deg, ${alpha(theme.palette.primary.dark, 0.96)} 0%, ${alpha(theme.palette.primary.main, 0.8)} 42%, ${alpha(theme.palette.primary.light, 0.2)} 72%, ${alpha(theme.palette.primary.dark, 0.12)} 100%)`;
-        const fallback = `linear-gradient(120deg, ${palette.primary.dark}, ${palette.primary.main} 48%, ${palette.primary.light})`;
-
-        return {
-          width: '100%',
-          minHeight: { xs: 440, sm: 420, md: 0 },
-          flex: { md: '0.9 1 0' },
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          gap: { xs: 4, md: 3 },
-          overflow: 'hidden',
-          borderRadius: '16px',
-          border: 1,
-          borderColor: alpha(theme.palette.common.white, 0.14),
-          p: { xs: 2, sm: 3, md: 4 },
-          color: theme.palette.common.white,
-          backgroundColor: palette.primary.dark,
-          backgroundImage: trip.coverUrl
-            ? `${overlay}, url(${JSON.stringify(trip.coverUrl)})`
-            : fallback,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          '@media (max-height: 820px)': {
-            flex: { md: '0.96 1 0' },
-            gap: 2,
-            p: 2,
-          },
-        };
+      aria-label={trip.name}
+      sx={{
+        width: '100%',
+        borderRadius: '24px',
+        overflow: 'hidden',
+        flexShrink: 0,
       }}
     >
       <Box
-        sx={{
+        sx={(theme) => ({
           display: 'flex',
-          alignItems: 'flex-start',
-        }}
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          minHeight: { xs: 300, md: 340 },
+          gap: 5,
+          p: { xs: 2.5, sm: 4, md: 5 },
+          color: theme.palette.common.white,
+          bgcolor: 'primary.dark',
+          backgroundImage: trip.coverUrl
+            ? `linear-gradient(180deg, ${alpha(theme.palette.common.black, 0.18)}, ${alpha(theme.palette.common.black, 0.76)}), url(${JSON.stringify(trip.coverUrl)})`
+            : `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        })}
       >
-        <Stack spacing={1.5} sx={{ minWidth: 0, maxWidth: 820 }}>
-          <Stack
-            direction="row"
-            spacing={1}
-            useFlexGap
-            sx={{ alignItems: 'center', flexWrap: 'wrap' }}
-          >
-            <Typography
-              sx={(theme) => ({
-                color: theme.palette.common.white,
-                bgcolor: alpha(theme.palette.primary.light, 0.28),
-                border: `1px solid ${alpha(theme.palette.common.white, 0.12)}`,
-                borderRadius: '999px',
-                px: 1.25,
-                py: 0.5,
-                fontSize: '12px',
-                fontWeight: 600,
-              })}
-            >
-              {t('activeTrip')}
-            </Typography>
-            <TripStatusBadge status={trip.status} />
-          </Stack>
-
+        <Stack
+          direction="row"
+          useFlexGap
+          spacing={1}
+          sx={{
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+          }}
+        >
+          <TripStatusBadge status={trip.status} />
+          <AppAvatarStack
+            items={!isStale && !error ? activeMembers : []}
+            loading={isLoading || (isStale && !error)}
+            label={
+              error || isStale
+                ? tMembers('dialogTitle')
+                : tMembers('viewMembers', { count: activeMembers.length })
+            }
+            onClick={() => openMembers(false)}
+          />
+        </Stack>
+        <Stack spacing={2}>
           <Typography
             component="h1"
             sx={{
               fontFamily: 'var(--font-display)',
-              fontSize: { xs: '34px', sm: '44px', lg: '52px' },
-              fontWeight: 700,
-              lineHeight: 1.2,
+              fontSize: { xs: '30px', sm: '40px', lg: '48px' },
+              fontWeight: 800,
+              lineHeight: 1.12,
               color: 'inherit',
               overflowWrap: 'anywhere',
-              '@media (max-height: 820px)': {
-                fontSize: { md: '38px' },
-                lineHeight: 1.1,
-              },
+              maxWidth: 960,
             }}
           >
             {trip.name}
           </Typography>
-
           <Stack
             direction="row"
-            spacing={1.5}
             useFlexGap
-            sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}
+            spacing={2}
+            sx={{ alignItems: 'center', flexWrap: 'wrap' }}
           >
-            <Stack
-              direction="row"
-              spacing={0.75}
-              sx={{ alignItems: 'center', minWidth: 0 }}
-            >
-              <LocationOnRoundedIcon sx={{ flexShrink: 0, fontSize: '18px' }} />
-              <Typography
-                sx={(theme) => ({
-                  color: alpha(theme.palette.common.white, 0.86),
-                  fontSize: { xs: '13px', sm: '15px' },
-                  overflowWrap: 'anywhere',
-                })}
+            {trip.destination && (
+              <Stack
+                direction="row"
+                spacing={0.75}
+                sx={{ alignItems: 'center', minWidth: 0 }}
               >
-                {[
-                  trip.destination,
-                  formatDateRange(trip.startDate, trip.endDate),
-                ]
-                  .filter(Boolean)
-                  .join(' · ')}
+                <LocationOnRoundedIcon
+                  sx={{ fontSize: '18px', flexShrink: 0 }}
+                />
+                <Typography
+                  sx={{
+                    fontSize: '14px',
+                    overflowWrap: 'anywhere',
+                    color: 'inherit',
+                  }}
+                >
+                  {trip.destination}
+                </Typography>
+              </Stack>
+            )}
+            <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
+              <CalendarTodayRoundedIcon
+                sx={{ fontSize: '16px', flexShrink: 0 }}
+              />
+              <Typography sx={{ fontSize: '14px', color: 'inherit' }}>
+                {formatDateRange(trip.startDate, trip.endDate, 'DD/MM/YYYY')}
               </Typography>
             </Stack>
-
-            <AppButton
-              intent="secondary"
-              size="small"
-              onClick={() => openMembers(false)}
-              startIcon={<GroupRoundedIcon sx={{ fontSize: '18px' }} />}
-              sx={(theme) => ({
-                flexShrink: 0,
-                color: theme.palette.common.white,
-                bgcolor: alpha(theme.palette.common.white, 0.12),
-                borderColor: alpha(theme.palette.common.white, 0.28),
-                '&:hover': {
-                  color: theme.palette.common.white,
-                  bgcolor: alpha(theme.palette.common.white, 0.2),
-                  borderColor: alpha(theme.palette.common.white, 0.28),
-                },
-              })}
-            >
-              {tMembers('dialogTitle')}
-            </AppButton>
           </Stack>
         </Stack>
       </Box>
-
       <Box
-        sx={(theme) => ({
+        sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          alignItems: 'stretch',
-          gap: { xs: 2.5, md: 0 },
-          p: { xs: 2, sm: 2.5, md: 3 },
-          borderRadius: '14px',
-          bgcolor: alpha(theme.palette.primary.dark, 0.52),
-          border: `1px solid ${alpha(theme.palette.common.white, 0.2)}`,
-          backdropFilter: 'blur(16px)',
-          '@media (max-height: 820px)': {
-            p: 1.5,
-          },
-        })}
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'stretch', sm: 'center' },
+          gap: 2,
+          p: { xs: 2.5, sm: 3 },
+          bgcolor: 'background.paper',
+          border: 1,
+          borderTop: 0,
+          borderColor: 'divider',
+          borderRadius: '0 0 24px 24px',
+        }}
       >
-        <Stack
-          spacing={1.25}
+        <Typography
           sx={{
-            flex: { md: '1.35 1 0' },
+            flex: 1,
             minWidth: 0,
-            pr: { md: 3 },
+            fontSize: '14px',
+            color: 'text.secondary',
+            lineHeight: 1.7,
+            overflowWrap: 'anywhere',
+            whiteSpace: 'pre-line',
           }}
         >
-          <Typography
-            sx={(theme) => ({
-              color: alpha(theme.palette.common.white, 0.78),
-              fontSize: { xs: '12px', sm: '14px' },
-            })}
-          >
-            {t('spent')}
-          </Typography>
-          <Stack
-            direction="row"
-            spacing={1}
-            useFlexGap
-            sx={{ alignItems: 'baseline', flexWrap: 'wrap' }}
-          >
-            <Typography
-              sx={{
-                color: isOver ? 'error.light' : 'inherit',
-                fontFamily: 'var(--font-mono)',
-                fontSize: { xs: '24px', sm: '30px' },
-                fontWeight: 700,
-                lineHeight: 1.15,
-                '@media (max-height: 820px)': {
-                  fontSize: { md: '22px' },
-                },
-              }}
-            >
-              {formatCurrency(totalSpent, trip.baseCurrency)}
-            </Typography>
-            <Typography
-              sx={(theme) => ({
-                color: alpha(theme.palette.common.white, 0.82),
-                fontFamily: 'var(--font-mono)',
-                fontSize: { xs: '13px', sm: '16px' },
-                fontWeight: 500,
-              })}
-            >
-              / {formatCurrency(totalBudget, trip.baseCurrency)}
-            </Typography>
-          </Stack>
-          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-            <AppLinearProgress
-              value={totalBudget > 0 ? percentageUsed : 0}
-              height={8}
-              barColor={progressColor}
-              sx={(theme) => ({
-                flexGrow: 1,
-                bgcolor: alpha(theme.palette.common.white, 0.22),
-              })}
-            />
-            <Typography
-              sx={(theme) => ({
-                flexShrink: 0,
-                color: alpha(theme.palette.common.white, 0.82),
-                fontFamily: 'var(--font-mono)',
-                fontSize: '13px',
-                fontWeight: 700,
-              })}
-            >
-              {Math.round(percentageUsed)}%
-            </Typography>
-          </Stack>
-        </Stack>
-
-        <Box
-          sx={{
-            display: 'flex',
-            flex: { md: '2 1 0' },
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: { xs: 2, sm: 0 },
-            minWidth: 0,
-          }}
-        >
-          <TripSummaryMetric
-            inverted
-            label={t('remaining')}
-            value={formatCurrency(remaining, trip.baseCurrency)}
-            danger={isOver}
-            icon={<AccountBalanceWalletRoundedIcon />}
-          />
-          <TripSummaryMetric
-            inverted
-            label={t('averagePerDay')}
-            value={formatCurrency(totalSpent / days, trip.baseCurrency)}
-            icon={<BarChartRoundedIcon />}
-            divider
-          />
-          <TripSummaryMetric
-            inverted
-            label={t('memberCount')}
-            value={String(activeMembers.length)}
-            icon={<GroupRoundedIcon />}
-            divider
-          />
-        </Box>
+          {trip.description || t('journeyIntro')}
+        </Typography>
       </Box>
     </Box>
   );

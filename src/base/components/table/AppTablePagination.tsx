@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Box, Pagination, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import AppSelect from '../ui/AppSelect';
+import AppPagination from '../ui/AppPagination';
 import type { AppTablePaginationProps } from './types';
 
 const AppTablePagination = ({
@@ -23,13 +24,14 @@ const AppTablePagination = ({
 
   const sizeOptions = pageSizeOptions.map((size) => ({
     value: size,
-    label: `${size} / trang`,
+    label: String(size),
   }));
 
   return (
     <Box
       sx={{
         display: 'flex',
+        flexWrap: 'wrap',
         flexDirection: { xs: 'column', sm: 'row' },
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -49,6 +51,8 @@ const AppTablePagination = ({
           alignItems: 'center',
           justifyContent: { xs: 'space-between', sm: 'flex-start' },
           width: { xs: '100%', sm: 'auto' },
+          flexWrap: 'wrap',
+          gap: 1,
         }}
       >
         <Typography
@@ -82,7 +86,7 @@ const AppTablePagination = ({
             </Typography>
             <AppSelect
               variantType="compact"
-              label="Số dòng"
+              label={t('rowsPerPage')}
               value={pageSize}
               options={sizeOptions}
               onChange={(e) => {
@@ -95,22 +99,18 @@ const AppTablePagination = ({
         )}
       </Stack>
 
-      <Pagination
+      <AppPagination
         count={totalPages}
         page={page + 1}
         onChange={(_, newPage) => onPageChange(newPage - 1)}
         color="primary"
         shape="rounded"
         size="small"
-        showFirstButton
-        showLastButton
         sx={{
           '& .MuiPaginationItem-root': {
             fontWeight: 600,
             fontSize: '12.5px',
             borderRadius: '8px',
-            minWidth: { xs: 28, sm: 30 },
-            height: { xs: 28, sm: 30 },
             '&.Mui-selected': {
               bgcolor: 'primary.main',
               color: 'primary.contrastText',

@@ -395,10 +395,10 @@ const SplitAllocationSection = ({
         {memberAllocations.map(({ member, selected, amount, splitValue }) => (
           <Stack
             key={String(member.userId)}
-            direction="row"
+            direction={{ xs: 'column', sm: 'row' }}
             spacing={1}
             sx={{
-              alignItems: 'center',
+              alignItems: { xs: 'stretch', sm: 'center' },
               justifyContent: 'space-between',
               bgcolor: selected ? 'background.paper' : 'transparent',
               p: 1,
@@ -465,7 +465,14 @@ const SplitAllocationSection = ({
             <Stack
               direction="row"
               spacing={1}
-              sx={{ alignItems: 'center', flexShrink: 0 }}
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                flexShrink: 0,
+                flexWrap: 'wrap',
+                gap: 1,
+                minWidth: 0,
+              }}
             >
               {splitType === 'EQUAL' && selected && (
                 <Typography
@@ -552,7 +559,9 @@ const SplitAllocationSection = ({
                   <Typography
                     variant="caption"
                     sx={{
-                      width: 75,
+                      minWidth: 75,
+                      maxWidth: '100%',
+                      overflowWrap: 'anywhere',
                       textAlign: 'right',
                       color: 'text.secondary',
                       fontWeight: 500,
@@ -595,7 +604,9 @@ const SplitAllocationSection = ({
                   <Typography
                     variant="caption"
                     sx={{
-                      width: 75,
+                      minWidth: 75,
+                      maxWidth: '100%',
+                      overflowWrap: 'anywhere',
                       textAlign: 'right',
                       color: 'text.secondary',
                       fontWeight: 500,

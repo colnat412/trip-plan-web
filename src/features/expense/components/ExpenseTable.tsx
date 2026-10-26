@@ -14,6 +14,7 @@ import {
   AppButton,
   AppCategoryChip,
   AppTable,
+  AppSectionHeader,
   type AppTableColumn,
   type ColumnFilterValue,
   type TableSortState,
@@ -29,7 +30,7 @@ export interface ExpenseTableProps {
   onPageChange?: (newPage: number) => void;
   onEdit: (expense: Expense) => void;
   onDelete: (expense: Expense) => void;
-  onAddNew: () => void;
+  onAddNew?: () => void;
   onViewDetail?: (expense: Expense) => void;
   sort?: TableSortState | null;
   onSortChange?: (sort: TableSortState | null) => void;
@@ -311,35 +312,28 @@ const ExpenseTable = ({
       onFilterChange={onFilterChange}
       tableMaxHeight={tableMaxHeight}
       header={
-        <Stack
-          direction="row"
+        <AppSectionHeader
+          title={tTable('titleLabel')}
+          count={totalElements}
+          stackActionsOnMobile
           sx={{
             p: { xs: 2, sm: 2.5 },
             borderBottom: 1,
             borderColor: 'divider',
-            justifyContent: 'space-between',
-            alignItems: 'center',
           }}
-        >
-          <Typography
-            sx={{
-              fontFamily: 'var(--font-display)',
-              fontSize: { xs: '16px', sm: '18px' },
-              fontWeight: 700,
-              color: 'text.primary',
-            }}
-          >
-            {tTable('title', { count: totalElements })}
-          </Typography>
-          <AppButton
-            intent="primary"
-            size="small"
-            startIcon={<AddRoundedIcon fontSize="small" />}
-            onClick={onAddNew}
-          >
-            {tTable('addExpense')}
-          </AppButton>
-        </Stack>
+          actions={
+            !readOnly && onAddNew ? (
+              <AppButton
+                intent="primary"
+                size="small"
+                startIcon={<AddRoundedIcon fontSize="small" />}
+                onClick={onAddNew}
+              >
+                {tTable('addExpense')}
+              </AppButton>
+            ) : undefined
+          }
+        />
       }
       pagination={
         totalElements > 0 && onPageChange
@@ -356,8 +350,8 @@ const ExpenseTable = ({
         icon: <ReceiptLongRoundedIcon sx={{ fontSize: 44 }} />,
         title: tTable('emptyTitle'),
         description: tTable('emptyDesc'),
-        actionLabel: tTable('addFirst'),
-        onAction: onAddNew,
+        actionLabel: !readOnly && onAddNew ? tTable('addFirst') : undefined,
+        onAction: !readOnly ? onAddNew : undefined,
       }}
     />
   );

@@ -157,7 +157,7 @@ const DayTimelineList = ({
               borderColor: 'error.light',
               '&:hover': {
                 borderColor: 'error.main',
-                bgcolor: 'error.50',
+                bgcolor: (theme) => `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).error.main} 8%, transparent)`,
               },
             }}
           >

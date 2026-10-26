@@ -127,7 +127,8 @@ const ProfileForm = ({
         <Stack
           direction="row"
           spacing={1.5}
-          sx={{ justifyContent: 'flex-end' }}
+          useFlexGap
+          sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
         >
           <AppButton
             type="button"

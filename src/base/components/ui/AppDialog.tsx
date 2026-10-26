@@ -170,7 +170,7 @@ const AppDialog = ({
             gap: 1.5,
             flexWrap: 'wrap',
             '& > .MuiButton-root': {
-              flex: { xs: '1 1 auto', sm: '0 1 auto' },
+              flex: { xs: '1 0 auto', sm: '0 0 auto' },
               minWidth: 0,
               maxWidth: '100%',
               overflowWrap: 'anywhere',

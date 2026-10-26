@@ -544,6 +544,8 @@ const Register = () => {
                   sx={{
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: 1,
                   }}
                 >
                   <Typography variant="body2" color="text.secondary">

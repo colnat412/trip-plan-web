@@ -242,7 +242,18 @@ const CameraCaptureDialog = ({
           }}
         >
           {capturedImage ? (
-            <Stack direction="row" spacing={2} sx={{ width: '100%' }}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              useFlexGap
+              sx={{
+                width: '100%',
+                '& > .MuiButton-root': {
+                  flex: { sm: '1 1 0' },
+                  width: { sm: 'auto' },
+                },
+              }}
+            >
               <AppButton
                 fullWidth
                 intent="secondary"

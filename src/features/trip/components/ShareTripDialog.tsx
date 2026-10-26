@@ -130,7 +130,13 @@ const ShareTripDialog = ({
         <Stack
           direction="row"
           spacing={1.5}
-          sx={{ justifyContent: 'flex-end', width: '100%' }}
+          useFlexGap
+          sx={{
+            justifyContent: 'flex-end',
+            width: '100%',
+            flexWrap: 'wrap',
+            gap: 1.5,
+          }}
         >
           <AppButton intent="secondary" onClick={handleClose}>
             {t('cancel')}

@@ -149,10 +149,9 @@ const ActivityTimelineCard = ({
                   component="span"
                   sx={{
                     display: { xs: 'none', sm: 'inline' },
-                    mx: 0.5,
                   }}
                 >
-                  –
+                  {' – '}
                 </Box>
                 <Box
                   component="span"
@@ -227,16 +226,7 @@ const ActivityTimelineCard = ({
               ? alpha(theme.palette.success.main, 0.25)
               : (theme.vars?.palette ?? theme.palette).divider;
           },
-          boxShadow: (theme) => {
-            return `0 2px 6px ${alpha(theme.palette.text.primary, 0.04)}`;
-          },
-          transition: 'all 0.2s ease',
-          '&:hover': {
-            boxShadow: (theme) => {
-              return `0 6px 18px ${alpha(theme.palette.text.primary, 0.08)}`;
-            },
-            borderColor: 'primary.light',
-          },
+          boxShadow: 'none',
         }}
       >
         <Box
@@ -263,6 +253,7 @@ const ActivityTimelineCard = ({
               <Typography
                 sx={{
                   fontSize: '15px',
+                  overflowWrap: 'anywhere',
                   fontWeight: 700,
                   color: isCompleted ? 'text.secondary' : 'text.primary',
                   textDecoration: isCompleted ? 'line-through' : 'none',

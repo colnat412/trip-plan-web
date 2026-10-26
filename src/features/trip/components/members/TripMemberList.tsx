@@ -39,7 +39,7 @@ const TripMemberList = ({
           <Skeleton
             key={i}
             variant="rounded"
-            height={68}
+            height={104}
             sx={{ borderRadius: '16px' }}
           />
         ))}
@@ -58,6 +58,7 @@ const TripMemberList = ({
           py: 6,
           px: 2,
           textAlign: 'center',
+          gap: 2,
         }}
       >
         <Box
@@ -70,7 +71,6 @@ const TripMemberList = ({
             alignItems: 'center',
             justifyContent: 'center',
             color: 'text.secondary',
-            mb: 2,
           }}
         >
           <PeopleOutlineRoundedIcon sx={{ fontSize: '32px' }} />
@@ -80,7 +80,6 @@ const TripMemberList = ({
             fontWeight: 700,
             fontSize: '16px',
             color: 'text.primary',
-            mb: 0.5,
           }}
         >
           {t('empty.title')}
@@ -95,10 +94,7 @@ const TripMemberList = ({
   }
 
   return (
-    <Stack
-      spacing={1.5}
-      sx={{ maxHeight: '420px', overflowY: 'auto', pr: 0.5 }}
-    >
+    <Stack spacing={1.5} sx={{ minWidth: 0 }}>
       {members.map((member) => (
         <TripMemberRow
           key={member.id}

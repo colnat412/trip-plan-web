@@ -317,7 +317,12 @@ const SetBudgetForm = ({
         ))}
       </Box>
 
-      <Stack direction="row" spacing={1.5} sx={{ justifyContent: 'flex-end' }}>
+      <Stack
+        direction="row"
+        spacing={1.5}
+        useFlexGap
+        sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
+      >
         <AppButton
           intent="secondary"
           size="medium"

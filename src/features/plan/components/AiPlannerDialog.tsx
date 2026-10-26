@@ -104,7 +104,13 @@ const AiPlannerDialog = ({
         <Stack
           direction="row"
           spacing={1.5}
-          sx={{ width: '100%', justifyContent: 'flex-end' }}
+          useFlexGap
+          sx={{
+            width: '100%',
+            justifyContent: 'flex-end',
+            flexWrap: 'wrap',
+            gap: 1.5,
+          }}
         >
           <AppButton
             intent="secondary"
@@ -211,7 +217,7 @@ const AiPlannerDialog = ({
             sx={{
               p: 2,
               borderRadius: '12px',
-              bgcolor: 'primary.50',
+              bgcolor: 'action.selected',
               border: '1px dashed',
               borderColor: 'primary.300',
               textAlign: 'center',

@@ -161,7 +161,7 @@ const AiPlannerView = () => {
           alignItems: 'flex-start',
         }}
       >
-        <Box sx={{ flex: { xs: '1 1 auto', lg: 2 }, width: '100%' }}>
+        <Box sx={{ flex: { xs: '1 1 auto', lg: 2 }, width: '100%', minWidth: 0 }}>
           <AppCard
             sx={{
               p: { xs: 2.5, sm: 3.5 },
@@ -276,7 +276,7 @@ const AiPlannerView = () => {
                         bgcolor: 'action.hover',
                         transition: 'all 0.2s ease',
                         '&:hover': {
-                          bgcolor: 'primary.50',
+                          bgcolor: 'action.selected',
                           color: 'primary.main',
                           borderColor: 'primary.main',
                         },
@@ -302,7 +302,7 @@ const AiPlannerView = () => {
                   sx={{
                     p: 2.5,
                     borderRadius: '16px',
-                    bgcolor: 'primary.50',
+                    bgcolor: 'action.selected',
                     border: '1.5px dashed',
                     borderColor: 'primary.main',
                     display: 'flex',
@@ -388,7 +388,7 @@ const AiPlannerView = () => {
           </AppCard>
         </Box>
 
-        <Box sx={{ flex: { xs: '1 1 auto', lg: 1 }, width: '100%' }}>
+        <Box sx={{ flex: { xs: '1 1 auto', lg: 1 }, width: '100%', minWidth: 0 }}>
           <AppCard variant="outlined" sx={{ p: 3, borderRadius: '16px' }}>
             <Stack spacing={2}>
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>

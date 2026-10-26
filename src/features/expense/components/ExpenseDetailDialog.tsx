@@ -50,7 +50,13 @@ const ExpenseDetailDialog = ({
         <Stack
           direction="row"
           spacing={1.5}
-          sx={{ width: '100%', justifyContent: 'flex-end' }}
+          useFlexGap
+          sx={{
+            width: '100%',
+            justifyContent: 'flex-end',
+            flexWrap: 'wrap',
+            gap: 1.5,
+          }}
         >
           <AppButton intent="secondary" onClick={onClose}>
             {t('dialog.close')}
@@ -437,7 +443,12 @@ const ExpenseDetailDialog = ({
           </Stack>
         )}
 
-        {expense.receiptUrl && <ExpenseReceiptPreview key={expense.receiptUrl} src={expense.receiptUrl} />}
+        {expense.receiptUrl && (
+          <ExpenseReceiptPreview
+            key={expense.receiptUrl}
+            src={expense.receiptUrl}
+          />
+        )}
       </Stack>
     </AppDialog>
   );

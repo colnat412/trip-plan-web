@@ -83,7 +83,9 @@ const EditExpenseForm = ({
   const [payerId, setPayerId] = useState<string | number | ''>(
     expense.payerId || '',
   );
-  const [receiptFile, setReceiptFile] = useState<File | null | undefined>(undefined);
+  const [receiptFile, setReceiptFile] = useState<File | null | undefined>(
+    undefined,
+  );
   const [note, setNote] = useState(expense.note || '');
 
   const splitsRef = useRef<SplitItemPayload[]>(initialSplits);
@@ -249,7 +251,11 @@ const EditExpenseForm = ({
         />
       )}
 
-      <ReceiptImageField src={expense.receiptUrl} disabled={isLoading} onChange={setReceiptFile} />
+      <ReceiptImageField
+        src={expense.receiptUrl}
+        disabled={isLoading}
+        onChange={setReceiptFile}
+      />
 
       <AppTextField
         label={tForm('noteLabel')}
@@ -260,7 +266,12 @@ const EditExpenseForm = ({
         onChange={(e) => setNote(e.target.value)}
       />
 
-      <Stack direction="row" spacing={1.5} sx={{ justifyContent: 'flex-end' }}>
+      <Stack
+        direction="row"
+        spacing={1.5}
+        useFlexGap
+        sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
+      >
         <AppButton
           intent="secondary"
           size="medium"

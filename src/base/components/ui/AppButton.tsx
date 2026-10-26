@@ -1,23 +1,23 @@
 "use client";
 
-import { Button, ButtonProps } from "@mui/material";
+import { Box, Button, ButtonProps } from "@mui/material";
 
+import type { AnchorHTMLAttributes } from "react";
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
 
 export type AppButtonIntent =
-  | "primary"
-  | "secondary"
-  | "success"
-  | "danger"
-  | "text";
+  "primary" | "secondary" | "success" | "danger" | "text";
 
-export type AppButtonProps = Omit<ButtonProps, "color" | "variant"> & {
-  intent?: AppButtonIntent;
-  loading?: boolean;
-  round?: boolean;
-  selected?: boolean;
-};
+export type AppButtonProps = Omit<ButtonProps, "color" | "variant"> &
+  Pick<AnchorHTMLAttributes<HTMLAnchorElement>, "target" | "rel"> & {
+    intent?: AppButtonIntent;
+    loading?: boolean;
+    round?: boolean;
+    mobileIconLabel?: boolean;
+    wrapLabel?: boolean;
+    selected?: boolean;
+  };
 
 function getSelectedStyles(selected: boolean): SxProps<Theme> {
   if (!selected) return {};
@@ -59,6 +59,9 @@ function getButtonStyles(
     const palette = theme.vars?.palette ?? theme.palette;
     const primaryGradient = `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
     const commonStyles = {
+      flexShrink: 0,
+      whiteSpace: "nowrap",
+      maxWidth: "100%",
       ...(round && { borderRadius: "999px" }),
       "&.Mui-focusVisible": {
         outline: `2px solid ${palette.primary.main}`,
@@ -75,11 +78,13 @@ function getButtonStyles(
           background: primaryGradient,
 
           "&:hover": {
+            color: palette.primary.contrastText,
             background: primaryGradient,
             filter: "brightness(0.92)",
           },
 
           "&:active": {
+            color: palette.primary.contrastText,
             background: primaryGradient,
             filter: "brightness(0.85)",
           },
@@ -190,11 +195,80 @@ function getButtonStyles(
   };
 }
 
+function getMobileIconLabelStyles(intent: AppButtonIntent): SxProps<Theme> {
+  return (theme) => {
+    const palette = theme.vars?.palette ?? theme.palette;
+    const isPrimary = intent === "primary";
+    const primaryGradient = `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
+
+    return {
+      [theme.breakpoints.down("sm")]: {
+        width: "100%",
+        minWidth: 0,
+        minHeight: 100,
+        padding: 0,
+        display: "inline-flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        gap: 1,
+        border: 0,
+        borderRadius: "12px",
+        background: "transparent",
+        color: palette.text.primary,
+        fontSize: "12px",
+        fontWeight: 600,
+        lineHeight: 1.4,
+        textAlign: "center",
+        whiteSpace: "normal",
+        "& .MuiButton-startIcon": {
+          margin: 0,
+          width: 56,
+          height: 56,
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "50%",
+          background: isPrimary ? primaryGradient : palette.action.selected,
+          color: isPrimary
+            ? palette.primary.contrastText
+            : palette.text.primary,
+          "& > *:nth-of-type(1)": { fontSize: "28px" },
+        },
+        "&:hover, &:active": {
+          background: "transparent",
+          color: palette.text.primary,
+          filter: "none",
+        },
+        "&:hover .MuiButton-startIcon": {
+          background: isPrimary ? primaryGradient : palette.action.hover,
+          filter: isPrimary ? "brightness(0.92)" : "none",
+        },
+        "&:active .MuiButton-startIcon": {
+          background: isPrimary ? primaryGradient : palette.action.selected,
+          filter: isPrimary ? "brightness(0.85)" : "none",
+        },
+        "&.Mui-disabled": {
+          background: "transparent",
+          color: palette.action.disabled,
+          "& .MuiButton-startIcon": {
+            background: palette.action.disabledBackground,
+            color: palette.action.disabled,
+            filter: "none",
+          },
+        },
+      },
+    };
+  };
+}
+
 const AppButton = ({
   children,
   intent = "primary",
   loading = false,
   round = false,
+  mobileIconLabel = false,
+  wrapLabel = false,
   selected,
   disabled = false,
   size = "large",
@@ -211,22 +285,32 @@ const AppButton = ({
       loading={loading}
       loadingPosition={loadingPosition}
       aria-busy={loading || undefined}
-      aria-pressed={buttonProps['aria-pressed'] ?? selected}
+      aria-pressed={buttonProps["aria-pressed"] ?? selected}
       startIcon={startIcon}
       sx={[
         getButtonStyles(intent, round),
         getSelectedStyles(selected ?? false),
+        ...(wrapLabel ? [{ whiteSpace: "normal", overflowWrap: "anywhere" }] : []),
+        ...(mobileIconLabel ? [getMobileIconLabelStyles(intent)] : []),
         ...(Array.isArray(sx) ? sx : [sx]),
         // Keep MUI's centered loader readable without exposing the retained label.
         ...(loading && loadingPosition === "center"
-          ? [{
-              '&.MuiButton-loading': { color: 'transparent' },
-              '& .MuiButton-loadingIndicator': { color: 'text.primary' },
-            }]
+          ? [
+              {
+                "&.MuiButton-loading": { color: "transparent" },
+                "& .MuiButton-loadingIndicator": { color: "text.primary" },
+              },
+            ]
           : []),
       ]}
     >
-      {children}
+      {mobileIconLabel ? (
+        <Box component="span" sx={{ minWidth: 0, overflowWrap: "anywhere" }}>
+          {children}
+        </Box>
+      ) : (
+        children
+      )}
     </Button>
   );
 };

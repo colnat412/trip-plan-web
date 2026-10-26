@@ -4,3 +4,5 @@ export * from './user';
 export * from './currency';
 
 export { isNavigationActive } from './navigation';
+
+export * from './maps';

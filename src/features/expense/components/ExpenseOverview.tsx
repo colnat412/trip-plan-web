@@ -270,38 +270,36 @@ const ExpenseOverview = () => {
         title={t('pageTitle')}
         badge={activeTrip.baseCurrency}
         subtitle={
-          <Stack
-            direction="row"
-            spacing={0.75}
-            sx={{
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              fontSize: '14px',
-              color: 'text.secondary',
-            }}
-          >
-            <span>{t('trip')}:</span>
+          <Stack spacing={0.5}>
             <Typography
-              component="span"
               sx={{
                 fontSize: '14px',
-                fontWeight: 700,
-                color: 'primary.main',
+                color: 'text.secondary',
+                overflowWrap: 'anywhere',
               }}
             >
-              {activeTrip.name}
+              {t('trip')}:{' '}
+              <Box
+                component="span"
+                sx={{ color: 'primary.main', fontWeight: 600 }}
+              >
+                {activeTrip.name}
+              </Box>
             </Typography>
-            <span>·</span>
-            <span>{t('destination')}:</span>
             <Typography
-              component="span"
               sx={{
                 fontSize: '14px',
-                fontWeight: 600,
-                color: 'text.primary',
+                color: 'text.secondary',
+                overflowWrap: 'anywhere',
               }}
             >
-              {activeTrip.destination || t('notUpdated')}
+              {t('destination')}:{' '}
+              <Box
+                component="span"
+                sx={{ color: 'text.primary', fontWeight: 500 }}
+              >
+                {activeTrip.destination || t('notUpdated')}
+              </Box>
             </Typography>
           </Stack>
         }
@@ -368,7 +366,6 @@ const ExpenseOverview = () => {
         onViewDetail={(expense) => setDetailExpense(expense)}
         onEdit={(expense) => setEditingExpense(expense)}
         onDelete={(expense) => setDeletingExpense(expense)}
-        onAddNew={() => setAddOpen(true)}
         sort={sort}
         onSortChange={handleSortChange}
         filters={filters}
