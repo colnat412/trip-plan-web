@@ -33,33 +33,52 @@ const AppBottomNavigation = () => {
         component="nav"
         aria-label={t('main')}
         sx={(theme) => ({
-          display: 'block',
+          display: 'flex',
+          justifyContent: 'center',
+          position: 'fixed',
+          insetInline: 0,
+          bottom: 0,
+          zIndex: theme.zIndex.appBar,
+          pointerEvents: 'none',
+          bgcolor: 'transparent',
+          pb: 'calc(12px + env(safe-area-inset-bottom, 0px))',
+          pl: 'max(12px, env(safe-area-inset-left, 0px))',
+          pr: 'max(12px, env(safe-area-inset-right, 0px))',
+          minWidth: 0,
           [theme.breakpoints.up(DESKTOP_NAV_BREAKPOINT)]: { display: 'none' },
-          flexShrink: 0,
-          borderTop: 1,
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          pb: 'env(safe-area-inset-bottom, 0px)',
-          pl: 'env(safe-area-inset-left, 0px)',
-          pr: 'env(safe-area-inset-right, 0px)',
         })}
       >
         <BottomNavigation
           showLabels
           value={value}
-          sx={{
-            height: 72,
-            bgcolor: 'transparent',
+          sx={(theme) => ({
+            height: 'var(--app-bottom-navigation-height, 72px)',
+            pointerEvents: 'auto',
+            bgcolor: 'background.paper',
             width: '100%',
+            maxWidth: 560,
+            minWidth: 0,
+            p: 0.75,
+            gap: 0.25,
+            border: 0,
+            borderRadius: '24px',
+            boxShadow: 'none',
             '& .MuiBottomNavigationAction-root': {
               minWidth: 0,
               maxWidth: 'none',
               minHeight: 48,
+              borderRadius: '18px',
               px: 0.5,
+              py: 0.75,
               gap: 0.5,
               color: 'text.secondary',
+              transition: 'background-color 0.15s ease, color 0.15s ease',
+              '&:hover': {
+                bgcolor: 'action.hover',
+              },
               '&.Mui-selected': {
                 color: 'primary.main',
+                bgcolor: `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).primary.main} 7%, ${(theme.vars?.palette ?? theme.palette).background.paper})`,
               },
               '& .MuiSvgIcon-root': {
                 color: 'inherit',
@@ -82,7 +101,7 @@ const AppBottomNavigation = () => {
               outlineColor: 'primary.main',
               outlineOffset: -2,
             },
-          }}
+          })}
         >
           {PRIMARY_NAVIGATION_ITEMS.map((item) => (
             <BottomNavigationAction

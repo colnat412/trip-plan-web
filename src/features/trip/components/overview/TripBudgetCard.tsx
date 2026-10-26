@@ -3,7 +3,12 @@
 import { Stack, Typography, Skeleton, Alert } from '@mui/material';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppCard, AppLinearProgress } from '@/base/components/ui';
+import {
+  AppButton,
+  AppCard,
+  AppLinearProgress,
+  AppMetricValue,
+} from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
 import type { Trip } from '../../types';
@@ -47,16 +52,12 @@ const TripBudgetCard = ({ trip }: { trip: Trip }) => {
               <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
                 {t('spent')}
               </Typography>
-              <Typography
-                sx={{
-                  fontSize: '28px',
-                  fontWeight: 700,
-                  fontVariantNumeric: 'tabular-nums',
-                  overflowWrap: 'anywhere',
-                }}
+              <AppMetricValue
+                tone={isOver ? 'error' : 'primary'}
+                sx={{ fontSize: '28px' }}
               >
                 {formatCurrency(summary.actualSpent, trip.baseCurrency)}
-              </Typography>
+              </AppMetricValue>
               <Typography
                 sx={{
                   fontSize: '13px',
@@ -86,19 +87,15 @@ const TripBudgetCard = ({ trip }: { trip: Trip }) => {
               <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
                 {isOver ? t('overBudget') : t('remaining')}
               </Typography>
-              <Typography
-                sx={{
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  color: isOver ? 'error.main' : 'text.primary',
-                  overflowWrap: 'anywhere',
-                }}
+              <AppMetricValue
+                tone={isOver ? 'error' : 'success'}
+                sx={{ fontSize: '14px' }}
               >
                 {formatCurrency(
                   Math.abs(summary.remainingBudget),
                   trip.baseCurrency,
                 )}
-              </Typography>
+              </AppMetricValue>
             </Stack>
           </>
         ) : null}

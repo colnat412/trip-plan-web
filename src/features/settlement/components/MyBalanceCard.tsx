@@ -9,7 +9,7 @@ import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlin
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton, AppCard } from '@/base/components/ui';
+import { AppButton, AppCard, AppMetricValue } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { BalanceStatus } from '../types';
 
@@ -34,12 +34,6 @@ const MyBalanceCard = ({
 
   const isOwed = myStatus === 'OWED';
   const isOwes = myStatus === 'OWES';
-
-  const amountColor = isOwed
-    ? 'success.main'
-    : isOwes
-      ? 'error.main'
-      : 'text.primary';
 
   const badgeBg = isOwed
     ? 'success.light'
@@ -101,7 +95,7 @@ const MyBalanceCard = ({
             gap: 2,
           }}
         >
-          <Stack spacing={1}>
+          <Stack spacing={1} sx={{ minWidth: 0, width: '100%' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <AccountBalanceWalletRoundedIcon
                 sx={{ fontSize: '20px', color: 'primary.main' }}
@@ -119,18 +113,21 @@ const MyBalanceCard = ({
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1.5 }}>
-              <Typography
-                sx={{
-                  fontSize: { xs: '28px', sm: '36px' },
-                  fontWeight: 800,
-                  fontFamily: 'var(--font-mono)',
-                  color: amountColor,
-                  lineHeight: 1.1,
-                }}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: 1.5,
+                minWidth: 0,
+              }}
+            >
+              <AppMetricValue
+                tone={isOwed ? 'success' : isOwes ? 'error' : 'primary'}
+                sx={{ fontSize: { xs: '28px', sm: '36px' } }}
               >
                 {formatCurrency(Math.abs(myBalance), currency)}
-              </Typography>
+              </AppMetricValue>
               <Box
                 sx={{
                   display: 'inline-flex',
@@ -174,7 +171,7 @@ const MyBalanceCard = ({
             borderColor: 'divider',
           }}
         >
-          <Box sx={{ flex: 1, minWidth: '160px' }}>
+          <Box sx={{ flex: '1 1 160px', minWidth: 0 }}>
             <Typography
               sx={{
                 fontSize: '12px',
@@ -184,19 +181,12 @@ const MyBalanceCard = ({
             >
               {t('totalSpent')}
             </Typography>
-            <Typography
-              sx={{
-                fontSize: '16px',
-                fontWeight: 700,
-                fontFamily: 'var(--font-mono)',
-                color: 'text.primary',
-              }}
-            >
+            <AppMetricValue tone="primary" sx={{ fontSize: '16px' }}>
               {formatCurrency(totalExpenses, currency)}
-            </Typography>
+            </AppMetricValue>
           </Box>
 
-          <Box sx={{ flex: 1, minWidth: '160px' }}>
+          <Box sx={{ flex: '1 1 160px', minWidth: 0 }}>
             <Typography
               sx={{
                 fontSize: '12px',
@@ -206,16 +196,9 @@ const MyBalanceCard = ({
             >
               {t('totalSettled')}
             </Typography>
-            <Typography
-              sx={{
-                fontSize: '16px',
-                fontWeight: 700,
-                fontFamily: 'var(--font-mono)',
-                color: 'success.main',
-              }}
-            >
+            <AppMetricValue tone="success" sx={{ fontSize: '16px' }}>
               {formatCurrency(totalSettled, currency)}
-            </Typography>
+            </AppMetricValue>
           </Box>
         </Box>
       </Stack>

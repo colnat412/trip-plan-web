@@ -13,6 +13,7 @@ import { TripProvider } from '@/features/trip/context/TripContext';
 import { UserProvider } from '@/features/user/context/UserContext';
 import { PUBLIC_AUTH_PATHS, PUBLIC_PATHS } from '@/base/constants';
 import PolicyAcceptanceGate from '@/features/legal/components/PolicyAcceptanceGate';
+import { DESKTOP_NAV_BREAKPOINT } from './navigation/config';
 
 export interface AppShellProps {
   children: ReactNode;
@@ -39,14 +40,20 @@ const AppShell = ({ children, sidebarDisabledPaths = [] }: AppShellProps) => {
         ) : (
           <TripProvider>
             <Box
-              sx={{
+              sx={(theme) => ({
                 display: 'flex',
                 flexDirection: 'column',
                 bgcolor: 'background.paper',
                 height: '100dvh',
                 overflow: 'hidden',
                 minWidth: 0,
-              }}
+                [theme.breakpoints.down(DESKTOP_NAV_BREAKPOINT)]: {
+                  '--app-page-surface': `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).text.primary} calc(${(theme.vars?.palette ?? theme.palette).action.hoverOpacity} * 100%), ${(theme.vars?.palette ?? theme.palette).background.paper})`,
+                  '--app-bottom-navigation-height': '72px',
+                  '--app-bottom-navigation-space':
+                    'calc(var(--app-bottom-navigation-height) + 12px + env(safe-area-inset-bottom, 0px))',
+                },
+              })}
             >
               <AppTopBar />
               <Box
@@ -58,9 +65,12 @@ const AppShell = ({ children, sidebarDisabledPaths = [] }: AppShellProps) => {
                   minHeight: 0,
                   flex: 1,
                   overflowY: 'auto',
-                  bgcolor: 'action.hover',
+                  bgcolor: (theme) =>
+                    `var(--app-page-surface, ${(theme.vars?.palette ?? theme.palette).action.hover})`,
                   scrollbarGutter: 'stable',
                   overscrollBehaviorY: 'contain',
+                  scrollPaddingBottom:
+                    'var(--app-bottom-navigation-space, 0px)',
                   pl: 'env(safe-area-inset-left, 0px)',
                   pr: 'env(safe-area-inset-right, 0px)',
                 }}

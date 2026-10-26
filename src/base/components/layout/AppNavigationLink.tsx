@@ -36,7 +36,10 @@ const AppNavigationLink = ({
         width: expanded ? '100%' : 'auto',
         color: active ? 'primary.main' : 'text.secondary',
         bgcolor: active ? 'action.selected' : 'transparent',
-        '&:hover': { bgcolor: 'action.hover', color: 'text.primary' },
+        '&:hover': {
+          bgcolor: active ? 'action.selected' : 'action.hover',
+          color: active ? 'primary.main' : 'text.primary',
+        },
         '&.Mui-focusVisible': {
           outline: '2px solid',
           outlineColor: 'primary.main',

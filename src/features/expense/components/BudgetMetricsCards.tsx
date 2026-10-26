@@ -6,7 +6,7 @@ import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceW
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppCard, AppButton } from '@/base/components/ui';
+import { AppCard, AppButton, AppMetricValue } from '@/base/components/ui';
 import { formatCurrency, formatCompactCurrency } from '@/base/utils';
 import type { TripBudgetSummary } from '../types';
 
@@ -87,20 +87,15 @@ const BudgetMetricsCards = ({
               </Typography>
             </Stack>
 
-            <Typography
+            <AppMetricValue
+              tone="primary"
               sx={{
-                fontFamily: 'var(--font-display)',
                 fontSize: { xs: '18px', sm: '20px', xl: '22px' },
-                fontWeight: 800,
-                color: 'text.primary',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
+                width: '100%',
               }}
-              title={formatCurrency(totalBudget, curr)}
             >
               {formatCurrency(totalBudget, curr)}
-            </Typography>
+            </AppMetricValue>
           </Stack>
 
           {totalBudget === 0 && onOpenSetBudget ? (
@@ -227,20 +222,15 @@ const BudgetMetricsCards = ({
               )}
             </Stack>
 
-            <Typography
+            <AppMetricValue
+              tone={isOverBudget ? 'error' : 'primary'}
               sx={{
-                fontFamily: 'var(--font-display)',
                 fontSize: { xs: '18px', sm: '20px', xl: '22px' },
-                fontWeight: 800,
-                color: isOverBudget ? 'error.main' : 'text.primary',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
+                width: '100%',
               }}
-              title={formatCurrency(actualSpent, curr)}
             >
               {formatCurrency(actualSpent, curr)}
-            </Typography>
+            </AppMetricValue>
           </Stack>
 
           <Stack
@@ -332,20 +322,15 @@ const BudgetMetricsCards = ({
               </Typography>
             </Stack>
 
-            <Typography
+            <AppMetricValue
+              tone={isOverBudget ? 'error' : 'success'}
               sx={{
-                fontFamily: 'var(--font-display)',
                 fontSize: { xs: '18px', sm: '20px', xl: '22px' },
-                fontWeight: 800,
-                color: isOverBudget ? 'error.main' : 'success.main',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
+                width: '100%',
               }}
-              title={formatCurrency(Math.abs(remainingBudget), curr)}
             >
               {formatCurrency(Math.abs(remainingBudget), curr)}
-            </Typography>
+            </AppMetricValue>
           </Stack>
 
           <Typography

@@ -5,7 +5,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { AppButton, AppCard } from '@/base/components/ui';
+import { AppButton, AppCard, AppMetricValue } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { ActivityStatus, PlanActivity, RouteSegment } from '../types';
 import ActivityTimelineCard from './ActivityTimelineCard';
@@ -136,16 +136,25 @@ const DayTimelineList = ({
             {dayTotalActivities} {t('totalActivities').toLowerCase()}
           </Typography>
           {dayTotalCost > 0 && (
-            <Typography
+            <Box
               sx={{
-                fontSize: '13px',
-                fontWeight: 600,
-                color: 'success.main',
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: 0.75,
+                minWidth: 0,
               }}
             >
-              · {t('dayTotalCostLabel')}:{' '}
-              {formatCurrency(dayTotalCost, currency)}
-            </Typography>
+              <Typography
+                component="span"
+                sx={{ fontSize: '13px', color: 'text.secondary' }}
+              >
+                {t('dayTotalCostLabel')}:
+              </Typography>
+              <AppMetricValue sx={{ fontSize: '13px' }}>
+                {formatCurrency(dayTotalCost, currency)}
+              </AppMetricValue>
+            </Box>
           )}
         </Stack>
 

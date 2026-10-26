@@ -76,3 +76,6 @@ export { default as AppCategoryIcon } from './AppCategoryIcon';
 export type { AppCategoryIconProps } from './AppCategoryIcon';
 export { default as AppTimelineRow } from './AppTimelineRow';
 export type { AppTimelineRowProps } from './AppTimelineRow';
+
+export { default as AppMetricValue } from './AppMetricValue';
+export type { AppMetricValueProps } from './AppMetricValue';

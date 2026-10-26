@@ -9,7 +9,12 @@ import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
 import { useTranslations } from 'next-intl';
-import { AppActionMenu, AppButton, AppPageHeader } from '@/base/components/ui';
+import {
+  AppActionMenu,
+  AppButton,
+  AppMetricValue,
+  AppPageHeader,
+} from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 
 export interface PlanHeaderProps {
@@ -75,10 +80,25 @@ const PlanHeader = ({
             })}
           </Typography>
           {totalEstimatedCost > 0 && (
-            <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
-              · {t('totalEstimatedCost')}:{' '}
-              {formatCurrency(totalEstimatedCost, currency)}
-            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: 0.75,
+                minWidth: 0,
+              }}
+            >
+              <Typography
+                component="span"
+                sx={{ fontSize: '13px', color: 'text.secondary' }}
+              >
+                {t('totalEstimatedCost')}:
+              </Typography>
+              <AppMetricValue sx={{ fontSize: '13px' }}>
+                {formatCurrency(totalEstimatedCost, currency)}
+              </AppMetricValue>
+            </Box>
           )}
         </Box>
       }
