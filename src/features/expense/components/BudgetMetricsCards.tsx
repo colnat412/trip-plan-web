@@ -8,18 +8,19 @@ import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
 import { useLocale, useTranslations } from 'next-intl';
 import { AppCard, AppButton, AppMetricValue } from '@/base/components/ui';
 import { formatCurrency, formatCompactCurrency } from '@/base/utils';
-import type { TripBudgetSummary } from '../types';
+import MobileBudgetSummaryCard, {
+  type MobileBudgetSummaryCardProps,
+} from './MobileBudgetSummaryCard';
 
-export interface BudgetMetricsCardsProps {
-  summary: TripBudgetSummary | null;
-  currency?: string;
-  onOpenSetBudget?: () => void;
-}
+export type BudgetMetricsCardsProps = MobileBudgetSummaryCardProps;
 
 const BudgetMetricsCards = ({
   summary,
   currency = 'VND',
   onOpenSetBudget,
+  isLoading,
+  hasError,
+  onRetry,
 }: BudgetMetricsCardsProps) => {
   const locale = useLocale();
   const t = useTranslations('expense.metrics');
@@ -42,7 +43,21 @@ const BudgetMetricsCards = ({
 
   return (
     <>
-      <Box sx={{ minWidth: 0, height: '100%' }}>
+      <MobileBudgetSummaryCard
+        summary={summary}
+        currency={currency}
+        onOpenSetBudget={onOpenSetBudget}
+        isLoading={isLoading}
+        hasError={hasError}
+        onRetry={onRetry}
+      />
+      <Box
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          minWidth: 0,
+          height: '100%',
+        }}
+      >
         <AppCard
           sx={{
             p: { xs: 1.75, sm: 2 },
@@ -94,7 +109,7 @@ const BudgetMetricsCards = ({
                 width: '100%',
               }}
             >
-              {formatCurrency(totalBudget, curr)}
+              {formatCurrency(totalBudget, curr, locale)}
             </AppMetricValue>
           </Stack>
 
@@ -132,7 +147,13 @@ const BudgetMetricsCards = ({
         </AppCard>
       </Box>
 
-      <Box sx={{ minWidth: 0, height: '100%' }}>
+      <Box
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          minWidth: 0,
+          height: '100%',
+        }}
+      >
         <AppCard
           sx={{
             p: { xs: 1.75, sm: 2 },
@@ -229,7 +250,7 @@ const BudgetMetricsCards = ({
                 width: '100%',
               }}
             >
-              {formatCurrency(actualSpent, curr)}
+              {formatCurrency(actualSpent, curr, locale)}
             </AppMetricValue>
           </Stack>
 
@@ -275,7 +296,13 @@ const BudgetMetricsCards = ({
         </AppCard>
       </Box>
 
-      <Box sx={{ minWidth: 0, height: '100%' }}>
+      <Box
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          minWidth: 0,
+          height: '100%',
+        }}
+      >
         <AppCard
           sx={{
             p: { xs: 1.75, sm: 2 },
@@ -329,7 +356,7 @@ const BudgetMetricsCards = ({
                 width: '100%',
               }}
             >
-              {formatCurrency(Math.abs(remainingBudget), curr)}
+              {formatCurrency(Math.abs(remainingBudget), curr, locale)}
             </AppMetricValue>
           </Stack>
 

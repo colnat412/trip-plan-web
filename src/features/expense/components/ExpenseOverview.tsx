@@ -105,10 +105,13 @@ const ExpenseOverview = () => {
   };
 
   const {
-    summary,
+    summary: rawSummary,
+    isStale: isSummaryStale,
+    error: summaryError,
     isLoading: isSummaryLoading,
     refetch: refetchSummary,
   } = useTripBudgetSummary({ tripId });
+  const summary = isSummaryStale ? null : rawSummary;
 
   const {
     expenses,
@@ -311,6 +314,7 @@ const ExpenseOverview = () => {
                   intent="secondary"
                   size="medium"
                   startIcon={<TuneRoundedIcon fontSize="small" />}
+                  sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
                   onClick={() => setSetBudgetOpen(true)}
                 >
                   {t('setBudget')}
@@ -342,6 +346,9 @@ const ExpenseOverview = () => {
       >
         <BudgetMetricsCards
           summary={summary}
+          isLoading={isSummaryLoading || (isSummaryStale && !summaryError)}
+          hasError={Boolean(summaryError)}
+          onRetry={() => void refetchSummary().catch(() => undefined)}
           currency={activeTrip.baseCurrency}
           onOpenSetBudget={canManage ? () => setSetBudgetOpen(true) : undefined}
         />

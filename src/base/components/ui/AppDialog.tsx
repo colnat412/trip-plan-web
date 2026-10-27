@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, type ReactNode } from 'react';
+import { useId, type ReactNode, type Ref } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   Box,
@@ -30,6 +30,7 @@ export interface AppDialogProps {
   hideCloseButton?: boolean;
   closeLabel?: string;
   mobileFullScreen?: boolean;
+  contentRef?: Ref<HTMLDivElement>;
 }
 
 const AppDialog = ({
@@ -46,6 +47,7 @@ const AppDialog = ({
   hideCloseButton = false,
   closeLabel,
   mobileFullScreen = false,
+  contentRef,
 }: AppDialogProps) => {
   const t = useTranslations('dialog');
   const titleId = useId();
@@ -128,7 +130,11 @@ const AppDialog = ({
               <Typography
                 id={descriptionId}
                 variant="caption"
-                sx={{ color: 'text.secondary', display: 'block', overflowWrap: 'anywhere' }}
+                sx={{
+                  color: 'text.secondary',
+                  display: 'block',
+                  overflowWrap: 'anywhere',
+                }}
               >
                 {description}
               </Typography>
@@ -150,6 +156,7 @@ const AppDialog = ({
       </DialogTitle>
 
       <DialogContent
+        ref={contentRef}
         sx={{
           p: { xs: 2, sm: 2.5 },
           pt: '20px !important',

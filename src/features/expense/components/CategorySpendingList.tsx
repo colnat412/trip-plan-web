@@ -208,7 +208,7 @@ const CategorySpendingList = ({
               >
                 Tổng chi danh mục:{' '}
                 <strong>
-                  {formatCurrency(totalSpentInCategories, currency)}
+                  {formatCurrency(totalSpentInCategories, currency, locale)}
                 </strong>
               </Typography>
             )}
@@ -294,7 +294,7 @@ const CategorySpendingList = ({
                       const name =
                         tCategories(item.category as 'OTHER') || item.category;
                       const diff = item.spentAmount - item.limitAmount;
-                      return `${name} (vượt +${formatCurrency(diff, currency)})`;
+                      return `${name} (vượt +${formatCurrency(diff, currency, locale)})`;
                     })
                     .join(' · ')}
                 </Typography>
@@ -355,12 +355,12 @@ const CategorySpendingList = ({
                 ? (item.spentAmount / item.limitAmount) * 100
                 : 0;
 
-              let tooltipTitle = `${categoryName}: ${formatCurrency(item.spentAmount, currency)} (${percent.toFixed(1)}% tổng chi)`;
+              let tooltipTitle = `${categoryName}: ${formatCurrency(item.spentAmount, currency, locale)} (${percent.toFixed(1)}% tổng chi)`;
               if (hasLimit) {
                 if (isOver) {
-                  tooltipTitle += ` · [CẢNH BÁO: Vượt ${formatCurrency(overAmount, currency)} (${percentOfLimit.toFixed(0)}% hạn mức)]`;
+                  tooltipTitle += ` · [CẢNH BÁO: Vượt ${formatCurrency(overAmount, currency, locale)} (${percentOfLimit.toFixed(0)}% hạn mức)]`;
                 } else {
-                  tooltipTitle += ` · [Hạn mức: ${formatCurrency(item.limitAmount, currency)} - Đã dùng ${percentOfLimit.toFixed(0)}%]`;
+                  tooltipTitle += ` · [Hạn mức: ${formatCurrency(item.limitAmount, currency, locale)} - Đã dùng ${percentOfLimit.toFixed(0)}%]`;
                 }
               }
 
@@ -577,7 +577,7 @@ const CategorySpendingList = ({
                       fontFamily: 'var(--font-mono)',
                     }}
                   >
-                    {formatCurrency(item.spentAmount, currency)}
+                    {formatCurrency(item.spentAmount, currency, locale)}
                   </Typography>
 
                   {hasLimit ? (

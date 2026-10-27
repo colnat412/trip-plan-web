@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { type FormEvent, useState } from 'react';
 import { Box, MenuItem, Stack } from '@mui/material';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
@@ -17,6 +18,7 @@ import { useTripContext } from '../context/TripContext';
 import { useCreateTrip } from '../hooks/useTripMutation';
 
 interface CreateTripDialogProps {
+  mode?: 'manual' | 'ai';
   open: boolean;
   onClose: () => void;
 }
@@ -36,7 +38,12 @@ const CURRENCY_OPTIONS = [
   // { value: 'THB', label: 'THB' },
 ];
 
-const CreateTripDialog = ({ open, onClose }: CreateTripDialogProps) => {
+const CreateTripDialog = ({
+  open,
+  onClose,
+  mode = 'manual',
+}: CreateTripDialogProps) => {
+  const router = useRouter();
   const t = useTranslations('trip');
   const { refetchTrips, selectTrip } = useTripContext();
   const { createMutation } = useCreateTrip();
@@ -112,10 +119,14 @@ const CreateTripDialog = ({ open, onClose }: CreateTripDialogProps) => {
           setSuccessToastOpen(true);
           resetForm();
           onClose();
-          await refetchTrips('created');
           if (response?.data?.id) {
             selectTrip(response.data.id);
+            if (mode === 'ai')
+              router.push(
+                `/plan?tripId=${encodeURIComponent(String(response.data.id))}&ai=1`,
+              );
           }
+          await refetchTrips('created').catch(() => undefined);
         },
       },
     );

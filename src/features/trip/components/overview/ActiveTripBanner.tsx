@@ -15,9 +15,10 @@ import TripStatusBadge from '../TripStatusBadge';
 
 interface ActiveTripBannerProps {
   trip: Trip;
+  compact?: boolean;
 }
 
-const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
+const ActiveTripBanner = ({ trip, compact = false }: ActiveTripBannerProps) => {
   const t = useTranslations('overview');
   const tMembers = useTranslations('members');
   const { openMembers, isMembersOpen } = useTripContext();
@@ -42,9 +43,9 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          minHeight: { xs: 300, md: 340 },
-          gap: 5,
-          p: { xs: 2.5, sm: 4, md: 5 },
+          minHeight: compact ? { xs: 160, md: 190 } : { xs: 300, md: 340 },
+          gap: compact ? 2 : 5,
+          p: compact ? { xs: 2, sm: 2.5 } : { xs: 2.5, sm: 4, md: 5 },
           color: theme.palette.common.white,
           bgcolor: 'primary.dark',
           backgroundImage: trip.coverUrl
@@ -76,12 +77,14 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
             onClick={() => openMembers(false)}
           />
         </Stack>
-        <Stack spacing={2}>
+        <Stack spacing={compact ? 1 : 2}>
           <Typography
             component="h1"
             sx={{
               fontFamily: 'var(--font-display)',
-              fontSize: { xs: '30px', sm: '40px', lg: '48px' },
+              fontSize: compact
+                ? { xs: '24px', sm: '28px', lg: '32px' }
+                : { xs: '30px', sm: '40px', lg: '48px' },
               fontWeight: 800,
               lineHeight: 1.12,
               color: 'inherit',
@@ -128,34 +131,36 @@ const ActiveTripBanner = ({ trip }: ActiveTripBannerProps) => {
           </Stack>
         </Stack>
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          alignItems: { xs: 'stretch', sm: 'center' },
-          gap: 2,
-          p: { xs: 2.5, sm: 3 },
-          bgcolor: 'background.paper',
-          border: 1,
-          borderTop: 0,
-          borderColor: 'divider',
-          borderRadius: '0 0 24px 24px',
-        }}
-      >
-        <Typography
+      {!compact && (
+        <Box
           sx={{
-            flex: 1,
-            minWidth: 0,
-            fontSize: '14px',
-            color: 'text.secondary',
-            lineHeight: 1.7,
-            overflowWrap: 'anywhere',
-            whiteSpace: 'pre-line',
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'stretch', sm: 'center' },
+            gap: 2,
+            p: { xs: 2.5, sm: 3 },
+            bgcolor: 'background.paper',
+            border: 1,
+            borderTop: 0,
+            borderColor: 'divider',
+            borderRadius: '0 0 24px 24px',
           }}
         >
-          {trip.description || t('journeyIntro')}
-        </Typography>
-      </Box>
+          <Typography
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              fontSize: '14px',
+              color: 'text.secondary',
+              lineHeight: 1.7,
+              overflowWrap: 'anywhere',
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {trip.description || t('journeyIntro')}
+          </Typography>
+        </Box>
+      )}
     </Box>
   );
 };

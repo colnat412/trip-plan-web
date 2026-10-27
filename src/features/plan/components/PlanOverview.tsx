@@ -18,6 +18,7 @@ import { useTripContext } from '@/features/trip/context/TripContext';
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import AddExpenseDialog from '@/features/expense/components/AddExpenseDialog';
 import type { CreateExpensePayload } from '@/features/expense/types';
+import PublishTemplateDialog from '@/features/plan-template/components/PublishTemplateDialog';
 import ShareTripDialog from '@/features/trip/components/ShareTripDialog';
 import useTripPlan from '../hooks/useTripPlan';
 import useDayActivities from '../hooks/useDayActivities';
@@ -50,7 +51,13 @@ import PlanMapPanel from './PlanMapPanel';
 import ActiveTripBanner from '@/features/trip/components/overview/ActiveTripBanner';
 import { useRouter } from 'next/navigation';
 
-const PlanOverview = () => {
+const PlanOverview = ({
+  initialAiOpen = false,
+  initialPublishOpen = false,
+}: {
+  initialAiOpen?: boolean;
+  initialPublishOpen?: boolean;
+}) => {
   const t = useTranslations('plan');
   const { activeTrip } = useTripContext();
   const tripId = activeTrip?.id;
@@ -63,16 +70,17 @@ const PlanOverview = () => {
     error: planError,
     refetch,
   } = useTripPlan({ tripId, includeActivities: false });
-  const { members, canWrite, canManage, canManageRecord } =
+  const { members, role, canWrite, canManage, canManageRecord } =
     useTripPermissions(tripId);
 
   const [mobileView, setMobileView] = useState<'timeline' | 'map'>('timeline');
   const [selectedDayId, setSelectedDayId] = useState<string>('');
   const [addActivityOpen, setAddActivityOpen] = useState(false);
-  const [aiPlannerOpen, setAiPlannerOpen] = useState(false);
+  const [aiPlannerOpen, setAiPlannerOpen] = useState(initialAiOpen);
   const [checklistOpen, setChecklistOpen] = useState(false);
   const [resetDayConfirmOpen, setResetDayConfirmOpen] = useState(false);
   const [optimizeDialogOpen, setOptimizeDialogOpen] = useState(false);
+  const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [activityLogOpen, setActivityLogOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<PlanActivity | null>(
@@ -385,7 +393,9 @@ const PlanOverview = () => {
 
   return (
     <AppPageContainer>
-      {activeTrip && <ActiveTripBanner key={activeTrip.id} trip={activeTrip} />}
+      {activeTrip && (
+        <ActiveTripBanner key={activeTrip.id} trip={activeTrip} compact />
+      )}
       {isLoading || (isStale && !planError) ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Skeleton variant="text" width={220} height={40} />
@@ -406,6 +416,9 @@ const PlanOverview = () => {
           onAddActivity={() => setAddActivityOpen(true)}
           onOpenChecklist={() => setChecklistOpen(true)}
           onOpenAiPlanner={canManage ? () => setAiPlannerOpen(true) : undefined}
+          onPublishTemplate={
+            role === 'OWNER' ? () => setPublishOpen(true) : undefined
+          }
           onOpenShare={canManage ? () => setShareDialogOpen(true) : undefined}
           onOpenActivityLogs={() => setActivityLogOpen(true)}
           readOnly={!canWrite || Boolean(planError)}
@@ -661,6 +674,16 @@ const PlanOverview = () => {
               overview?.days.find((d) => d.id === convertExpenseActivity.dayId)
                 ?.planDate || undefined,
           }}
+        />
+      )}
+
+      {activeTrip && role === 'OWNER' && publishOpen && (
+        <PublishTemplateDialog
+          key={String(activeTrip.id)}
+          trip={activeTrip}
+          checklists={overview?.checklists ?? []}
+          open={publishOpen}
+          onClose={() => setPublishOpen(false)}
         />
       )}
 

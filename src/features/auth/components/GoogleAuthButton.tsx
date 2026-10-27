@@ -82,7 +82,14 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
             { credential: response.access_token },
             {
               onSuccess: () => {
-                router.push(DEFAULT_AUTH_REDIRECT_PATH);
+                const returnTo = new URLSearchParams(
+                  window.location.search,
+                ).get('returnTo');
+                router.push(
+                  returnTo && /^\/templates\/[a-zA-Z0-9]+$/.test(returnTo)
+                    ? returnTo
+                    : DEFAULT_AUTH_REDIRECT_PATH,
+                );
                 router.refresh();
               },
             },

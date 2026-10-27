@@ -2,7 +2,7 @@
 
 import { Stack, Typography, Skeleton, Alert } from '@mui/material';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   AppButton,
   AppCard,
@@ -13,13 +13,90 @@ import { formatCurrency } from '@/base/utils';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
 import type { Trip } from '../../types';
 
-const TripBudgetCard = ({ trip }: { trip: Trip }) => {
+const TripBudgetCard = ({
+  trip,
+  compact = false,
+}: {
+  trip: Trip;
+  compact?: boolean;
+}) => {
+  const locale = useLocale();
   const t = useTranslations('overview');
   const tNav = useTranslations('navigation');
   const { summary, isLoading, error, refetch } = useTripBudgetSummary({
     tripId: trip.id,
   });
   const isOver = Number(summary?.remainingBudget ?? 0) < 0;
+
+  if (compact)
+    return (
+      <AppCard
+        component="section"
+        sx={{ minWidth: 0, overflowWrap: 'anywhere' }}
+      >
+        <Stack spacing={1}>
+          <Typography component="h2" sx={{ fontSize: '15px', fontWeight: 700 }}>
+            {t('tripBudget')}
+          </Typography>
+          {isLoading ? (
+            <Skeleton height={45} />
+          ) : error ? (
+            <Alert
+              severity="error"
+              action={
+                <AppButton
+                  intent="text"
+                  size="small"
+                  onClick={() => void refetch().catch(() => undefined)}
+                >
+                  {tNav('retry')}
+                </AppButton>
+              }
+            >
+              {t('budgetError')}
+            </Alert>
+          ) : summary ? (
+            <Stack
+              direction="row"
+              useFlexGap
+              spacing={2}
+              sx={{ flexWrap: 'wrap', justifyContent: 'space-between' }}
+            >
+              <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t('spent')}
+                </Typography>
+                <AppMetricValue
+                  tone={isOver ? 'error' : 'primary'}
+                  sx={{ fontSize: '16px', overflowWrap: 'anywhere' }}
+                >
+                  {formatCurrency(
+                    summary.actualSpent,
+                    trip.baseCurrency,
+                    locale,
+                  )}
+                </AppMetricValue>
+              </Stack>
+              <Stack spacing={0.25} sx={{ minWidth: 0 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {t(isOver ? 'overBudget' : 'remaining')}
+                </Typography>
+                <AppMetricValue
+                  tone={isOver ? 'error' : 'success'}
+                  sx={{ fontSize: '16px', overflowWrap: 'anywhere' }}
+                >
+                  {formatCurrency(
+                    Math.abs(summary.remainingBudget),
+                    trip.baseCurrency,
+                    locale,
+                  )}
+                </AppMetricValue>
+              </Stack>
+            </Stack>
+          ) : null}
+        </Stack>
+      </AppCard>
+    );
 
   return (
     <AppCard
@@ -56,7 +133,7 @@ const TripBudgetCard = ({ trip }: { trip: Trip }) => {
                 tone={isOver ? 'error' : 'primary'}
                 sx={{ fontSize: '28px' }}
               >
-                {formatCurrency(summary.actualSpent, trip.baseCurrency)}
+                {formatCurrency(summary.actualSpent, trip.baseCurrency, locale)}
               </AppMetricValue>
               <Typography
                 sx={{
@@ -69,6 +146,7 @@ const TripBudgetCard = ({ trip }: { trip: Trip }) => {
                   amount: formatCurrency(
                     summary.totalBudget,
                     trip.baseCurrency,
+                    locale,
                   ),
                 })}
               </Typography>
@@ -94,6 +172,7 @@ const TripBudgetCard = ({ trip }: { trip: Trip }) => {
                 {formatCurrency(
                   Math.abs(summary.remainingBudget),
                   trip.baseCurrency,
+                  locale,
                 )}
               </AppMetricValue>
             </Stack>

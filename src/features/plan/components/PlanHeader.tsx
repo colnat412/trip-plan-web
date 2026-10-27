@@ -8,7 +8,7 @@ import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   AppActionMenu,
   AppButton,
@@ -26,6 +26,7 @@ export interface PlanHeaderProps {
   onAddActivity?: () => void;
   onOpenChecklist: () => void;
   onOpenAiPlanner?: () => void;
+  onPublishTemplate?: () => void;
   onOpenShare?: () => void;
   onOpenActivityLogs?: () => void;
   readOnly?: boolean;
@@ -42,11 +43,14 @@ const PlanHeader = ({
   onOpenChecklist,
   onOpenAiPlanner,
   onOpenShare,
+  onPublishTemplate,
   onOpenActivityLogs,
   readOnly = false,
   onOpenPrint,
 }: PlanHeaderProps) => {
+  const locale = useLocale();
   const t = useTranslations('plan');
+  const tTemplate = useTranslations('planTemplate');
   const tNavigation = useTranslations('navigation');
 
   return (
@@ -96,7 +100,7 @@ const PlanHeader = ({
                 {t('totalEstimatedCost')}:
               </Typography>
               <AppMetricValue sx={{ fontSize: '13px' }}>
-                {formatCurrency(totalEstimatedCost, currency)}
+                {formatCurrency(totalEstimatedCost, currency, locale)}
               </AppMetricValue>
             </Box>
           )}
@@ -144,7 +148,8 @@ const PlanHeader = ({
               {t('aiPlannerBtn')}
             </AppButton>
           )}
-          {(onOpenPrint ||
+          {(onPublishTemplate ||
+            onOpenPrint ||
             onOpenActivityLogs ||
             (!readOnly && onOpenShare)) && (
             <AppActionMenu
@@ -171,6 +176,16 @@ const PlanHeader = ({
                 </AppButton>
               }
               items={[
+                ...(onPublishTemplate
+                  ? [
+                      {
+                        id: 'publish-template',
+                        label: tTemplate('publish'),
+                        icon: <ShareRoundedIcon fontSize="small" />,
+                        onClick: onPublishTemplate,
+                      },
+                    ]
+                  : []),
                 ...(onOpenActivityLogs
                   ? [
                       {
