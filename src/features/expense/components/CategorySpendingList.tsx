@@ -69,6 +69,18 @@ const CategorySpendingList = ({
           display: 'flex',
           flexDirection: 'column',
           gap: 2,
+          minWidth: 0,
+          overflowWrap: 'anywhere',
+          '& .MuiChip-root': {
+            maxWidth: '100%',
+            height: 'auto',
+            minHeight: 22,
+          },
+          '& .MuiChip-label': {
+            whiteSpace: 'normal',
+            overflowWrap: 'anywhere',
+            py: 0.25,
+          },
         }}
       >
         <Stack
@@ -76,13 +88,15 @@ const CategorySpendingList = ({
           spacing={1.5}
           sx={{
             justifyContent: 'space-between',
-            alignItems: { xs: 'flex-start', sm: 'center' },
+            alignItems: { xs: 'stretch', sm: 'center' },
+            minWidth: 0,
           }}
         >
-          <Stack direction="row" spacing={1.25} sx={{ alignItems: 'center' }}>
+          <Stack direction="row" spacing={1.25} sx={{ alignItems: 'flex-start', minWidth: 0, flex: 1 }}>
             <Box
               sx={{
                 p: 0.75,
+                flexShrink: 0,
                 borderRadius: '10px',
                 bgcolor:
                   overLimitItems.length > 0 ? 'error.light' : 'action.hover',
@@ -95,11 +109,12 @@ const CategorySpendingList = ({
             >
               <CategoryRoundedIcon sx={{ fontSize: 20 }} />
             </Box>
-            <Stack spacing={0.25}>
+            <Stack spacing={0.75} sx={{ minWidth: 0, flex: 1 }}>
               <Stack
                 direction="row"
-                spacing={1}
-                sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 0.75 }}
+                useFlexGap
+                spacing={0.75}
+                sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}
               >
                 <Typography
                   sx={{
@@ -138,7 +153,14 @@ const CategorySpendingList = ({
                     })}
                     color="error"
                     sx={{
-                      height: 22,
+                      height: 'auto',
+                      minHeight: 22,
+                      maxWidth: '100%',
+                      '& .MuiChip-label': {
+                        whiteSpace: 'normal',
+                        overflowWrap: 'anywhere',
+                        py: 0.25,
+                      },
                       fontSize: '11px',
                       fontWeight: 800,
                       fontFamily: 'var(--font-mono)',
@@ -151,7 +173,14 @@ const CategorySpendingList = ({
                     color="success"
                     variant="outlined"
                     sx={{
-                      height: 22,
+                      height: 'auto',
+                      minHeight: 22,
+                      maxWidth: '100%',
+                      '& .MuiChip-label': {
+                        whiteSpace: 'normal',
+                        overflowWrap: 'anywhere',
+                        py: 0.25,
+                      },
                       fontSize: '11px',
                       fontWeight: 600,
                     }}
@@ -163,8 +192,9 @@ const CategorySpendingList = ({
 
           <Stack
             direction="row"
-            spacing={1.5}
-            sx={{ alignItems: 'center', flexWrap: 'wrap', gap: 1 }}
+            useFlexGap
+            spacing={1}
+            sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}
           >
             {totalSpentInCategories > 0 && (
               <Typography
@@ -212,7 +242,8 @@ const CategorySpendingList = ({
               border: 1,
               borderColor: (theme) => alpha(theme.palette.error.main, 0.25),
               display: 'flex',
-              alignItems: 'center',
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: { xs: 'stretch', sm: 'center' },
               justifyContent: 'space-between',
               flexWrap: 'wrap',
               gap: 1.5,
@@ -221,7 +252,11 @@ const CategorySpendingList = ({
             <Stack
               direction="row"
               spacing={1.25}
-              sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}
+              sx={{
+                alignItems: 'flex-start',
+                minWidth: 0,
+                flex: { xs: '1 1 auto', sm: '1 1 240px' },
+              }}
             >
               <Box
                 sx={{
@@ -275,7 +310,11 @@ const CategorySpendingList = ({
                   fontSize: '11px',
                   py: 0.25,
                   px: 1.25,
-                  minHeight: 28,
+                  minHeight: { xs: 36, sm: 28 },
+                  width: { xs: '100%', sm: 'auto' },
+                  flexShrink: 0,
+                  whiteSpace: 'normal',
+                  overflowWrap: 'anywhere',
                   color: 'error.main',
                   borderColor: 'error.main',
                   '&:hover': {
@@ -350,10 +389,10 @@ const CategorySpendingList = ({
           sx={{
             display: 'grid',
             gridTemplateColumns: {
-              xs: '1fr',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
-              lg: 'repeat(4, 1fr)',
+              xs: 'minmax(0, 1fr)',
+              sm: 'repeat(2, minmax(0, 1fr))',
+              md: 'repeat(3, minmax(0, 1fr))',
+              lg: 'repeat(4, minmax(0, 1fr))',
             },
             gap: 1.5,
           }}
@@ -411,8 +450,10 @@ const CategorySpendingList = ({
               >
                 <Stack
                   direction="row"
+                  useFlexGap
                   spacing={1}
                   sx={{
+                    flexWrap: 'wrap',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     minWidth: 0,
@@ -424,6 +465,7 @@ const CategorySpendingList = ({
                     sx={{
                       alignItems: 'center',
                       minWidth: 0,
+                      flex: '1 1 120px',
                       overflow: 'hidden',
                     }}
                   >
@@ -437,8 +479,9 @@ const CategorySpendingList = ({
                       }}
                     />
                     <Typography
-                      noWrap
                       sx={{
+                        overflowWrap: 'anywhere',
+                        minWidth: 0,
                         fontSize: '13px',
                         color: isOver ? 'error.main' : 'text.primary',
                         fontWeight: 700,
@@ -518,6 +561,7 @@ const CategorySpendingList = ({
 
                 <Stack
                   direction="row"
+                  useFlexGap
                   spacing={0.5}
                   sx={{
                     justifyContent: 'space-between',
@@ -566,7 +610,7 @@ const CategorySpendingList = ({
                 </Stack>
 
                 {hasLimit ? (
-                  <Box sx={{ width: '100%', mt: 0.25 }}>
+                  <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                     <Box
                       sx={{
                         width: '100%',
@@ -595,7 +639,8 @@ const CategorySpendingList = ({
                       sx={{
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        mt: 0.5,
+                        flexWrap: 'wrap',
+                        gap: 0.5,
                       }}
                     >
                       <Typography
