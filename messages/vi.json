@@ -1050,7 +1050,7 @@
     "empty": "Chưa có mẫu lịch trình được xuất bản.",
     "view": "Xem lịch trình",
     "summary": "{days} ngày · {activities} hoạt động",
-    "cost": "Tổng chi phí dự kiến của lịch trình",
+    "cost": "Tổng chi phí dự kiến",
     "author": "Bởi {name} · {count} lượt sử dụng",
     "day": "Ngày {number}",
     "restDay": "Ngày tự do, chưa có hoạt động.",
@@ -1115,7 +1115,11 @@
     "navSaved": "Đã lưu",
     "navMine": "Mẫu của tôi",
     "chooseTemplate": "Dùng mẫu",
-    "chooseTemplateHint": "Tạo chuyến mới từ một mẫu lịch trình có sẵn."
+    "chooseTemplateHint": "Tạo chuyến mới từ một mẫu lịch trình có sẵn.",
+    "banner": "Ảnh bìa mẫu lịch trình",
+    "bannerHint": "Mẫu mới dùng ảnh chuyến nguồn lúc đăng. Khi cập nhật, giữ ảnh bìa hiện có hoặc chọn ảnh khác. Ảnh này sẽ được công khai.",
+    "bannerLoadError": "Không thể tải ảnh bìa hiện tại. Vui lòng thử lại.",
+    "bannerUploadError": "Không thể tải ảnh lên. Vui lòng thử lại."
   },
   "quickCreate": {
     "title": "+ Tạo nhanh",

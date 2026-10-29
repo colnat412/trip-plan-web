@@ -1050,7 +1050,7 @@
     "empty": "No itineraries have been published yet.",
     "view": "View itinerary",
     "summary": "{days} days · {activities} activities",
-    "cost": "Total estimated itinerary cost",
+    "cost": "Total estimated",
     "author": "By {name} · {count} uses",
     "day": "Day {number}",
     "restDay": "Free day, no activities yet.",
@@ -1115,7 +1115,11 @@
     "navSaved": "Saved",
     "navMine": "My templates",
     "chooseTemplate": "Use a template",
-    "chooseTemplateHint": "Create a new trip from an existing itinerary template."
+    "chooseTemplateHint": "Create a new trip from an existing itinerary template.",
+    "banner": "Itinerary template cover",
+    "bannerHint": "New templates use the source trip cover when published. Updates keep the existing cover unless you replace it. This image will be public.",
+    "bannerLoadError": "Could not load the current cover. Please try again.",
+    "bannerUploadError": "Could not upload the image. Please try again."
   },
   "quickCreate": {
     "title": "+ Quick create",

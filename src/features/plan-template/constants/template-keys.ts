@@ -8,6 +8,7 @@ export const templateQueryKeys = {
     page: number,
     size: number,
   ) => [...root, 'library', search, duration, tag, sort, page, size] as const,
+  cover: (tripId: string | number) => [...root, 'cover', tripId] as const,
   saveStatus: (ids: string) => [...root, 'save-status', ids] as const,
   saved: (page: number, size: number) => [...root, 'saved', page, size] as const,
   mine: (page: number, size: number) => [...root, 'mine', page, size] as const,

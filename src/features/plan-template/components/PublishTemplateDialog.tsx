@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useId, useRef, useState } from 'react';
-import { Alert, Box, Stack, Typography } from '@mui/material';
+import { Alert, Box, Skeleton, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppDialog, AppButton, AppTextField } from '@/base/components/ui';
+import { AppDialog, AppButton, AppTextField, AppImageUploader } from '@/base/components/ui';
 import {
   usePreviewPlanTemplate,
   usePublishPlanTemplate,
@@ -13,6 +13,8 @@ import type { PublishPayload, TemplatePreview } from '../types';
 import { TEMPLATE_TAGS } from '../types';
 import TemplateCheckboxOption from './TemplateCheckboxOption';
 import TemplateItinerary from './TemplateItinerary';
+import TemplateBanner from './TemplateBanner';
+import { useTemplateCover, useTemplateCoverUpload } from '../hooks/useTemplateCover';
 const PublishTemplateDialog = ({
   trip,
   checklists,
@@ -26,6 +28,10 @@ const PublishTemplateDialog = ({
 }) => {
   const t = useTranslations('planTemplate');
   const groupId = useId();
+  const coverQuery = useTemplateCover(trip.id, open);
+  const coverUpload = useTemplateCoverUpload();
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [uploadedCoverUrl, setUploadedCoverUrl] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [payload, setPayload] = useState<PublishPayload>({
     title: trip.name,
@@ -49,11 +55,22 @@ const PublishTemplateDialog = ({
   };
   const previewMutation = usePreviewPlanTemplate(trip.id);
   const publishMutation = usePublishPlanTemplate(trip.id);
-  const busy = previewMutation.isPending || publishMutation.isPending;
+  const busy = previewMutation.isPending || publishMutation.isPending || coverUpload.isPending;
+  const coverReady = !coverQuery.isStale && coverQuery.data !== null && !coverQuery.error;
+  const displayedCover = payload.removeCover ? null
+    : payload.coverUploadId ? uploadedCoverUrl : coverQuery.data?.data;
   const submit = async () => {
     try {
       if (!preview) {
-        const response = await previewMutation.mutateAsync(payload);
+        let nextPayload = payload;
+        if (coverFile) {
+          const uploaded = await coverUpload.uploadCover(coverFile);
+          nextPayload = { ...payload, coverUploadId: uploaded.data.uploadId, removeCover: false };
+          setUploadedCoverUrl(uploaded.data.url);
+          setPayload(nextPayload);
+          setCoverFile(null);
+        }
+        const response = await previewMutation.mutateAsync(nextPayload);
         setPreview(response.data);
       } else {
         await publishMutation.mutateAsync({
@@ -94,6 +111,7 @@ const PublishTemplateDialog = ({
               loading={busy}
               disabled={
                 busy ||
+                !coverReady ||
                 published ||
                 !payload.title.trim() ||
                 !payload.destination.trim()
@@ -115,6 +133,7 @@ const PublishTemplateDialog = ({
           <Alert severity="success">{t('published')}</Alert>
         ) : preview ? (
           <>
+            {preview.coverUrl && <TemplateBanner src={preview.coverUrl} title={payload.title} />}
             <Typography component="h2" sx={{ fontWeight: 700 }}>
               {payload.title}
             </Typography>
@@ -129,6 +148,26 @@ const PublishTemplateDialog = ({
           </>
         ) : (
           <>
+            <Stack spacing={1}>
+              <Typography component="h3" sx={{ fontWeight: 700, fontSize: 14 }}>{t('banner')}</Typography>
+              <Typography variant="body2" color="text.secondary">{t('bannerHint')}</Typography>
+              {coverReady ? <AppImageUploader
+                src={displayedCover}
+                alt={t('banner')}
+                variant="cover"
+                disabled={busy}
+                onChange={(file) => {
+                  setCoverFile(file);
+                  coverUpload.clearError();
+                  update({ coverUploadId: undefined, removeCover: file === null });
+                }}
+              /> : !coverQuery.error ? <Skeleton variant="rounded" height={160} /> : (
+                <Alert severity="error" action={<AppButton onClick={() => void coverQuery.refetch().catch(() => undefined)}>{t('retry')}</AppButton>}>
+                  {t('bannerLoadError')}
+                </Alert>
+              )}
+              {coverUpload.error && <Alert severity="error">{t('bannerUploadError')}</Alert>}
+            </Stack>
             <AppTextField
               disabled={busy}
               label={t('title')}

@@ -1,4 +1,5 @@
 export interface TemplateCardData {
+  coverUrl?: string | null;
   sourceTripId?: string;
   id: string;
   title: string;
@@ -45,6 +46,8 @@ export interface TemplateListing {
   totalPages: number;
 }
 export interface PublishPayload {
+  coverUploadId?: string;
+  removeCover?: boolean;
   title: string;
   destination: string;
   description: string;
@@ -55,6 +58,7 @@ export interface PublishPayload {
   expectedContentVersion?: number;
 }
 export interface TemplatePreview {
+  coverUrl?: string | null;
   snapshot: TemplateSnapshot;
   sourceFingerprint: string;
   contentVersion: number;

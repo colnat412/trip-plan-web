@@ -9,6 +9,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { useTranslations } from 'next-intl';
 import { AppActionMenu, AppButton, AppCard } from '@/base/components/ui';
+import TemplateBanner from './TemplateBanner';
 import type { TemplateCardData } from '../types';
 
 interface MyTemplateCardProps {
@@ -42,6 +43,7 @@ const MyTemplateCard = ({
       }}
     >
       <Stack spacing={1.5}>
+        {template.coverUrl && <TemplateBanner src={template.coverUrl} title={template.title} compact />}
         <Stack
           direction="row"
           useFlexGap

@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { AppPageContainer, AppButton } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { TemplateDetailData } from '../types';
+import TemplateBanner from './TemplateBanner';
 import TemplateItinerary from './TemplateItinerary';
 import CopyTemplateDialog from './CopyTemplateDialog';
 import { TemplateSaveProvider, TemplateSaveButton } from './TemplateSaveControls';
@@ -44,6 +45,7 @@ const TemplateDetail = ({
           </Alert>
         ) : (
           <TemplateSaveProvider key={detail.template.id} ids={[detail.template.id]}>
+            {detail.template.coverUrl && <TemplateBanner src={detail.template.coverUrl} title={detail.template.title} />}
             <Typography component="h1" sx={{ fontSize: 26, fontWeight: 700 }}>
               {detail.template.title}
             </Typography>

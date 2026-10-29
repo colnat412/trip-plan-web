@@ -39,7 +39,7 @@ const AppImageUploader = ({
   const displayed = removed ? undefined : (preview ?? src ?? undefined);
 
   return (
-    <Stack spacing={1.5} sx={{ alignItems: 'flex-start', ...(variant === 'receipt' ? { width: '100%', minWidth: 0 } : {}) }}>
+    <Stack spacing={1.5} sx={{ alignItems: 'flex-start', ...(variant !== 'avatar' ? { width: '100%', minWidth: 0 } : {}) }}>
       <Avatar
         src={displayed}
         alt={alt}

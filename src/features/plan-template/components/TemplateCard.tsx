@@ -1,9 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { TemplateSaveButton } from './TemplateSaveControls';
-import { Stack, Typography, Chip, Box, IconButton, Tooltip } from '@mui/material';
+import { Stack, Typography, Chip, IconButton, Tooltip } from '@mui/material';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
-import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
+import TemplateBanner from './TemplateBanner';
 import { useLocale, useTranslations } from 'next-intl';
 import { AppCard } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
@@ -24,19 +24,8 @@ const TemplateCard = ({
       sx={{ minWidth: 0, height: '100%', overflowWrap: 'anywhere' }}
     >
       <Stack spacing={compact ? 1 : 1.5}>
-        {!compact && (
-          <Box
-            sx={{
-              bgcolor: 'action.hover',
-              borderRadius: '12px',
-              p: 3,
-              display: 'flex',
-              justifyContent: 'center',
-              color: 'primary.main',
-            }}
-          >
-            <RouteRoundedIcon sx={{ fontSize: 48 }} />
-          </Box>
+        {(!compact || template.coverUrl) && (
+          <TemplateBanner src={template.coverUrl} title={template.title} compact={compact} />
         )}
         <Typography
           component={compact ? 'h3' : 'h2'}
