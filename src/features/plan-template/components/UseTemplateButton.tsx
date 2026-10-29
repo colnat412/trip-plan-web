@@ -14,7 +14,7 @@ export default function UseTemplateButton() {
         component={Link}
         href="/templates"
         intent="secondary"
-        size="small"
+        size="medium"
         startIcon={<CollectionsBookmarkOutlinedIcon />}
         aria-label={`${t('chooseTemplate')}. ${t('chooseTemplateHint')}`}
         sx={{ minHeight: 44 }}

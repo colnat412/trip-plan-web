@@ -51,9 +51,9 @@ const Overview = () => {
   if (!trips?.length)
     return (
       <AppPageContainer>
+        <TemplateLibrary compact />
         <QuickCreate />
         <EmptyTripState onCreateTrip={openCreateTrip} />
-        <TemplateLibrary compact />
       </AppPageContainer>
     );
   const currentTrip = activeTrip || trips[0];
@@ -63,7 +63,6 @@ const Overview = () => {
       <ActiveTripBanner key={currentTrip.id} trip={currentTrip} compact />
       <QuickCreate />
       <OverviewDetails key={`details-${currentTrip.id}`} trip={currentTrip} />
-      <TemplateLibrary compact />
     </AppPageContainer>
   );
 };

@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Alert, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
+import { useAppToast } from '@/base/providers/AppToastProvider';
 import { AppDialog, AppButton, AppTextField } from '@/base/components/ui';
 import useCopyPlanTemplate from '../hooks/useCopyPlanTemplate';
 import TemplateCheckboxOption from './TemplateCheckboxOption';
@@ -17,6 +18,7 @@ const CopyTemplateDialog = ({
   onClose: () => void;
 }) => {
   const router = useRouter();
+  const notify = useAppToast();
   const t = useTranslations('planTemplate');
   const [name, setName] = useState(template.title);
   const [startDate, setStartDate] = useState('');
@@ -32,6 +34,8 @@ const CopyTemplateDialog = ({
         includeChecklist,
         expectedContentVersion: template.contentVersion,
       });
+      onClose();
+      notify(t('created'));
       router.push(`/plan?tripId=${encodeURIComponent(response.data.tripId)}`);
     } catch {
       // The feature hook exposes API errors and retains the retry attempt.
@@ -103,18 +107,7 @@ const CopyTemplateDialog = ({
             {t('reload')}
           </AppButton>
         )}
-        {created && (
-          <Alert
-            severity="success"
-            action={
-              <AppButton component="a" href={`/plan?tripId=${created}`}>
-                {t('openTrip')}
-              </AppButton>
-            }
-          >
-            {t('created')}
-          </Alert>
-        )}
+
       </Stack>
     </AppDialog>
   );

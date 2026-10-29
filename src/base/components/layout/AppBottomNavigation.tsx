@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   isAppNavigationActive,
-  PRIMARY_NAVIGATION_ITEMS,
+  MOBILE_PRIMARY_NAVIGATION_ITEMS,
   DESKTOP_NAV_BREAKPOINT,
   MORE_NAVIGATION_ITEMS,
 } from './navigation/config';
@@ -18,7 +18,7 @@ const AppBottomNavigation = () => {
   const pathname = usePathname();
   const t = useTranslations('navigation');
   const [moreOpen, setMoreOpen] = useState(false);
-  const primary = PRIMARY_NAVIGATION_ITEMS.find((item) =>
+  const primary = MOBILE_PRIMARY_NAVIGATION_ITEMS.find((item) =>
     isAppNavigationActive(pathname, item),
   );
   const inMore = MORE_NAVIGATION_ITEMS.some((item) =>
@@ -103,7 +103,7 @@ const AppBottomNavigation = () => {
             },
           })}
         >
-          {PRIMARY_NAVIGATION_ITEMS.map((item) => (
+          {MOBILE_PRIMARY_NAVIGATION_ITEMS.map((item) => (
             <BottomNavigationAction
               key={item.id}
               component={Link}

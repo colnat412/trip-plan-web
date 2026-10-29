@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { TemplateSaveButton } from './TemplateSaveControls';
-import { Stack, Typography, Chip, IconButton, Tooltip } from '@mui/material';
+import { Box, Stack, Typography, Chip, IconButton, Tooltip } from '@mui/material';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import TemplateBanner from './TemplateBanner';
 import { useLocale, useTranslations } from 'next-intl';
@@ -12,26 +12,36 @@ import { TEMPLATE_TAGS } from '../types';
 const TemplateCard = ({
   template,
   compact = false,
+  featured = false,
 }: {
   template: TemplateCardData;
   compact?: boolean;
+  featured?: boolean;
 }) => {
   const locale = useLocale();
   const t = useTranslations('planTemplate');
   return (
     <AppCard
       component="article"
-      sx={{ minWidth: 0, height: '100%', overflowWrap: 'anywhere' }}
+      sx={{ minWidth: 0, height: '100%', overflowWrap: 'anywhere', borderRadius: '20px', p: 2 }}
+      contentSx={{ height: '100%' }}
     >
-      <Stack spacing={compact ? 1 : 1.5}>
-        {(!compact || template.coverUrl) && (
-          <TemplateBanner src={template.coverUrl} title={template.title} compact={compact} />
-        )}
+      <Box sx={{
+        display: 'grid', gap: 2, height: '100%', minWidth: 0,
+        gridTemplateRows: featured ? undefined : 'auto minmax(0, 1fr)',
+        gridTemplateColumns: featured ? { xs: 'minmax(0, 1fr)', sm: 'minmax(160px, 30%) minmax(0, 1fr)' } : 'minmax(0, 1fr)',
+      }}>
+        <TemplateBanner src={template.coverUrl} title={template.title} compact={compact} featured={featured} />
+        <Stack spacing={1} sx={{ minWidth: 0 }}>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <Typography
           component={compact ? 'h3' : 'h2'}
           title={template.title}
           sx={{
             fontWeight: 700,
+            minWidth: 0,
+            flex: 1,
+            pt: 1,
             ...(compact
               ? {
                   display: '-webkit-box',
@@ -44,6 +54,21 @@ const TemplateCard = ({
         >
           {template.title}
         </Typography>
+        <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0, alignItems: 'center' }}>
+          <TemplateSaveButton id={template.id} iconOnly />
+          <Tooltip title={t('view')}>
+            <IconButton
+              component={Link}
+              href={`/templates/${template.id}`}
+              aria-label={t('view')}
+              color="primary"
+              sx={{ width: 44, height: 44 }}
+            >
+              <VisibilityRoundedIcon />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+        </Stack>
         <Typography
           variant="body2"
           title={template.destination}
@@ -94,21 +119,9 @@ const TemplateCard = ({
             ))}
           </Stack>
         )}
-        <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'flex-end' }}>
-          <TemplateSaveButton id={template.id} iconOnly />
-          <Tooltip title={t('view')}>
-            <IconButton
-              component={Link}
-              href={`/templates/${template.id}`}
-              aria-label={t('view')}
-              color="primary"
-              sx={{ width: 44, height: 44 }}
-            >
-              <VisibilityRoundedIcon />
-            </IconButton>
-          </Tooltip>
+
         </Stack>
-      </Stack>
+      </Box>
     </AppCard>
   );
 };

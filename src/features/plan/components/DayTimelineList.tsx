@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
-import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
-import { useLocale, useTranslations } from 'next-intl';
+import { Stack } from '@mui/material';
+import { useLocale } from 'next-intl';
 
-import { AppButton, AppCard, AppMetricValue } from '@/base/components/ui';
-import { formatCurrency } from '@/base/utils';
+import { AppCard } from '@/base/components/ui';
 import type { ActivityStatus, PlanActivity, RouteSegment } from '../types';
 import ActivityTimelineCard from './ActivityTimelineCard';
 import ActivityDistanceConnector from './ActivityDistanceConnector';
@@ -15,8 +13,6 @@ import { getConsecutiveDistances } from '../services/googleMapsService';
 
 export interface DayTimelineListProps {
   activities: PlanActivity[];
-  totalActivities?: number;
-  totalEstimatedCost?: number;
   currency: string;
   destinationContext?: string;
   onAddActivity?: () => void;
@@ -25,15 +21,12 @@ export interface DayTimelineListProps {
   onToggleStatus?: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
   onConvertToExpense?: (activity: PlanActivity) => void;
   onOpenOptimizeRoute?: () => void;
-  onResetDayActivities?: () => void;
   readOnly?: boolean;
   canDeleteActivity?: (activity: PlanActivity) => boolean;
 }
 
 const DayTimelineList = ({
   activities,
-  totalActivities,
-  totalEstimatedCost,
   currency,
   destinationContext,
   onAddActivity,
@@ -41,12 +34,10 @@ const DayTimelineList = ({
   onDeleteActivity,
   onToggleStatus,
   onConvertToExpense,
-  onResetDayActivities,
   readOnly = false,
   canDeleteActivity,
 }: DayTimelineListProps) => {
   const locale = useLocale();
-  const t = useTranslations('plan');
 
   const [distanceData, setDistanceData] = useState<{
     segments: RouteSegment[];
@@ -81,108 +72,18 @@ const DayTimelineList = ({
     return <PlanEmptyState onAddActivity={onAddActivity} readOnly={readOnly} />;
   }
 
-  // const locActivities = activities.filter(
-  //   (a) => a.location && a.location.trim().length > 0,
-  // );
-  // const canOptimize = locActivities.length >= 2;
-
-  const dayTotalActivities = totalActivities ?? activities.length;
-  const dayTotalCost =
-    totalEstimatedCost !== undefined
-      ? Number(totalEstimatedCost) || 0
-      : activities.reduce(
-          (sum, act) =>
-            sum + (act.estimatedCost ? Number(act.estimatedCost) : 0),
-          0,
-        );
-
   const segmentMap = new Map<string, RouteSegment>();
   distanceData?.segments.forEach((seg) => {
     segmentMap.set(`${seg.fromActivityId}->${seg.toActivityId}`, seg);
   });
 
   return (
-    <Box
-      sx={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 2,
-      }}
+    <AppCard
+      component="section"
+      sx={{ width: '100%', minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: '20px' }}
+      contentSx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          px: 0.5,
-          flexWrap: 'wrap',
-          gap: 1.5,
-        }}
-      >
-        <Stack
-          direction="row"
-          spacing={1}
-          useFlexGap
-          sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}
-        >
-          <Typography
-            sx={{
-              fontSize: '13px',
-              fontWeight: 700,
-              color: 'text.secondary',
-            }}
-          >
-            {dayTotalActivities} {t('totalActivities').toLowerCase()}
-          </Typography>
-          {dayTotalCost > 0 && (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: 0.75,
-                minWidth: 0,
-              }}
-            >
-              <Typography
-                component="span"
-                sx={{ fontSize: '13px', color: 'text.secondary' }}
-              >
-                {t('dayTotalCostLabel')}:
-              </Typography>
-              <AppMetricValue sx={{ fontSize: '13px' }}>
-                {formatCurrency(dayTotalCost, currency)}
-              </AppMetricValue>
-            </Box>
-          )}
-        </Stack>
-
-        {!readOnly && onResetDayActivities && (
-          <AppButton
-            intent="secondary"
-            size="small"
-            startIcon={<RestartAltRoundedIcon sx={{ fontSize: 16 }} />}
-            onClick={onResetDayActivities}
-            sx={{
-              fontSize: '12px',
-              fontWeight: 600,
-              color: 'error.main',
-              borderColor: 'error.light',
-              '&:hover': {
-                borderColor: 'error.main',
-                bgcolor: (theme) =>
-                  `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).error.main} 8%, transparent)`,
-              },
-            }}
-          >
-            {t('resetDayBtn')}
-          </AppButton>
-        )}
-      </Box>
-
-      <AppCard sx={{ p: { xs: 2, md: 3 }, borderRadius: '20px' }}>
-        <Stack spacing={0}>
+      <Stack spacing={0}>
           {activities.map((activity, idx) => {
             const nextActivity = activities[idx + 1];
             const hasLocationCurrent = Boolean(
@@ -226,9 +127,8 @@ const DayTimelineList = ({
               </React.Fragment>
             );
           })}
-        </Stack>
-      </AppCard>
-    </Box>
+      </Stack>
+    </AppCard>
   );
 };
 

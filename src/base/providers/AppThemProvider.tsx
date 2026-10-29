@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
+import AppToastProvider from "./AppToastProvider";
 import appTheme from "../theme/theme";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
@@ -14,7 +15,7 @@ const AppThemeProvider = ({ children }: AppThemeProviderProps) => {
     <AppRouterCacheProvider options={{ enableCssLayer: true }}>
       <ThemeProvider theme={appTheme} defaultMode="light">
         <CssBaseline />
-        {children}
+        <AppToastProvider>{children}</AppToastProvider>
       </ThemeProvider>
     </AppRouterCacheProvider>
   );

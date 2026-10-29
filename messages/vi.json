@@ -130,7 +130,9 @@
       "motorbike": "Thuê xe máy 2 ngày"
     },
     "showDetails": "Xem thêm thông tin chuyến",
-    "hideDetails": "Thu gọn thông tin chuyến"
+    "hideDetails": "Thu gọn thông tin chuyến",
+    "recentError": "Không thể tải chi tiêu gần đây.",
+    "retry": "Thử lại"
   },
   "sidebar": {
     "navigation": "Điều hướng chính",
@@ -1034,6 +1036,11 @@
     "backToAcceptance": "Quay lại xác nhận"
   },
   "planTemplate": {
+    "allStyles": "Tất cả",
+    "publishNeedsActivities": "Hãy thêm ít nhất một hoạt động vào lịch trình trước khi đăng mẫu.",
+    "publishTooManyActivities": "Mẫu lịch trình chỉ hỗ trợ tối đa 1.000 hoạt động. Hãy giảm số hoạt động trước khi đăng mẫu.",
+    "publishPlanLoading": "Đang kiểm tra hoạt động của chuyến đi…",
+    "publishPlanLoadError": "Không thể kiểm tra hoạt động của chuyến đi. Vui lòng thử lại.",
     "library": "Khám phá lịch trình",
     "all": "Xem tất cả",
     "home": "Trang chủ",
@@ -1072,7 +1079,6 @@
     "confirmPublish": "Xác nhận xuất bản",
     "preview": "Xem trước nội dung công khai",
     "edit": "Chỉnh sửa",
-    "privacy": "Chỉ xuất bản nội dung bạn đã xem lại. Tên hoạt động, địa điểm và checklist cũng có thể chứa thông tin riêng. Ghi chú mặc định không được đưa vào. Ảnh mẫu dùng hình mặc định.",
     "published": "Đã xuất bản mẫu. Bạn có thể tìm trong thư viện hoặc quản lý tại Mẫu của tôi.",
     "title": "Tên mẫu",
     "destination": "Điểm đến",
@@ -1085,7 +1091,6 @@
     "emptyMine": "Bạn chưa đăng mẫu nào.",
     "statusPublished": "Đang xuất bản",
     "statusUnpublished": "Đã gỡ",
-    "updateFromSource": "Cập nhật / xuất bản lại từ chuyến nguồn và xem trước nội dung mới.",
     "unpublish": "Gỡ mẫu",
     "tags": {
       "RELAXED": "Nghỉ dưỡng",
@@ -1095,7 +1100,6 @@
       "FAMILY": "Gia đình",
       "NATURE": "Thiên nhiên"
     },
-    "publishPrivacy": "Tên hoạt động, địa điểm và các mục bạn chọn sẽ được công khai. Ghi chú chỉ được đưa vào khi bạn bật bên dưới. Hãy xem trước trước khi đăng.",
     "stylesLimit": "Phong cách · tối đa 5 lựa chọn",
     "emptyChecklist": "Chuyến đi chưa có mục checklist nào để công khai.",
     "done": "Đóng",
@@ -1117,7 +1121,6 @@
     "chooseTemplate": "Dùng mẫu",
     "chooseTemplateHint": "Tạo chuyến mới từ một mẫu lịch trình có sẵn.",
     "banner": "Ảnh bìa mẫu lịch trình",
-    "bannerHint": "Mẫu mới dùng ảnh chuyến nguồn lúc đăng. Khi cập nhật, giữ ảnh bìa hiện có hoặc chọn ảnh khác. Ảnh này sẽ được công khai.",
     "bannerLoadError": "Không thể tải ảnh bìa hiện tại. Vui lòng thử lại.",
     "bannerUploadError": "Không thể tải ảnh lên. Vui lòng thử lại."
   },

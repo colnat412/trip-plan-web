@@ -66,7 +66,7 @@ const QuickCreate = () => {
       >
         <AppActionMenu
           ariaLabel={t('title')}
-          trigger={<AppButton intent="primary">{t('title')}</AppButton>}
+          trigger={<AppButton intent="primary" size="medium" sx={{ minHeight: 44 }}>{t('title')}</AppButton>}
           items={[
             { id: 'ai', label: t('ai'), onClick: () => setAiOpen(true) },
             {

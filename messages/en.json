@@ -130,7 +130,9 @@
       "motorbike": "Motorbike rental · 2 days"
     },
     "showDetails": "Show trip details",
-    "hideDetails": "Hide trip details"
+    "hideDetails": "Hide trip details",
+    "recentError": "Could not load recent expenses.",
+    "retry": "Retry"
   },
   "sidebar": {
     "navigation": "Main navigation",
@@ -1034,6 +1036,11 @@
     "backToAcceptance": "Back to acknowledgement"
   },
   "planTemplate": {
+    "allStyles": "All",
+    "publishNeedsActivities": "Please add at least one itinerary activity before publishing a template.",
+    "publishTooManyActivities": "Templates support up to 1,000 activities. Reduce the number of activities before publishing.",
+    "publishPlanLoading": "Checking trip activities…",
+    "publishPlanLoadError": "Unable to check trip activities. Please try again.",
     "library": "Discover itineraries",
     "all": "View all",
     "home": "Home",
@@ -1072,7 +1079,6 @@
     "confirmPublish": "Confirm publication",
     "preview": "Preview public content",
     "edit": "Edit",
-    "privacy": "Review all public content before publishing. Activity names, locations and checklists may contain private information. Notes are excluded by default. Templates use default artwork.",
     "published": "Template published. Find it in the library or manage it under My templates.",
     "title": "Template title",
     "destination": "Destination",
@@ -1085,7 +1091,6 @@
     "emptyMine": "You have not published any templates.",
     "statusPublished": "Published",
     "statusUnpublished": "Unpublished",
-    "updateFromSource": "Update / republish from the source trip and review the new content.",
     "unpublish": "Unpublish",
     "tags": {
       "RELAXED": "Relaxation",
@@ -1095,7 +1100,6 @@
       "FAMILY": "Family",
       "NATURE": "Nature"
     },
-    "publishPrivacy": "Activity names, locations and selected items will be public. Notes are included only if you enable them below. Review the preview before publishing.",
     "stylesLimit": "Styles · choose up to 5",
     "emptyChecklist": "This trip has no checklist items to publish.",
     "done": "Done",
@@ -1117,7 +1121,6 @@
     "chooseTemplate": "Use a template",
     "chooseTemplateHint": "Create a new trip from an existing itinerary template.",
     "banner": "Itinerary template cover",
-    "bannerHint": "New templates use the source trip cover when published. Updates keep the existing cover unless you replace it. This image will be public.",
     "bannerLoadError": "Could not load the current cover. Please try again.",
     "bannerUploadError": "Could not upload the image. Please try again."
   },

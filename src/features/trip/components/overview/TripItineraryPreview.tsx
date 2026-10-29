@@ -46,8 +46,8 @@ const TripItineraryPreview = ({ trip }: { trip: Trip }) => {
               component={Link}
               href="/plan"
               intent="text"
-              size="small"
-              sx={{ px: 0, fontSize: '13px' }}
+              size="medium"
+              sx={{ minHeight: 44 }}
               endIcon={<ArrowForwardRoundedIcon />}
             >
               {t('openItinerary')}

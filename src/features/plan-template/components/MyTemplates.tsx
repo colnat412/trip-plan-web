@@ -26,7 +26,6 @@ const MyTemplates = () => {
       <Stack spacing={2}>
         <AppPageHeader
           title={t('mine')}
-          subtitle={t('updateFromSource')}
           actions={
             <AppButton
               component={Link}

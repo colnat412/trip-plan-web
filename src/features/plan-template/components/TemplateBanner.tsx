@@ -4,16 +4,18 @@ import { useState } from 'react';
 import { Box } from '@mui/material';
 import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
 
-export default function TemplateBanner({ src, title, compact = false }: {
+export default function TemplateBanner({ src, title, compact = false, featured = false }: {
   src?: string | null;
   title: string;
   compact?: boolean;
+  featured?: boolean;
 }) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const visibleSrc = src && src !== failedSrc ? src : null;
   return (
     <Box sx={{
-      width: '100%', minWidth: 0, height: compact ? 120 : { xs: 180, sm: 220 },
+      width: '100%', minWidth: 0, height: featured ? { xs: 140, sm: '100%' } : compact ? 120 : { xs: 180, sm: 220 },
+      minHeight: featured ? 140 : undefined,
       bgcolor: 'action.hover', borderRadius: '12px', overflow: 'hidden',
       display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'primary.main',
     }}>

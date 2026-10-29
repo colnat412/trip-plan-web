@@ -8,6 +8,7 @@ import {
   AppCard,
   AppLinearProgress,
   AppMetricValue,
+  AppSectionHeader,
 } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
@@ -101,12 +102,10 @@ const TripBudgetCard = ({
   return (
     <AppCard
       component="section"
-      sx={{ p: { xs: 2.5, md: 3 }, borderRadius: '20px' }}
+      sx={{ p: { xs: 2, md: 3 }, borderRadius: '20px' }}
     >
       <Stack spacing={2.5}>
-        <Typography component="h2" sx={{ fontSize: '18px', fontWeight: 700 }}>
-          {t('tripBudget')}
-        </Typography>
+        <AppSectionHeader title={t('tripBudget')} />
         {isLoading ? (
           <Skeleton variant="rounded" height={120} />
         ) : error ? (
@@ -178,7 +177,7 @@ const TripBudgetCard = ({
             </Stack>
           </>
         ) : null}
-        <AppButton component={Link} href="/expenses" intent="secondary" round>
+        <AppButton component={Link} href="/expenses" intent="secondary" size="medium" sx={{ minHeight: 44 }}>
           {t('manageBudget')}
         </AppButton>
       </Stack>

@@ -2,13 +2,15 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Alert, Box, Skeleton, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppDialog, AppButton, AppTextField, AppImageUploader } from '@/base/components/ui';
+import { useAppToast } from '@/base/providers/AppToastProvider';
+import { AppDialog, AppButton, AppTextField, AppImageUploader, AppToast } from '@/base/components/ui';
 import {
   usePreviewPlanTemplate,
   usePublishPlanTemplate,
 } from '../hooks/usePlanTemplateMutation';
 import type { Trip } from '@/features/trip/types';
 import type { PlanChecklist } from '@/features/plan/types';
+import useTripPlan from '@/features/plan/hooks/useTripPlan';
 import type { PublishPayload, TemplatePreview } from '../types';
 import { TEMPLATE_TAGS } from '../types';
 import TemplateCheckboxOption from './TemplateCheckboxOption';
@@ -28,6 +30,12 @@ const PublishTemplateDialog = ({
 }) => {
   const t = useTranslations('planTemplate');
   const groupId = useId();
+  const notify = useAppToast();
+  const [validationMessage, setValidationMessage] = useState('');
+  const planQuery = useTripPlan({ tripId: trip.id, enabled: open, includeActivities: false });
+  const planReady = !planQuery.isLoading && !planQuery.isStale && !planQuery.error && planQuery.plan !== null;
+  const activityCount = planQuery.plan?.totalActivities ?? 0;
+  const activityCountValid = planReady && activityCount >= 1 && activityCount <= 1000;
   const coverQuery = useTemplateCover(trip.id, open);
   const coverUpload = useTemplateCoverUpload();
   const [coverFile, setCoverFile] = useState<File | null>(null);
@@ -42,14 +50,16 @@ const PublishTemplateDialog = ({
     checklistIds: [],
   });
   const [preview, setPreview] = useState<TemplatePreview | null>(null);
-  const [published, setPublished] = useState(false);
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0 });
-  }, [preview, published]);
+  }, [preview]);
+  const close = () => {
+    setValidationMessage('');
+    onClose();
+  };
   const update = (patch: Partial<PublishPayload>) => {
     setPayload((p) => ({ ...p, ...patch }));
     setPreview(null);
-    setPublished(false);
     previewMutation.clearError();
     publishMutation.clearError();
   };
@@ -60,6 +70,12 @@ const PublishTemplateDialog = ({
   const displayedCover = payload.removeCover ? null
     : payload.coverUploadId ? uploadedCoverUrl : coverQuery.data?.data;
   const submit = async () => {
+    if (!planReady) return;
+    if (!activityCountValid) {
+      setValidationMessage(t(activityCount === 0 ? 'publishNeedsActivities' : 'publishTooManyActivities'));
+      return;
+    }
+    setValidationMessage('');
     try {
       if (!preview) {
         let nextPayload = payload;
@@ -78,7 +94,9 @@ const PublishTemplateDialog = ({
           sourceFingerprint: preview.sourceFingerprint,
           expectedContentVersion: preview.contentVersion,
         });
-        setPublished(true);
+        setPreview(null);
+        close();
+        notify(t('published'));
       }
     } catch {
       setPreview(null);
@@ -87,7 +105,7 @@ const PublishTemplateDialog = ({
   return (
     <AppDialog
       open={open}
-      onClose={onClose}
+      onClose={close}
       closeDisabled={busy}
       contentRef={contentRef}
       maxWidth="md"
@@ -95,32 +113,26 @@ const PublishTemplateDialog = ({
       title={t('publish')}
       actions={
         <>
-          {preview && !published && (
+          {preview && (
             <AppButton disabled={busy} onClick={() => setPreview(null)}>
               {t('edit')}
             </AppButton>
           )}
-          {published ? (
-            <AppButton intent="primary" onClick={onClose}>
-              {t('done')}
-            </AppButton>
-          ) : (
-            <AppButton
-              intent="primary"
-              wrapLabel
-              loading={busy}
-              disabled={
-                busy ||
-                !coverReady ||
-                published ||
-                !payload.title.trim() ||
-                !payload.destination.trim()
-              }
-              onClick={() => void submit()}
-            >
-              {t(preview ? 'confirmPublish' : 'preview')}
-            </AppButton>
-          )}
+          <AppButton
+            intent="primary"
+            wrapLabel
+            loading={busy}
+            disabled={
+              busy ||
+              !coverReady ||
+              !planReady ||
+              !payload.title.trim() ||
+              !payload.destination.trim()
+            }
+            onClick={() => void submit()}
+          >
+            {t(preview ? 'confirmPublish' : 'preview')}
+          </AppButton>
         </>
       }
     >
@@ -128,19 +140,26 @@ const PublishTemplateDialog = ({
         spacing={2.5}
         sx={{ flexShrink: 0, minWidth: 0, overflowWrap: 'anywhere' }}
       >
-        <Alert severity="info">{t('publishPrivacy')}</Alert>
-        {published ? (
-          <Alert severity="success">{t('published')}</Alert>
-        ) : preview ? (
+        <AppToast
+          open={open && Boolean(validationMessage)}
+          message={validationMessage}
+          severity="warning"
+          onClose={() => setValidationMessage('')}
+        />
+        {planQuery.error ? (
+            <Alert severity="error" action={
+              <AppButton onClick={() => void planQuery.refetch().catch(() => undefined)}>{t('retry')}</AppButton>
+            }>{t('publishPlanLoadError')}</Alert>
+          ) : !planReady ? (
+            <Typography role="status" variant="body2">{t('publishPlanLoading')}</Typography>
+          ) : null}
+        {preview ? (
           <>
             {preview.coverUrl && <TemplateBanner src={preview.coverUrl} title={payload.title} />}
             <Typography component="h2" sx={{ fontWeight: 700 }}>
               {payload.title}
             </Typography>
             <Typography>{payload.destination}</Typography>
-            <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-              {payload.description}
-            </Typography>
             <TemplateItinerary
               snapshot={preview.snapshot}
               currency={trip.baseCurrency}
@@ -150,7 +169,6 @@ const PublishTemplateDialog = ({
           <>
             <Stack spacing={1}>
               <Typography component="h3" sx={{ fontWeight: 700, fontSize: 14 }}>{t('banner')}</Typography>
-              <Typography variant="body2" color="text.secondary">{t('bannerHint')}</Typography>
               {coverReady ? <AppImageUploader
                 src={displayedCover}
                 alt={t('banner')}
@@ -181,20 +199,6 @@ const PublishTemplateDialog = ({
               value={payload.destination}
               onChange={(e) => update({ destination: e.target.value })}
               slotProps={{ htmlInput: { maxLength: 255 } }}
-            />
-            <AppTextField
-              disabled={busy}
-              multiline
-              minRows={3}
-              maxRows={5}
-              sx={{
-                '& .MuiInputBase-multiline': { p: 1.5 },
-                '& .MuiInputBase-inputMultiline': { p: 0 },
-              }}
-              label={t('description')}
-              value={payload.description}
-              onChange={(e) => update({ description: e.target.value })}
-              slotProps={{ htmlInput: { maxLength: 5000 } }}
             />
             <Stack
               spacing={1}

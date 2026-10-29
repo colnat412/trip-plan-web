@@ -1,9 +1,9 @@
 'use client';
 
 import { useId } from 'react';
-import { Stack, Typography } from '@mui/material';
+import { Box, MenuItem, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppTextField, AppSelect } from '@/base/components/ui';
+import { AppTextField } from '@/base/components/ui';
 import { TEMPLATE_TAGS } from '../types';
 
 interface TemplateFiltersProps {
@@ -34,31 +34,32 @@ const TemplateFilters = ({
     color: 'text.secondary',
     overflowWrap: 'anywhere',
   } as const;
+  const inputSx = { '& .MuiOutlinedInput-root': { height: 44, borderRadius: '12px' } };
   return (
-    <Stack
-      direction="row"
-      useFlexGap
-      spacing={1.5}
-      sx={{ flexWrap: 'wrap', alignItems: 'flex-start', minWidth: 0 }}
-    >
-      <Stack spacing={0.75} sx={{ flex: '2 1 240px', minWidth: 0 }}>
+    <Box sx={{
+      display: 'grid', gap: 1.5, alignItems: 'start', minWidth: 0,
+      gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', md: 'minmax(0, 2fr) repeat(3, minmax(0, 1fr))' },
+    }}>
+      <Stack spacing={0.75} sx={{ gridColumn: { xs: '1 / -1', md: 'auto' }, minWidth: 0 }}>
         <Typography component="label" htmlFor={`${id}-search`} sx={labelSx}>
           {t('search')}
         </Typography>
         <AppTextField
           id={`${id}-search`}
+          sx={inputSx}
           placeholder={t('search')}
           value={search}
           onChange={(e) => onSearch(e.target.value)}
           slotProps={{ htmlInput: { maxLength: 200 } }}
         />
       </Stack>
-      <Stack spacing={0.75} sx={{ flex: '1 1 120px', minWidth: 0 }}>
+      <Stack spacing={0.75} sx={{ minWidth: 0 }}>
         <Typography component="label" htmlFor={`${id}-days`} sx={labelSx}>
           {t('days')}
         </Typography>
         <AppTextField
           id={`${id}-days`}
+          sx={inputSx}
           type="number"
           placeholder={t('days')}
           value={duration}
@@ -66,46 +67,46 @@ const TemplateFilters = ({
           slotProps={{ htmlInput: { min: 1, max: 60 } }}
         />
       </Stack>
-      <Stack spacing={0.75} sx={{ flex: '1 1 160px', minWidth: 0 }}>
-        <Typography component="label" htmlFor={`${id}-style`} sx={labelSx}>
+      <Stack spacing={0.75} sx={{ minWidth: 0 }}>
+        <Typography component="label" id={`${id}-style-label`} htmlFor={`${id}-style`} sx={labelSx}>
           {t('style')}
         </Typography>
-        <AppSelect
+        <AppTextField
+          select
           id={`${id}-style`}
-          fullWidth
-          variantType="filter"
-          label={t('style')}
+          sx={inputSx}
           value={tag}
-          onChange={(e) => onTag(String(e.target.value))}
-          inputProps={{ 'aria-label': t('style') }}
-          options={[
-            { value: '', label: t('all') },
-            ...TEMPLATE_TAGS.map((value) => ({
-              value,
-              label: t(`tags.${value}`),
-            })),
-          ]}
-        />
+          onChange={(e) => onTag(e.target.value)}
+          slotProps={{ select: {
+            displayEmpty: true,
+            inputProps: { 'aria-labelledby': `${id}-style-label` },
+          } }}
+        >
+          <MenuItem value="">{t('allStyles')}</MenuItem>
+          {TEMPLATE_TAGS.map((value) => (
+            <MenuItem key={value} value={value}>{t(`tags.${value}`)}</MenuItem>
+          ))}
+        </AppTextField>
       </Stack>
-      <Stack spacing={0.75} sx={{ flex: '1 1 160px', minWidth: 0 }}>
-        <Typography component="label" htmlFor={`${id}-sort`} sx={labelSx}>
+      <Stack spacing={0.75} sx={{ gridColumn: { xs: '1 / -1', md: 'auto' }, minWidth: 0 }}>
+        <Typography component="label" id={`${id}-sort-label`} htmlFor={`${id}-sort`} sx={labelSx}>
           {t('sort')}
         </Typography>
-        <AppSelect
+        <AppTextField
+          select
           id={`${id}-sort`}
-          fullWidth
-          variantType="filter"
-          label={t('sort')}
+          sx={inputSx}
           value={sort}
-          onChange={(e) => onSort(String(e.target.value))}
-          inputProps={{ 'aria-label': t('sort') }}
-          options={[
-            { value: 'recent', label: t('recent') },
-            { value: 'popular', label: t('popular') },
-          ]}
-        />
+          onChange={(e) => onSort(e.target.value)}
+          slotProps={{ select: {
+            inputProps: { 'aria-labelledby': `${id}-sort-label` },
+          } }}
+        >
+          <MenuItem value="recent">{t('recent')}</MenuItem>
+          <MenuItem value="popular">{t('popular')}</MenuItem>
+        </AppTextField>
       </Stack>
-    </Stack>
+    </Box>
   );
 };
 export default TemplateFilters;

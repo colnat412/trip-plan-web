@@ -45,6 +45,7 @@ import DeleteActivityDialog from './DeleteActivityDialog';
 import EditActivityDialog from './EditActivityDialog';
 import OptimizeRouteDialog from './OptimizeRouteDialog';
 import PlanDayTabs from './PlanDayTabs';
+import PlanDayToolbar from './PlanDayToolbar';
 import PlanHeader from './PlanHeader';
 import ActivityLogDialog from './ActivityLogDialog';
 import AiPlannerDialog from './AiPlannerDialog';
@@ -415,7 +416,7 @@ const PlanOverview = ({
           completedActivities={overview?.completedActivities ?? 0}
           totalEstimatedCost={overview?.totalEstimatedCost ?? 0}
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
-          onAddActivity={() => setAddActivityOpen(true)}
+          onAddActivity={canWrite && selectedDay && !isStale ? () => setAddActivityOpen(true) : undefined}
           onOpenChecklist={() => setChecklistOpen(true)}
           onOpenAiPlanner={canManage ? () => setAiPlannerOpen(true) : undefined}
           onPublishTemplate={
@@ -462,7 +463,7 @@ const PlanOverview = ({
               mobileView === 'timeline'
                 ? 'action.selected'
                 : 'background.paper',
-            borderRadius: '999px',
+            borderRadius: '12px',
           }}
         >
           {t('timelineView')}
@@ -475,18 +476,27 @@ const PlanOverview = ({
             flex: 1,
             bgcolor:
               mobileView === 'map' ? 'action.selected' : 'background.paper',
-            borderRadius: '999px',
+            borderRadius: '12px',
           }}
         >
           {t('mapView')}
         </AppButton>
       </Box>
+      {!isLoading && !isStale && !planError && selectedDay && (
+        <PlanDayToolbar
+          day={selectedDay}
+          currency={overview?.baseCurrency ?? activeTrip.baseCurrency}
+          onAddActivity={canWrite ? () => setAddActivityOpen(true) : undefined}
+          onResetDay={canManage ? () => setResetDayConfirmOpen(true) : undefined}
+        />
+      )}
       <Box
         sx={{
           width: '100%',
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: 3,
+          display: 'grid',
+          gridTemplateColumns: { xs: 'minmax(0, 1fr)', lg: 'minmax(0, 7fr) minmax(0, 5fr)' },
+          alignItems: 'start',
+          gap: { xs: 2, md: 3 },
         }}
       >
         <Box
@@ -495,7 +505,6 @@ const PlanOverview = ({
               xs: mobileView === 'timeline' ? 'block' : 'none',
               lg: 'block',
             },
-            flex: '7 1 0',
             minWidth: 0,
           }}
         >
@@ -524,8 +533,6 @@ const PlanOverview = ({
           ) : (
             <DayTimelineList
               activities={dayActivities}
-              totalActivities={selectedDay?.totalActivities}
-              totalEstimatedCost={selectedDay?.totalEstimatedCost}
               currency={
                 overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
               }
@@ -538,9 +545,6 @@ const PlanOverview = ({
               onToggleStatus={handleToggleActivityStatus}
               onConvertToExpense={handleConvertToExpense}
               onOpenOptimizeRoute={() => void handleOpenOptimizeRoute()}
-              onResetDayActivities={
-                canManage ? () => setResetDayConfirmOpen(true) : undefined
-              }
               readOnly={!canWrite || Boolean(planError)}
             />
           )}
@@ -559,7 +563,6 @@ const PlanOverview = ({
               xs: mobileView === 'map' ? 'block' : 'none',
               lg: 'block',
             },
-            flex: '5 1 0',
             minWidth: 0,
           }}
         >

@@ -40,6 +40,14 @@ export const MORE_NAVIGATION_ITEMS = APP_NAVIGATION_ITEMS.slice(
   directNavigationCount,
 );
 
+const MOBILE_NAVIGATION_IDS: readonly NavigationId[] = [
+  'overview', 'trips', 'plan', 'expenses', 'templates', 'ai',
+];
+
+export const MOBILE_PRIMARY_NAVIGATION_ITEMS = [...PRIMARY_NAVIGATION_ITEMS].sort(
+  (left, right) => MOBILE_NAVIGATION_IDS.indexOf(left.id) - MOBILE_NAVIGATION_IDS.indexOf(right.id),
+);
+
 // Library destinations share one main navigation entry.
 export const isAppNavigationActive = (pathname: string, item: AppNavigationItem): boolean =>
   pathname === item.href || pathname.startsWith(`${item.href}/`) ||

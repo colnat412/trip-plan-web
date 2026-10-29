@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppCard, AppLocationMap } from '@/base/components/ui';
+import { AppButton, AppCard, AppLocationMap, AppSectionHeader } from '@/base/components/ui';
 import type { PlanActivity } from '../types';
 import ActivityTimelineCard from './ActivityTimelineCard';
 
@@ -37,14 +37,7 @@ const PlanMapPanel = ({
       sx={{ p: { xs: 2, md: 3 }, borderRadius: '20px', minWidth: 0 }}
     >
       <Stack spacing={2.5}>
-        <Stack spacing={0.5}>
-          <Typography component="h2" sx={{ fontSize: '18px', fontWeight: 700 }}>
-            {t('title')}
-          </Typography>
-          <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
-            {t('description')}
-          </Typography>
-        </Stack>
+        <AppSectionHeader title={t('title')} subtitle={t('description')} />
         <AppLocationMap location={location} />
         <Stack spacing={0}>
           {stops.map((activity, index) => (

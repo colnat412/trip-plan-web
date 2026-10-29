@@ -25,8 +25,8 @@ export interface PlanHeaderProps {
   completedActivities: number;
   totalEstimatedCost: number;
   currency: string;
-  onAddActivity?: () => void;
   onOpenChecklist: () => void;
+  onAddActivity?: () => void;
   onOpenAiPlanner?: () => void;
   onPublishTemplate?: () => void;
   onOpenShare?: () => void;
@@ -41,8 +41,8 @@ const PlanHeader = ({
   completedActivities,
   totalEstimatedCost,
   currency,
-  onAddActivity,
   onOpenChecklist,
+  onAddActivity,
   onOpenAiPlanner,
   onOpenShare,
   onPublishTemplate,
@@ -62,16 +62,18 @@ const PlanHeader = ({
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           gap: 1.5, flexWrap: 'wrap', width: '100%', minWidth: 0 }}>
           <Typography
-            component="h2"
+            component="h1"
             sx={{
               fontFamily: 'var(--font-display)',
               fontSize: { xs: '24px', sm: '28px' },
-              fontWeight: 800,
+              fontWeight: 700,
             }}
           >
             {t('pageTitle')}
           </Typography>
-          <UseTemplateButton />
+          <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+            <UseTemplateButton />
+          </Box>
         </Box>
       }
       subtitle={
@@ -119,18 +121,23 @@ const PlanHeader = ({
             width: '100%',
             display: 'flex',
             alignItems: { xs: 'flex-start', sm: 'center' },
-            gap: { xs: 1, sm: 1.5 },
+            gap: 1,
             flexWrap: { xs: 'nowrap', sm: 'wrap' },
             '& > *': { flex: { xs: '1 1 0', sm: '0 0 auto' }, minWidth: 0 },
+            '& .MuiButton-root': { minHeight: { sm: 44 }, fontSize: { sm: '14px' } },
           }}
         >
+          <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+            <UseTemplateButton />
+          </Box>
           {!readOnly && onAddActivity && (
             <AppButton
               intent="primary"
               mobileIconLabel
-              round
+              size="medium"
               startIcon={<AddRoundedIcon />}
               onClick={onAddActivity}
+              sx={{ display: { xs: 'flex', md: 'none' } }}
             >
               {t('addActivity')}
             </AppButton>
@@ -138,7 +145,7 @@ const PlanHeader = ({
           <AppButton
             intent="secondary"
             mobileIconLabel
-            round
+            size="medium"
             startIcon={<ChecklistRoundedIcon />}
             onClick={onOpenChecklist}
           >
@@ -148,7 +155,7 @@ const PlanHeader = ({
             <AppButton
               intent="secondary"
               mobileIconLabel
-              round
+              size="medium"
               startIcon={<AutoAwesomeRoundedIcon />}
               onClick={onOpenAiPlanner}
             >
@@ -165,7 +172,7 @@ const PlanHeader = ({
                 <AppButton
                   intent="secondary"
                   mobileIconLabel
-                  round
+                  size="medium"
                   aria-label={tNavigation('more')}
                   startIcon={<MoreHorizRoundedIcon />}
                   sx={{

@@ -51,7 +51,7 @@ const PlanDayTabs = ({
               gap: 0.5,
               py: 1.25,
               px: 1,
-              borderRadius: '16px',
+              borderRadius: '12px',
               border: 1,
               borderColor: isSelected ? 'primary.main' : 'divider',
               bgcolor: isSelected ? 'action.selected' : 'background.paper',

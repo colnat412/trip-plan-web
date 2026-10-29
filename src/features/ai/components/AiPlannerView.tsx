@@ -16,7 +16,6 @@ import {
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { useTranslations } from 'next-intl';
 
@@ -56,7 +55,6 @@ const AiPlannerView = () => {
   const [people, setPeople] = useState(2);
   const [budget, setBudget] = useState<number | undefined>(5000000);
   const [preferences, setPreferences] = useState('');
-  const [generatedSuccess, setGeneratedSuccess] = useState(false);
 
   const destination = destinationInput ?? (currentTrip?.destination || '');
   const days = tripDays;
@@ -118,7 +116,6 @@ const AiPlannerView = () => {
         preferences: preferences.trim(),
       });
 
-      setGeneratedSuccess(true);
       showToast(t('successAlert'));
       setTimeout(() => {
         router.push('/plan');
@@ -326,16 +323,6 @@ const AiPlannerView = () => {
                     </Typography>
                   </Box>
                 </Box>
-              )}
-
-              {generatedSuccess && (
-                <Alert
-                  severity="success"
-                  icon={<CheckCircleOutlineRoundedIcon fontSize="inherit" />}
-                  sx={{ borderRadius: '14px' }}
-                >
-                  {t('successAlert')}
-                </Alert>
               )}
 
               {currentTrip && !canManage && (
