@@ -6,6 +6,7 @@ import type { TemplateListing } from '../types';
 import { templateQueryKeys } from '../constants/template-keys';
 
 export interface UseTemplateLibraryParams {
+  savedOnly?: boolean;
   search?: string;
   duration?: string;
   tag?: string;
@@ -16,6 +17,7 @@ export interface UseTemplateLibraryParams {
 }
 
 const useTemplateLibrary = ({
+  savedOnly = false,
   search = '',
   duration = '',
   tag = '',
@@ -27,7 +29,7 @@ const useTemplateLibrary = ({
   const settled = useDebouncedValue(search);
   const isDebouncing = search !== settled;
   const query = useQueryGet<ApiResponse<TemplateListing>>({
-    queryKey: templateQueryKeys.library(
+    queryKey: savedOnly ? templateQueryKeys.saved(page, size) : templateQueryKeys.library(
       settled,
       duration,
       tag,
@@ -35,7 +37,7 @@ const useTemplateLibrary = ({
       page,
       size,
     ),
-    endPoint: '/public/plan-templates',
+    endPoint: savedOnly ? '/me/plan-template-saves' : '/public/plan-templates',
     enabled: !isDebouncing,
     config: {
       params: {
@@ -49,7 +51,7 @@ const useTemplateLibrary = ({
     },
   });
   const isInitial =
-    !search && !duration && !tag && sort === 'recent' && page === 1;
+    !savedOnly && !search && !duration && !tag && sort === 'recent' && page === 1;
   // Only the original unfiltered query may use the server-rendered result.
   const listing = isDebouncing
     ? null

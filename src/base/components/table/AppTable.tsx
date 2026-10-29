@@ -19,10 +19,10 @@ import {
   alpha,
 } from '@mui/material';
 import FilterAltOffRoundedIcon from '@mui/icons-material/FilterAltOffRounded';
-import InboxRoundedIcon from '@mui/icons-material/InboxRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppButton } from '../ui';
+import AppEmptyState from '../ui/AppEmptyState';
 import AppColumnHeader from './AppColumnHeader';
 import AppTablePagination from './AppTablePagination';
 import type { AppTableProps, ColumnFilterValue, TableSortState } from './types';
@@ -322,76 +322,27 @@ const AppTable = <T,>({
                       textAlign: 'center',
                     }}
                   >
-                    <Stack
-                      spacing={1.5}
-                      sx={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          p: 2,
-                          borderRadius: '999px',
-                          bgcolor: 'action.hover',
-                          color: 'text.disabled',
-                          display: 'inline-flex',
-                        }}
-                      >
-                        {emptyState?.icon || (
-                          <InboxRoundedIcon sx={{ fontSize: 44 }} />
-                        )}
-                      </Box>
-                      <Stack spacing={0.5} sx={{ alignItems: 'center' }}>
-                        <Typography
-                          sx={{
-                            fontSize: '16px',
-                            fontWeight: 700,
-                            color: 'text.primary',
-                          }}
-                        >
-                          {emptyState?.title ||
-                            (activeFilterEntries.length > 0
-                              ? t('noResultsFound')
-                              : t('noData'))}
-                        </Typography>
-                        {emptyState?.description && (
-                          <Typography
-                            sx={{
-                              fontSize: '13px',
-                              color: 'text.secondary',
-                              maxWidth: 380,
-                            }}
-                          >
-                            {emptyState.description}
-                          </Typography>
-                        )}
-                      </Stack>
-
-                      {emptyState?.actionLabel && emptyState?.onAction && (
-                        <AppButton
-                          intent="primary"
-                          size="small"
-                          onClick={emptyState.onAction}
-                        >
+                    <AppEmptyState
+                      icon={emptyState?.icon}
+                      title={emptyState?.title || (activeFilterEntries.length > 0
+                        ? t('noResultsFound') : t('noData'))}
+                      description={emptyState?.description}
+                      sx={{ py: 0 }}
+                      action={emptyState?.actionLabel && emptyState?.onAction ? (
+                        <AppButton intent="primary" size="small" onClick={emptyState.onAction}>
                           {emptyState.actionLabel}
                         </AppButton>
-                      )}
-
-                      {activeFilterEntries.length > 0 &&
-                        !emptyState?.actionLabel && (
-                          <AppButton
-                            intent="secondary"
-                            size="small"
-                            startIcon={
-                              <FilterAltOffRoundedIcon sx={{ fontSize: 14 }} />
-                            }
-                            onClick={handleClearAllFilters}
-                          >
-                            {t('clearFilter')}
-                          </AppButton>
-                        )}
-                    </Stack>
+                      ) : activeFilterEntries.length > 0 && !emptyState?.actionLabel ? (
+                        <AppButton
+                          intent="secondary"
+                          size="small"
+                          startIcon={<FilterAltOffRoundedIcon sx={{ fontSize: 14 }} />}
+                          onClick={handleClearAllFilters}
+                        >
+                          {t('clearFilter')}
+                        </AppButton>
+                      ) : undefined}
+                    />
                   </TableCell>
                 </TableRow>
               )

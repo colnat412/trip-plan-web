@@ -7,6 +7,7 @@ import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
+import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
 import { useLocale, useTranslations } from 'next-intl';
 import {
@@ -15,6 +16,7 @@ import {
   AppMetricValue,
   AppPageHeader,
 } from '@/base/components/ui';
+import UseTemplateButton from '@/features/plan-template/components/UseTemplateButton';
 import { formatCurrency } from '@/base/utils';
 
 export interface PlanHeaderProps {
@@ -55,17 +57,22 @@ const PlanHeader = ({
 
   return (
     <AppPageHeader
+      sx={{ alignItems: { xs: 'stretch', md: 'center' } }}
       title={
-        <Typography
-          component="h2"
-          sx={{
-            fontFamily: 'var(--font-display)',
-            fontSize: { xs: '24px', sm: '28px' },
-            fontWeight: 800,
-          }}
-        >
-          {t('pageTitle')}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          gap: 1.5, flexWrap: 'wrap', width: '100%', minWidth: 0 }}>
+          <Typography
+            component="h2"
+            sx={{
+              fontFamily: 'var(--font-display)',
+              fontSize: { xs: '24px', sm: '28px' },
+              fontWeight: 800,
+            }}
+          >
+            {t('pageTitle')}
+          </Typography>
+          <UseTemplateButton />
+        </Box>
       }
       subtitle={
         <Box
@@ -181,7 +188,7 @@ const PlanHeader = ({
                       {
                         id: 'publish-template',
                         label: tTemplate('publish'),
-                        icon: <ShareRoundedIcon fontSize="small" />,
+                        icon: <PublishRoundedIcon fontSize="small" />,
                         onClick: onPublishTemplate,
                       },
                     ]

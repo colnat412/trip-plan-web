@@ -4,11 +4,12 @@ import Link from 'next/link';
 import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import AppBrand from './AppBrand';
+import { AppButton } from '@/base/components/ui';
 import AppTripBar from './AppTripBar';
 import AppDesktopNavigation from './AppDesktopNavigation';
 import SidebarUser from './sidebar/SidebarUser';
 
-const AppTopBar = () => {
+const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
   const t = useTranslations('navigation');
   return (
     <Box
@@ -65,10 +66,14 @@ const AppTopBar = () => {
           >
             <AppBrand compactOnMobile showTag={false} />
           </Box>
-          <AppTripBar />
+          {!guest && <AppTripBar />}
         </Box>
         <AppDesktopNavigation />
-        <SidebarUser compact />
+        {guest ? (
+          <AppButton component={Link} href="/login" intent="secondary" size="small">
+            {t('signIn')}
+          </AppButton>
+        ) : <SidebarUser compact />}
       </Box>
     </Box>
   );

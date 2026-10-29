@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Alert, Pagination, Skeleton, Stack } from '@mui/material';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import { useTranslations } from 'next-intl';
 import {
-  AppPageContainer,
+  AppEmptyState,
   AppPageHeader,
   AppButton,
 } from '@/base/components/ui';
@@ -23,7 +23,6 @@ const MyTemplates = () => {
   });
   const currentData = query.listing;
   return (
-    <AppPageContainer>
       <Stack spacing={2}>
         <AppPageHeader
           title={t('mine')}
@@ -34,7 +33,7 @@ const MyTemplates = () => {
               href="/plan"
               intent="primary"
               size="medium"
-              startIcon={<AddRoundedIcon />}
+              startIcon={<PublishRoundedIcon />}
               wrapLabel
             >
               {t('publishNew')}
@@ -64,7 +63,7 @@ const MyTemplates = () => {
           </Stack>
         )}
         {currentData?.content.length === 0 && (
-          <Alert severity="info">{t('emptyMine')}</Alert>
+          <AppEmptyState title={t('emptyMine')} />
         )}
         {unpublish.error && (
           <Alert severity="error" onClose={unpublish.clearError}>
@@ -87,7 +86,6 @@ const MyTemplates = () => {
           />
         )}
       </Stack>
-    </AppPageContainer>
   );
 };
 export default MyTemplates;

@@ -1,5 +1,7 @@
 'use client';
 
+import FinanceNavigation from '@/features/expense/components/FinanceNavigation';
+
 import React, { useState } from 'react';
 import { Box, Skeleton, Stack, Typography } from '@mui/material';
 import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
@@ -129,6 +131,7 @@ const SettlementOverview = () => {
   if (isTripLoading || (tripId && isSummaryLoading)) {
     return (
       <AppPageContainer>
+        <FinanceNavigation active="settlement" />
         <Skeleton
           variant="rounded"
           width="100%"
@@ -154,6 +157,7 @@ const SettlementOverview = () => {
   if (!currentTrip) {
     return (
       <AppPageContainer>
+        <FinanceNavigation active="settlement" />
         <AppCard sx={{ p: 5, textAlign: 'center', borderRadius: '20px' }}>
           <Stack spacing={2} sx={{ alignItems: 'center' }}>
             <LuggageRoundedIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
@@ -178,6 +182,7 @@ const SettlementOverview = () => {
 
   return (
     <AppPageContainer>
+        <FinanceNavigation active="settlement" />
       <AppPageHeader
         title={t('pageTitle')}
         badge={currentTrip.name}

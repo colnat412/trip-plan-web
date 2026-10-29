@@ -15,17 +15,21 @@
       "overview": "Trang chủ",
       "trips": "Chuyến đi",
       "plan": "Lịch trình",
-      "expenses": "Chi tiêu",
+      "expenses": "Tài chính",
       "settlement": "Chia tiền",
-      "ai": "Trợ lý AI"
+      "ai": "Trợ lý AI",
+      "templates": "Thư viện lịch trình",
+      "savedTemplates": "Lịch trình đã lưu",
+      "myTemplates": "Mẫu của tôi"
     },
     "mobile": {
       "overview": "Trang chủ",
       "trips": "Chuyến đi",
       "plan": "Lịch trình",
-      "expenses": "Chi tiêu",
+      "expenses": "Tài chính",
       "settlement": "Chia tiền",
-      "ai": "Trợ lý AI"
+      "ai": "Trợ lý AI",
+      "templates": "Thư viện"
     },
     "more": "Thêm",
     "moreDescription": "Các tiện ích cho chuyến đi của bạn",
@@ -43,7 +47,8 @@
     "members": "Thành viên",
     "shareTrip": "Chia sẻ",
     "tripLoadError": "Chưa thể tải chuyến đi.",
-    "retry": "Thử lại"
+    "retry": "Thử lại",
+    "signIn": "Đăng nhập"
   },
   "pwa": {
     "install": "Cài ứng dụng",
@@ -132,7 +137,7 @@
     "overview": "Tổng quan",
     "trips": "Chuyến đi",
     "plan": "Kế hoạch",
-    "expenses": "Chi tiêu",
+    "expenses": "Tài chính",
     "scan": "Quét hóa đơn",
     "settlement": "Quyết toán",
     "currentTrip": "Chuyến đi đang chọn",
@@ -140,7 +145,8 @@
     "budget": "Ngân sách",
     "personalSection": "Cá nhân & Tiện ích",
     "noInProgressTrip": "Không có chuyến đi đang diễn ra",
-    "noInProgressTripDesc": "Chỉ các chuyến đi có trạng thái Đang đi mới hiển thị tại đây."
+    "noInProgressTripDesc": "Chỉ các chuyến đi có trạng thái Đang đi mới hiển thị tại đây.",
+    "templates": "Thư viện lịch trình"
   },
   "login": {
     "banner": {
@@ -1062,7 +1068,7 @@
     "created": "Đã tạo chuyến thành công.",
     "openTrip": "Mở chuyến đi",
     "unavailable": "Mẫu không tồn tại hoặc đã được gỡ.",
-    "publish": "Đăng / cập nhật mẫu",
+    "publish": "Đăng mẫu",
     "confirmPublish": "Xác nhận xuất bản",
     "preview": "Xem trước nội dung công khai",
     "edit": "Chỉnh sửa",
@@ -1098,7 +1104,18 @@
     "republish": "Đăng lại",
     "myUsage": "{count} lượt dùng",
     "templateActions": "Thao tác với mẫu {title}",
-    "unpublishError": "Không gỡ được mẫu. Vui lòng thử lại từ menu của mẫu."
+    "unpublishError": "Không gỡ được mẫu. Vui lòng thử lại từ menu của mẫu.",
+    "save": "Lưu mẫu",
+    "unsave": "Bỏ lưu",
+    "savedLibrary": "Đã lưu",
+    "savedEmpty": "Bạn chưa lưu mẫu lịch trình nào.",
+    "saveError": "Không thể cập nhật mẫu đã lưu. Vui lòng thử lại.",
+    "saveStatusError": "Không thể tải trạng thái đã lưu. Vui lòng thử lại.",
+    "navExplore": "Khám phá",
+    "navSaved": "Đã lưu",
+    "navMine": "Mẫu của tôi",
+    "chooseTemplate": "Dùng mẫu",
+    "chooseTemplateHint": "Tạo chuyến mới từ một mẫu lịch trình có sẵn."
   },
   "quickCreate": {
     "title": "+ Tạo nhanh",
@@ -1109,5 +1126,10 @@
     "newTrip": "Tạo chuyến mới",
     "aiShort": "Tạo bằng AI",
     "templatesShort": "Dùng mẫu"
+  },
+  "finance": {
+    "navigation": "Quản lý tài chính",
+    "expenses": "Chi tiêu",
+    "settlement": "Chia tiền"
   }
 }

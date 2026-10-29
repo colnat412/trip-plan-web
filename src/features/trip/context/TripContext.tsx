@@ -10,6 +10,8 @@ import {
   type ReactNode,
 } from 'react';
 import type { ApiError } from '@/base/api';
+import { useUserContext } from '@/features/user/context/UserContext';
+import useSelectedTrip from '../hooks/useSelectedTrip';
 import useMyTrips from '../hooks/useMyTrips';
 import useTripDetail from '../hooks/useTripDetail';
 import type { Trip } from '../types';
@@ -47,9 +49,8 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     new Set(),
   );
 
-  const [selectedTripId, setSelectedTripId] = useState<string | number | null>(
-    null,
-  );
+  const { user, isLoading: isUserLoading } = useUserContext();
+  const { selectedTripId, selectTrip } = useSelectedTrip(user?.id);
   const [isCreateTripOpen, setIsCreateTripOpen] = useState(false);
   const [isMembersOpen, setIsMembersOpen] = useState(false);
   const [isInviteInitial, setIsInviteInitial] = useState(false);
@@ -94,7 +95,7 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
       ? selectedDetail.trip
       : null;
   const contextLoading =
-    isLoading ||
+    isUserLoading || isLoading ||
     (needsSelectedDetail && !selectedTrip && !selectedDetail.error);
   const contextFetching =
     isFetching || (needsSelectedDetail && selectedDetail.isFetching);
@@ -102,6 +103,7 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     error ?? (needsSelectedDetail ? selectedDetail.error : null);
 
   const activeTrip = useMemo(() => {
+    if (!user) return null;
     if (needsSelectedDetail) return selectedTrip;
     if (!trips || trips.length === 0) return null;
 
@@ -114,11 +116,7 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     if (inProgressTrip) return inProgressTrip;
 
     return trips[0];
-  }, [trips, selectedTripId, needsSelectedDetail, selectedTrip]);
-
-  const selectTrip = useCallback((tripId: string | number) => {
-    setSelectedTripId(tripId);
-  }, []);
+  }, [trips, selectedTripId, needsSelectedDetail, selectedTrip, user]);
 
   const openCreateTrip = useCallback(() => {
     setIsCreateTripOpen(true);

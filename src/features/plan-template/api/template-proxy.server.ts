@@ -26,7 +26,7 @@ export async function proxyTemplate(
     const response = await axios.request({
       url: `${core}/api/${path}${request.nextUrl.search}`,
       method: request.method,
-      data: request.method === 'GET' ? undefined : await request.json(),
+      data: ['GET', 'DELETE'].includes(request.method) ? undefined : await request.json(),
       timeout: 30000,
       headers: {
         Accept: 'application/json',

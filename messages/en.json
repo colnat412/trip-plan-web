@@ -15,17 +15,21 @@
       "overview": "Home",
       "trips": "My trips",
       "plan": "Itinerary",
-      "expenses": "Expenses",
+      "expenses": "Finances",
       "settlement": "Split costs",
-      "ai": "AI assistant"
+      "ai": "AI assistant",
+      "templates": "Itinerary library",
+      "savedTemplates": "Saved itineraries",
+      "myTemplates": "My templates"
     },
     "mobile": {
       "overview": "Home",
       "trips": "Trips",
       "plan": "Itinerary",
-      "expenses": "Expenses",
+      "expenses": "Finances",
       "settlement": "Split costs",
-      "ai": "AI assistant"
+      "ai": "AI assistant",
+      "templates": "Library"
     },
     "more": "More",
     "moreDescription": "More tools for your trip",
@@ -43,7 +47,8 @@
     "members": "Members",
     "shareTrip": "Share",
     "tripLoadError": "Could not load your trips.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "signIn": "Sign in"
   },
   "pwa": {
     "install": "Install app",
@@ -132,7 +137,7 @@
     "overview": "Overview",
     "trips": "My Trips",
     "plan": "Plan",
-    "expenses": "Expenses",
+    "expenses": "Finances",
     "scan": "Scan receipt",
     "settlement": "Settlement",
     "currentTrip": "Selected trip",
@@ -140,7 +145,8 @@
     "budget": "Budget",
     "personalSection": "Personal & Utilities",
     "noInProgressTrip": "No trip in progress",
-    "noInProgressTripDesc": "Only trips in 'In Progress' status are displayed here."
+    "noInProgressTripDesc": "Only trips in 'In Progress' status are displayed here.",
+    "templates": "Itinerary library"
   },
   "login": {
     "banner": {
@@ -1062,7 +1068,7 @@
     "created": "Your trip has been created.",
     "openTrip": "Open trip",
     "unavailable": "This template does not exist or has been withdrawn.",
-    "publish": "Publish / update template",
+    "publish": "Publish template",
     "confirmPublish": "Confirm publication",
     "preview": "Preview public content",
     "edit": "Edit",
@@ -1098,7 +1104,18 @@
     "republish": "Republish",
     "myUsage": "{count} uses",
     "templateActions": "Actions for {title}",
-    "unpublishError": "Unable to unpublish the template. Please retry from its menu."
+    "unpublishError": "Unable to unpublish the template. Please retry from its menu.",
+    "save": "Save template",
+    "unsave": "Unsave",
+    "savedLibrary": "Saved templates",
+    "savedEmpty": "You have not saved any itinerary templates yet.",
+    "saveError": "Could not update saved templates. Please try again.",
+    "saveStatusError": "Could not load saved status. Please try again.",
+    "navExplore": "Explore",
+    "navSaved": "Saved",
+    "navMine": "My templates",
+    "chooseTemplate": "Use a template",
+    "chooseTemplateHint": "Create a new trip from an existing itinerary template."
   },
   "quickCreate": {
     "title": "+ Quick create",
@@ -1109,5 +1126,10 @@
     "newTrip": "Create a new trip",
     "aiShort": "Create with AI",
     "templatesShort": "Use a template"
+  },
+  "finance": {
+    "navigation": "Finance navigation",
+    "expenses": "Expenses",
+    "settlement": "Settlements"
   }
 }

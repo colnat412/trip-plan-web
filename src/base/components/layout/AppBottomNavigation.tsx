@@ -6,8 +6,8 @@ import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { isNavigationActive } from '@/base/utils';
 import {
+  isAppNavigationActive,
   PRIMARY_NAVIGATION_ITEMS,
   DESKTOP_NAV_BREAKPOINT,
   MORE_NAVIGATION_ITEMS,
@@ -19,10 +19,10 @@ const AppBottomNavigation = () => {
   const t = useTranslations('navigation');
   const [moreOpen, setMoreOpen] = useState(false);
   const primary = PRIMARY_NAVIGATION_ITEMS.find((item) =>
-    isNavigationActive(pathname, item.href),
+    isAppNavigationActive(pathname, item),
   );
   const inMore = MORE_NAVIGATION_ITEMS.some((item) =>
-    isNavigationActive(pathname, item.href),
+    isAppNavigationActive(pathname, item),
   );
   const hasMoreNavigation = MORE_NAVIGATION_ITEMS.length > 0;
   const value = moreOpen || inMore ? 'more' : primary?.id;

@@ -41,6 +41,7 @@ const AppSidebar = ({
   const routeMenuItem = menuItems.find(
     (item) =>
       (pathname === '/' && item.id === 'overview') ||
+      (item.id === 'expenses' && (pathname === '/settlement' || pathname.startsWith('/settlement/'))) ||
       pathname === item.href ||
       pathname.startsWith(`${item.href}/`),
   );

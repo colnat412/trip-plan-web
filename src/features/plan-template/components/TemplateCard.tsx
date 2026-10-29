@@ -1,9 +1,11 @@
 'use client';
 import Link from 'next/link';
-import { Stack, Typography, Chip, Box } from '@mui/material';
+import { TemplateSaveButton } from './TemplateSaveControls';
+import { Stack, Typography, Chip, Box, IconButton, Tooltip } from '@mui/material';
+import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppCard, AppButton } from '@/base/components/ui';
+import { AppCard } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { TemplateCardData } from '../types';
 import { TEMPLATE_TAGS } from '../types';
@@ -103,13 +105,20 @@ const TemplateCard = ({
             ))}
           </Stack>
         )}
-        <AppButton
-          component={Link}
-          href={`/templates/${template.id}`}
-          intent="secondary"
-        >
-          {t('view')}
-        </AppButton>
+        <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'flex-end' }}>
+          <TemplateSaveButton id={template.id} iconOnly />
+          <Tooltip title={t('view')}>
+            <IconButton
+              component={Link}
+              href={`/templates/${template.id}`}
+              aria-label={t('view')}
+              color="primary"
+              sx={{ width: 44, height: 44 }}
+            >
+              <VisibilityRoundedIcon />
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </Stack>
     </AppCard>
   );

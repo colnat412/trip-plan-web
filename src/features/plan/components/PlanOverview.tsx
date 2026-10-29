@@ -18,6 +18,7 @@ import { useTripContext } from '@/features/trip/context/TripContext';
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import AddExpenseDialog from '@/features/expense/components/AddExpenseDialog';
 import type { CreateExpensePayload } from '@/features/expense/types';
+import UseTemplateButton from '@/features/plan-template/components/UseTemplateButton';
 import PublishTemplateDialog from '@/features/plan-template/components/PublishTemplateDialog';
 import ShareTripDialog from '@/features/trip/components/ShareTripDialog';
 import useTripPlan from '../hooks/useTripPlan';
@@ -386,6 +387,7 @@ const PlanOverview = ({
           >
             {t('noActiveTrip')}
           </Typography>
+          <UseTemplateButton />
         </Card>
       </AppPageContainer>
     );

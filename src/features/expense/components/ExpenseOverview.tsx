@@ -27,6 +27,7 @@ import {
   useDeleteExpense,
   useSetBudget,
 } from '../hooks/useExpenseMutation';
+import FinanceNavigation from './FinanceNavigation';
 import BudgetMetricsCards from './BudgetMetricsCards';
 import CategorySpendingList from './CategorySpendingList';
 import ExpenseTable from './ExpenseTable';
@@ -217,57 +218,54 @@ const ExpenseOverview = () => {
 
   if (!activeTrip) {
     return (
-      <AppPageContainer
-        sx={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center',
-          py: 10,
-        }}
-      >
-        <Box
-          sx={{
-            p: 3,
-            borderRadius: '50%',
-            bgcolor: 'action.hover',
-            color: 'primary.main',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <LuggageRoundedIcon sx={{ fontSize: '64px' }} />
-        </Box>
-        <Stack spacing={1} sx={{ alignItems: 'center', maxWidth: 480 }}>
-          <Typography
+      <AppPageContainer>
+        <FinanceNavigation active="expenses" />
+        <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center', py: 8 }}>
+          <Box
             sx={{
-              fontFamily: 'var(--font-display)',
-              fontSize: '22px',
-              fontWeight: 700,
-              color: 'text.primary',
+              p: 3,
+              borderRadius: '50%',
+              bgcolor: 'action.hover',
+              color: 'primary.main',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            {t('noTripTitle')}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: '14px',
-              color: 'text.secondary',
-              lineHeight: 1.6,
-            }}
-          >
-            {t('noTripDesc')}
-          </Typography>
+            <LuggageRoundedIcon sx={{ fontSize: '64px' }} />
+          </Box>
+          <Stack spacing={1} sx={{ alignItems: 'center', maxWidth: 480 }}>
+            <Typography
+              sx={{
+                fontFamily: 'var(--font-display)',
+                fontSize: '22px',
+                fontWeight: 700,
+                color: 'text.primary',
+              }}
+            >
+              {t('noTripTitle')}
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: '14px',
+                color: 'text.secondary',
+                lineHeight: 1.6,
+              }}
+            >
+              {t('noTripDesc')}
+            </Typography>
+          </Stack>
+          <AppButton intent="primary" onClick={() => router.push('/trips')}>
+            {t('viewTrips')}
+          </AppButton>
         </Stack>
-        <AppButton intent="primary" onClick={() => router.push('/trips')}>
-          {t('viewTrips')}
-        </AppButton>
       </AppPageContainer>
     );
   }
 
   return (
     <AppPageContainer>
+      <FinanceNavigation active="expenses" />
       <AppPageHeader
         icon={<AccountBalanceWalletRoundedIcon sx={{ fontSize: '24px' }} />}
         title={t('pageTitle')}

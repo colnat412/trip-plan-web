@@ -5,8 +5,8 @@ import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { AppDialog } from '@/base/components/ui';
-import { isNavigationActive } from '@/base/utils';
 import AppNavigationLink from './AppNavigationLink';
+import { isAppNavigationActive } from './navigation/config';
 import { MORE_NAVIGATION_ITEMS } from './navigation/config';
 
 interface AppMoreNavigationDialogProps {
@@ -35,7 +35,7 @@ const AppMoreNavigationDialog = ({
             key={item.id}
             item={item}
             expanded
-            active={isNavigationActive(pathname, item.href)}
+            active={isAppNavigationActive(pathname, item)}
             onNavigate={onClose}
           />
         ))}

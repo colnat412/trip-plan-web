@@ -1,5 +1,4 @@
 'use client';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { useState } from 'react';
 import Link from 'next/link';
 import {
@@ -11,17 +10,21 @@ import {
   Typography,
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppPageContainer, AppButton } from '@/base/components/ui';
+import { AppButton, AppEmptyState } from '@/base/components/ui';
 import useTemplateLibrary from '../hooks/useTemplateLibrary';
 import type { TemplateListing } from '../types';
 import TemplateFilters from './TemplateFilters';
 import TemplateCard from './TemplateCard';
+import TemplateSection from './TemplateSection';
+import { TemplateSaveProvider } from './TemplateSaveControls';
 const TemplateLibrary = ({
   initialData,
   compact = false,
+  savedOnly = false,
 }: {
   initialData?: TemplateListing | null;
   compact?: boolean;
+  savedOnly?: boolean;
 }) => {
   const t = useTranslations('planTemplate');
   const [search, setSearch] = useState('');
@@ -31,6 +34,7 @@ const TemplateLibrary = ({
   const [page, setPage] = useState(1);
   const size = compact ? 3 : 12;
   const query = useTemplateLibrary({
+    savedOnly,
     search,
     duration,
     tag,
@@ -42,34 +46,6 @@ const TemplateLibrary = ({
   const data = query.listing;
   const content = (
     <Stack spacing={2} sx={{ width: '100%', minWidth: 0 }}>
-      {!compact && (
-        <Stack
-          direction="row"
-          useFlexGap
-          spacing={1}
-          sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }}
-        >
-          <AppButton
-            component={Link}
-            href="/overview"
-            intent="text"
-            size="small"
-            startIcon={<ArrowBackRoundedIcon />}
-            wrapLabel
-          >
-            {t('home')}
-          </AppButton>
-          <AppButton
-            component={Link}
-            href="/my-templates"
-            intent="secondary"
-            size="small"
-            wrapLabel
-          >
-            {t('mine')}
-          </AppButton>
-        </Stack>
-      )}
       <Stack
         direction="row"
         useFlexGap
@@ -93,7 +69,7 @@ const TemplateLibrary = ({
             flex: '1 1 180px',
           }}
         >
-          {t('library')}
+          {t(savedOnly ? 'savedLibrary' : 'library')}
         </Typography>
         {compact && (
           <AppButton
@@ -107,7 +83,7 @@ const TemplateLibrary = ({
           </AppButton>
         )}
       </Stack>
-      {!compact && (
+      {!compact && !savedOnly && (
         <TemplateFilters
           search={search}
           duration={duration}
@@ -147,38 +123,51 @@ const TemplateLibrary = ({
       )}
       {!data && !query.error && <Skeleton variant="rounded" height={240} />}
       {data && !data.content.length && (
-        <Alert severity="info">
-          {t(search || duration || tag ? 'noResults' : 'empty')}
-        </Alert>
+        <AppEmptyState
+          title={t(savedOnly ? 'savedEmpty'
+            : search || duration || tag ? 'noResults' : 'empty')}
+          action={savedOnly ? (
+            <AppButton component={Link} href="/templates" intent="secondary" size="small">
+              {t('navExplore')}
+            </AppButton>
+          ) : undefined}
+        />
       )}
-      <Box
-        role={compact ? 'region' : undefined}
-        aria-label={compact ? t('library') : undefined}
-        tabIndex={compact ? 0 : undefined}
-        sx={{
-          display: 'flex',
-          flexWrap: compact ? 'nowrap' : 'wrap',
-          gap: 2,
-          minWidth: 0,
-          overflowX: compact ? 'auto' : undefined,
-          scrollSnapType: compact ? 'x proximity' : undefined,
-          pb: compact ? 0.5 : 0,
-        }}
-      >
-        {data?.content.map((item) => (
-          <Box
-            key={item.id}
-            sx={{
-              flex: compact ? '0 0 260px' : { xs: '1 1 100%', sm: '1 1 280px' },
-              scrollSnapAlign: compact ? 'start' : undefined,
-              minWidth: 0,
-              maxWidth: compact ? { xs: '85%', sm: 320 } : { sm: 420 },
-            }}
-          >
-            <TemplateCard template={item} compact={compact} />
-          </Box>
-        ))}
-      </Box>
+      <TemplateSaveProvider key={data?.content.map((item) => item.id).join(',') ?? ''}
+        ids={data?.content.map((item) => item.id) ?? []}
+        onChange={savedOnly ? () => {
+          if (data?.content.length === 1 && page > 1) setPage(page - 1);
+          else void query.refetch().catch(() => undefined);
+        } : undefined}>
+        <Box
+          role={compact ? 'region' : undefined}
+          aria-label={compact ? t('library') : undefined}
+          tabIndex={compact ? 0 : undefined}
+          sx={{
+            display: 'flex',
+            flexWrap: compact ? 'nowrap' : 'wrap',
+            gap: 2,
+            minWidth: 0,
+            overflowX: compact ? 'auto' : undefined,
+            scrollSnapType: compact ? 'x proximity' : undefined,
+            pb: compact ? 0.5 : 0,
+          }}
+        >
+          {data?.content.map((item) => (
+            <Box
+              key={item.id}
+              sx={{
+                flex: compact ? '0 0 260px' : { xs: '1 1 100%', sm: '1 1 280px' },
+                scrollSnapAlign: compact ? 'start' : undefined,
+                minWidth: 0,
+                maxWidth: compact ? { xs: '85%', sm: 320 } : { sm: 420 },
+              }}
+            >
+              <TemplateCard template={item} compact={compact} />
+            </Box>
+          ))}
+        </Box>
+      </TemplateSaveProvider>
       {!compact && data && data.totalPages > 1 && (
         <Pagination
           page={page}
@@ -188,6 +177,8 @@ const TemplateLibrary = ({
       )}
     </Stack>
   );
-  return compact ? content : <AppPageContainer>{content}</AppPageContainer>;
+  return compact ? content : (
+    <TemplateSection active={savedOnly ? 'saved' : 'explore'}>{content}</TemplateSection>
+  );
 };
 export default TemplateLibrary;

@@ -9,6 +9,7 @@ import { formatCurrency } from '@/base/utils';
 import type { TemplateDetailData } from '../types';
 import TemplateItinerary from './TemplateItinerary';
 import CopyTemplateDialog from './CopyTemplateDialog';
+import { TemplateSaveProvider, TemplateSaveButton } from './TemplateSaveControls';
 const TemplateDetail = ({
   detail,
   status,
@@ -42,7 +43,7 @@ const TemplateDetail = ({
             {t(status === 404 ? 'unavailable' : 'loadError')}
           </Alert>
         ) : (
-          <>
+          <TemplateSaveProvider key={detail.template.id} ids={[detail.template.id]}>
             <Typography component="h1" sx={{ fontSize: 26, fontWeight: 700 }}>
               {detail.template.title}
             </Typography>
@@ -67,6 +68,7 @@ const TemplateDetail = ({
             <AppButton intent="primary" onClick={() => setCopyOpen(true)}>
               {t('use')}
             </AppButton>
+            <TemplateSaveButton id={detail.template.id} />
             <TemplateItinerary
               snapshot={detail.snapshot}
               currency={detail.template.currency}
@@ -77,7 +79,7 @@ const TemplateDetail = ({
               open={copyOpen}
               onClose={() => setCopyOpen(false)}
             />
-          </>
+          </TemplateSaveProvider>
         )}
       </Stack>
     </AppPageContainer>

@@ -6,7 +6,8 @@ export type SidebarMessageKey =
   | 'plan'
   | 'expenses'
   | 'scan'
-  | 'settlement';
+  | 'settlement'
+  | 'templates';
 
 export interface SidebarMenuItem {
   id: string;

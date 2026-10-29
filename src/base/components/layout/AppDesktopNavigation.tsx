@@ -3,8 +3,8 @@
 import { Box } from '@mui/material';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { isNavigationActive } from '@/base/utils';
 import AppNavigationLink from './AppNavigationLink';
+import { isAppNavigationActive } from './navigation/config';
 import {
   APP_NAVIGATION_ITEMS,
   DESKTOP_NAV_BREAKPOINT,
@@ -29,7 +29,7 @@ const AppDesktopNavigation = () => {
         <AppNavigationLink
           key={item.id}
           item={item}
-          active={isNavigationActive(pathname, item.href)}
+          active={isAppNavigationActive(pathname, item)}
         />
       ))}
     </Box>

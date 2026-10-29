@@ -8,7 +8,7 @@ const NAVIGATION_IDS = [
   'plan',
   'trips',
   'expenses',
-  'settlement',
+  'templates',
   'ai',
 ] as const;
 type NavigationId = (typeof NAVIGATION_IDS)[number];
@@ -39,3 +39,12 @@ export const PRIMARY_NAVIGATION_ITEMS = APP_NAVIGATION_ITEMS.slice(
 export const MORE_NAVIGATION_ITEMS = APP_NAVIGATION_ITEMS.slice(
   directNavigationCount,
 );
+
+// Library destinations share one main navigation entry.
+export const isAppNavigationActive = (pathname: string, item: AppNavigationItem): boolean =>
+  pathname === item.href || pathname.startsWith(`${item.href}/`) ||
+  (item.id === 'expenses' && (pathname === '/settlement' || pathname.startsWith('/settlement/'))) ||
+  (item.id === 'overview' && pathname === '/') ||
+  (item.id === 'templates' && (
+    pathname === '/saved-templates' || pathname === '/my-templates'
+  ));
