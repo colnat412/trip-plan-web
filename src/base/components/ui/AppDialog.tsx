@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import AppButton from './AppButton';
 
 export interface AppDialogProps {
   open: boolean;
@@ -30,6 +31,7 @@ export interface AppDialogProps {
   hideCloseButton?: boolean;
   closeLabel?: string;
   mobileFullScreen?: boolean;
+  mobileCloseLabel?: string;
   contentRef?: Ref<HTMLDivElement>;
 }
 
@@ -46,7 +48,8 @@ const AppDialog = ({
   closeDisabled = false,
   hideCloseButton = false,
   closeLabel,
-  mobileFullScreen = false,
+  mobileFullScreen = true,
+  mobileCloseLabel,
   contentRef,
 }: AppDialogProps) => {
   const t = useTranslations('dialog');
@@ -70,10 +73,23 @@ const AppDialog = ({
             borderRadius: fullScreen ? 0 : '20px',
             p: fullScreen ? 0 : { xs: 1, sm: 2 },
             ...(fullScreen && {
+              height: '100dvh',
               pt: 'env(safe-area-inset-top, 0px)',
               pb: 'env(safe-area-inset-bottom, 0px)',
               pl: 'env(safe-area-inset-left, 0px)',
               pr: 'env(safe-area-inset-right, 0px)',
+              // Only explicitly marked footer actions participate in this layout.
+              ...(!hideCloseButton && {
+                '& .MuiButton-root[data-dialog-action="cancel"]': {
+                  display: 'none',
+                },
+              }),
+              '& .MuiButton-root[data-dialog-action="primary"]': {
+                width: '100%',
+                minWidth: 0,
+                flex: '1 0 100%',
+                ml: 0,
+              },
             }),
           },
         },
@@ -88,14 +104,38 @@ const AppDialog = ({
           gap: 1,
           p: { xs: 2, sm: 2.5 },
           pb: 1.5,
+          flexShrink: 0,
+          ...(fullScreen && {
+            minHeight: 64,
+            py: 1,
+            flexWrap: 'wrap',
+            borderBottom: 1,
+            borderColor: 'divider',
+          }),
         }}
       >
+        {fullScreen && (
+          <Box sx={{ flex: '0 0 64px', minWidth: 0 }}>
+            {!hideCloseButton && (
+              <AppButton
+                intent="text"
+                size="medium"
+                wrapLabel
+                onClick={onClose}
+                disabled={closeDisabled}
+                sx={{ minHeight: 44, minWidth: 0, width: '100%', px: 0.5 }}
+              >
+                {mobileCloseLabel ?? t('exit')}
+              </AppButton>
+            )}
+          </Box>
+        )}
         <Stack
           direction="row"
           spacing={1.5}
           sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}
         >
-          {icon && (
+          {icon && !fullScreen && (
             <Box
               sx={{
                 width: 40,
@@ -112,7 +152,7 @@ const AppDialog = ({
               {icon}
             </Box>
           )}
-          <Box sx={{ minWidth: 0 }}>
+          <Box sx={{ minWidth: 0, ...(fullScreen && { width: '100%' }) }}>
             <Typography
               id={titleId}
               component="h2"
@@ -122,11 +162,16 @@ const AppDialog = ({
                 fontWeight: 700,
                 color: 'text.primary',
                 overflowWrap: 'anywhere',
+                ...(fullScreen && {
+                  fontSize: '16px',
+                  lineHeight: 1.5,
+                  textAlign: 'center',
+                }),
               }}
             >
               {title}
             </Typography>
-            {description && (
+            {description && !fullScreen && (
               <Typography
                 id={descriptionId}
                 variant="caption"
@@ -142,7 +187,25 @@ const AppDialog = ({
           </Box>
         </Stack>
 
-        {!hideCloseButton && (
+        {fullScreen && <Box aria-hidden="true" sx={{ flex: '0 0 64px' }} />}
+
+        {description && fullScreen && (
+          <Typography
+            id={descriptionId}
+            variant="caption"
+            sx={{
+              flexBasis: '100%',
+              minWidth: 0,
+              color: 'text.secondary',
+              textAlign: 'center',
+              overflowWrap: 'anywhere',
+            }}
+          >
+            {description}
+          </Typography>
+        )}
+
+        {!hideCloseButton && !fullScreen && (
           <IconButton
             onClick={onClose}
             disabled={closeDisabled}

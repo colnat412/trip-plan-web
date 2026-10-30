@@ -10,7 +10,7 @@ import {
   AppSelect,
   type AppSelectOption,
 } from '@/base/components/ui';
-import { getCategorySelectOptions } from '@/base/constants';
+import { getCategorySelectOptions, normalizeTripCategory } from '@/base/constants';
 import type { TripMember } from '@/features/trip/types/member.types';
 import ReceiptScanBanner from './ReceiptScanBanner';
 import type {
@@ -68,7 +68,7 @@ const AddExpenseForm = ({
       : '',
   );
   const [category, setCategory] = useState<ExpenseCategory>(
-    initialData?.category || 'FOOD_BEVERAGE',
+    normalizeTripCategory(initialData?.category || 'FOOD_BEVERAGE'),
   );
   const [expenseDate, setExpenseDate] = useState(
     initialData?.expenseDate || new Date().toISOString().split('T')[0],
@@ -297,6 +297,7 @@ const AddExpenseForm = ({
         sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
       >
         <AppButton
+          data-dialog-action="cancel"
           intent="secondary"
           size="medium"
           onClick={onCancel}
@@ -305,6 +306,7 @@ const AddExpenseForm = ({
           {tForm('cancel')}
         </AppButton>
         <AppButton
+          data-dialog-action="primary"
           type="submit"
           intent="primary"
           size="medium"

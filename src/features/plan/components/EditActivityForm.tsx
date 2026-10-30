@@ -12,7 +12,7 @@ import {
   AppTextField,
   type AppSelectOption,
 } from '@/base/components/ui';
-import { getCategorySelectOptions } from '@/base/constants';
+import { getCategorySelectOptions, normalizeTripCategory } from '@/base/constants';
 import type {
   ActivityCategory,
   ActivityStatus,
@@ -42,7 +42,7 @@ const EditActivityForm = ({
 
   const [title, setTitle] = useState(activity.title || '');
   const [category, setCategory] = useState<ActivityCategory>(
-    activity.category || 'FOOD_BEVERAGE',
+    normalizeTripCategory(activity.category || 'FOOD_BEVERAGE'),
   );
   const [status, setStatus] = useState<ActivityStatus>(
     activity.status || 'PLANNED',
@@ -227,10 +227,10 @@ const EditActivityForm = ({
             pt: 1,
           }}
         >
-          <AppButton intent="secondary" onClick={onCancel} disabled={isLoading}>
+          <AppButton data-dialog-action="cancel" intent="secondary" onClick={onCancel} disabled={isLoading}>
             {tDialog('cancelBtn')}
           </AppButton>
-          <AppButton type="submit" intent="primary" loading={isLoading}>
+          <AppButton data-dialog-action="primary" type="submit" intent="primary" loading={isLoading}>
             {tDialog('saveBtn')}
           </AppButton>
         </Box>

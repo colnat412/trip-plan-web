@@ -468,13 +468,12 @@
       }
     },
     "categories": {
-      "ACCOMMODATION": "Hotels & Homestays",
-      "TRANSPORTATION": "Transportation & Tickets",
-      "FOOD_BEVERAGE": "Food & Dining",
-      "SIGHTSEEING": "Sightseeing & Tours",
-      "SHOPPING": "Shopping & Souvenirs",
-      "ENTERTAINMENT": "Entertainment & Fun",
-      "OTHER": "Other expenses"
+      "ACCOMMODATION": "Accommodation",
+      "TRANSPORTATION": "Transportation",
+      "FOOD_BEVERAGE": "Food & drinks",
+      "SIGHTSEEING": "Tickets",
+      "SHOPPING": "Shopping",
+      "OTHER": "Other"
     },
     "dialog": {
       "detailTitle": "Expense Details",
@@ -768,13 +767,12 @@
     "dayTotalCost": "Total estimated cost for this day: {cost}",
     "spentChip": "Paid",
     "categories": {
-      "FOOD_BEVERAGE": "Food & Dining",
-      "ACCOMMODATION": "Hotels & Homestays",
-      "TRANSPORTATION": "Transportation & Tickets",
-      "SIGHTSEEING": "Sightseeing & Tours",
-      "SHOPPING": "Shopping & Souvenirs",
-      "ENTERTAINMENT": "Entertainment",
-      "OTHER": "Other Expenses"
+      "FOOD_BEVERAGE": "Food & drinks",
+      "ACCOMMODATION": "Accommodation",
+      "TRANSPORTATION": "Transportation",
+      "SIGHTSEEING": "Tickets",
+      "SHOPPING": "Shopping",
+      "OTHER": "Other"
     },
     "statuses": {
       "PLANNED": "Planned",
@@ -947,7 +945,10 @@
     "invalidSize": "Choose a non-empty image up to 5 MB."
   },
   "dialog": {
-    "close": "Close dialog"
+    "close": "Close dialog",
+    "exit": "Exit",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
   },
   "legal": {
     "title": "Before your journey begins",

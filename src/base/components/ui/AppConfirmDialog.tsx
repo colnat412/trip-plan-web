@@ -9,12 +9,16 @@ import {
   DialogTitle,
   Stack,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { useTranslations } from 'next-intl';
+import AppDialog from './AppDialog';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 
-import AppButton, { type AppButtonIntent } from './AppButton';
+import AppButton from './AppButton';
 
 export interface AppConfirmDialogProps {
   open: boolean;
@@ -35,12 +39,17 @@ const AppConfirmDialog = ({
   onConfirm,
   title,
   description,
-  confirmText = 'Xác nhận',
-  cancelText = 'Hủy',
+  confirmText,
+  cancelText,
   intent = 'danger',
   loading = false,
   icon,
 }: AppConfirmDialogProps) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const t = useTranslations('dialog');
+  const confirmLabel = confirmText ?? t('confirm');
+  const cancelLabel = cancelText ?? t('cancel');
   const getDefaultIcon = () => {
     switch (intent) {
       case 'danger':
@@ -87,6 +96,88 @@ const AppConfirmDialog = ({
       }
     };
   };
+
+  const descriptionContent = (
+    typeof description === 'string' ? (
+      <Typography
+        sx={{
+          color: 'text.secondary',
+          fontSize: '14px',
+          lineHeight: 1.6,
+        }}
+      >
+        {description}
+      </Typography>
+    ) : (
+      description
+    )
+  );
+
+  const actions = (
+    <Stack
+      direction={{ xs: 'column', sm: 'row' }}
+      spacing={1.5}
+      useFlexGap
+      sx={{
+        width: '100%',
+        '& > .MuiButton-root': {
+          flex: { sm: '1 1 0' },
+          width: { sm: 'auto' },
+        },
+      }}
+    >
+      <AppButton
+        data-dialog-action="cancel"
+        intent="secondary"
+        fullWidth
+        size="medium"
+        disabled={loading}
+        onClick={onClose}
+      >
+        {cancelLabel}
+      </AppButton>
+      <AppButton
+        data-dialog-action="primary"
+        intent={intent}
+        fullWidth
+        size="medium"
+        loading={loading}
+        onClick={onConfirm}
+      >
+        {confirmLabel}
+      </AppButton>
+    </Stack>
+  );
+
+  if (isMobile) {
+    return (
+      <AppDialog
+        open={open}
+        onClose={onClose}
+        closeDisabled={loading}
+        title={title}
+        mobileCloseLabel={cancelLabel}
+        actions={actions}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              width: 60,
+              height: 60,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              ...getIconContainerStyles(),
+            }}
+          >
+            {icon ?? getDefaultIcon()}
+          </Box>
+        </Box>
+        {descriptionContent}
+      </AppDialog>
+    );
+  }
 
   return (
     <Dialog
@@ -141,53 +232,11 @@ const AppConfirmDialog = ({
         </DialogTitle>
 
         <DialogContent sx={{ p: 0, textAlign: 'center' }}>
-          {typeof description === 'string' ? (
-            <Typography
-              sx={{
-                color: 'text.secondary',
-                fontSize: '14px',
-                lineHeight: 1.6,
-              }}
-            >
-              {description}
-            </Typography>
-          ) : (
-            description
-          )}
+          {descriptionContent}
         </DialogContent>
 
         <DialogActions sx={{ p: 0, width: '100%', gap: 1.5, pt: 1 }}>
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={1.5}
-            useFlexGap
-            sx={{
-              width: '100%',
-              '& > .MuiButton-root': {
-                flex: { sm: '1 1 0' },
-                width: { sm: 'auto' },
-              },
-            }}
-          >
-            <AppButton
-              intent="secondary"
-              fullWidth
-              size="medium"
-              disabled={loading}
-              onClick={onClose}
-            >
-              {cancelText}
-            </AppButton>
-            <AppButton
-              intent={intent as AppButtonIntent}
-              fullWidth
-              size="medium"
-              loading={loading}
-              onClick={onConfirm}
-            >
-              {confirmText}
-            </AppButton>
-          </Stack>
+          {actions}
         </DialogActions>
       </Box>
     </Dialog>

@@ -119,6 +119,7 @@ const PublishTemplateDialog = ({
             </AppButton>
           )}
           <AppButton
+            data-dialog-action="primary"
             intent="primary"
             wrapLabel
             loading={busy}

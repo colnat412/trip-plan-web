@@ -85,6 +85,7 @@ const EditMemberRoleDialog = ({
           }}
         >
           <AppButton
+            data-dialog-action="cancel"
             intent="secondary"
             onClick={onClose}
             disabled={isSubmitting}
@@ -92,6 +93,7 @@ const EditMemberRoleDialog = ({
             {t('cancel')}
           </AppButton>
           <AppButton
+            data-dialog-action="primary"
             intent="primary"
             onClick={handleSave}
             loading={isSubmitting}

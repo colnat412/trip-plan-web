@@ -468,13 +468,12 @@
       }
     },
     "categories": {
-      "ACCOMMODATION": "Khách sạn & Homestay",
-      "TRANSPORTATION": "Di chuyển & Vé xe/tàu",
-      "FOOD_BEVERAGE": "Ăn uống & Nhà hàng",
-      "SIGHTSEEING": "Vé tham quan & Tour",
-      "SHOPPING": "Mua sắm & Quà lưu niệm",
-      "ENTERTAINMENT": "Vui chơi & Giải trí",
-      "OTHER": "Chi phí khác"
+      "ACCOMMODATION": "Chỗ ở",
+      "TRANSPORTATION": "Di chuyển",
+      "FOOD_BEVERAGE": "Ăn uống",
+      "SIGHTSEEING": "Vé",
+      "SHOPPING": "Mua sắm",
+      "OTHER": "Khác"
     },
     "dialog": {
       "detailTitle": "Chi Tiết Khoản Chi",
@@ -768,13 +767,12 @@
     "dayTotalCost": "Tổng chi phí dự kiến trong ngày: {cost}",
     "spentChip": "Đã chi",
     "categories": {
-      "FOOD_BEVERAGE": "Ăn uống & Nhà hàng",
-      "ACCOMMODATION": "Khách sạn & Homestay",
-      "TRANSPORTATION": "Di chuyển & Vé xe/tàu",
-      "SIGHTSEEING": "Vé tham quan & Tour",
-      "SHOPPING": "Mua sắm & Quà lưu niệm",
-      "ENTERTAINMENT": "Vui chơi & Giải trí",
-      "OTHER": "Chi phí khác"
+      "FOOD_BEVERAGE": "Ăn uống",
+      "ACCOMMODATION": "Chỗ ở",
+      "TRANSPORTATION": "Di chuyển",
+      "SIGHTSEEING": "Vé",
+      "SHOPPING": "Mua sắm",
+      "OTHER": "Khác"
     },
     "statuses": {
       "PLANNED": "Dự kiến",
@@ -947,7 +945,10 @@
     "invalidSize": "Ảnh phải có dữ liệu và không vượt quá 5 MB."
   },
   "dialog": {
-    "close": "Đóng hộp thoại"
+    "close": "Đóng hộp thoại",
+    "exit": "Thoát",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy"
   },
   "legal": {
     "title": "Trước khi bắt đầu chuyến đi",

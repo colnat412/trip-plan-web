@@ -113,6 +113,7 @@ const AiPlannerDialog = ({
           }}
         >
           <AppButton
+            data-dialog-action="cancel"
             intent="secondary"
             onClick={handleClose}
             disabled={isPending}
@@ -120,6 +121,7 @@ const AiPlannerDialog = ({
             {tDialog('cancelBtn')}
           </AppButton>
           <AppButton
+            data-dialog-action="primary"
             intent="primary"
             onClick={handleGenerate}
             disabled={isPending || !destination.trim()}

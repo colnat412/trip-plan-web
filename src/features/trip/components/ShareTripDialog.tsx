@@ -138,10 +138,11 @@ const ShareTripDialog = ({
             gap: 1.5,
           }}
         >
-          <AppButton intent="secondary" onClick={handleClose}>
+          <AppButton data-dialog-action="cancel" intent="secondary" onClick={handleClose}>
             {t('cancel')}
           </AppButton>
           <AppButton
+            data-dialog-action="primary"
             intent="primary"
             onClick={handleSave}
             loading={isUpdating}

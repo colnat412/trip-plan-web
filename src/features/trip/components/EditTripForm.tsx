@@ -280,6 +280,7 @@ const EditTripForm = ({
 
         <DialogActions sx={{ px: 0, pt: 1, gap: 1.5 }}>
           <AppButton
+            data-dialog-action="cancel"
             intent="secondary"
             size="medium"
             disabled={isPending}
@@ -288,6 +289,7 @@ const EditTripForm = ({
             {t('cancelButton')}
           </AppButton>
           <AppButton
+            data-dialog-action="primary"
             type="submit"
             intent="primary"
             size="medium"

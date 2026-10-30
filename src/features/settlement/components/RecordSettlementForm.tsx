@@ -226,10 +226,10 @@ const RecordSettlementForm = ({
             pt: 1,
           }}
         >
-          <AppButton intent="secondary" onClick={onCancel} disabled={isLoading}>
+          <AppButton data-dialog-action="cancel" intent="secondary" onClick={onCancel} disabled={isLoading}>
             {tDialog('cancelBtn')}
           </AppButton>
-          <AppButton type="submit" intent="primary" loading={isLoading}>
+          <AppButton data-dialog-action="primary" type="submit" intent="primary" loading={isLoading}>
             {tDialog('submitBtn')}
           </AppButton>
         </Box>

@@ -49,6 +49,7 @@ const CopyTemplateDialog = ({
       title={t('use')}
       actions={
         <AppButton
+          data-dialog-action="primary"
           intent="primary"
           wrapLabel
           disabled={

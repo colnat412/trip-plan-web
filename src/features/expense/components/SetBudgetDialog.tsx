@@ -30,9 +30,12 @@ const SetBudgetDialog = ({
     <AppDialog
       open={open}
       onClose={onClose}
+      closeDisabled={isLoading}
       title={t('dialog.setBudgetTitle')}
       icon={<AccountBalanceWalletRoundedIcon />}
       maxWidth="sm"
+      mobileFullScreen
+      mobileCloseLabel={t('form.cancel')}
     >
       <SetBudgetForm
         key={open ? 'open' : 'closed'}

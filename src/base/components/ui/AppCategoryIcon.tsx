@@ -14,7 +14,6 @@ const CATEGORY_TONES = {
   FOOD_BEVERAGE: 'warning',
   SIGHTSEEING: 'success',
   SHOPPING: 'secondary',
-  ENTERTAINMENT: 'primary',
 } as const;
 
 const AppCategoryIcon = ({ category }: AppCategoryIconProps) => {

@@ -131,6 +131,7 @@ const ProfileForm = ({
           sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
         >
           <AppButton
+            data-dialog-action="cancel"
             type="button"
             intent="secondary"
             disabled={isSaving}
@@ -139,6 +140,7 @@ const ProfileForm = ({
             {t('close')}
           </AppButton>
           <AppButton
+            data-dialog-action="primary"
             type="submit"
             loading={isSaving}
             disabled={!nameChanged && selection === undefined}

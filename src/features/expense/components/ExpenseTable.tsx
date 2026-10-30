@@ -19,6 +19,7 @@ import {
   type ColumnFilterValue,
   type TableSortState,
 } from '@/base/components/ui';
+import { TRIP_CATEGORIES } from '@/base/constants';
 import { formatCurrency, formatDate } from '@/base/utils';
 import type { Expense, Pagination } from '../types';
 
@@ -131,15 +132,10 @@ const ExpenseTable = ({
         // sortable: true,
         filterable: true,
         filterType: 'select',
-        filterOptions: [
-          { label: t('categories.FOOD_BEVERAGE'), value: 'FOOD_BEVERAGE' },
-          { label: t('categories.TRANSPORTATION'), value: 'TRANSPORTATION' },
-          { label: t('categories.ACCOMMODATION'), value: 'ACCOMMODATION' },
-          { label: t('categories.SIGHTSEEING'), value: 'SIGHTSEEING' },
-          { label: t('categories.ENTERTAINMENT'), value: 'ENTERTAINMENT' },
-          { label: t('categories.SHOPPING'), value: 'SHOPPING' },
-          { label: t('categories.OTHER'), value: 'OTHER' },
-        ],
+        filterOptions: TRIP_CATEGORIES.map((category) => ({
+          label: t(`categories.${category}`),
+          value: category,
+        })),
         getValue: (e) => e.category,
         renderCell: (expense) => (
           <AppCategoryChip category={expense.category} />

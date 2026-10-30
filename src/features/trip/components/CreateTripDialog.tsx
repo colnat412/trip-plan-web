@@ -160,6 +160,7 @@ const CreateTripDialog = ({
         actions={
           <>
             <AppButton
+              data-dialog-action="cancel"
               intent="secondary"
               size="medium"
               onClick={handleClose}
@@ -168,6 +169,7 @@ const CreateTripDialog = ({
               {t('cancelButton')}
             </AppButton>
             <AppButton
+              data-dialog-action="primary"
               type="submit"
               form="create-trip-form"
               intent="primary"

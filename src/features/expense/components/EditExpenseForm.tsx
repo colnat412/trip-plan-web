@@ -10,7 +10,7 @@ import {
   AppSelect,
   type AppSelectOption,
 } from '@/base/components/ui';
-import { getCategorySelectOptions } from '@/base/constants';
+import { getCategorySelectOptions, normalizeTripCategory } from '@/base/constants';
 import type {
   Expense,
   ExpenseCategory,
@@ -77,7 +77,9 @@ const EditExpenseForm = ({
 
   const [title, setTitle] = useState(expense.title);
   const [amount, setAmount] = useState(String(expense.amount));
-  const [category, setCategory] = useState<ExpenseCategory>(expense.category);
+  const [category, setCategory] = useState<ExpenseCategory>(
+    normalizeTripCategory(expense.category),
+  );
   const [expenseDate, setExpenseDate] = useState(expense.expenseDate);
   const [splitType, setSplitType] = useState<SplitType>(expense.splitType);
   const [payerId, setPayerId] = useState<string | number | ''>(
@@ -273,6 +275,7 @@ const EditExpenseForm = ({
         sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
       >
         <AppButton
+          data-dialog-action="cancel"
           intent="secondary"
           size="medium"
           onClick={onCancel}
@@ -281,6 +284,7 @@ const EditExpenseForm = ({
           {tForm('cancel')}
         </AppButton>
         <AppButton
+          data-dialog-action="primary"
           type="submit"
           intent="primary"
           size="medium"

@@ -140,10 +140,6 @@ const SetBudgetForm = ({
       noValidate
       sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
     >
-      <Typography variant="body2" color="text.secondary">
-        {tDialog('setBudgetDesc')}
-      </Typography>
-
       <AppNumberInput
         label={tDialog('totalBudgetLabel')}
         placeholder={tDialog('totalBudgetPlaceholder')}
@@ -324,6 +320,7 @@ const SetBudgetForm = ({
         sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
       >
         <AppButton
+          data-dialog-action="cancel"
           intent="secondary"
           size="medium"
           onClick={onCancel}
@@ -332,6 +329,7 @@ const SetBudgetForm = ({
           {tForm('cancel')}
         </AppButton>
         <AppButton
+          data-dialog-action="primary"
           type="submit"
           intent="primary"
           size="medium"

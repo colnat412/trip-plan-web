@@ -17,7 +17,6 @@ type KnownCategory =
   | 'FOOD_BEVERAGE'
   | 'SIGHTSEEING'
   | 'SHOPPING'
-  | 'ENTERTAINMENT'
   | 'OTHER';
 
 const AppCategoryChip = ({

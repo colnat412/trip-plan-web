@@ -6,7 +6,6 @@ import DirectionsSubwayRoundedIcon from '@mui/icons-material/DirectionsSubwayRou
 import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
 import ShoppingBagRoundedIcon from '@mui/icons-material/ShoppingBagRounded';
-import SportsEsportsRoundedIcon from '@mui/icons-material/SportsEsportsRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import type { AppSelectOption } from '@/base/components/ui';
 
@@ -16,18 +15,23 @@ export type TripCategory =
   | 'FOOD_BEVERAGE'
   | 'SIGHTSEEING'
   | 'SHOPPING'
-  | 'ENTERTAINMENT'
   | 'OTHER';
 
 export const TRIP_CATEGORIES: TripCategory[] = [
   'FOOD_BEVERAGE',
-  'ACCOMMODATION',
   'TRANSPORTATION',
-  'SIGHTSEEING',
   'SHOPPING',
-  'ENTERTAINMENT',
+  'ACCOMMODATION',
+  'SIGHTSEEING',
   'OTHER',
 ];
+
+export const normalizeTripCategory = (
+  category?: string | null,
+): TripCategory =>
+  TRIP_CATEGORIES.includes(category as TripCategory)
+    ? (category as TripCategory)
+    : 'OTHER';
 
 export const CATEGORY_CONFIG: Record<
   TripCategory | string,
@@ -57,11 +61,6 @@ export const CATEGORY_CONFIG: Record<
     icon: <ShoppingBagRoundedIcon sx={{ fontSize: 16 }} />,
     bg: '#fce4ec',
     color: '#c2185b',
-  },
-  ENTERTAINMENT: {
-    icon: <SportsEsportsRoundedIcon sx={{ fontSize: 16 }} />,
-    bg: '#f3e5f5',
-    color: '#7b1fa2',
   },
   OTHER: {
     icon: <MoreHorizRoundedIcon sx={{ fontSize: 16 }} />,
