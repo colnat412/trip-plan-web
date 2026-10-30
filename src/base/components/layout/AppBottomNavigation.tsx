@@ -51,7 +51,7 @@ const AppBottomNavigation = () => {
         <BottomNavigation
           showLabels
           value={value}
-          sx={(theme) => ({
+          sx={{
             height: 'var(--app-bottom-navigation-height, 72px)',
             pointerEvents: 'auto',
             bgcolor: 'background.paper',
@@ -77,8 +77,11 @@ const AppBottomNavigation = () => {
                 bgcolor: 'action.hover',
               },
               '&.Mui-selected': {
-                color: 'primary.main',
-                bgcolor: `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).primary.main} 7%, ${(theme.vars?.palette ?? theme.palette).background.paper})`,
+                color: 'text.secondary',
+                bgcolor: 'transparent',
+                '&:hover': {
+                  bgcolor: 'transparent',
+                },
               },
               '& .MuiSvgIcon-root': {
                 color: 'inherit',
@@ -101,7 +104,7 @@ const AppBottomNavigation = () => {
               outlineColor: 'primary.main',
               outlineOffset: -2,
             },
-          })}
+          }}
         >
           {MOBILE_PRIMARY_NAVIGATION_ITEMS.map((item) => (
             <BottomNavigationAction
