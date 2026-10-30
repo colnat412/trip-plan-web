@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
 
 import AppTopBar from './AppTopBar';
+import NotificationProvider from '@/features/notification/context/NotificationContext';
 import AppBottomNavigation from './AppBottomNavigation';
 import CreateTripHost from './CreateTripHost';
 import TripMembersHost from './TripMembersHost';
@@ -95,13 +96,13 @@ const AppShell = ({ children, hasSession = false, sidebarDisabledPaths = [] }: A
   return (
     <UserProvider>
       {isLibrary ? (
-        <TripProvider>{renderFrame(true)}</TripProvider>
+        <TripProvider><NotificationProvider>{renderFrame(true)}</NotificationProvider></TripProvider>
       ) : <PolicyAcceptanceGate>
         {!showNavigation ? (
           children
         ) : (
           <TripProvider>
-            {renderFrame(true)}
+            <NotificationProvider>{renderFrame(true)}</NotificationProvider>
           </TripProvider>
         )}
       </PolicyAcceptanceGate>}

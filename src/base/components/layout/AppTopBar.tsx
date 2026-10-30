@@ -8,6 +8,7 @@ import { AppButton } from '@/base/components/ui';
 import AppTripBar from './AppTripBar';
 import AppDesktopNavigation from './AppDesktopNavigation';
 import SidebarUser from './sidebar/SidebarUser';
+import NotificationBell from '@/features/notification/components/NotificationBell';
 
 const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
   const t = useTranslations('navigation');
@@ -69,6 +70,7 @@ const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
           {!guest && <AppTripBar />}
         </Box>
         <AppDesktopNavigation />
+        {!guest && <NotificationBell />}
         {guest ? (
           <AppButton component={Link} href="/login" intent="secondary" size="small">
             {t('signIn')}

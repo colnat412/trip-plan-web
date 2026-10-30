@@ -1,4 +1,31 @@
 {
+  "notifications": {
+    "unavailable": "This item is no longer available or has already been handled.",
+    "title": "Notifications",
+    "open": "Open notifications, {count} unread",
+    "offline": "Reconnecting. You can still load notifications using Retry.",
+    "retry": "Retry",
+    "loadError": "Could not load notifications. Please try again.",
+    "unread": "{count} unread",
+    "readAll": "Mark all read",
+    "loading": "Loading notifications",
+    "empty": "No notifications yet.",
+    "markRead": "Mark as read",
+    "previous": "Previous",
+    "next": "Next",
+    "waitingApproval": "This invitation is awaiting approval by a trip manager.",
+    "someone": "A member",
+    "trip": "the trip",
+    "newNotification": "You have a new notification.",
+    "types": {
+      "TRIP_MEMBER_ADDED": "{actor} added you to {trip}.",
+      "TRIP_INVITATION_PENDING": "You were invited to {trip}.",
+      "TRIP_MEMBER_APPROVAL_REQUIRED": "{actor} invited a member to {trip}. Approval is required.",
+      "TRIP_MEMBERSHIP_APPROVED": "Your membership in {trip} was approved.",
+      "TRIP_ACTIVITY_CREATED": "{actor} added an activity to {trip}.",
+      "TRIP_ACTIVITIES_GENERATED": "{actor} added an AI itinerary to {trip}."
+    }
+  },
   "locationMap": {
     "title": "Map: {location}",
     "open": "Open in Google Maps",

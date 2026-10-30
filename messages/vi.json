@@ -1,4 +1,31 @@
 {
+  "notifications": {
+    "unavailable": "Nội dung này không còn khả dụng hoặc đã được xử lý.",
+    "title": "Thông báo",
+    "open": "Mở thông báo, {count} chưa đọc",
+    "offline": "Đang kết nối lại. Bạn vẫn có thể tải thông báo bằng nút Thử lại.",
+    "retry": "Thử lại",
+    "loadError": "Chưa tải được thông báo. Vui lòng thử lại.",
+    "unread": "{count} chưa đọc",
+    "readAll": "Đọc tất cả",
+    "loading": "Đang tải thông báo",
+    "empty": "Chưa có thông báo.",
+    "markRead": "Đánh dấu đã đọc",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "waitingApproval": "Lời mời này đang chờ người quản lý duyệt.",
+    "someone": "Một thành viên",
+    "trip": "chuyến đi",
+    "newNotification": "Bạn có thông báo mới.",
+    "types": {
+      "TRIP_MEMBER_ADDED": "{actor} đã thêm bạn vào {trip}.",
+      "TRIP_INVITATION_PENDING": "Bạn có lời mời tham gia {trip}.",
+      "TRIP_MEMBER_APPROVAL_REQUIRED": "{actor} đã mời thành viên vào {trip}. Có yêu cầu cần duyệt.",
+      "TRIP_MEMBERSHIP_APPROVED": "Bạn đã được duyệt tham gia {trip}.",
+      "TRIP_ACTIVITY_CREATED": "{actor} đã thêm một hoạt động vào {trip}.",
+      "TRIP_ACTIVITIES_GENERATED": "{actor} đã thêm lịch trình bằng AI vào {trip}."
+    }
+  },
   "locationMap": {
     "title": "Bản đồ: {location}",
     "open": "Mở trong Google Maps",

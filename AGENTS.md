@@ -23,6 +23,8 @@ When asked to implement something, complete the requested scope, verify it safel
 
 Respond in **Vietnamese**, unless the user explicitly requests another language.
 
+UI copy preference (2026-10-30): avoid adding descriptions/subtitles by default. Use concise titles and existing shared components; add explanatory text only when the user asks or it is essential to complete an action. Notification empty states use AppEmptyState with a title/icon and no description. Do not show explanatory connection-status paragraphs in the notification inbox; retain actionable error/retry feedback.
+
 Every technical answer must explain:
 
 1. The concept or component is what.
@@ -2399,3 +2401,11 @@ Mandatory policy popup validation: TypeScript, targeted ESLint and all 4 policy 
 - Plan keeps Add activity as the main action; print, history and share are grouped under the existing action menu. Checklist and AI suggestions remain directly reachable. AI Planner now uses the shared page header and one working form plus a compact guidance panel; promotional capability cards and the decorative multi-color hero were removed.
 - VI/EN customer copy uses sentence case and frames AI as an editable itinerary draft. The brand subtitle is now travel-oriented instead of an AI badge. Existing light/dark palettes, permissions, dialogs, hooks and request flow remain intact.
 - Validation: regenerated Next route types, TypeScript passes, full ESLint has 0 errors and 7 pre-existing unused-symbol warnings, and production build passes. The build still reports Next.js's existing middleware-to-proxy deprecation. Smoke/browser tests were skipped per project instruction.
+
+### Notification inbox and WebSocket (2026-10-30)
+
+- NotificationProvider is mounted within authenticated TripProvider frames and keyed by user; notification feature hooks own HTTP orchestration. AppTopBar uses NotificationBell, AppDialog remains full-screen on mobile.
+- Transport lives in base/realtime/connect-realtime.ts: same-origin /realtime, masked CSRF bootstrap via BFF, heartbeat, bounded backoff, cleanup and bounded event-ID dedupe. No JWT in JavaScript or URL. REST BFF routes retain HttpOnly token forwarding and no-store; bootstrap relays separate Set-Cookie headers.
+- Core runs one instance until a cross-instance bridge exists. Apply its V5 migration manually before running; not applied to application DB in this session. Local setup uses the optional realtime-proxy Compose profile in ../trip-budget and localhost:8080.
+- Feature uses a coalesced snapshot refetch, not blind badge increments. Resync on reconnect/focus/online/inbox open; hide stale page results and clear all user state by provider remount on account change.
+- Implementation and setup: ../trip-budget/tripbudget-core/docs/notifications-implementation.vi.md. TypeScript, scoped ESLint and notification/auth Node regression tests are the frontend checks; no smoke test, browser visual validation or load benchmark is claimed.
