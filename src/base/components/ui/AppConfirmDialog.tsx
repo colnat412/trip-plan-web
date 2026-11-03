@@ -152,6 +152,7 @@ const AppConfirmDialog = ({
   if (isMobile) {
     return (
       <AppDialog
+        mobilePresentation="dialog"
         open={open}
         onClose={onClose}
         closeDisabled={loading}

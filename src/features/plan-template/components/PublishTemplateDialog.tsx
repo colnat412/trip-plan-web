@@ -111,7 +111,6 @@ const PublishTemplateDialog = ({
       closeDisabled={busy}
       contentRef={contentRef}
       maxWidth="md"
-      mobileFullScreen
       title={t('publish')}
       actions={
         <>

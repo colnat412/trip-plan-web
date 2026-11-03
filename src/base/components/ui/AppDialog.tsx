@@ -8,6 +8,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Fade,
   IconButton,
   Stack,
   Typography,
@@ -16,6 +17,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AppButton from './AppButton';
+import AppDialogSlide from './AppDialogSlide';
 
 export interface AppDialogProps {
   open: boolean;
@@ -31,6 +33,7 @@ export interface AppDialogProps {
   hideCloseButton?: boolean;
   closeLabel?: string;
   mobileFullScreen?: boolean;
+  mobilePresentation?: 'sheet' | 'dialog';
   mobileCloseLabel?: string;
   contentRef?: Ref<HTMLDivElement>;
 }
@@ -48,7 +51,8 @@ const AppDialog = ({
   closeDisabled = false,
   hideCloseButton = false,
   closeLabel,
-  mobileFullScreen = true,
+  mobileFullScreen = false,
+  mobilePresentation = 'sheet',
   mobileCloseLabel,
   contentRef,
 }: AppDialogProps) => {
@@ -58,6 +62,8 @@ const AppDialog = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const fullScreen = mobileFullScreen && isMobile;
+  const isSheet = isMobile && !fullScreen && mobilePresentation === 'sheet';
+  const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
   return (
     <Dialog
       open={open}
@@ -67,11 +73,55 @@ const AppDialog = ({
       fullWidth={fullWidth}
       fullScreen={fullScreen}
       maxWidth={maxWidth}
+      slots={{ transition: isSheet ? AppDialogSlide : Fade }}
+      transitionDuration={reducedMotion ? 0 : isSheet ? { enter: 300, exit: 220 } : undefined}
       slotProps={{
+        container: {
+          sx: isSheet ? {
+            alignItems: 'flex-end',
+          } : !fullScreen ? {
+            [theme.breakpoints.down('sm')]: {
+              px: 'max(16px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px))',
+              py: 'max(16px, env(safe-area-inset-top, 0px), env(safe-area-inset-bottom, 0px))',
+            },
+          } : undefined,
+        },
         paper: {
           sx: {
             borderRadius: fullScreen ? 0 : '20px',
-            p: fullScreen ? 0 : { xs: 1, sm: 2 },
+            p: fullScreen || isSheet ? 0 : { xs: 1, sm: 2 },
+            ...(!fullScreen && !isSheet && {
+              [theme.breakpoints.down('sm')]: {
+                // Container padding owns the inset; reset MUI's default margin.
+                m: 0,
+                width: fullWidth ? '100%' : 'auto',
+                maxWidth: '100%',
+                maxHeight: 'min(90dvh, calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)))',
+                borderRadius: '24px',
+                minWidth: 0,
+              },
+            }),
+            ...(isSheet && {
+              // Fit content from the bottom; long sheets leave the page visible above.
+              m: 0,
+              width: '100%',
+              maxWidth: '100%',
+              height: 'auto',
+              maxHeight: 'calc(100dvh - max(48px, env(safe-area-inset-top, 0px)))',
+              borderRadius: '24px 24px 0 0',
+              pb: 'env(safe-area-inset-bottom, 0px)',
+              pl: 'env(safe-area-inset-left, 0px)',
+              pr: 'env(safe-area-inset-right, 0px)',
+              ...(!hideCloseButton && {
+                '& .MuiButton-root[data-dialog-action="cancel"]': { display: 'none' },
+              }),
+              '& .MuiButton-root[data-dialog-action="primary"]': {
+                width: '100%',
+                minWidth: 0,
+                flex: '1 0 100%',
+                ml: 0,
+              },
+            }),
             ...(fullScreen && {
               height: '100dvh',
               pt: 'env(safe-area-inset-top, 0px)',
@@ -105,6 +155,12 @@ const AppDialog = ({
           p: { xs: 2, sm: 2.5 },
           pb: 1.5,
           flexShrink: 0,
+          ...(isSheet && {
+            minHeight: 72,
+            py: 1.5,
+            borderBottom: 1,
+            borderColor: 'divider',
+          }),
           ...(fullScreen && {
             minHeight: 64,
             py: 1,
@@ -135,7 +191,7 @@ const AppDialog = ({
           spacing={1.5}
           sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}
         >
-          {icon && !fullScreen && (
+          {icon && !fullScreen && !isSheet && (
             <Box
               sx={{
                 width: 40,
@@ -226,6 +282,10 @@ const AppDialog = ({
           display: 'flex',
           flexDirection: 'column',
           gap: 2.5,
+          minHeight: 0,
+          ...(isSheet && { flex: '0 1 auto' }),
+          overflowY: 'auto',
+          overscrollBehaviorY: 'contain',
         }}
       >
         {children}
@@ -239,6 +299,7 @@ const AppDialog = ({
             py: 2,
             gap: 1.5,
             flexWrap: 'wrap',
+            flexShrink: 0,
             '& > .MuiButton-root': {
               flex: { xs: '1 0 auto', sm: '0 0 auto' },
               minWidth: 0,

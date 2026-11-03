@@ -39,7 +39,6 @@ const EditExpenseDialog = ({
       title={t('dialog.editTitle')}
       icon={<EditRoundedIcon color="primary" />}
       maxWidth="sm"
-      mobileFullScreen
       mobileCloseLabel={t('form.cancel')}
     >
       <EditExpenseForm

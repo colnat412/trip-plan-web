@@ -290,6 +290,7 @@ const TripFilterBar = ({
             }}
             aria-label="view mode"
             sx={{
+              display: { xs: 'none', sm: 'inline-flex' },
               height: 32,
               bgcolor: 'background.paper',
               '& .MuiToggleButton-root': {

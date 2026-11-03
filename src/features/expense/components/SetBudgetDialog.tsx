@@ -34,7 +34,6 @@ const SetBudgetDialog = ({
       title={t('dialog.setBudgetTitle')}
       icon={<AccountBalanceWalletRoundedIcon />}
       maxWidth="sm"
-      mobileFullScreen
       mobileCloseLabel={t('form.cancel')}
     >
       <SetBudgetForm

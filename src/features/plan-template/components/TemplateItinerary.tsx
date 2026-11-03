@@ -1,9 +1,15 @@
 'use client';
-import { Stack, Typography, Divider } from '@mui/material';
-import { useLocale, useTranslations } from 'next-intl';
-import { AppCard } from '@/base/components/ui';
-import { formatCurrency } from '@/base/utils';
+
+import { useState } from 'react';
+import { Stack, Typography } from '@mui/material';
+import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded';
+import { useTranslations } from 'next-intl';
+import { AppCard, AppEmptyState } from '@/base/components/ui';
+import { normalizeTripCategory } from '@/base/constants';
+import PlanDayTabs from '@/features/plan/components/PlanDayTabs';
+import ActivityTimelineCard from '@/features/plan/components/ActivityTimelineCard';
 import type { TemplateSnapshot } from '../types';
+
 const TemplateItinerary = ({
   snapshot,
   currency,
@@ -11,65 +17,76 @@ const TemplateItinerary = ({
   snapshot: TemplateSnapshot;
   currency: string;
 }) => {
-  const locale = useLocale();
   const t = useTranslations('planTemplate');
+  const [selectedDayId, setSelectedDayId] = useState('');
+  const days = snapshot.days.map((day) => ({
+    ...day,
+    id: String(day.dayNumber),
+    totalActivities: day.activities.length,
+  }));
+  const selectedDay = days.find((day) => day.id === selectedDayId) ?? days[0];
+
   return (
     <Stack spacing={2} sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
-      {snapshot.days.map((day) => (
-        <AppCard key={day.dayNumber} component="section">
-          <Stack spacing={1.5}>
-            <Typography component="h2" sx={{ fontWeight: 700 }}>
-              {t('day', { number: day.dayNumber })}
-              {day.title ? ` · ${day.title}` : ''}
-            </Typography>
-            {day.note && (
-              <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                {day.note}
+      {selectedDay && (
+        <>
+          <PlanDayTabs
+            days={days}
+            selectedDayId={selectedDay.id}
+            onSelectDay={setSelectedDayId}
+          />
+          <AppCard component="section" sx={{ minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: '20px' }}>
+            <Stack spacing={2}>
+              <Typography component="h2" sx={{ fontSize: '18px', fontWeight: 700 }}>
+                {t('day', { number: selectedDay.dayNumber })}
+                {selectedDay.title ? ` · ${selectedDay.title}` : ''}
               </Typography>
-            )}
-            {!day.activities.length && (
-              <Typography variant="body2" color="text.secondary">
-                {t('restDay')}
-              </Typography>
-            )}
-            {day.activities.map((a, index) => (
-              <Stack key={index} spacing={0.5}>
-                <Divider />
-                <Typography sx={{ fontWeight: 600 }}>{a.title}</Typography>
-                <Typography variant="body2">
-                  {[a.startTime?.slice(0, 5), a.endTime?.slice(0, 5)]
-                    .filter(Boolean)
-                    .join(' – ')}
-                  {a.location ? ` · ${a.location}` : ''}
+              {selectedDay.note && (
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary' }}>
+                  {selectedDay.note}
                 </Typography>
-                <Typography variant="body2">
-                  {formatCurrency(a.estimatedCost, currency, locale)}
-                </Typography>
-                {a.note && (
-                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                    {a.note}
-                  </Typography>
-                )}
-              </Stack>
-            ))}
-          </Stack>
-        </AppCard>
-      ))}
+              )}
+              {selectedDay.activities.length ? (
+                <Stack spacing={0}>
+                  {selectedDay.activities.map((activity, index) => (
+                    <ActivityTimelineCard
+                      key={`${selectedDay.id}:${index}`}
+                      activity={{
+                        ...activity,
+                        category: normalizeTripCategory(activity.category),
+                        status: 'PLANNED',
+                      }}
+                      currency={currency}
+                      hasNext={index < selectedDay.activities.length - 1}
+                      readOnly
+                    />
+                  ))}
+                </Stack>
+              ) : (
+                <AppEmptyState title={t('restDay')} icon={<EventAvailableRoundedIcon />} />
+              )}
+            </Stack>
+          </AppCard>
+        </>
+      )}
       {!!snapshot.checklists.length && (
         <AppCard>
           <Stack spacing={1}>
             <Typography component="h2" sx={{ fontWeight: 700 }}>
               {t('checklist')}
             </Typography>
-            {snapshot.checklists.map((c, i) => (
-              <Typography key={i} variant="body2">
-                • {c.title}
-              </Typography>
-            ))}
+            <Stack component="ul" spacing={1} sx={{ m: 0, pl: 2.5 }}>
+              {snapshot.checklists.map((item, index) => (
+                <Typography component="li" key={index} variant="body2">
+                  {item.title}
+                </Typography>
+              ))}
+            </Stack>
           </Stack>
         </AppCard>
       )}
     </Stack>
   );
 };
+
 export default TemplateItinerary;

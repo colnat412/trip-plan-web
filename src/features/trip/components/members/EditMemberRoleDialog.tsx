@@ -68,6 +68,7 @@ const EditMemberRoleDialog = ({
 
   return (
     <AppDialog
+      mobilePresentation="dialog"
       open={open}
       onClose={onClose}
       title={t('actions.changeRole')}

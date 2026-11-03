@@ -93,6 +93,7 @@ const AppInstallButton = ({ menuItem = false }: AppInstallButtonProps) => {
         )
       )}
       <AppDialog
+      mobilePresentation="dialog"
         open={guideOpen && status === 'ios'}
         onClose={() => setGuideOpen(false)}
         title={t('iosTitle')}

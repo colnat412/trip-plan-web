@@ -159,7 +159,7 @@ const DestinationAutocomplete = ({
             placeholder={placeholder || t('destinationPlaceholder')}
             required={required}
             error={error}
-            helperText={helperText || t('destinationHelper')}
+            // helperText={helperText || t('destinationHelper')}
             slotProps={{
               ...slotProps,
               input: {
@@ -167,10 +167,7 @@ const DestinationAutocomplete = ({
                 endAdornment: (
                   <>
                     {loading ? (
-                      <AppLoadingIndicator
-                        size={18}
-                        sx={{ mr: 1 }}
-                      />
+                      <AppLoadingIndicator size={18} sx={{ mr: 1 }} />
                     ) : null}
                     {slotProps.input.endAdornment}
                   </>

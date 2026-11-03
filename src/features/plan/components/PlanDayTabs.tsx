@@ -6,7 +6,7 @@ import { formatDate } from '@/base/utils';
 import type { PlanDay } from '../types';
 
 export interface PlanDayTabsProps {
-  days: PlanDay[];
+  days: Pick<PlanDay, 'id' | 'dayNumber' | 'planDate' | 'totalActivities'>[];
   selectedDayId: string;
   currency?: string;
   onSelectDay: (dayId: string) => void;

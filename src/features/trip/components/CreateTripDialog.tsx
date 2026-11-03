@@ -152,7 +152,6 @@ const CreateTripDialog = ({
         open={open}
         onClose={handleClose}
         closeDisabled={createMutation.isPending}
-        mobileFullScreen
         title={t('createTitle')}
         description={t('createDescription')}
         icon={<FlightTakeoffRoundedIcon />}

@@ -8,7 +8,7 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import {
   AppActionMenu,
@@ -20,13 +20,17 @@ import {
 import { formatCurrency, formatTimeRange } from '@/base/utils';
 import type { ActivityStatus, PlanActivity } from '../types';
 
-export interface ActivityTimelineCardProps {
-  activity: PlanActivity;
+export type ActivityTimelineData = Pick<PlanActivity,
+  'title' | 'category' | 'status' | 'startTime' | 'endTime' |
+  'location' | 'note' | 'estimatedCost' | 'actualSpent'>;
+
+export interface ActivityTimelineCardProps<T extends ActivityTimelineData = PlanActivity> {
+  activity: T;
   currency: string;
-  onEdit?: (activity: PlanActivity) => void;
-  onDelete?: (activity: PlanActivity) => void;
-  onToggleStatus?: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
-  onConvertToExpense?: (activity: PlanActivity) => void;
+  onEdit?: (activity: T) => void;
+  onDelete?: (activity: T) => void;
+  onToggleStatus?: (activity: T, nextStatus: ActivityStatus) => void;
+  onConvertToExpense?: (activity: T) => void;
   readOnly?: boolean;
   hasNext?: boolean;
   compact?: boolean;
@@ -34,7 +38,7 @@ export interface ActivityTimelineCardProps {
   onSelect?: () => void;
 }
 
-const ActivityTimelineCard = ({
+const ActivityTimelineCard = <T extends ActivityTimelineData,>({
   activity,
   currency,
   onEdit,
@@ -46,7 +50,8 @@ const ActivityTimelineCard = ({
   compact = false,
   selected = false,
   onSelect,
-}: ActivityTimelineCardProps) => {
+}: ActivityTimelineCardProps<T>) => {
+  const locale = useLocale();
   const t = useTranslations('plan');
   const tStatus = useTranslations('plan.statuses');
   const tDialog = useTranslations('plan.dialog');
@@ -270,7 +275,7 @@ const ActivityTimelineCard = ({
                 }}
               >
                 {t('estimatedCost', {
-                  cost: formatCurrency(activity.estimatedCost, currency),
+                  cost: formatCurrency(activity.estimatedCost, currency, locale),
                 })}
               </Typography>
             )}
@@ -289,7 +294,7 @@ const ActivityTimelineCard = ({
                   component="span"
                   sx={{ color: 'text.primary', fontWeight: 700 }}
                 >
-                  {formatCurrency(activity.actualSpent ?? 0, currency)}
+                  {formatCurrency(activity.actualSpent ?? 0, currency, locale)}
                 </Box>
               </Typography>
             )}
