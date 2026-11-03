@@ -2,8 +2,8 @@
 
 import type { ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
-import { Alert, Stack, Typography } from '@mui/material';
-import { AppButton } from '@/base/components/ui';
+import { Alert, Stack } from '@mui/material';
+import { AppButton, AppLoadingState } from '@/base/components/ui';
 import { useUserContext } from '@/features/user/context/UserContext';
 import useLogout from '@/features/auth/hooks/useLogout';
 import PolicyAcceptanceDialog from './PolicyAcceptanceDialog';
@@ -48,17 +48,7 @@ const PolicyAcceptanceGate = ({ children }: { children: ReactNode }) => {
   }
   if (!user) {
     return (
-      <Typography
-        role="status"
-        sx={{
-          p: '24px',
-          minHeight: '100dvh',
-          bgcolor: 'background.paper',
-          color: 'text.primary',
-        }}
-      >
-        {t('loading')}
-      </Typography>
+      <AppLoadingState sx={{ minHeight: '100dvh', bgcolor: 'background.paper' }} />
     );
   }
   if (!user.policiesAcceptedAt || !user.policiesVersion)

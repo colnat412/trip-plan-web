@@ -9,6 +9,7 @@ import { AppShell } from '@/base/components/layout';
 import { AUTH_COOKIE_NAMES, PUBLIC_AUTH_PATHS, PUBLIC_PATHS } from '@/base/constants';
 import AppThemeProvider from '@/base/providers/AppThemProvider';
 import AppInstallListener from '@/base/components/pwa/AppInstallListener';
+import AppPageLoadingProvider from '@/base/providers/AppPageLoadingProvider';
 
 import './globals.css';
 
@@ -60,9 +61,11 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
         <AppInstallListener />
         <NextIntlClientProvider>
           <AppThemeProvider>
-            <AppShell sidebarDisabledPaths={sidebarDisabledPaths} hasSession={hasSession}>
-              {children}
-            </AppShell>
+            <AppPageLoadingProvider>
+              <AppShell sidebarDisabledPaths={sidebarDisabledPaths} hasSession={hasSession}>
+                {children}
+              </AppShell>
+            </AppPageLoadingProvider>
           </AppThemeProvider>
         </NextIntlClientProvider>
       </body>

@@ -1,10 +1,12 @@
 'use client';
 
+import { AppLoadingState, AppButton, AppCard, AppEmptyState, AppSectionHeader } from '@/base/components/ui';
+
 import { useState } from 'react';
 import Link from 'next/link';
-import { Alert, Box, Pagination, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, Box, Pagination, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppCard, AppEmptyState, AppSectionHeader } from '@/base/components/ui';
+
 import useTemplateLibrary from '../hooks/useTemplateLibrary';
 import type { TemplateListing } from '../types';
 import TemplateFilters from './TemplateFilters';
@@ -59,7 +61,7 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
           </AppButton>
         }>{t('loadError')}</Alert>
       )}
-      {!data && !query.error && <Skeleton variant="rounded" height={240} />}
+      {!data && !query.error && <AppLoadingState />}
       {data && !data.content.length && (
         <AppEmptyState
           title={t(savedOnly ? 'savedEmpty' : search || duration || tag ? 'noResults' : 'empty')}

@@ -21,10 +21,13 @@ export interface AppShellProps {
   sidebarDisabledPaths?: readonly string[];
 }
 
-const AppShell = ({ children, hasSession = false, sidebarDisabledPaths = [] }: AppShellProps) => {
+const AppShell = ({
+  children,
+  hasSession = false,
+  sidebarDisabledPaths = [],
+}: AppShellProps) => {
   const pathname = usePathname();
   const mainRef = useRef<HTMLElement | null>(null);
-  // Next.js manages the window scroll; this shell scrolls its own main element.
   useLayoutEffect(() => {
     if (mainRef.current) {
       mainRef.current.scrollTop = 0;
@@ -37,8 +40,8 @@ const AppShell = ({ children, hasSession = false, sidebarDisabledPaths = [] }: A
   const isPublic = [...PUBLIC_AUTH_PATHS, ...PUBLIC_PATHS].some(
     (path) => pathname === path || pathname.startsWith(`${path}/`),
   );
-  const isLibrary = pathname === '/templates' || pathname.startsWith('/templates/');
-  // Guest library pages keep the same chrome without mounting account-dependent controls.
+  const isLibrary =
+    pathname === '/templates' || pathname.startsWith('/templates/');
   const renderFrame = (withAccount: boolean) => (
     <Box
       sx={(theme) => ({
@@ -71,8 +74,7 @@ const AppShell = ({ children, hasSession = false, sidebarDisabledPaths = [] }: A
             `var(--app-page-surface, ${(theme.vars?.palette ?? theme.palette).action.hover})`,
           scrollbarGutter: 'stable',
           overscrollBehaviorY: 'contain',
-          scrollPaddingBottom:
-            'var(--app-bottom-navigation-space, 0px)',
+          scrollPaddingBottom: 'var(--app-bottom-navigation-space, 0px)',
           pl: 'env(safe-area-inset-left, 0px)',
           pr: 'env(safe-area-inset-right, 0px)',
         }}
@@ -96,15 +98,15 @@ const AppShell = ({ children, hasSession = false, sidebarDisabledPaths = [] }: A
     <UserProvider>
       {isLibrary ? (
         <TripProvider>{renderFrame(true)}</TripProvider>
-      ) : <PolicyAcceptanceGate>
-        {!showNavigation ? (
-          children
-        ) : (
-          <TripProvider>
-            {renderFrame(true)}
-          </TripProvider>
-        )}
-      </PolicyAcceptanceGate>}
+      ) : (
+        <PolicyAcceptanceGate>
+          {!showNavigation ? (
+            children
+          ) : (
+            <TripProvider>{renderFrame(true)}</TripProvider>
+          )}
+        </PolicyAcceptanceGate>
+      )}
     </UserProvider>
   );
 };

@@ -2,6 +2,8 @@
 
 import { Box, Button, ButtonProps } from "@mui/material";
 
+import AppLoadingIndicator from "./AppLoadingIndicator";
+
 import type { AnchorHTMLAttributes } from "react";
 import type { Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
@@ -274,6 +276,7 @@ const AppButton = ({
   size = "large",
   startIcon,
   loadingPosition = "center",
+  loadingIndicator,
   sx,
   ...buttonProps
 }: AppButtonProps) => {
@@ -284,6 +287,7 @@ const AppButton = ({
       disabled={disabled || loading}
       loading={loading}
       loadingPosition={loadingPosition}
+      loadingIndicator={loadingIndicator ?? <AppLoadingIndicator size={24} sx={{ color: "inherit" }} />}
       aria-busy={loading || undefined}
       aria-pressed={buttonProps["aria-pressed"] ?? selected}
       startIcon={startIcon}

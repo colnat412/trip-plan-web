@@ -1,11 +1,12 @@
 'use client';
 
+import { AppLoadingIndicator, AppTextField } from '@/base/components/ui';
+
 import React, { useState, useMemo } from 'react';
 import {
   Autocomplete,
   Box,
   Chip,
-  CircularProgress,
   InputAdornment,
   Typography,
 } from '@mui/material';
@@ -13,7 +14,7 @@ import { alpha, useTheme } from '@mui/material/styles';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
 import EditLocationOutlinedIcon from '@mui/icons-material/EditLocationOutlined';
 import { useTranslations } from 'next-intl';
-import { AppTextField } from '@/base/components/ui';
+
 import usePlacesSearch from '../hooks/usePlacesSearch';
 
 export interface PlacePrediction {
@@ -248,8 +249,7 @@ const LocationAutocompleteInput = ({
               endAdornment: (
                 <>
                   {isLoading ? (
-                    <CircularProgress
-                      color="inherit"
+                    <AppLoadingIndicator
                       size={16}
                       sx={{ mr: 1, color: 'text.secondary' }}
                     />

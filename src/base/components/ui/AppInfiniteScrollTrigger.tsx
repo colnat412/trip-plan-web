@@ -1,13 +1,14 @@
 'use client';
 
+import AppLoadingIndicator from './AppLoadingIndicator';
+
 import { useEffect, useRef } from 'react';
-import { Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 
 export interface AppInfiniteScrollTriggerProps {
   hasMore: boolean;
   loading?: boolean;
   onLoadMore: () => void;
-  // Load next page soon
   rootMargin?: string;
 }
 
@@ -54,7 +55,7 @@ const AppInfiniteScrollTrigger = ({
         py: loading ? 1.5 : 0,
       }}
     >
-      {loading && <CircularProgress size={22} />}
+      {loading && <AppLoadingIndicator size={22} />}
     </Box>
   );
 };

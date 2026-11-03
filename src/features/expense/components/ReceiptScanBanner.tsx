@@ -1,14 +1,16 @@
 'use client';
 
+import { AppLoadingIndicator, AppButton } from '@/base/components/ui';
+
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Alert, Box, CircularProgress, Typography } from '@mui/material';
+import { Alert, Box, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import { useTranslations } from 'next-intl';
-import { AppButton } from '@/base/components/ui';
+
 import { useScanReceipt } from '../hooks/useScanReceipt';
 import type { ScannedReceipt } from '../types';
 import CameraCaptureDialog from './CameraCaptureDialog';
@@ -120,7 +122,7 @@ const ReceiptScanBanner = ({
             }}
           >
             {isScanning ? (
-              <CircularProgress size={20} color="primary" />
+              <AppLoadingIndicator size={20} />
             ) : (
               <AutoAwesomeOutlinedIcon fontSize="small" />
             )}

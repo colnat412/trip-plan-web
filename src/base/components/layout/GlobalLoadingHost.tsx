@@ -1,12 +1,12 @@
 'use client';
 
 import { useTripContext } from '@/features/trip/context/TripContext';
-import AppLoadingOverlay from '../ui/AppLoadingOverlay';
+import AppLoadingState from '../ui/AppLoadingState';
 
 const GlobalLoadingHost = () => {
   const { isLoading } = useTripContext();
 
-  return <AppLoadingOverlay open={isLoading} />;
+  return isLoading ? <AppLoadingState /> : null;
 };
 
 export default GlobalLoadingHost;

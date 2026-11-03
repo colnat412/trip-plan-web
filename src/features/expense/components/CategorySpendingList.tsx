@@ -50,7 +50,6 @@ const CategorySpendingList = ({
     (item) => item.limitAmount && item.limitAmount > 0,
   );
 
-  // Backend (/api/trip/{id}/expenses/summary) returns categoryBreakdown already pre-sorted (over-limit first, then highest spent)
   const sortedItems = activeItems;
 
   return (
@@ -92,7 +91,11 @@ const CategorySpendingList = ({
             minWidth: 0,
           }}
         >
-          <Stack direction="row" spacing={1.25} sx={{ alignItems: 'flex-start', minWidth: 0, flex: 1 }}>
+          <Stack
+            direction="row"
+            spacing={1.25}
+            sx={{ alignItems: 'flex-start', minWidth: 0, flex: 1 }}
+          >
             <Box
               sx={{
                 p: 0.75,
@@ -610,7 +613,14 @@ const CategorySpendingList = ({
                 </Stack>
 
                 {hasLimit ? (
-                  <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                  <Box
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 0.5,
+                    }}
+                  >
                     <Box
                       sx={{
                         width: '100%',

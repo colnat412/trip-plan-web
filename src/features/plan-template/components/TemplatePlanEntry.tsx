@@ -1,8 +1,10 @@
 'use client';
+
+import { AppLoadingState, AppPageContainer } from '@/base/components/ui';
 import { useEffect } from 'react';
-import { Alert, Skeleton } from '@mui/material';
+import { Alert } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppPageContainer } from '@/base/components/ui';
+
 import { useTripContext } from '@/features/trip/context/TripContext';
 import PlanOverview from '@/features/plan/components/PlanOverview';
 const TemplatePlanEntry = ({
@@ -25,7 +27,7 @@ const TemplatePlanEntry = ({
         {error ? (
           <Alert severity="error">{t('loadError')}</Alert>
         ) : (
-          <Skeleton height={300} />
+          <AppLoadingState sx={{ minHeight: 300 }} />
         )}
       </AppPageContainer>
     );

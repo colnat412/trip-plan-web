@@ -1,16 +1,17 @@
 'use client';
 
+import { AppLoadingState, AppButton, AppInfiniteScrollTrigger } from '@/base/components/ui';
+
 import {
   Avatar,
   Box,
-  CircularProgress,
   Stack,
   Typography,
 } from '@mui/material';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppInfiniteScrollTrigger } from '@/base/components/ui';
+
 import { formatDateRange } from '@/base/utils';
 import useTripSwitcherSearch from '../hooks/useTripSwitcherSearch';
 import type { Trip } from '../types';
@@ -39,12 +40,7 @@ const TripSwitcherResults = ({
   } = useTripSwitcherSearch(search);
   if (isLoading)
     return (
-      <Stack role="status" spacing={1} sx={{ alignItems: 'center', py: 3 }}>
-        <CircularProgress size={24} />
-        <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
-          {t('searchingTrips')}
-        </Typography>
-      </Stack>
+      <AppLoadingState />
     );
   return (
     <Box aria-busy={isFetching || isFetchingNextPage}>

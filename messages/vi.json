@@ -61,7 +61,11 @@
     "understood": "Đã hiểu",
     "installError": "Chưa thể mở lời mời cài đặt. Hãy thử cài từ menu của trình duyệt."
   },
+  "loading": {
+    "label": "Đang tải"
+  },
   "preferences": {
+    "settings": "Cài đặt",
     "language": "Ngôn ngữ",
     "vietnamese": "Tiếng Việt",
     "english": "Tiếng Anh",

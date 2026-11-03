@@ -1,11 +1,12 @@
 'use client';
 
+import { AppLoadingIndicator, AppCategoryChip, AppDialog } from '@/base/components/ui';
+
 import React, { useState, useEffect, useTransition } from 'react';
 import {
   Box,
   Button,
   Card,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -30,7 +31,6 @@ import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import DirectionsCarFilledRoundedIcon from '@mui/icons-material/DirectionsCarFilledRounded';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { AppCategoryChip, AppDialog } from '@/base/components/ui';
 import type { OptimizationResult, PlanActivity } from '../types';
 import { solveOptimalRoute } from '../services/googleMapsService';
 
@@ -137,7 +137,7 @@ const OptimizeRouteDialog = ({
           gap: 2,
         }}
       >
-        <CircularProgress size={36} />
+        <AppLoadingIndicator size={36} />
         <Typography sx={{ fontSize: '14px', color: 'text.secondary' }}>
           {t('calculating')}
         </Typography>
@@ -539,7 +539,7 @@ const OptimizeRouteDialog = ({
         disabled={!result || !result.isImprovement || isApplying}
         startIcon={
           isApplying ? (
-            <CircularProgress size={16} color="inherit" />
+            <AppLoadingIndicator size={16} />
           ) : (
             <AutoAwesomeRoundedIcon />
           )

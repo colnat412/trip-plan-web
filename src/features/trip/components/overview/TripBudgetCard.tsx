@@ -1,15 +1,11 @@
 'use client';
 
-import { Stack, Typography, Skeleton, Alert } from '@mui/material';
+import { AppLoadingState, AppButton, AppCard, AppLinearProgress, AppMetricValue, AppSectionHeader } from '@/base/components/ui';
+
+import { Stack, Typography, Alert } from '@mui/material';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import {
-  AppButton,
-  AppCard,
-  AppLinearProgress,
-  AppMetricValue,
-  AppSectionHeader,
-} from '@/base/components/ui';
+
 import { formatCurrency } from '@/base/utils';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
 import type { Trip } from '../../types';
@@ -40,7 +36,7 @@ const TripBudgetCard = ({
             {t('tripBudget')}
           </Typography>
           {isLoading ? (
-            <Skeleton height={45} />
+            <AppLoadingState />
           ) : error ? (
             <Alert
               severity="error"
@@ -107,7 +103,7 @@ const TripBudgetCard = ({
       <Stack spacing={2.5}>
         <AppSectionHeader title={t('tripBudget')} />
         {isLoading ? (
-          <Skeleton variant="rounded" height={120} />
+          <AppLoadingState />
         ) : error ? (
           <Alert
             severity="error"

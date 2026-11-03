@@ -37,9 +37,7 @@ const CopyTemplateDialog = ({
       onClose();
       notify(t('created'));
       router.push(`/plan?tripId=${encodeURIComponent(response.data.tripId)}`);
-    } catch {
-      // The feature hook exposes API errors and retains the retry attempt.
-    }
+    } catch {}
   };
   return (
     <AppDialog
@@ -108,7 +106,6 @@ const CopyTemplateDialog = ({
             {t('reload')}
           </AppButton>
         )}
-
       </Stack>
     </AppDialog>
   );

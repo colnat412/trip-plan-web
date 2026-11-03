@@ -1,10 +1,11 @@
 'use client';
 
+import { AppLoadingState, AppButton, AppCard, AppLinearProgress, AppMetricValue } from '@/base/components/ui';
+
 import {
   Alert,
   Box,
   IconButton,
-  Skeleton,
   Stack,
   Tooltip,
   Typography,
@@ -12,12 +13,7 @@ import {
 import type { Theme } from '@mui/material/styles';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import { useLocale, useTranslations } from 'next-intl';
-import {
-  AppButton,
-  AppCard,
-  AppLinearProgress,
-  AppMetricValue,
-} from '@/base/components/ui';
+
 import { formatCurrency } from '@/base/utils';
 import type { TripBudgetSummary } from '../types';
 
@@ -79,14 +75,7 @@ const MobileBudgetSummaryCard = ({
         overflowWrap: 'anywhere',
       }}
     >
-      {isLoading ? (
-        <Stack spacing={1}>
-          <Skeleton width="65%" />
-          <Skeleton height={42} />
-          <Skeleton height={10} />
-          <Skeleton width="80%" />
-        </Stack>
-      ) : unavailable ? (
+      {isLoading ? <AppLoadingState /> : unavailable ? (
         <Alert
           severity="error"
           action={

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
 
-import { AppButton, AppToast } from '@/base/components/ui';
+import { AppButton, AppToast, AppLoadingState } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import useTripPlan from '../../hooks/useTripPlan';
 import styles from './PlanPrintView.module.css';
@@ -54,7 +54,7 @@ const PlanPrintView = ({ tripId }: PlanPrintViewProps) => {
   if (!plan) {
     return (
       <div className={styles.page}>
-        <p role="status">{t('loading')}</p>
+        <AppLoadingState />
       </div>
     );
   }

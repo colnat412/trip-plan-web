@@ -5,6 +5,7 @@ import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 
 import AppBrand from '@/base/components/layout/AppBrand';
+import AppPreferencesMenu from '@/base/components/preferences/AppPreferencesMenu';
 
 const LoginBrandPanel = () => {
   const t = useTranslations('login.banner');
@@ -21,10 +22,10 @@ const LoginBrandPanel = () => {
         flexShrink: 1,
         flexBasis: { xs: 'auto', md: 0 },
         minWidth: 0,
-        minHeight: { xs: '252px', sm: '300px', md: '100svh' },
-        gap: { xs: 5, md: 12 },
+        minHeight: { xs: '240px', sm: '280px', md: '100svh' },
+        gap: { xs: 3, md: 12 },
         p: { xs: 3, sm: 4, md: 5, lg: 7 },
-        borderRadius: { xs: '0 0 12px 12px', md: '0 12px 12px 0' },
+        borderRadius: { xs: 0, md: '0 32px 32px 0' },
         overflow: 'hidden',
         color: 'common.white',
         bgcolor: 'primary.dark',
@@ -38,14 +39,16 @@ const LoginBrandPanel = () => {
     >
       <Box
         sx={{
-          '& .MuiTypography-root': { color: 'common.white' },
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2,
+          '& > .MuiStack-root .MuiTypography-root': { color: 'common.white' },
           '& .MuiTypography-caption': { opacity: 0.72 },
         }}
       >
-        <AppBrand />
+        <AppBrand showTag={false} />
+        <AppPreferencesMenu />
       </Box>
 
-      <Stack spacing={{ xs: 1.5, md: 3 }} sx={{ maxWidth: '540px' }}>
+      <Stack spacing={3} sx={{ maxWidth: '540px', display: { xs: 'none', md: 'flex' } }}>
         <Stack spacing={1.5}>
           <Typography
             component="p"

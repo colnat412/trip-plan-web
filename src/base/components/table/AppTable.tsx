@@ -5,9 +5,7 @@ import {
   Box,
   Chip,
   Collapse,
-  LinearProgress,
   Paper,
-  Skeleton,
   Stack,
   Table,
   TableBody,
@@ -21,7 +19,7 @@ import {
 import FilterAltOffRoundedIcon from '@mui/icons-material/FilterAltOffRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton } from '../ui';
+import { AppButton, AppLoadingState, AppLoadingIndicator } from '../ui';
 import AppEmptyState from '../ui/AppEmptyState';
 import AppColumnHeader from './AppColumnHeader';
 import AppTablePagination from './AppTablePagination';
@@ -33,7 +31,6 @@ const AppTable = <T,>({
   keyExtractor,
   isLoading = false,
   isFetching = false,
-  loadingRowsCount = 5,
   pagination,
   emptyState,
   emptyContent,
@@ -116,7 +113,7 @@ const AppTable = <T,>({
   }, [activeFilters]);
 
   const displayData = data;
-  const shouldShowSkeleton =
+  const shouldShowLoading =
     (isLoading || isFetching) && displayData.length === 0;
 
   const defaultKeyExtractor = (item: T, index: number): string | number => {
@@ -236,16 +233,10 @@ const AppTable = <T,>({
         </Stack>
       </Collapse>
 
-      {isFetching && !shouldShowSkeleton && (
-        <LinearProgress
-          sx={{
-            height: '3px',
-            bgcolor: 'transparent',
-            '& .MuiLinearProgress-bar': {
-              bgcolor: 'primary.main',
-            },
-          }}
-        />
+      {isFetching && !shouldShowLoading && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 0.5 }}>
+          <AppLoadingIndicator size={24} />
+        </Box>
       )}
 
       <TableContainer
@@ -288,28 +279,16 @@ const AppTable = <T,>({
 
           <TableBody
             sx={{
-              opacity: isFetching && !shouldShowSkeleton ? 0.6 : 1,
+              opacity: isFetching && !shouldShowLoading ? 0.6 : 1,
               transition: 'opacity 0.2s ease',
             }}
           >
-            {shouldShowSkeleton ? (
-              Array.from({ length: loadingRowsCount }).map((_, rIdx) => (
-                <TableRow key={rIdx}>
-                  {columns.map((col, cIdx) => (
-                    <TableCell
-                      key={cIdx}
-                      align={col.align || 'left'}
-                      sx={{ py: 2 }}
-                    >
-                      <Skeleton
-                        variant="text"
-                        width={col.width ? '70%' : '80%'}
-                        height={24}
-                      />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+            {shouldShowLoading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length}>
+                  <AppLoadingState />
+                </TableCell>
+              </TableRow>
             ) : displayData.length === 0 ? (
               activeFilterEntries.length === 0 && emptyContent ? (
                 emptyContent

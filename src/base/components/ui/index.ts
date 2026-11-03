@@ -82,3 +82,6 @@ export type { AppMetricValueProps } from './AppMetricValue';
 
 export { default as AppEmptyState } from './AppEmptyState';
 export type { AppEmptyStateProps } from './AppEmptyState';
+
+export { default as AppLoadingIndicator } from './AppLoadingIndicator';
+export { default as AppLoadingState } from './AppLoadingState';

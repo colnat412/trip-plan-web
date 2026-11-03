@@ -1,11 +1,12 @@
 'use client';
 
+import { AppLoadingIndicator, AppTextField } from '@/base/components/ui';
+
 import React, { useMemo, useState } from 'react';
 import {
   Autocomplete,
   type AutocompleteInputChangeReason,
   Box,
-  CircularProgress,
   Stack,
   Typography,
 } from '@mui/material';
@@ -13,7 +14,6 @@ import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
 import WhatshotRoundedIcon from '@mui/icons-material/WhatshotRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppTextField } from '@/base/components/ui';
 import useDestinationSearch from '../hooks/useDestinationSearch';
 import type { DestinationItem } from '@/app/api/trip/destinations/route';
 
@@ -87,7 +87,7 @@ const DestinationAutocomplete = ({
       }
       isOptionEqualToValue={(option, val) => option.label === val.label}
       noOptionsText={t('noDestinationsFound')}
-      loadingText={t('searchingDestinations')}
+      loadingText={<AppLoadingIndicator size={24} />}
       renderOption={(props, option) => {
         const { key, ...restProps } = props;
         return (
@@ -167,8 +167,7 @@ const DestinationAutocomplete = ({
                 endAdornment: (
                   <>
                     {loading ? (
-                      <CircularProgress
-                        color="inherit"
+                      <AppLoadingIndicator
                         size={18}
                         sx={{ mr: 1 }}
                       />

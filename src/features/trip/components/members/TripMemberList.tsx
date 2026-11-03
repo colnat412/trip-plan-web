@@ -1,6 +1,8 @@
 'use client';
 
-import { Box, Skeleton, Stack, Typography } from '@mui/material';
+import { AppLoadingState } from '@/base/components/ui';
+
+import { Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
 
@@ -33,18 +35,7 @@ const TripMemberList = ({
   const t = useTranslations('members');
 
   if (isLoading) {
-    return (
-      <Stack spacing={1.5}>
-        {[1, 2, 3].map((i) => (
-          <Skeleton
-            key={i}
-            variant="rounded"
-            height={104}
-            sx={{ borderRadius: '16px' }}
-          />
-        ))}
-      </Stack>
-    );
+    return <AppLoadingState />;
   }
 
   if (members.length === 0) {

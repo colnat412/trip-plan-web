@@ -1,12 +1,13 @@
 'use client';
 
+import { AppLoadingState } from '@/base/components/ui';
+
 import { useMemo, useState, type MouseEvent } from 'react';
 import {
   Box,
   IconButton,
   Menu,
   MenuItem,
-  Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
@@ -65,22 +66,7 @@ const SidebarTripCard = () => {
   };
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          borderRadius: '14px',
-          bgcolor: 'action.hover',
-          p: '12px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1,
-        }}
-      >
-        <Skeleton variant="text" width="60%" height={20} />
-        <Skeleton variant="rounded" width="100%" height={40} />
-        <Skeleton variant="rounded" width="100%" height={30} />
-      </Box>
-    );
+    return <AppLoadingState />;
   }
 
   if (!trips || trips.length === 0) {

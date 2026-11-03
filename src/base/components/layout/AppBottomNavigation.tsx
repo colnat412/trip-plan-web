@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { alpha } from '@mui/material/styles';
 import Link from 'next/link';
 import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
@@ -51,59 +52,69 @@ const AppBottomNavigation = () => {
         <BottomNavigation
           showLabels
           value={value}
-          sx={{
-            height: 'var(--app-bottom-navigation-height, 72px)',
-            pointerEvents: 'auto',
-            bgcolor: 'background.paper',
-            width: '100%',
-            maxWidth: 560,
-            minWidth: 0,
-            p: 0.75,
-            gap: 0.25,
-            border: 0,
-            borderRadius: '24px',
-            boxShadow: 'none',
-            '& .MuiBottomNavigationAction-root': {
-              minWidth: 0,
-              maxWidth: 'none',
-              minHeight: 48,
-              borderRadius: '18px',
-              px: 0.5,
-              py: 0.75,
-              gap: 0.5,
-              color: 'text.secondary',
-              transition: 'background-color 0.15s ease, color 0.15s ease',
-              '&:hover': {
-                bgcolor: 'action.hover',
+          sx={(theme) => {
+            const palette = theme.vars?.palette ?? theme.palette;
+            return {
+              height: 'var(--app-bottom-navigation-height, 72px)',
+              pointerEvents: 'auto',
+              bgcolor: 'background.paper',
+              '@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)))': {
+                bgcolor: `color-mix(in srgb, ${palette.background.paper} 76%, transparent)`,
+                backdropFilter: 'blur(24px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(24px) saturate(180%)',
               },
-              '&.Mui-selected': {
+              backgroundImage: `linear-gradient(160deg, ${alpha(theme.palette.common.white, 0.16)}, ${alpha(theme.palette.primary.light, 0.06)})`,
+              width: '100%',
+              maxWidth: 560,
+              minWidth: 0,
+              p: 0.75,
+              gap: 0.25,
+              border: '1px solid',
+              borderColor: `color-mix(in srgb, ${palette.text.primary} 12%, transparent)`,
+              borderRadius: '999px',
+              boxShadow: `inset 0 1px 0 ${alpha(theme.palette.common.white, 0.35)}, inset 0 -1px 0 ${alpha(theme.palette.common.white, 0.08)}, 0 8px 32px ${alpha(theme.palette.common.black, 0.14)}`,
+              '& .MuiBottomNavigationAction-root': {
+                minWidth: 0,
+                maxWidth: 'none',
+                minHeight: 48,
+                borderRadius: '18px',
+                px: 0.5,
+                py: 0.75,
+                gap: 0.5,
                 color: 'text.secondary',
-                bgcolor: 'transparent',
+                transition: 'background-color 0.15s ease, color 0.15s ease',
                 '&:hover': {
+                  bgcolor: 'action.hover',
+                },
+                '&.Mui-selected': {
+                  color: 'text.secondary',
                   bgcolor: 'transparent',
+                  '&:hover': {
+                    bgcolor: 'transparent',
+                  },
+                },
+                '& .MuiSvgIcon-root': {
+                  color: 'inherit',
+                  transition: 'color 0.15s ease',
+                },
+                '&.Mui-selected .MuiSvgIcon-root': {
+                  color: 'primary.main',
                 },
               },
-              '& .MuiSvgIcon-root': {
-                color: 'inherit',
-                transition: 'color 0.15s ease',
+              '& .MuiBottomNavigationAction-label, & .MuiBottomNavigationAction-label.Mui-selected':
+                {
+                  fontSize: { xs: '11px', sm: '12px' },
+                  fontWeight: 600,
+                  whiteSpace: 'normal',
+                  lineHeight: 1.25,
+                  maxWidth: '100%',
+                },
+              '& .Mui-focusVisible': {
+                outline: '2px solid',
+                outlineColor: 'primary.main',
+                outlineOffset: -2,
               },
-              '&.Mui-selected .MuiSvgIcon-root': {
-                color: 'primary.main',
-              },
-            },
-            '& .MuiBottomNavigationAction-label, & .MuiBottomNavigationAction-label.Mui-selected':
-              {
-                fontSize: { xs: '11px', sm: '12px' },
-                fontWeight: 600,
-                whiteSpace: 'normal',
-                lineHeight: 1.25,
-                maxWidth: '100%',
-              },
-            '& .Mui-focusVisible': {
-              outline: '2px solid',
-              outlineColor: 'primary.main',
-              outlineOffset: -2,
-            },
+            };
           }}
         >
           {MOBILE_PRIMARY_NAVIGATION_ITEMS.map((item) => (

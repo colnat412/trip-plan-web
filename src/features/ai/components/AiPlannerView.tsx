@@ -1,12 +1,13 @@
 'use client';
 
+import { AppLoadingIndicator, AppPageContainer, AppPageHeader, AppCard, AppButton, AppTextField, AppNumberInput, AppToast, type AppToastSeverity } from '@/base/components/ui';
+
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Box,
   Stack,
   Typography,
-  CircularProgress,
   MenuItem,
   Select,
   FormControl,
@@ -19,16 +20,6 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { useTranslations } from 'next-intl';
 
-import {
-  AppPageContainer,
-  AppPageHeader,
-  AppCard,
-  AppButton,
-  AppTextField,
-  AppNumberInput,
-  AppToast,
-  type AppToastSeverity,
-} from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import { useGenerateAiPlan } from '@/features/plan/hooks/usePlanMutation';
@@ -307,7 +298,7 @@ const AiPlannerView = () => {
                     gap: 2,
                   }}
                 >
-                  <CircularProgress size={32} thickness={4} />
+                  <AppLoadingIndicator size={32} />
                   <Box>
                     <Typography
                       variant="subtitle2"
@@ -355,7 +346,7 @@ const AiPlannerView = () => {
                   }
                   startIcon={
                     isPending ? (
-                      <CircularProgress size={20} color="inherit" />
+                      <AppLoadingIndicator size={20} />
                     ) : (
                       <AutoAwesomeRoundedIcon />
                     )

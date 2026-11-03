@@ -1,7 +1,9 @@
 'use client';
 
+import { AppLoadingIndicator } from '@/base/components/ui';
+
 import { useState } from 'react';
-import { Alert, Box, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
@@ -258,7 +260,7 @@ const TripMembersDialog = ({
               }}
             >
               {isLoading || (isStale && !error) ? (
-                <Skeleton variant="text" width={90} />
+                <AppLoadingIndicator size={24} />
               ) : !error ? (
                 <Typography sx={{ color: 'text.secondary', fontSize: '13px' }}>
                   {t('memberCount', { count: members.length })}

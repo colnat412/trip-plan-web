@@ -1,9 +1,10 @@
 'use client';
 
+import { AppLoadingIndicator, AppButton, AppDialog } from '@/base/components/ui';
+
 import React, { useState } from 'react';
 import {
   Box,
-  CircularProgress,
   Divider,
   FormControl,
   FormControlLabel,
@@ -22,7 +23,6 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton, AppDialog } from '@/base/components/ui';
 import {
   useTripShareSettings,
   useUpdateShareSettings,
@@ -155,7 +155,7 @@ const ShareTripDialog = ({
     >
       {isLoading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-          <CircularProgress size={32} />
+          <AppLoadingIndicator size={32} />
         </Box>
       ) : (
         <Stack spacing={2.5}>

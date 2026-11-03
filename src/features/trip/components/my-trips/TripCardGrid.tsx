@@ -1,12 +1,13 @@
 'use client';
 
+import { AppLoadingState, AppButton } from '@/base/components/ui';
+
 import React from 'react';
-import { Box, Skeleton, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton } from '@/base/components/ui';
 import TripCardItem from './TripCardItem';
 import type { Trip } from '../../types';
 
@@ -32,51 +33,7 @@ const TripCardGrid = ({
   const t = useTranslations('myTrips');
 
   if (isLoading) {
-    return (
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(auto-fill, minmax(250px, 1fr))',
-          },
-          gap: { xs: 1.5, sm: 2, md: 2.5 },
-        }}
-      >
-        {Array.from({ length: 6 }).map((_, index) => (
-          <Box
-            key={index}
-            sx={{
-              borderRadius: '14px',
-              overflow: 'hidden',
-              bgcolor: 'background.paper',
-              border: '1px solid',
-              borderColor: 'divider',
-            }}
-          >
-            <Skeleton variant="rectangular" sx={{ width: '100%', pt: '58%' }} />
-            <Box sx={{ p: 1.75, display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Skeleton width="40%" height={22} />
-              <Skeleton width="80%" height={18} />
-              <Skeleton width="60%" height={14} />
-              <Box
-                sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  pt: 1,
-                  mt: 0.5,
-                  borderTop: 1,
-                  borderColor: 'divider',
-                }}
-              >
-                <Skeleton width="28%" height={22} />
-                <Skeleton width="28%" height={26} />
-              </Box>
-            </Box>
-          </Box>
-        ))}
-      </Box>
-    );
+    return <AppLoadingState />;
   }
 
   if (trips.length === 0) {

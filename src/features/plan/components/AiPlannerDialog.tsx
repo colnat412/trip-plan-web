@@ -1,11 +1,12 @@
 'use client';
 
+import { AppLoadingIndicator, AppDialog, AppButton, AppTextField, AppNumberInput } from '@/base/components/ui';
+
 import React, { useState } from 'react';
 import {
   Box,
   Stack,
   Typography,
-  CircularProgress,
   InputAdornment,
 } from '@mui/material';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
@@ -13,12 +14,6 @@ import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import { useTranslations } from 'next-intl';
 
-import {
-  AppDialog,
-  AppButton,
-  AppTextField,
-  AppNumberInput,
-} from '@/base/components/ui';
 import DestinationAutocomplete from '@/features/trip/components/DestinationAutocomplete';
 import { useGenerateAiPlan } from '../hooks/usePlanMutation';
 
@@ -127,7 +122,7 @@ const AiPlannerDialog = ({
             disabled={isPending || !destination.trim()}
             startIcon={
               isPending ? (
-                <CircularProgress size={18} color="inherit" />
+                <AppLoadingIndicator size={18} />
               ) : (
                 <AutoAwesomeRoundedIcon />
               )

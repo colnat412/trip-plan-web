@@ -1,9 +1,11 @@
 'use client';
+
+import { AppLoadingState, AppDialog, AppButton, AppTextField, AppImageUploader, AppToast } from '@/base/components/ui';
 import { useEffect, useId, useRef, useState } from 'react';
-import { Alert, Box, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { useAppToast } from '@/base/providers/AppToastProvider';
-import { AppDialog, AppButton, AppTextField, AppImageUploader, AppToast } from '@/base/components/ui';
+
 import {
   usePreviewPlanTemplate,
   usePublishPlanTemplate,
@@ -152,7 +154,7 @@ const PublishTemplateDialog = ({
               <AppButton onClick={() => void planQuery.refetch().catch(() => undefined)}>{t('retry')}</AppButton>
             }>{t('publishPlanLoadError')}</Alert>
           ) : !planReady ? (
-            <Typography role="status" variant="body2">{t('publishPlanLoading')}</Typography>
+            <AppLoadingState />
           ) : null}
         {preview ? (
           <>
@@ -180,7 +182,7 @@ const PublishTemplateDialog = ({
                   coverUpload.clearError();
                   update({ coverUploadId: undefined, removeCover: file === null });
                 }}
-              /> : !coverQuery.error ? <Skeleton variant="rounded" height={160} /> : (
+              /> : !coverQuery.error ? <AppLoadingState /> : (
                 <Alert severity="error" action={<AppButton onClick={() => void coverQuery.refetch().catch(() => undefined)}>{t('retry')}</AppButton>}>
                   {t('bannerLoadError')}
                 </Alert>

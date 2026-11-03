@@ -1,19 +1,14 @@
 'use client';
 
+import { AppLoadingState, AppButton, AppPageContainer, AppToast, AppConfirmDialog, AppInfiniteScrollTrigger, type AppToastSeverity } from '@/base/components/ui';
+
 import React, { useState } from 'react';
-import { Alert, Box, Card, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, Box, Card, Typography } from '@mui/material';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useTranslations } from 'next-intl';
 
 import { axiosClient } from '@/base/api';
-import {
-  AppButton,
-  AppPageContainer,
-  AppToast,
-  AppConfirmDialog,
-  AppInfiniteScrollTrigger,
-  type AppToastSeverity,
-} from '@/base/components/ui';
+
 import { useTripContext } from '@/features/trip/context/TripContext';
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import AddExpenseDialog from '@/features/expense/components/AddExpenseDialog';
@@ -399,17 +394,7 @@ const PlanOverview = ({
       {activeTrip && (
         <ActiveTripBanner key={activeTrip.id} trip={activeTrip} compact />
       )}
-      {isLoading || (isStale && !planError) ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <Skeleton variant="text" width={220} height={40} />
-          <Skeleton
-            variant="text"
-            width="100%"
-            height={24}
-            sx={{ maxWidth: 380 }}
-          />
-        </Box>
-      ) : !planError ? (
+      {isLoading || (isStale && !planError) ? null : !planError ? (
         <PlanHeader
           totalDays={overview?.totalDays ?? overview?.days.length ?? 0}
           totalActivities={overview?.totalActivities ?? 0}
@@ -431,19 +416,7 @@ const PlanOverview = ({
         />
       ) : null}
 
-      {isLoading || (isStale && !planError) ? (
-        <Box sx={{ display: 'flex', gap: 1.5 }}>
-          {[1, 2, 3].map((i) => (
-            <Skeleton
-              key={i}
-              variant="rectangular"
-              width={140}
-              height={56}
-              sx={{ borderRadius: '14px' }}
-            />
-          ))}
-        </Box>
-      ) : !planError && days.length > 0 ? (
+      {isLoading || (isStale && !planError) ? null : !planError && days.length > 0 ? (
         <PlanDayTabs
           days={days}
           selectedDayId={activeDayId}
@@ -508,18 +481,7 @@ const PlanOverview = ({
             minWidth: 0,
           }}
         >
-          {isLoading || (isStale && !planError) || isLoadingActivities ? (
-            <Stack spacing={2}>
-              {[1, 2, 3].map((i) => (
-                <Skeleton
-                  key={i}
-                  variant="rectangular"
-                  height={100}
-                  sx={{ borderRadius: '16px' }}
-                />
-              ))}
-            </Stack>
-          ) : planError || activitiesError ? (
+          {isLoading || (isStale && !planError) || isLoadingActivities ? <AppLoadingState /> : planError || activitiesError ? (
             <Alert
               severity="error"
               action={
@@ -566,13 +528,7 @@ const PlanOverview = ({
             minWidth: 0,
           }}
         >
-          {isLoading || (isStale && !planError) || isLoadingActivities ? (
-            <Skeleton
-              variant="rounded"
-              height={460}
-              sx={{ borderRadius: '20px' }}
-            />
-          ) : planError || activitiesError ? (
+          {isLoading || (isStale && !planError) || isLoadingActivities ? <AppLoadingState /> : planError || activitiesError ? (
             <Alert
               severity="error"
               action={

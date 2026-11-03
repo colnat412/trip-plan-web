@@ -1,10 +1,11 @@
 'use client';
 
+import { AppLoadingIndicator, AppButton, AppDialog } from '@/base/components/ui';
+
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Box,
-  CircularProgress,
   IconButton,
   Stack,
   Tooltip,
@@ -15,7 +16,6 @@ import CameraswitchOutlinedIcon from '@mui/icons-material/CameraswitchOutlined';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppDialog } from '@/base/components/ui';
 
 export interface CameraCaptureDialogProps {
   open: boolean;
@@ -181,7 +181,7 @@ const CameraCaptureDialog = ({
           }}
         >
           {isLoading && (
-            <CircularProgress
+            <AppLoadingIndicator
               size={40}
               sx={{ color: 'common.white', position: 'absolute' }}
             />

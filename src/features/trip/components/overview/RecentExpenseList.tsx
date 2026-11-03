@@ -1,10 +1,12 @@
 'use client';
 
+import { AppLoadingState, AppButton, AppEmptyState, AppMetricValue } from '@/base/components/ui';
+
 import React, { useState } from 'react';
-import { Alert, Box, Stack, Typography, Skeleton, ButtonBase } from '@mui/material';
+import { Alert, Box, Stack, Typography, ButtonBase } from '@mui/material';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppButton, AppEmptyState, AppMetricValue } from '@/base/components/ui';
+
 import { formatCurrency, formatDate } from '@/base/utils';
 import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
 import useTripExpenses from '@/features/expense/hooks/useTripExpenses';
@@ -32,32 +34,7 @@ const RecentExpenseList = ({
   });
 
   if (isLoading || (isStale && !error)) {
-    return (
-      <Stack spacing={1.5}>
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Stack
-            key={i}
-            direction="row"
-            spacing={1.5}
-            sx={{ alignItems: 'center', py: 1.5 }}
-          >
-            <Skeleton
-              variant="rounded"
-              width={40}
-              height={40}
-              sx={{
-                borderRadius: '12px',
-              }}
-            />
-            <Stack spacing={0.5} sx={{ flexGrow: 1 }}>
-              <Skeleton variant="text" width="60%" height={20} />
-              <Skeleton variant="text" width="40%" height={16} />
-            </Stack>
-            <Skeleton variant="text" width={70} height={22} />
-          </Stack>
-        ))}
-      </Stack>
-    );
+    return <AppLoadingState />;
   }
 
   if (error) {

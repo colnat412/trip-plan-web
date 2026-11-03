@@ -1,8 +1,10 @@
 'use client';
 
-import { Alert, Skeleton } from '@mui/material';
+import { AppLoadingState, AppButton, AppPageContainer } from '@/base/components/ui';
+
+import { Alert } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppPageContainer } from '@/base/components/ui';
+
 import { useTripContext } from '../context/TripContext';
 import TemplateLibrary from '@/features/plan-template/components/TemplateLibrary';
 import QuickCreate from '@/features/plan-template/components/QuickCreate';
@@ -16,20 +18,7 @@ const Overview = () => {
     useTripContext();
 
   if (isLoading)
-    return (
-      <AppPageContainer>
-        <Skeleton
-          variant="rounded"
-          height={190}
-          sx={{ borderRadius: '24px' }}
-        />
-        <Skeleton
-          variant="rounded"
-          height={120}
-          sx={{ borderRadius: '20px' }}
-        />
-      </AppPageContainer>
-    );
+    { return <AppPageContainer><AppLoadingState sx={{ minHeight: 320 }} /></AppPageContainer>; }
   if (error)
     return (
       <AppPageContainer>

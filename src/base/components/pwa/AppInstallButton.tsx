@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore } from 'react';
 import { useTranslations } from 'next-intl';
 import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
-import { AppButton, AppDialog, AppToast } from '@/base/components/ui';
+import { AppButton, AppDialog, AppToast, AppLoadingIndicator } from '@/base/components/ui';
 import {
   clearInstallError,
   getInstallState,
@@ -68,6 +68,7 @@ const AppInstallButton = ({ menuItem = false }: AppInstallButtonProps) => {
             <IconButton
               type="button"
               loading={isInstalling}
+              loadingIndicator={<AppLoadingIndicator size={24} />}
               aria-label={t('install')}
               aria-busy={isInstalling || undefined}
               aria-haspopup={status === 'ios' ? 'dialog' : undefined}

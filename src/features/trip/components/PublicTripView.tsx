@@ -135,7 +135,6 @@ const PublicTripView = ({
     }
   };
 
-  // Handle Private or Not Found Error
   if (errorStatus === 403 || errorStatus === 404 || !trip) {
     const isPrivate = errorStatus === 403;
     return (

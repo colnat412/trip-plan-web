@@ -1,14 +1,12 @@
 'use client';
+
+import { AppLoadingState, AppEmptyState, AppPageHeader, AppButton } from '@/base/components/ui';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Alert, Pagination, Skeleton, Stack } from '@mui/material';
+import { Alert, Pagination, Stack } from '@mui/material';
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import { useTranslations } from 'next-intl';
-import {
-  AppEmptyState,
-  AppPageHeader,
-  AppButton,
-} from '@/base/components/ui';
+
 import useMyTemplates from '../hooks/useMyTemplates';
 import { useUnpublishPlanTemplate } from '../hooks/usePlanTemplateMutation';
 import MyTemplateCard from './MyTemplateCard';
@@ -55,12 +53,7 @@ const MyTemplates = () => {
             {t('loadError')}
           </Alert>
         )}
-        {(query.isLoading || (query.isStale && !query.error)) && (
-          <Stack spacing={2} aria-label={t('loading')}>
-            <Skeleton variant="rounded" height={180} />
-            <Skeleton variant="rounded" height={180} />
-          </Stack>
-        )}
+        {(query.isLoading || (query.isStale && !query.error)) && <AppLoadingState />}
         {currentData?.content.length === 0 && (
           <AppEmptyState title={t('emptyMine')} />
         )}

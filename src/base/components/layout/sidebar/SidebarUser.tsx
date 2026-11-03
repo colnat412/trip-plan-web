@@ -1,11 +1,12 @@
 'use client';
 
+import { AppLoadingIndicator } from '@/base/components/ui';
+
 import { useState, type MouseEvent } from 'react';
 import {
   Avatar,
   Box,
   IconButton,
-  Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
@@ -67,25 +68,7 @@ const SidebarUser = ({
   };
 
   if (isLoading && !currentUser) {
-    if (compact) return <Skeleton variant="circular" width={44} height={44} />;
-    return (
-      <Stack
-        direction="row"
-        spacing={1.25}
-        sx={{
-          height: '100%',
-          alignItems: 'center',
-          px: 1,
-          py: 0.75,
-        }}
-      >
-        <Skeleton variant="circular" width={36} height={36} />
-        <Box sx={{ minWidth: 0, flex: 1 }}>
-          <Skeleton variant="text" width="60%" height={16} />
-          <Skeleton variant="text" width="80%" height={12} />
-        </Box>
-      </Stack>
-    );
+    return <AppLoadingIndicator size={compact ? 44 : 36} />;
   }
 
   return (

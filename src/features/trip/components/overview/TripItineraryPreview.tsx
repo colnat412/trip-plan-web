@@ -1,11 +1,13 @@
 'use client';
 
+import { AppLoadingState, AppButton, AppCard, AppSectionHeader } from '@/base/components/ui';
+
 import { useState } from 'react';
 import Link from 'next/link';
-import { Alert, Skeleton, Stack } from '@mui/material';
+import { Alert, Stack } from '@mui/material';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppCard, AppSectionHeader } from '@/base/components/ui';
+
 import useTripPlan from '@/features/plan/hooks/useTripPlan';
 import useDayActivities from '@/features/plan/hooks/useDayActivities';
 import ActivityTimelineCard from '@/features/plan/components/ActivityTimelineCard';
@@ -54,9 +56,7 @@ const TripItineraryPreview = ({ trip }: { trip: Trip }) => {
             </AppButton>
           }
         />
-        {isLoading || (isStale && !error) ? (
-          <Skeleton variant="rounded" height={280} />
-        ) : error ? (
+        {isLoading || (isStale && !error) ? <AppLoadingState /> : error ? (
           <Alert
             severity="error"
             action={
@@ -80,9 +80,7 @@ const TripItineraryPreview = ({ trip }: { trip: Trip }) => {
                 onSelectDay={setSelectedDayId}
               />
             )}
-            {loadingActivities ? (
-              <Skeleton variant="rounded" height={220} />
-            ) : activityError ? (
+            {loadingActivities ? <AppLoadingState /> : activityError ? (
               <Alert
                 severity="error"
                 action={

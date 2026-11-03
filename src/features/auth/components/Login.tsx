@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useRef, useState } from 'react';
-import Link from 'next/link';
 import {
   Box,
   Checkbox,
@@ -21,9 +20,9 @@ import {
 } from '@mui/icons-material';
 
 import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
-import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
+import { AppButton, AppTextField, AppToast, AppLoadingOverlay } from '@/base/components/ui';
 import useLogin from '@/features/auth/hooks/useLogin';
-import AppPreferences from '@/base/components/preferences/AppPreferences';
+
 import GoogleAuthButton from './GoogleAuthButton';
 import LoginBrandPanel from './LoginBrandPanel';
 import { useTranslations } from 'next-intl';
@@ -105,7 +104,7 @@ const Login = () => {
         minHeight: '100svh',
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
-        bgcolor: 'background.paper',
+        bgcolor: { xs: 'primary.dark', md: 'background.paper' },
       }}
     >
       <AppToast
@@ -115,6 +114,7 @@ const Login = () => {
         onClose={loginMutation.clearError}
       />
 
+      <AppLoadingOverlay open={loginMutation.isPending} />
       <LoginBrandPanel />
 
       <Box
@@ -124,9 +124,12 @@ const Login = () => {
           flexShrink: 1,
           flexBasis: 0,
           minWidth: { xs: 0, md: '440px' },
-          alignItems: 'center',
+          alignItems: { xs: 'flex-start', md: 'center' },
           justifyContent: 'center',
-          p: { xs: 3, sm: 5 },
+          p: { xs: '24px 24px max(32px, env(safe-area-inset-bottom))', sm: 5 },
+          borderRadius: { xs: '32px 32px 0 0', md: 0 },
+          bgcolor: 'background.paper',
+          minHeight: { xs: 'calc(100svh - 240px)', sm: 'calc(100svh - 280px)', md: '100svh' },
         }}
       >
         <Box
@@ -138,21 +141,19 @@ const Login = () => {
             gap: '14px',
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <AppPreferences />
-          </Box>
           <Typography
             component="h1"
             sx={{
               color: 'text.primary',
               fontFamily: 'var(--font-display)',
               fontSize: { xs: '26px', sm: '32px' },
-              fontWeight: 600,
+              fontWeight: 700,
+              textAlign: { xs: 'center', md: 'left' },
             }}
           >
             {t('login.title')}
           </Typography>
-          <Typography color="text.secondary">
+          <Typography color="text.secondary" sx={{ textAlign: { xs: 'center', md: 'left' }, fontSize: '14px' }}>
             {t('login.description')}
           </Typography>
 

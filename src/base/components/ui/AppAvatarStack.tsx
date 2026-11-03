@@ -1,11 +1,11 @@
 'use client';
 
+import AppLoadingState from './AppLoadingState';
+
 import {
   Avatar,
   AvatarGroup,
   ButtonBase,
-  Skeleton,
-  Stack,
   useMediaQuery,
 } from '@mui/material';
 import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
@@ -53,13 +53,7 @@ const AppAvatarStack = ({
         },
       }}
     >
-      {loading ? (
-        <Stack direction="row" spacing={0.5} aria-hidden="true">
-          {[0, 1, 2].map((key) => (
-            <Skeleton key={key} variant="circular" width={32} height={32} />
-          ))}
-        </Stack>
-      ) : items.length ? (
+      {loading ? <AppLoadingState /> : items.length ? (
         <AvatarGroup
           total={items.length}
           max={visibleCount + 1}

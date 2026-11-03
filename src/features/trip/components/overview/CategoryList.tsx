@@ -1,10 +1,12 @@
 'use client';
 
+import { AppLoadingState, AppLinearProgress } from '@/base/components/ui';
+
 import React from 'react';
-import { Box, Stack, Typography, Skeleton } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import PieChartOutlineRoundedIcon from '@mui/icons-material/PieChartOutlineRounded';
 import { useTranslations } from 'next-intl';
-import { AppLinearProgress } from '@/base/components/ui';
+
 import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
 import { formatCurrency } from '@/base/utils';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
@@ -23,39 +25,7 @@ const CategoryList = ({
   const { summary, isLoading } = useTripBudgetSummary({ tripId });
 
   if (isLoading) {
-    return (
-      <Stack
-        spacing={0}
-        sx={{ gap: '14px', '@media (max-height: 820px)': { gap: 1.25 } }}
-      >
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Stack
-            key={i}
-            direction="row"
-            spacing={1.5}
-            sx={{ alignItems: 'center' }}
-          >
-            <Skeleton
-              variant="rounded"
-              width={46}
-              height={46}
-              sx={{
-                borderRadius: '10px',
-                '@media (max-height: 820px)': {
-                  width: 38,
-                  height: 38,
-                },
-              }}
-            />
-            <Stack spacing={0.75} sx={{ flexGrow: 1 }}>
-              <Skeleton variant="text" width="50%" height={18} />
-              <Skeleton variant="rounded" width="100%" height={6} />
-            </Stack>
-            <Skeleton variant="text" width={30} height={18} />
-          </Stack>
-        ))}
-      </Stack>
-    );
+    return <AppLoadingState />;
   }
 
   const activeCategories =

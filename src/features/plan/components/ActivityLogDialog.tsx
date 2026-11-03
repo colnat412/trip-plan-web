@@ -1,11 +1,12 @@
 'use client';
 
+import { AppLoadingIndicator, AppDialog, AppButton, AppInfiniteScrollTrigger } from '@/base/components/ui';
+
 import React from 'react';
 import {
   Avatar,
   Box,
   Chip,
-  CircularProgress,
   Stack,
   Typography,
 } from '@mui/material';
@@ -18,11 +19,6 @@ import SwapVertRoundedIcon from '@mui/icons-material/SwapVertRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import { useTranslations } from 'next-intl';
 
-import {
-  AppDialog,
-  AppButton,
-  AppInfiniteScrollTrigger,
-} from '@/base/components/ui';
 import usePlanActivityLogs from '../hooks/usePlanActivityLogs';
 import type { ActivityLogAction, PlanActivityLog } from '../types';
 
@@ -136,7 +132,7 @@ const ActivityLogDialog = ({
             py: 6,
           }}
         >
-          <CircularProgress size={32} />
+          <AppLoadingIndicator size={32} />
         </Box>
       ) : logs.length === 0 ? (
         <Box

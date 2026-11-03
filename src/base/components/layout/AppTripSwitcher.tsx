@@ -1,5 +1,7 @@
 'use client';
 
+import { AppLoadingState, AppButton, AppPopover, AppTextField } from '@/base/components/ui';
+
 import { useId, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import {
@@ -7,7 +9,6 @@ import {
   Box,
   IconButton,
   InputAdornment,
-  Skeleton,
   Stack,
   Typography,
 } from '@mui/material';
@@ -17,7 +18,7 @@ import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppPopover, AppTextField } from '@/base/components/ui';
+
 import { formatDateRange } from '@/base/utils';
 import TripSwitcherResults from '@/features/trip/components/TripSwitcherResults';
 import { useTripContext } from '@/features/trip/context/TripContext';
@@ -51,14 +52,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
   };
 
   if (isLoading && !activeTrip) {
-    return (
-      <Skeleton
-        variant="rounded"
-        width="100%"
-        height={56}
-        sx={{ borderRadius: '12px' }}
-      />
-    );
+    return <AppLoadingState sx={{ minHeight: 56, py: 0 }} />;
   }
   if (!activeTrip) {
     return (

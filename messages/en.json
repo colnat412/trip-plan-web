@@ -61,7 +61,11 @@
     "understood": "Got it",
     "installError": "Could not open the installation prompt. Try installing from your browser's menu."
   },
+  "loading": {
+    "label": "Loading"
+  },
   "preferences": {
+    "settings": "Settings",
     "language": "Language",
     "vietnamese": "Vietnamese",
     "english": "English",

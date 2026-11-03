@@ -1,21 +1,15 @@
 'use client';
 
+import { AppLoadingState, AppButton, AppCard, AppPageContainer, AppPageHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
+
 import FinanceNavigation from '@/features/expense/components/FinanceNavigation';
 
 import React, { useState } from 'react';
-import { Box, Skeleton, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useTranslations } from 'next-intl';
 
-import {
-  AppButton,
-  AppCard,
-  AppPageContainer,
-  AppPageHeader,
-  AppToast,
-  type AppToastSeverity,
-} from '@/base/components/ui';
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import {
@@ -129,29 +123,7 @@ const SettlementOverview = () => {
   };
 
   if (isTripLoading || (tripId && isSummaryLoading)) {
-    return (
-      <AppPageContainer>
-        <FinanceNavigation active="settlement" />
-        <Skeleton
-          variant="rounded"
-          width="100%"
-          height={160}
-          sx={{ borderRadius: '20px' }}
-        />
-        <Skeleton
-          variant="rounded"
-          width="100%"
-          height={200}
-          sx={{ borderRadius: '20px' }}
-        />
-        <Skeleton
-          variant="rounded"
-          width="100%"
-          height={300}
-          sx={{ borderRadius: '20px' }}
-        />
-      </AppPageContainer>
-    );
+    return <AppPageContainer><FinanceNavigation active="settlement" /><AppLoadingState sx={{ minHeight: 320 }} /></AppPageContainer>;
   }
 
   if (!currentTrip) {
