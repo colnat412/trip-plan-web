@@ -6,7 +6,7 @@ import AppLoadingState from '../ui/AppLoadingState';
 const GlobalLoadingHost = () => {
   const { isLoading } = useTripContext();
 
-  return isLoading ? <AppLoadingState /> : null;
+  return isLoading ? <AppLoadingState pageOnly /> : null;
 };
 
 export default GlobalLoadingHost;

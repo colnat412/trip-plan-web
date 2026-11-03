@@ -18,7 +18,6 @@ const PlanDayTabs = ({
   onSelectDay,
 }: PlanDayTabsProps) => {
   const t = useTranslations('plan');
-  const fitDays = days.length <= 3;
 
   return (
     <Box
@@ -27,7 +26,9 @@ const PlanDayTabs = ({
       sx={{
         width: '100%',
         minWidth: 0,
-        display: 'flex',
+        display: 'grid',
+        gridAutoFlow: 'column',
+        gridAutoColumns: { xs: 'minmax(88px, 1fr)', sm: 'minmax(104px, 1fr)' },
         gap: 1,
         overflowX: 'auto',
         overscrollBehaviorX: 'contain',
@@ -57,13 +58,7 @@ const PlanDayTabs = ({
               bgcolor: isSelected ? 'action.selected' : 'background.paper',
               color: isSelected ? 'primary.main' : 'text.primary',
               minWidth: 0,
-              maxWidth: 112,
               minHeight: 64,
-              flexGrow: fitDays ? 1 : 0,
-              flexShrink: fitDays ? 1 : 0,
-              flexBasis: fitDays
-                ? 0
-                : 'clamp(72px, calc((100% - 16px) / 3), 112px)',
               scrollSnapAlign: 'start',
               '&:hover': {
                 bgcolor: isSelected ? 'action.selected' : 'action.hover',

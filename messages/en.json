@@ -96,6 +96,7 @@
     }
   },
   "overview": {
+    "budget": "Budget",
     "itineraryError": "Could not load the itinerary.",
     "budgetError": "Could not load the budget.",
     "itineraryIntro": "One day at a time. Plenty to look forward to.",

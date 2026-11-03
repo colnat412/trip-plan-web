@@ -1,17 +1,15 @@
 'use client';
 
-import { Box, Stack } from '@mui/material';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import { Box } from '@mui/material';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import { useLocale, useTranslations } from 'next-intl';
 import { AppButton, AppMetricValue, AppSectionHeader } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { PlanDay } from '../types';
 
-export default function PlanDayToolbar({ day, currency, onAddActivity, onResetDay }: {
+export default function PlanDayToolbar({ day, currency, onResetDay }: {
   day: PlanDay;
   currency: string;
-  onAddActivity?: () => void;
   onResetDay?: () => void;
 }) {
   const t = useTranslations('plan');
@@ -29,32 +27,24 @@ export default function PlanDayToolbar({ day, currency, onAddActivity, onResetDa
           </span>}
         </Box>
       }
-      actions={
-        <Stack direction="row" useFlexGap spacing={1} sx={{ alignItems: 'center' }}>
-          {onAddActivity && <AppButton intent="primary" size="medium" startIcon={<AddRoundedIcon />}
-            onClick={onAddActivity} sx={{ display: { xs: 'none', md: 'inline-flex' }, minHeight: 44 }}>
-            {t('addActivity')}
-          </AppButton>}
-          {onResetDay && day.totalActivities > 0 && (
-            <AppButton
-              intent="danger"
-              size="medium"
-              startIcon={<RestartAltRoundedIcon />}
-              onClick={onResetDay}
-              sx={{
-                minHeight: 44,
-                minWidth: { xs: 0, md: 64 },
-                px: { xs: 1, md: 2 },
-                fontSize: { xs: '12px', md: '14px' },
-                '& .MuiButton-startIcon': { mr: { xs: 0.5, md: 1 }, ml: 0 },
-                '& .MuiButton-startIcon > svg': { fontSize: { xs: 16, md: 20 } },
-              }}
-            >
-              {t('resetDayBtn')}
-            </AppButton>
-          )}
-        </Stack>
-      }
+      actions={onResetDay && day.totalActivities > 0 ? (
+        <AppButton
+          intent="danger"
+          size="medium"
+          startIcon={<RestartAltRoundedIcon />}
+          onClick={onResetDay}
+          sx={{
+            minHeight: 44,
+            minWidth: { xs: 0, md: 64 },
+            px: { xs: 1, md: 2 },
+            fontSize: { xs: '12px', md: '14px' },
+            '& .MuiButton-startIcon': { mr: { xs: 0.5, md: 1 }, ml: 0 },
+            '& .MuiButton-startIcon > svg': { fontSize: { xs: 16, md: 20 } },
+          }}
+        >
+          {t('resetDayBtn')}
+        </AppButton>
+      ) : undefined}
     />
   );
 }

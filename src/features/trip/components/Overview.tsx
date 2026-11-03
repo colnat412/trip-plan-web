@@ -2,7 +2,8 @@
 
 import { AppLoadingState, AppButton, AppPageContainer } from '@/base/components/ui';
 
-import { Alert } from '@mui/material';
+import { Alert, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 
 import { useTripContext } from '../context/TripContext';
@@ -11,9 +12,11 @@ import QuickCreate from '@/features/plan-template/components/QuickCreate';
 import ActiveTripBanner from './overview/ActiveTripBanner';
 import OverviewDetails from './overview/OverviewDetails';
 import EmptyTripState from './overview/EmptyTripState';
+import TripBudgetCard from './overview/TripBudgetCard';
 
 const Overview = () => {
   const tNav = useTranslations('navigation');
+  const desktop = useMediaQuery(useTheme().breakpoints.up('md'));
   const { trips, activeTrip, isLoading, error, refetchTrips, openCreateTrip } =
     useTripContext();
 
@@ -50,7 +53,13 @@ const Overview = () => {
   return (
     <AppPageContainer>
       <ActiveTripBanner key={currentTrip.id} trip={currentTrip} compact />
-      <QuickCreate />
+      {!desktop && (
+        <TripBudgetCard
+          key={`budget-${currentTrip.id}`}
+          trip={currentTrip}
+          compact
+        />
+      )}
       <OverviewDetails key={`details-${currentTrip.id}`} trip={currentTrip} />
     </AppPageContainer>
   );

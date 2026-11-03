@@ -104,6 +104,7 @@ const AppConfirmDialog = ({
           color: 'text.secondary',
           fontSize: '14px',
           lineHeight: 1.6,
+          textAlign: 'center',
         }}
       >
         {description}
@@ -152,7 +153,6 @@ const AppConfirmDialog = ({
   if (isMobile) {
     return (
       <AppDialog
-        mobilePresentation="dialog"
         open={open}
         onClose={onClose}
         closeDisabled={loading}
@@ -162,20 +162,19 @@ const AppConfirmDialog = ({
       >
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
           <Box
-            sx={{
+            sx={[{
               width: 60,
               height: 60,
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              ...getIconContainerStyles(),
-            }}
+            }, getIconContainerStyles()]}
           >
             {icon ?? getDefaultIcon()}
           </Box>
         </Box>
-        {descriptionContent}
+        <Box sx={{ textAlign: 'center' }}>{descriptionContent}</Box>
       </AppDialog>
     );
   }
@@ -206,15 +205,14 @@ const AppConfirmDialog = ({
         }}
       >
         <Box
-          sx={{
+          sx={[{
             width: 60,
             height: 60,
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            ...getIconContainerStyles(),
-          }}
+          }, getIconContainerStyles()]}
         >
           {icon ?? getDefaultIcon()}
         </Box>

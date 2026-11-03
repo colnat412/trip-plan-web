@@ -96,6 +96,7 @@
     }
   },
   "overview": {
+    "budget": "Ngân sách",
     "itineraryError": "Chưa thể tải lịch trình.",
     "budgetError": "Chưa thể tải ngân sách.",
     "itineraryIntro": "Từng ngày, từng trải nghiệm đáng nhớ.",

@@ -67,10 +67,27 @@ const TemplateDetail = ({
                 count: detail.template.usageCount,
               })}
             </Typography>
-            <AppButton intent="primary" onClick={() => setCopyOpen(true)}>
-              {t('use')}
-            </AppButton>
-            <TemplateSaveButton id={detail.template.id} />
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{
+                alignSelf: 'flex-start',
+                width: { xs: '100%', sm: 'auto' },
+                maxWidth: '100%',
+                '& > .MuiButton-root': { minHeight: 44, px: 1.5, fontSize: '14px' },
+              }}
+            >
+              <AppButton
+                intent="primary"
+                size="medium"
+                wrapLabel
+                onClick={() => setCopyOpen(true)}
+                sx={{ flex: { xs: '1 1 0', sm: '0 1 auto' }, minWidth: 0 }}
+              >
+                {t('use')}
+              </AppButton>
+              <TemplateSaveButton id={detail.template.id} />
+            </Stack>
             <TemplateItinerary
               snapshot={detail.snapshot}
               currency={detail.template.currency}

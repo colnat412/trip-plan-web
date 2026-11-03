@@ -1,6 +1,5 @@
 'use client';
 import { useId, useState } from 'react';
-import Link from 'next/link';
 import { Box, Stack, Collapse, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
@@ -64,27 +63,6 @@ const OverviewDetails = ({ trip }: { trip: Trip }) => {
   return (
     <Stack spacing={1.5} sx={{ minWidth: 0 }}>
       {itineraryGroup}
-      <TripBudgetCard trip={trip} compact />
-      <Stack direction="row" useFlexGap spacing={1} sx={{ flexWrap: 'wrap' }}>
-        <AppButton
-          wrapLabel
-          component={Link}
-          href="/plan"
-          intent="primary"
-          sx={{ flex: '1 1 130px' }}
-        >
-          {t('openItinerary')}
-        </AppButton>
-        <AppButton
-          wrapLabel
-          component={Link}
-          href="/expenses"
-          intent="secondary"
-          sx={{ flex: '1 1 130px' }}
-        >
-          {t('manageBudget')}
-        </AppButton>
-      </Stack>
       <AppButton
         intent="text"
         wrapLabel

@@ -459,7 +459,6 @@ const PlanOverview = ({
         <PlanDayToolbar
           day={selectedDay}
           currency={overview?.baseCurrency ?? activeTrip.baseCurrency}
-          onAddActivity={canWrite ? () => setAddActivityOpen(true) : undefined}
           onResetDay={canManage ? () => setResetDayConfirmOpen(true) : undefined}
         />
       )}

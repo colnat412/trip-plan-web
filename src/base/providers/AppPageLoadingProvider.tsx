@@ -3,6 +3,7 @@
 import {
   createContext,
   useCallback,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -12,15 +13,25 @@ import AppLoadingOverlay from '@/base/components/ui/AppLoadingOverlay';
 
 export const AppPageLoadingContext = createContext<{
   registerLoading: () => () => void;
+  initialPageLoad: boolean;
 } | null>(null);
 
 const AppPageLoadingProvider = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
-  const [pending, setPending] = useState<Map<symbol, string>>(() => new Map());
+  const [visit, setVisit] = useState({ pathname, id: 0, settled: false });
+  const [pending, setPending] = useState<Map<symbol, number>>(() => new Map());
+
+  // Reset this provider's loading session without remounting page/auth state.
+  // A -> B -> A is a new visit, even if B did not finish loading.
+  if (visit.pathname !== pathname) {
+    setVisit({ pathname, id: visit.id + 1, settled: false });
+  }
+  const initialPageLoad = !visit.settled;
 
   const registerLoading = useCallback(() => {
+    if (!initialPageLoad) return () => {};
     const token = Symbol();
-    setPending((previous) => new Map(previous).set(token, pathname));
+    setPending((previous) => new Map(previous).set(token, visit.id));
     return () => {
       setPending((previous) => {
         const next = new Map(previous);
@@ -28,14 +39,29 @@ const AppPageLoadingProvider = ({ children }: { children: ReactNode }) => {
         return next;
       });
     };
-  }, [pathname]);
-  const context = useMemo(() => ({ registerLoading }), [registerLoading]);
-  const isLoading = [...pending.values()].some((path) => path === pathname);
+  }, [visit.id, initialPageLoad]);
+  const context = useMemo(
+    () => ({ registerLoading, initialPageLoad }),
+    [registerLoading, initialPageLoad],
+  );
+  const hasPendingSections = [...pending.values()].some((id) => id === visit.id);
+
+  useEffect(() => {
+    if (!initialPageLoad || hasPendingSections) return;
+    // Allow dependent sections to mount/start their initial queries before
+    // sealing the visit. Subsequent searches, dialogs and refetches stay local.
+    const timer = window.setTimeout(() => {
+      setVisit((current) => current.id === visit.id
+        ? { ...current, settled: true }
+        : current);
+    }, 150);
+    return () => window.clearTimeout(timer);
+  }, [visit.id, initialPageLoad, hasPendingSections]);
 
   return (
     <AppPageLoadingContext.Provider value={context}>
       {children}
-      <AppLoadingOverlay open={isLoading} />
+      <AppLoadingOverlay open={initialPageLoad && hasPendingSections} />
     </AppPageLoadingContext.Provider>
   );
 };

@@ -20,7 +20,7 @@ import {
 } from '@mui/icons-material';
 
 import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
-import { AppButton, AppTextField, AppToast, AppLoadingOverlay } from '@/base/components/ui';
+import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
 import useLogin from '@/features/auth/hooks/useLogin';
 
 import GoogleAuthButton from './GoogleAuthButton';
@@ -114,7 +114,6 @@ const Login = () => {
         onClose={loginMutation.clearError}
       />
 
-      <AppLoadingOverlay open={loginMutation.isPending} />
       <LoginBrandPanel />
 
       <Box

@@ -5,12 +5,17 @@ import { useContext, useLayoutEffect } from 'react';
 import { AppPageLoadingContext } from '@/base/providers/AppPageLoadingProvider';
 import AppLoadingIndicator from './AppLoadingIndicator';
 
-const AppLoadingState = ({ sx, ...props }: BoxProps) => {
+interface AppLoadingStateProps extends BoxProps {
+  pageOnly?: boolean;
+  indicatorSize?: number;
+}
+
+const AppLoadingState = ({ sx, pageOnly = false, indicatorSize, ...props }: AppLoadingStateProps) => {
   const context = useContext(AppPageLoadingContext);
   const registerLoading = context?.registerLoading;
   useLayoutEffect(() => registerLoading?.(), [registerLoading]);
 
-  if (context) return null;
+  if (context?.initialPageLoad || pageOnly) return null;
   return (
     <Box
       {...props}
@@ -26,7 +31,7 @@ const AppLoadingState = ({ sx, ...props }: BoxProps) => {
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
     >
-      <AppLoadingIndicator />
+      <AppLoadingIndicator size={indicatorSize} />
     </Box>
   );
 };

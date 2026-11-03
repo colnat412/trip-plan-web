@@ -16,8 +16,8 @@ import {
   AppMetricValue,
   AppPageHeader,
 } from '@/base/components/ui';
-import UseTemplateButton from '@/features/plan-template/components/UseTemplateButton';
 import { formatCurrency } from '@/base/utils';
+import UseTemplateButton from '@/features/plan-template/components/UseTemplateButton';
 
 export interface PlanHeaderProps {
   totalDays: number;
@@ -137,20 +137,10 @@ const PlanHeader = ({
               size="medium"
               startIcon={<AddRoundedIcon />}
               onClick={onAddActivity}
-              sx={{ display: { xs: 'flex', md: 'none' } }}
             >
               {t('addActivity')}
             </AppButton>
           )}
-          <AppButton
-            intent="secondary"
-            mobileIconLabel
-            size="medium"
-            startIcon={<ChecklistRoundedIcon />}
-            onClick={onOpenChecklist}
-          >
-            {t('checklistBtn')}
-          </AppButton>
           {!readOnly && onOpenAiPlanner && (
             <AppButton
               intent="secondary"
@@ -162,77 +152,79 @@ const PlanHeader = ({
               {t('aiPlannerBtn')}
             </AppButton>
           )}
-          {(onPublishTemplate ||
-            onOpenPrint ||
-            onOpenActivityLogs ||
-            (!readOnly && onOpenShare)) && (
-            <AppActionMenu
-              ariaLabel={tNavigation('more')}
-              trigger={
-                <AppButton
-                  intent="secondary"
-                  mobileIconLabel
-                  size="medium"
-                  aria-label={tNavigation('more')}
-                  startIcon={<MoreHorizRoundedIcon />}
-                  sx={{
-                    minWidth: { sm: 44 },
-                    px: { sm: 1.25 },
-                    '& .MuiButton-startIcon': { margin: 0 },
-                  }}
-                >
-                  <Box
-                    component="span"
-                    sx={{ display: { xs: 'block', sm: 'none' } }}
-                  >
-                    {tNavigation('more')}
-                  </Box>
-                </AppButton>
-              }
-              items={[
-                ...(onPublishTemplate
-                  ? [
-                      {
-                        id: 'publish-template',
-                        label: tTemplate('publish'),
-                        icon: <PublishRoundedIcon fontSize="small" />,
-                        onClick: onPublishTemplate,
-                      },
-                    ]
-                  : []),
-                ...(onOpenActivityLogs
-                  ? [
-                      {
-                        id: 'activity-log',
-                        label: t('activityLogBtn'),
-                        icon: <HistoryRoundedIcon fontSize="small" />,
-                        onClick: onOpenActivityLogs,
-                      },
-                    ]
-                  : []),
-                ...(!readOnly && onOpenShare
-                  ? [
-                      {
-                        id: 'share',
-                        label: t('shareBtn'),
-                        icon: <ShareRoundedIcon fontSize="small" />,
-                        onClick: onOpenShare,
-                      },
-                    ]
-                  : []),
-                ...(onOpenPrint
-                  ? [
-                      {
-                        id: 'print',
-                        label: t('print.button'),
-                        icon: <PictureAsPdfRoundedIcon fontSize="small" />,
-                        onClick: onOpenPrint,
-                      },
-                    ]
-                  : []),
-              ]}
-            />
+          {!readOnly && onPublishTemplate && (
+            <AppButton
+              intent="secondary"
+              mobileIconLabel
+              size="medium"
+              startIcon={<PublishRoundedIcon />}
+              onClick={onPublishTemplate}
+            >
+              {tTemplate('publish')}
+            </AppButton>
           )}
+          <AppActionMenu
+            ariaLabel={tNavigation('more')}
+            trigger={
+              <AppButton
+                intent="secondary"
+                mobileIconLabel
+                size="medium"
+                aria-label={tNavigation('more')}
+                startIcon={<MoreHorizRoundedIcon />}
+                sx={{
+                  minWidth: { sm: 44 },
+                  px: { sm: 1.25 },
+                  '& .MuiButton-startIcon': { margin: 0 },
+                }}
+              >
+                <Box
+                  component="span"
+                  sx={{ display: { xs: 'block', sm: 'none' } }}
+                >
+                  {tNavigation('more')}
+                </Box>
+              </AppButton>
+            }
+            items={[
+              {
+                id: 'checklist',
+                label: t('checklistBtn'),
+                icon: <ChecklistRoundedIcon fontSize="small" />,
+                onClick: onOpenChecklist,
+              },
+              ...(onOpenActivityLogs
+                ? [
+                    {
+                      id: 'activity-log',
+                      label: t('activityLogBtn'),
+                      icon: <HistoryRoundedIcon fontSize="small" />,
+                      onClick: onOpenActivityLogs,
+                    },
+                  ]
+                : []),
+              ...(!readOnly && onOpenShare
+                ? [
+                    {
+                      id: 'share',
+                      label: t('shareBtn'),
+                      icon: <ShareRoundedIcon fontSize="small" />,
+                      onClick: onOpenShare,
+                    },
+                  ]
+                : []),
+              ...(onOpenPrint
+                ? [
+                    {
+                      id: 'print',
+                      label: t('print.button'),
+                      icon: <PictureAsPdfRoundedIcon fontSize="small" />,
+                      onClick: onOpenPrint,
+                    },
+                  ]
+                : []),
+            ]}
+          />
         </Box>
       }
     />
