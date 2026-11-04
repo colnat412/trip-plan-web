@@ -241,21 +241,11 @@ const TripMembersDialog = ({
         fullWidth
         actions={canManageMembers ? (
           <AppButton
-            intent="secondary"
+            intent="primary"
             fullWidth
             startIcon={<PersonAddRoundedIcon />}
             onClick={() => setShowInviteForm(true)}
-            sx={(theme) => {
-              const palette = theme.vars?.palette ?? theme.palette;
-              return {
-                borderRadius: '999px', minHeight: 44,
-                bgcolor: palette.text.primary, color: palette.background.paper, borderColor: 'transparent',
-                '&:hover, &:active': {
-                  bgcolor: palette.text.primary, color: palette.background.paper,
-                  borderColor: 'transparent', opacity: 0.9,
-                },
-              };
-            }}
+            sx={{ borderRadius: '999px', minHeight: 44 }}
           >
             {t('inviteBtn')}
           </AppButton>
