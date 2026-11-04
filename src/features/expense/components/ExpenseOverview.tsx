@@ -30,6 +30,7 @@ import {
 import FinanceNavigation from './FinanceNavigation';
 import BudgetMetricsCards from './BudgetMetricsCards';
 import CategorySpendingList from './CategorySpendingList';
+import CategorySpendingChart from './CategorySpendingChart';
 import ExpenseTable from './ExpenseTable';
 import AddExpenseDialog from './AddExpenseDialog';
 import EditExpenseDialog from './EditExpenseDialog';
@@ -352,12 +353,26 @@ const ExpenseOverview = () => {
         />
       </Box>
 
-      {summary?.categoryBreakdown && (
-        <CategorySpendingList
-          breakdown={summary.categoryBreakdown}
-          currency={activeTrip.baseCurrency}
-          onOpenSetBudget={canManage ? () => setSetBudgetOpen(true) : undefined}
-        />
+      {!summaryError && summary?.categoryBreakdown && (
+        <Stack spacing={1.5}>
+          <CategorySpendingChart
+            key={String(tripId)}
+            breakdown={summary.categoryBreakdown}
+            currency={summary.currency || activeTrip.baseCurrency}
+          />
+          {summary.categoryBreakdown.some((item) => item.spentAmount > 0 || item.limitAmount > 0) && (
+            <Box component="details">
+              <Box component="summary" sx={{ cursor: 'pointer', color: 'primary.main', py: 1.5, fontSize: '14px', fontWeight: 600 }}>
+                {t('spendingChart.budgetDetails')}
+              </Box>
+              <CategorySpendingList
+                breakdown={summary.categoryBreakdown}
+                currency={summary.currency || activeTrip.baseCurrency}
+                onOpenSetBudget={canManage ? () => setSetBudgetOpen(true) : undefined}
+              />
+            </Box>
+          )}
+        </Stack>
       )}
 
       <ExpenseTable

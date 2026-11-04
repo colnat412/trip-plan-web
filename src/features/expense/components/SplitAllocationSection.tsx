@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Avatar, Box, Checkbox, Chip, Stack, Typography } from '@mui/material';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
-import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppButton, AppNumberInput } from '@/base/components/ui';
@@ -383,13 +382,9 @@ const SplitAllocationSection = ({
       </Stack>
 
       <Stack
-        spacing={1}
         sx={{
-          bgcolor: 'action.hover',
-          borderRadius: '12px',
-          p: 1.5,
-          border: 1,
-          borderColor: isValid ? 'divider' : 'warning.light',
+          borderTop: 1,
+          borderColor: 'divider',
         }}
       >
         {memberAllocations.map(({ member, selected, amount, splitValue }) => (
@@ -400,25 +395,24 @@ const SplitAllocationSection = ({
             sx={{
               alignItems: { xs: 'stretch', sm: 'center' },
               justifyContent: 'space-between',
-              bgcolor: selected ? 'background.paper' : 'transparent',
-              p: 1,
-              borderRadius: '8px',
-              border: 1,
-              borderColor: selected ? 'divider' : 'transparent',
+              py: 1.5,
+              borderBottom: 1,
+              borderColor: 'divider',
               opacity: selected ? 1 : 0.6,
-              transition: 'all 0.15s ease',
+              transition: 'opacity 0.15s ease',
             }}
           >
             <Stack
               direction="row"
               spacing={1}
-              sx={{ alignItems: 'center', minWidth: 0 }}
+              sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}
             >
               <Checkbox
                 size="small"
                 checked={selected}
                 onChange={() => handleToggleMember(member.userId)}
-                sx={{ p: 0.5 }}
+                slotProps={{ input: { 'aria-label': member.name || member.email || String(member.userId) } }}
+                sx={{ p: 1 }}
               />
               <Avatar
                 src={member.avatarUrl || undefined}
@@ -469,6 +463,7 @@ const SplitAllocationSection = ({
                 alignItems: 'center',
                 justifyContent: 'flex-end',
                 flexShrink: 0,
+                width: { xs: '100%', sm: 'auto' },
                 flexWrap: 'wrap',
                 gap: 1,
                 minWidth: 0,
@@ -492,13 +487,13 @@ const SplitAllocationSection = ({
 
               {splitType === 'EXACT_AMOUNT' && (
                 <Stack
-                  direction="row"
                   spacing={0.5}
-                  sx={{ alignItems: 'center' }}
+                  sx={{ width: { xs: '100%', sm: 190 }, alignItems: 'stretch' }}
                 >
-                  <Box sx={{ width: 130 }}>
+                  <Box sx={{ width: '100%' }}>
                     <AppNumberInput
                       size="small"
+                      fullWidth
                       disabled={!selected}
                       value={amount}
                       currencySuffix={currency}
@@ -507,10 +502,10 @@ const SplitAllocationSection = ({
                       }
                       slotProps={{
                         htmlInput: {
+                          'aria-label': `${t('form.amountLabel')} — ${member.name || member.email || member.userId}`,
                           style: {
                             textAlign: 'right',
-                            fontSize: '12px',
-                            padding: '4px 8px',
+                            fontSize: '14px',
                           },
                         },
                       }}
@@ -519,12 +514,11 @@ const SplitAllocationSection = ({
                   {selected && Math.abs(remaining) > 0 && (
                     <AppButton
                       size="small"
-                      intent="secondary"
-                      title={t('form.autoFillRemaining')}
+                      intent="text"
                       onClick={() => handleAutoFillRemaining(member.userId)}
-                      sx={{ minWidth: 28, px: 0.5, py: 0.5, height: 28 }}
+                      sx={{ alignSelf: 'flex-end', minHeight: 44, px: 1, fontSize: '12px' }}
                     >
-                      <AutoFixHighRoundedIcon sx={{ fontSize: 14 }} />
+                      {t('form.autoFillRemaining')}
                     </AppButton>
                   )}
                 </Stack>

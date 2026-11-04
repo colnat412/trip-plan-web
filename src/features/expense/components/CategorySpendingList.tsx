@@ -1,12 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Stack, Tooltip, Chip } from '@mui/material';
+import { Box, Typography, Stack, Chip } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import CategoryRoundedIcon from '@mui/icons-material/CategoryRounded';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
-import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import { useLocale, useTranslations } from 'next-intl';
 import { AppCard, AppButton } from '@/base/components/ui';
 import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
@@ -192,48 +191,6 @@ const CategorySpendingList = ({
               </Stack>
             </Stack>
           </Stack>
-
-          <Stack
-            direction="row"
-            useFlexGap
-            spacing={1}
-            sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}
-          >
-            {totalSpentInCategories > 0 && (
-              <Typography
-                variant="caption"
-                sx={{
-                  color: 'text.secondary',
-                  fontSize: '12px',
-                  fontFamily: 'var(--font-mono)',
-                  fontWeight: 600,
-                }}
-              >
-                Tổng chi danh mục:{' '}
-                <strong>
-                  {formatCurrency(totalSpentInCategories, currency, locale)}
-                </strong>
-              </Typography>
-            )}
-
-            {/* {onOpenSetBudget && (
-              <AppButton
-                size="small"
-                intent="secondary"
-                startIcon={<TuneRoundedIcon sx={{ fontSize: 16 }} />}
-                onClick={onOpenSetBudget}
-                sx={{
-                  fontSize: '12px',
-                  py: 0.25,
-                  px: 1.25,
-                  minHeight: 28,
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {t('adjustBudget')}
-              </AppButton>
-            )} */}
-          </Stack>
         </Stack>
 
         {overLimitItems.length > 0 && (
@@ -331,62 +288,6 @@ const CategorySpendingList = ({
             )}
           </Box>
         )}
-
-        <Box
-          sx={{
-            display: 'flex',
-            width: '100%',
-            height: 10,
-            borderRadius: '6px',
-            overflow: 'hidden',
-            bgcolor: 'action.hover',
-          }}
-        >
-          {totalSpentInCategories > 0 ? (
-            sortedItems.map((item) => {
-              const config =
-                CATEGORY_CONFIG[item.category] || CATEGORY_CONFIG.OTHER;
-              const percent = (item.spentAmount / totalSpentInCategories) * 100;
-              const categoryName =
-                tCategories(item.category as 'OTHER') || item.category;
-              const hasLimit = item.limitAmount > 0;
-              const isOver = hasLimit && item.spentAmount > item.limitAmount;
-              const overAmount = isOver
-                ? item.spentAmount - item.limitAmount
-                : 0;
-              const percentOfLimit = hasLimit
-                ? (item.spentAmount / item.limitAmount) * 100
-                : 0;
-
-              let tooltipTitle = `${categoryName}: ${formatCurrency(item.spentAmount, currency, locale)} (${percent.toFixed(1)}% tổng chi)`;
-              if (hasLimit) {
-                if (isOver) {
-                  tooltipTitle += ` · [CẢNH BÁO: Vượt ${formatCurrency(overAmount, currency, locale)} (${percentOfLimit.toFixed(0)}% hạn mức)]`;
-                } else {
-                  tooltipTitle += ` · [Hạn mức: ${formatCurrency(item.limitAmount, currency, locale)} - Đã dùng ${percentOfLimit.toFixed(0)}%]`;
-                }
-              }
-
-              return (
-                <Tooltip key={item.category} title={tooltipTitle} arrow>
-                  <Box
-                    sx={{
-                      width: `${percent}%`,
-                      bgcolor: isOver ? 'error.main' : config.color,
-                      minWidth: item.spentAmount > 0 ? '6px' : 0,
-                      transition: 'width 0.3s ease',
-                      borderRight: '1px solid',
-                      borderRightColor: 'background.paper',
-                      '&:hover': { opacity: 0.85 },
-                    }}
-                  />
-                </Tooltip>
-              );
-            })
-          ) : (
-            <Box sx={{ width: '100%', bgcolor: 'divider' }} />
-          )}
-        </Box>
 
         <Box
           sx={{
