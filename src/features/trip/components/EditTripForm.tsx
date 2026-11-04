@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 
 import {
   AppButton,
+  AppDatePicker,
   AppImageUploader,
   AppTextArea,
   AppTextField,
@@ -14,6 +15,7 @@ import {
 import DestinationAutocomplete from './DestinationAutocomplete';
 import { useUpdateTrip } from '../hooks/useTripMutation';
 import type { Trip, TripStatus } from '../types';
+import { TRIP_STATUS_OPTIONS, TRIP_STATUS_PRESENTATION } from '../constants/trip-status';
 
 interface EditTripFormProps {
   trip: Trip;
@@ -53,15 +55,6 @@ const EditTripForm = ({
   const [errors, setErrors] = useState<TripFormErrors>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const STATUS_OPTIONS: Array<{ value: TripStatus; label: string }> = [
-    { value: 'DRAFT', label: t('draft') },
-    { value: 'PLANNING', label: t('planning') },
-    { value: 'CONFIRMED', label: t('confirmed') },
-    { value: 'IN_PROGRESS', label: t('inProgress') },
-    { value: 'COMPLETED', label: t('completed') },
-    { value: 'ARCHIVED', label: t('archived') },
-    { value: 'CANCELLED', label: t('cancelled') },
-  ];
 
   const { updateTrip, isPending } = useUpdateTrip({
     tripId: trip.id,
@@ -194,41 +187,20 @@ const EditTripForm = ({
             }}
           />
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <AppTextField
-              disabled={isPending}
-              label={t('startDate')}
-              type="date"
-              required
-              value={startDate}
-              error={Boolean(errors.startDate)}
-              helperText={errors.startDate}
-              slotProps={{ inputLabel: { shrink: true } }}
-              onChange={(e) => {
-                setStartDate(e.target.value);
-                if (errors.startDate) {
-                  setErrors((prev) => ({ ...prev, startDate: undefined }));
-                }
-              }}
-            />
-
-            <AppTextField
-              disabled={isPending}
-              label={t('endDate')}
-              type="date"
-              required
-              value={endDate}
-              error={Boolean(errors.endDate)}
-              helperText={errors.endDate}
-              slotProps={{ inputLabel: { shrink: true } }}
-              onChange={(e) => {
-                setEndDate(e.target.value);
-                if (errors.endDate) {
-                  setErrors((prev) => ({ ...prev, endDate: undefined }));
-                }
-              }}
-            />
-          </Stack>
+          <AppDatePicker
+            mode="range"
+            label={t('dateRangeLabel')}
+            required
+            value={[startDate, endDate]}
+            disabled={isPending}
+            error={Boolean(errors.startDate || errors.endDate)}
+            helperText={errors.startDate || errors.endDate}
+            onChange={([start, end]) => {
+              setStartDate(start);
+              setEndDate(end);
+              setErrors((previous) => ({ ...previous, startDate: undefined, endDate: undefined }));
+            }}
+          />
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -253,13 +225,13 @@ const EditTripForm = ({
                 disabled={isPending}
                 select
                 label={t('statusLabel')}
-                value={status}
+                value={TRIP_STATUS_PRESENTATION[status].value}
                 slotProps={{ inputLabel: { shrink: true } }}
                 onChange={(e) => setStatus(e.target.value as TripStatus)}
               >
-                {STATUS_OPTIONS.map((option) => (
+                {TRIP_STATUS_OPTIONS.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
-                    {option.label}
+                    {t(option.labelKey)}
                   </MenuItem>
                 ))}
               </AppTextField>

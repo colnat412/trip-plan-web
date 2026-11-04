@@ -4,6 +4,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Box, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import {
+  AppDatePicker,
   AppButton,
   AppNumberInput,
   AppTextField,
@@ -197,19 +198,17 @@ const EditExpenseForm = ({
 
       <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <AppTextField
+          <AppDatePicker
             label={tForm('dateLabel')}
-            type="date"
             value={expenseDate}
-            onChange={(e) => {
-              setExpenseDate(e.target.value);
+            onChange={(value) => {
+              setExpenseDate(value);
               if (errors.expenseDate) {
                 setErrors((prev) => ({ ...prev, expenseDate: undefined }));
               }
             }}
             error={Boolean(errors.expenseDate)}
             helperText={errors.expenseDate}
-            slotProps={{ inputLabel: { shrink: true } }}
           />
         </Box>
 

@@ -1,12 +1,9 @@
 'use client';
 
-import { AppLoadingIndicator } from '@/base/components/ui';
-
 import { useState } from 'react';
-import { Alert, Box, Stack, Typography } from '@mui/material';
+import { Alert } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
-import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
 
 import AppDialog from '@/base/components/ui/AppDialog';
 import AppButton from '@/base/components/ui/AppButton';
@@ -235,88 +232,80 @@ const TripMembersDialog = ({
       <AppDialog
         open={open}
         onClose={onClose}
-        title={t('dialogTitle')}
-        icon={<GroupRoundedIcon />}
+        title={!isLoading && !isStale && !error
+          ? t('dialogTitleWithCount', { count: members.length })
+          : t('dialogTitle')}
+        description={t('dialogSubtitle')}
+        showSheetHandle
         maxWidth="sm"
         fullWidth
-      >
-        <Stack spacing={2.5}>
-          <Typography
-            sx={{ fontSize: '13px', color: 'text.secondary', lineHeight: 1.6 }}
-          >
-            {t('dialogSubtitle')}
-          </Typography>
-          {!isInviteVisible && (
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexWrap: 'wrap',
-                gap: 1.5,
-                '& > .MuiButton-root': {
-                  flex: { xs: '1 0 auto', sm: '0 0 auto' },
+        actions={canManageMembers ? (
+          <AppButton
+            intent="secondary"
+            fullWidth
+            startIcon={<PersonAddRoundedIcon />}
+            onClick={() => setShowInviteForm(true)}
+            sx={(theme) => {
+              const palette = theme.vars?.palette ?? theme.palette;
+              return {
+                borderRadius: '999px', minHeight: 44,
+                bgcolor: palette.text.primary, color: palette.background.paper, borderColor: 'transparent',
+                '&:hover, &:active': {
+                  bgcolor: palette.text.primary, color: palette.background.paper,
+                  borderColor: 'transparent', opacity: 0.9,
                 },
-              }}
-            >
-              {isLoading || (isStale && !error) ? (
-                <AppLoadingIndicator size={24} />
-              ) : !error ? (
-                <Typography sx={{ color: 'text.secondary', fontSize: '13px' }}>
-                  {t('memberCount', { count: members.length })}
-                </Typography>
-              ) : null}
-              {canManageMembers && (
-                <AppButton
-                  intent="primary"
-                  startIcon={<PersonAddRoundedIcon />}
-                  onClick={() => setShowInviteForm(true)}
-                  sx={{ fontSize: '13px', px: 2, borderRadius: '10px' }}
-                >
-                  {t('inviteBtn')}
-                </AppButton>
-              )}
-            </Box>
-          )}
+              };
+            }}
+          >
+            {t('inviteBtn')}
+          </AppButton>
+        ) : undefined}
+      >
+        {error ? (
+          <Alert
+            severity="error"
+            action={
+              <AppButton
+                intent="text"
+                size="small"
+                onClick={() => void refetch().catch(() => undefined)}
+              >
+                {t('retry')}
+              </AppButton>
+            }
+          >
+            {t('loadError')}
+          </Alert>
+        ) : (
+          <TripMemberList
+            members={isStale ? [] : members}
+            isLoading={isLoading || isStale}
+            isCurrentUserOwner={isCurrentUserOwner}
+            currentUserRole={currentUserRole}
+            currentUserId={currentMember?.userId}
+            onEditRole={(m) => setEditingMember(m)}
+            onRemove={(m) => setRemovingMember(m)}
+            onLeave={() => setIsLeaving(true)}
+            onAccept={handleAcceptMember}
+          />
+        )}
+      </AppDialog>
 
-          {isInviteVisible && (
-            <InviteMemberForm
-              onSubmit={handleInviteSubmit}
-              onCancel={() => setShowInviteForm(false)}
-              isSubmitting={isInviting}
-              canAssignVice={isCurrentUserOwner}
-            />
-          )}
-
-          {error ? (
-            <Alert
-              severity="error"
-              action={
-                <AppButton
-                  intent="text"
-                  size="small"
-                  onClick={() => void refetch().catch(() => undefined)}
-                >
-                  {t('retry')}
-                </AppButton>
-              }
-            >
-              {t('loadError')}
-            </Alert>
-          ) : (
-            <TripMemberList
-              members={isStale ? [] : members}
-              isLoading={isLoading || isStale}
-              isCurrentUserOwner={isCurrentUserOwner}
-              currentUserRole={currentUserRole}
-              currentUserId={currentMember?.userId}
-              onEditRole={(m) => setEditingMember(m)}
-              onRemove={(m) => setRemovingMember(m)}
-              onLeave={() => setIsLeaving(true)}
-              onAccept={handleAcceptMember}
-            />
-          )}
-        </Stack>
+      <AppDialog
+        open={open && isInviteVisible}
+        onClose={() => setShowInviteForm(false)}
+        closeDisabled={isInviting}
+        title={t('inviteTitle')}
+        maxWidth="sm"
+      >
+        {isInviteVisible && (
+          <InviteMemberForm
+            onSubmit={handleInviteSubmit}
+            onCancel={() => setShowInviteForm(false)}
+            isSubmitting={isInviting}
+            canAssignVice={isCurrentUserOwner}
+          />
+        )}
       </AppDialog>
 
       <EditMemberRoleDialog

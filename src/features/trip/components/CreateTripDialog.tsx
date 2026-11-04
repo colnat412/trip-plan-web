@@ -2,12 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useState } from 'react';
-import { Box, MenuItem, Stack } from '@mui/material';
+import { Box, MenuItem } from '@mui/material';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { useTranslations } from 'next-intl';
 
 import {
   AppButton,
+  AppDatePicker,
   AppDialog,
   AppTextArea,
   AppTextField,
@@ -218,43 +219,21 @@ const CreateTripDialog = ({
             }}
           />
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <AppTextField
-              label={t('startDate')}
-              type="date"
-              required
-              value={startDate}
-              error={Boolean(formErrors.startDate)}
-              helperText={formErrors.startDate}
-              disabled={createMutation.isPending}
-              slotProps={{
-                inputLabel: { shrink: true },
-              }}
-              onChange={(e) => {
-                setStartDate(e.target.value);
-                setFormErrors((prev) => ({ ...prev, startDate: undefined }));
-                createMutation.clearError();
-              }}
-            />
-
-            <AppTextField
-              label={t('endDate')}
-              type="date"
-              required
-              value={endDate}
-              error={Boolean(formErrors.endDate)}
-              helperText={formErrors.endDate}
-              disabled={createMutation.isPending}
-              slotProps={{
-                inputLabel: { shrink: true },
-              }}
-              onChange={(e) => {
-                setEndDate(e.target.value);
-                setFormErrors((prev) => ({ ...prev, endDate: undefined }));
-                createMutation.clearError();
-              }}
-            />
-          </Stack>
+          <AppDatePicker
+            mode="range"
+            label={t('dateRangeLabel')}
+            required
+            value={[startDate, endDate]}
+            disabled={createMutation.isPending}
+            error={Boolean(formErrors.startDate || formErrors.endDate)}
+            helperText={formErrors.startDate || formErrors.endDate}
+            onChange={([start, end]) => {
+              setStartDate(start);
+              setEndDate(end);
+              setFormErrors((previous) => ({ ...previous, startDate: undefined, endDate: undefined }));
+              createMutation.clearError();
+            }}
+          />
 
           <AppTextField
             select

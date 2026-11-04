@@ -77,19 +77,21 @@ const AppBottomNavigation = () => {
                 minWidth: 0,
                 maxWidth: 'none',
                 minHeight: 48,
-                borderRadius: '18px',
+                borderRadius: '999px',
+                overflow: 'hidden',
                 px: 0.5,
                 py: 0.75,
                 gap: 0.5,
                 color: 'text.secondary',
                 transition: 'background-color 0.15s ease, color 0.15s ease',
-                '&:hover': {
-                  bgcolor: 'action.hover',
+                '@media (hover: hover) and (pointer: fine)': {
+                  '&:hover': { bgcolor: 'action.hover' },
                 },
+                '&:active': { bgcolor: 'action.hover' },
                 '&.Mui-selected': {
                   color: 'text.secondary',
                   bgcolor: 'transparent',
-                  '&:hover': {
+                  '&:hover, &:active': {
                     bgcolor: 'transparent',
                   },
                 },
@@ -120,6 +122,7 @@ const AppBottomNavigation = () => {
           {MOBILE_PRIMARY_NAVIGATION_ITEMS.map((item) => (
             <BottomNavigationAction
               key={item.id}
+              disableRipple
               component={Link}
               href={item.href}
               value={item.id}
@@ -130,6 +133,7 @@ const AppBottomNavigation = () => {
           ))}
           {hasMoreNavigation && (
             <BottomNavigationAction
+              disableRipple
               value="more"
               label={t('more')}
               icon={<MoreHorizRoundedIcon />}

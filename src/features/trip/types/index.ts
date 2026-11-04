@@ -1,10 +1,7 @@
 export type TripStatus =
   | 'DRAFT'
-  | 'PLANNING'
-  | 'CONFIRMED'
   | 'IN_PROGRESS'
   | 'COMPLETED'
-  | 'ARCHIVED'
   | 'CANCELLED'
   | 'DELETED';
 

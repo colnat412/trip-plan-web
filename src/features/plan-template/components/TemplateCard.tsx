@@ -1,128 +1,107 @@
 'use client';
+
 import Link from 'next/link';
-import { TemplateSaveButton } from './TemplateSaveControls';
-import { Box, Stack, Typography, Chip, IconButton, Tooltip } from '@mui/material';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
-import TemplateBanner from './TemplateBanner';
-import { useLocale, useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { Box, Stack, Typography } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { useTranslations } from 'next-intl';
 import { AppCard } from '@/base/components/ui';
-import { formatCurrency } from '@/base/utils';
+import { TemplateSaveButton } from './TemplateSaveControls';
 import type { TemplateCardData } from '../types';
-import { TEMPLATE_TAGS } from '../types';
+
 const TemplateCard = ({
   template,
   compact = false,
-  featured = false,
 }: {
   template: TemplateCardData;
   compact?: boolean;
-  featured?: boolean;
 }) => {
-  const locale = useLocale();
+  const router = useRouter();
   const t = useTranslations('planTemplate');
+  const href = `/templates/${template.id}`;
+
   return (
     <AppCard
       component="article"
-      sx={{ minWidth: 0, height: '100%', overflowWrap: 'anywhere', borderRadius: '20px', p: 2 }}
-      contentSx={{ height: '100%' }}
+      onClick={(event) => {
+        // The native link handles text clicks; the surrounding image also opens the template.
+        if (!(event.target as HTMLElement).closest('a, button, [data-template-save]')) {
+          router.push(href);
+        }
+      }}
+      sx={(theme) => ({
+        minWidth: 0,
+        height: '100%',
+        p: 0,
+        borderRadius: '18px',
+        overflow: 'hidden',
+        cursor: 'pointer',
+        WebkitTapHighlightColor: 'transparent',
+        color: theme.palette.common.white,
+        bgcolor: 'primary.dark',
+        backgroundImage: template.coverUrl
+          ? `linear-gradient(180deg, ${alpha(theme.palette.common.black, 0.12)} 0%, ${alpha(theme.palette.common.black, 0.12)} 30%, ${alpha(theme.palette.common.black, 0.88)} 100%), url(${JSON.stringify(template.coverUrl)})`
+          : `linear-gradient(145deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        borderColor: 'divider',
+        '&:hover, &:focus-within': { borderColor: 'primary.light' },
+      })}
+      contentSx={{
+        display: 'flex', flexDirection: 'column', height: '100%',
+        minHeight: compact ? 260 : { xs: 280, sm: 320 },
+      }}
     >
-      <Box sx={{
-        display: 'grid', gap: 2, height: '100%', minWidth: 0,
-        gridTemplateRows: featured ? undefined : 'auto minmax(0, 1fr)',
-        gridTemplateColumns: featured ? { xs: 'minmax(0, 1fr)', sm: 'minmax(160px, 30%) minmax(0, 1fr)' } : 'minmax(0, 1fr)',
-      }}>
-        <TemplateBanner src={template.coverUrl} title={template.title} compact={compact} featured={featured} />
-        <Stack spacing={1} sx={{ minWidth: 0 }}>
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}>
+      <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', gap: 1, p: 1.25 }}>
+        <Typography component="span" sx={(theme) => ({
+          px: 1.25, py: 0.5, borderRadius: '10px', fontSize: '12px', fontWeight: 700,
+          color: theme.palette.common.white,
+          bgcolor: alpha(theme.palette.common.black, 0.56),
+        })}>
+          {t('durationLabel', { days: template.durationDays })}
+        </Typography>
+        <Box data-template-save sx={(theme) => ({
+          borderRadius: '50%',
+          bgcolor: alpha(theme.palette.common.black, 0.56),
+          '& .MuiIconButton-root': { color: theme.palette.common.white },
+          '& .MuiIconButton-root.Mui-disabled': { color: alpha(theme.palette.common.white, 0.5) },
+        })}>
+          <TemplateSaveButton id={template.id} iconOnly />
+        </Box>
+      </Stack>
+      <Box
+        component={Link}
+        href={href}
+        sx={{
+          display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+          flex: 1, minWidth: 0, gap: 0.75, p: 2,
+          color: 'inherit', textDecoration: 'none',
+          WebkitTapHighlightColor: 'transparent',
+          '&:focus-visible': { outline: '3px solid', outlineColor: 'primary.light', outlineOffset: -3 },
+        }}
+      >
         <Typography
           component={compact ? 'h3' : 'h2'}
           title={template.title}
           sx={{
-            fontWeight: 700,
-            minWidth: 0,
-            flex: 1,
-            pt: 1,
-            ...(compact
-              ? {
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
-                }
-              : {}),
+            fontSize: compact ? '18px' : '20px', fontWeight: 700, lineHeight: 1.3,
+            color: 'inherit', overflowWrap: 'anywhere',
+            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
           }}
         >
           {template.title}
         </Typography>
-        <Stack direction="row" spacing={0.5} sx={{ flexShrink: 0, alignItems: 'center' }}>
-          <TemplateSaveButton id={template.id} iconOnly />
-          <Tooltip title={t('view')}>
-            <IconButton
-              component={Link}
-              href={`/templates/${template.id}`}
-              aria-label={t('view')}
-              color="primary"
-              sx={{ width: 44, height: 44 }}
-            >
-              <VisibilityRoundedIcon />
-            </IconButton>
-          </Tooltip>
-        </Stack>
-        </Stack>
-        <Typography
-          variant="body2"
-          title={template.destination}
-          sx={
-            compact
-              ? {
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                  overflow: 'hidden',
-                }
-              : undefined
-          }
-        >
+        <Typography variant="body2" title={template.destination} sx={{
+          color: 'inherit', opacity: 0.9, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>
           {template.destination}
         </Typography>
-        <Typography variant="body2">
-          {t('summary', {
-            days: template.durationDays,
-            activities: template.activityCount,
-          })}
+        <Typography variant="caption" sx={{ color: 'inherit', opacity: 0.8 }}>
+          {t('activityLabel', { count: template.activityCount })}
         </Typography>
-        {!compact && (
-          <Typography variant="body2">
-            {t('cost')}:{' '}
-            {formatCurrency(template.estimatedCost, template.currency, locale)}
-          </Typography>
-        )}
-        {!compact && (
-          <Typography variant="caption">
-            {t('author', {
-              name: template.authorName,
-              count: template.usageCount,
-            })}
-          </Typography>
-        )}
-        {!compact && (
-          <Stack
-            direction="row"
-            useFlexGap
-            spacing={0.5}
-            sx={{ flexWrap: 'wrap' }}
-          >
-            {TEMPLATE_TAGS.filter((tag) =>
-              template.tags.split(',').includes(tag),
-            ).map((tag) => (
-              <Chip size="small" key={tag} label={t(`tags.${tag}`)} />
-            ))}
-          </Stack>
-        )}
-
-        </Stack>
       </Box>
     </AppCard>
   );
 };
+
 export default TemplateCard;

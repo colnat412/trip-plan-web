@@ -8,6 +8,7 @@ import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import { useTranslations } from 'next-intl';
 
 import {
+  AppDatePicker,
   AppButton,
   AppNumberInput,
   AppSelect,
@@ -185,13 +186,10 @@ const RecordSettlementForm = ({
           }}
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
-            <AppTextField
-              type="date"
+            <AppDatePicker
               label={tDialog('dateLabel')}
               value={settledAt}
-              onChange={(e) => setSettledAt(e.target.value)}
-              fullWidth
-              slotProps={{ inputLabel: { shrink: true } }}
+              onChange={(value) => setSettledAt(value)}
             />
           </Box>
 

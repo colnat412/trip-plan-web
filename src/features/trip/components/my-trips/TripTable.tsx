@@ -22,6 +22,7 @@ import {
 import { formatDateRange } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
 import TripStatusChip from './TripStatusChip';
+import { TRIP_STATUS_OPTIONS } from '../../constants/trip-status';
 import type { Trip } from '../../types';
 
 export interface TripTableProps {
@@ -184,14 +185,9 @@ const TripTable = ({
         // sortable: true,
         filterable: true,
         filterType: 'select',
-        filterOptions: [
-          { label: tTrip('draft'), value: 'DRAFT' },
-          { label: tTrip('planning'), value: 'PLANNING' },
-          { label: tTrip('inProgress'), value: 'IN_PROGRESS' },
-          { label: tTrip('completed'), value: 'COMPLETED' },
-          { label: tTrip('archived'), value: 'ARCHIVED' },
-          { label: tTrip('cancelled'), value: 'CANCELLED' },
-        ],
+        filterOptions: TRIP_STATUS_OPTIONS.map((option) => ({
+          label: tTrip(option.labelKey), value: option.filterValue,
+        })),
         getValue: (trip) => trip.status,
         renderCell: (trip) => <TripStatusChip status={trip.status} />,
       },

@@ -5,50 +5,15 @@ import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import type { TripStatus } from '../../types';
 
+import { TRIP_STATUS_PRESENTATION } from '../../constants/trip-status';
+
 interface TripStatusChipProps {
   status: TripStatus;
 }
 
-type StatusThemeVariant =
-  | 'success'
-  | 'warning'
-  | 'info'
-  | 'primary'
-  | 'secondary'
-  | 'neutral'
-  | 'error';
-
-type StatusLabelKey =
-  | 'inProgress'
-  | 'planning'
-  | 'confirmed'
-  | 'completed'
-  | 'archived'
-  | 'cancelled'
-  | 'draft';
-
-interface StatusConfig {
-  variant: StatusThemeVariant;
-  labelKey: StatusLabelKey;
-}
-
-const STATUS_CONFIG_MAP: Record<TripStatus, StatusConfig> = {
-  COMPLETED: { variant: 'success', labelKey: 'completed' },
-  IN_PROGRESS: { variant: 'warning', labelKey: 'inProgress' },
-  PLANNING: { variant: 'info', labelKey: 'planning' },
-  CONFIRMED: { variant: 'primary', labelKey: 'confirmed' },
-  ARCHIVED: { variant: 'neutral', labelKey: 'archived' },
-  CANCELLED: { variant: 'error', labelKey: 'cancelled' },
-  DELETED: { variant: 'error', labelKey: 'cancelled' },
-  DRAFT: { variant: 'neutral', labelKey: 'draft' },
-};
-
 const TripStatusChip = ({ status }: TripStatusChipProps) => {
   const t = useTranslations('trip');
-  const config = STATUS_CONFIG_MAP[status] ?? {
-    variant: 'neutral' as StatusThemeVariant,
-    labelKey: 'draft' as StatusLabelKey,
-  };
+  const config = TRIP_STATUS_PRESENTATION[status] ?? TRIP_STATUS_PRESENTATION.DRAFT;
 
   return (
     <Chip
@@ -63,26 +28,7 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
             borderRadius: '50%',
             ml: '6px !important',
             mr: '-2px !important',
-            bgcolor: (theme) => {
-              const palette = theme.palette;
-              switch (config.variant) {
-                case 'success':
-                  return palette.success.main;
-                case 'warning':
-                  return palette.warning.main;
-                case 'info':
-                  return palette.info.main;
-                case 'primary':
-                  return palette.primary.main;
-                case 'secondary':
-                  return palette.secondary.main;
-                case 'error':
-                  return palette.error.main;
-                case 'neutral':
-                default:
-                  return palette.text.secondary;
-              }
-            },
+            bgcolor: (theme) => theme.palette[config.variant].main,
           }}
         />
       }
@@ -92,45 +38,8 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
         borderRadius: '6px',
         border: 'none',
         height: 24,
-        bgcolor: (theme) => {
-          switch (config.variant) {
-            case 'success':
-              return alpha(theme.palette.success.main, 0.12);
-            case 'warning':
-              return alpha(theme.palette.warning.main, 0.12);
-            case 'info':
-              return alpha(theme.palette.info.main, 0.12);
-            case 'primary':
-              return alpha(theme.palette.primary.main, 0.12);
-            case 'secondary':
-              return alpha(theme.palette.secondary.main, 0.12);
-            case 'error':
-              return alpha(theme.palette.error.main, 0.12);
-            case 'neutral':
-            default:
-              return theme.palette.action.hover;
-          }
-        },
-        color: (theme) => {
-          const palette = theme.palette;
-          switch (config.variant) {
-            case 'success':
-              return palette.success.dark;
-            case 'warning':
-              return palette.warning.dark;
-            case 'info':
-              return palette.info.dark;
-            case 'primary':
-              return palette.primary.main;
-            case 'secondary':
-              return palette.secondary.dark;
-            case 'error':
-              return palette.error.main;
-            case 'neutral':
-            default:
-              return palette.text.secondary;
-          }
-        },
+        bgcolor: (theme) => alpha(theme.palette[config.variant].main, 0.12),
+        color: (theme) => theme.palette[config.variant].dark,
         '& .MuiChip-label': {
           px: 1,
         },

@@ -4,6 +4,7 @@ import { AppLoadingState, AppButton, AppCard, AppEmptyState, AppSectionHeader } 
 
 import { useState } from 'react';
 import Link from 'next/link';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Alert, Box, Pagination, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
@@ -29,12 +30,23 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
     savedOnly, search, duration, tag, sort, page, size: compact ? 3 : 12, initialData,
   });
   const data = query.listing;
-  const featured = compact && data?.content.length === 1;
   const content = (
     <Stack spacing={2} sx={{ width: '100%', minWidth: 0 }}>
       {compact ? (
-        <AppSectionHeader title={t('library')} actions={
-          <AppButton component={Link} href="/templates" intent="text" size="medium" sx={{ minHeight: 44 }}>
+        <AppSectionHeader title={t('homeLibrary')} actions={
+          <AppButton
+            component={Link}
+            href="/templates"
+            intent="text"
+            size="medium"
+            disableRipple
+            sx={{
+              minHeight: 44,
+              WebkitTapHighlightColor: 'transparent',
+              '&:hover, &:active': { backgroundColor: 'transparent', color: 'primary.dark' },
+            }}
+            endIcon={<ArrowForwardRoundedIcon />}
+          >
             {t('all')}
           </AppButton>
         } />
@@ -82,7 +94,7 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
       >
         <Box
           role={compact ? 'region' : undefined}
-          aria-label={compact ? t('library') : undefined}
+          aria-label={compact ? t('homeLibrary') : undefined}
           tabIndex={compact ? 0 : undefined}
           sx={{
             display: compact ? { xs: 'flex', md: 'grid' } : 'grid',
@@ -98,12 +110,12 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
         >
           {data?.content.map((item) => (
             <Box key={item.id} sx={{
-              flex: compact ? (featured ? '1 1 100%' : '0 0 260px') : undefined,
+              flex: compact ? '0 0 200px' : undefined,
               scrollSnapAlign: compact ? 'start' : undefined,
               minWidth: 0,
-              maxWidth: compact ? { xs: featured ? '100%' : '85%', md: 'none' } : undefined,
+              maxWidth: compact ? { xs: '78%', md: 'none' } : undefined,
             }}>
-              <TemplateCard template={item} compact={compact} featured={featured} />
+              <TemplateCard template={item} compact={compact} />
             </Box>
           ))}
         </Box>

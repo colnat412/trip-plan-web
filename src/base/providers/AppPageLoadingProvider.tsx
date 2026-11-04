@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from 'react';
 import { usePathname } from 'next/navigation';
+import { Box } from '@mui/material';
 import AppLoadingOverlay from '@/base/components/ui/AppLoadingOverlay';
 
 export const AppPageLoadingContext = createContext<{
@@ -45,6 +46,7 @@ const AppPageLoadingProvider = ({ children }: { children: ReactNode }) => {
     [registerLoading, initialPageLoad],
   );
   const hasPendingSections = [...pending.values()].some((id) => id === visit.id);
+  const isPageLoading = initialPageLoad && hasPendingSections;
 
   useEffect(() => {
     if (!initialPageLoad || hasPendingSections) return;
@@ -60,8 +62,13 @@ const AppPageLoadingProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AppPageLoadingContext.Provider value={context}>
-      {children}
-      <AppLoadingOverlay open={initialPageLoad && hasPendingSections} />
+      <Box aria-busy={isPageLoading} sx={{ display: 'flex', flexDirection: 'column', minHeight: '100%', minWidth: 0 }}>
+        {/* Keep queries mounted while their initial content is hidden. */}
+        <Box hidden={isPageLoading} inert={isPageLoading} sx={{ flex: 1, minWidth: 0 }}>
+          {children}
+        </Box>
+        <AppLoadingOverlay open={isPageLoading} scope="content" />
+      </Box>
     </AppPageLoadingContext.Provider>
   );
 };

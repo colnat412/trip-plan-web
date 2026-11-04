@@ -14,6 +14,7 @@ import { UserProvider } from '@/features/user/context/UserContext';
 import { PUBLIC_AUTH_PATHS, PUBLIC_PATHS } from '@/base/constants';
 import PolicyAcceptanceGate from '@/features/legal/components/PolicyAcceptanceGate';
 import { DESKTOP_NAV_BREAKPOINT } from './navigation/config';
+import AppPageLoadingProvider from '@/base/providers/AppPageLoadingProvider';
 
 export interface AppShellProps {
   children: ReactNode;
@@ -79,12 +80,14 @@ const AppShell = ({
           pr: 'env(safe-area-inset-right, 0px)',
         }}
       >
-        {children}
+        <AppPageLoadingProvider>
+          {children}
+          {withAccount && <GlobalLoadingHost />}
+        </AppPageLoadingProvider>
       </Box>
       <AppBottomNavigation />
       {withAccount && <CreateTripHost />}
       {withAccount && <TripMembersHost />}
-      {withAccount && <GlobalLoadingHost />}
     </Box>
   );
   if (isLibrary && !hasSession) {

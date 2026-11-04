@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 
 import {
   AppButton,
+  AppTimePicker,
   AppNumberInput,
   AppSelect,
   AppTextArea,
@@ -120,42 +121,19 @@ const AddActivityForm = ({
           </Box>
         </Box>
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: 2,
+        <AppTimePicker
+          mode="range"
+          label={tDialog('timeRangeLabel')}
+          value={[startTime, endTime]}
+          disabled={isLoading}
+          error={!!timeError}
+          helperText={timeError}
+          onChange={([start, end]) => {
+            setStartTime(start);
+            setEndTime(end);
+            if (timeError) setTimeError('');
           }}
-        >
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <AppTextField
-              label={tDialog('startTimeLabel')}
-              type="time"
-              value={startTime}
-              onChange={(e) => {
-                setStartTime(e.target.value);
-                if (timeError) setTimeError('');
-              }}
-              slotProps={{ inputLabel: { shrink: true } }}
-              fullWidth
-            />
-          </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <AppTextField
-              label={tDialog('endTimeLabel')}
-              type="time"
-              value={endTime}
-              onChange={(e) => {
-                setEndTime(e.target.value);
-                if (timeError) setTimeError('');
-              }}
-              error={!!timeError}
-              helperText={timeError}
-              slotProps={{ inputLabel: { shrink: true } }}
-              fullWidth
-            />
-          </Box>
-        </Box>
+        />
 
         <LocationAutocompleteInput
           label={tDialog('locationLabel')}

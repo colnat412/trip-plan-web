@@ -36,6 +36,7 @@ export interface AppDialogProps {
   mobilePresentation?: 'sheet' | 'dialog';
   mobileCloseLabel?: string;
   contentRef?: Ref<HTMLDivElement>;
+  showSheetHandle?: boolean;
 }
 
 const AppDialog = ({
@@ -55,6 +56,7 @@ const AppDialog = ({
   mobilePresentation = 'sheet',
   mobileCloseLabel,
   contentRef,
+  showSheetHandle = false,
 }: AppDialogProps) => {
   const t = useTranslations('dialog');
   const titleId = useId();
@@ -145,6 +147,11 @@ const AppDialog = ({
         },
       }}
     >
+      {isSheet && showSheetHandle && (
+        <Box aria-hidden="true" sx={{ display: 'flex', justifyContent: 'center', pt: 1.5, flexShrink: 0 }}>
+          <Box sx={{ width: 36, height: 4, borderRadius: '999px', bgcolor: 'text.disabled' }} />
+        </Box>
+      )}
       <DialogTitle
         component="div"
         sx={{

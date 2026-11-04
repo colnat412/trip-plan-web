@@ -1,4 +1,26 @@
 {
+  "timePicker": {
+    "placeholder": "HH:mm",
+    "rangePlaceholder": "Start time – End time",
+    "rangeLabel": "Choose time range endpoint",
+    "start": "Start",
+    "end": "End",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "apply": "Apply",
+    "clear": "Clear time",
+    "clearStart": "Clear start time",
+    "clearEnd": "Clear end time",
+    "invalidOrder": "End time must be on or after start time."
+  },
+  "calendar": {
+    "rangePlaceholder": "Start date – End date",
+    "datePlaceholder": "DD/MM/YYYY",
+    "selectStart": "Select start date",
+    "selectEnd": "Select end date",
+    "selectDate": "Select date",
+    "apply": "Apply"
+  },
   "locationMap": {
     "title": "Map: {location}",
     "open": "Open in Google Maps",
@@ -237,6 +259,7 @@
     "popularDestinations": "Popular Destinations",
     "searchingDestinations": "Searching destinations...",
     "noDestinationsFound": "No matching destinations found",
+    "dateRangeLabel": "Trip dates",
     "startDate": "Start Date",
     "startDateRequired": "Please select start date.",
     "endDate": "End Date",
@@ -584,7 +607,8 @@
     "retry": "Try again",
     "loadError": "Could not load trip members.",
     "dialogTitle": "Members",
-    "dialogSubtitle": "Manage participants, assign permissions, and invite friends to share expenses.",
+    "dialogTitleWithCount": "Members ({count})",
+    "dialogSubtitle": "Manage trip participants",
     "memberCount": "{count} members",
     "inviteBtn": "Invite member",
     "inviteTitle": "Invite New Member",
@@ -801,6 +825,7 @@
       "titleRequired": "Please enter activity title",
       "timeOrderInvalid": "End time must be after start time",
       "categoryLabel": "Category",
+      "timeRangeLabel": "Activity time",
       "startTimeLabel": "Start Time",
       "endTimeLabel": "End Time",
       "locationLabel": "Location",
@@ -1042,6 +1067,9 @@
     "backToAcceptance": "Back to acknowledgement"
   },
   "planTemplate": {
+    "homeLibrary": "Popular Destinations",
+    "durationLabel": "{days} days",
+    "activityLabel": "{count} activities",
     "allStyles": "All",
     "publishNeedsActivities": "Please add at least one itinerary activity before publishing a template.",
     "publishTooManyActivities": "Templates support up to 1,000 activities. Reduce the number of activities before publishing.",

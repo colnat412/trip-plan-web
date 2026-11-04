@@ -88,21 +88,18 @@ const TripMemberRow = ({
 
   return (
     <Stack
+      component="li"
       spacing={1.5}
       sx={{
-        p: { xs: 1.5, sm: 2 },
+        py: 2,
         minWidth: 0,
-        borderRadius: '16px',
-        bgcolor: 'background.paper',
-        border: 1,
-        borderColor: 'divider',
       }}
     >
       <Stack
         direction="row"
         useFlexGap
         spacing={1.25}
-        sx={{ alignItems: 'flex-start', minWidth: 0 }}
+        sx={{ alignItems: 'center', minWidth: 0 }}
       >
         <Avatar
           src={member.avatarUrl || undefined}
@@ -110,8 +107,9 @@ const TripMemberRow = ({
           sx={{
             width: 40,
             height: 40,
-            bgcolor: 'primary.main',
-            color: 'primary.contrastText',
+            bgcolor: (theme) => member.role === 'OWNER' ? 'primary.main'
+              : `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).primary.light} 16%, ${(theme.vars?.palette ?? theme.palette).background.paper})`,
+            color: member.role === 'OWNER' ? 'primary.contrastText' : 'text.primary',
             fontWeight: 700,
             fontSize: '14px',
             flexShrink: 0,
@@ -120,44 +118,23 @@ const TripMemberRow = ({
           {getUserInitials(member.name || member.email)}
         </Avatar>
         <Stack spacing={0.5} sx={{ minWidth: 0, flex: 1 }}>
-          <Typography
-            sx={{
-              fontWeight: 700,
-              fontSize: '14px',
-              color: 'text.primary',
-              overflowWrap: 'anywhere',
-            }}
-          >
-            {member.name || member.email}
-          </Typography>
-          <Typography
-            title={member.email}
-            noWrap
-            sx={{ fontSize: '12px', color: 'text.secondary', minWidth: 0 }}
-          >
-            {member.email}
-          </Typography>
-          <Stack
-            direction="row"
-            useFlexGap
-            spacing={0.75}
-            sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}
-          >
+          <Stack direction="row" useFlexGap spacing={0.75} sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}>
+            <Typography sx={{ fontWeight: 700, fontSize: '14px', color: 'text.primary', overflowWrap: 'anywhere', minWidth: 0 }}>
+              {member.name || member.email}
+            </Typography>
             <RoleBadge role={member.role} />
             {member.status !== 'ACTIVE' && (
               <Chip
                 size="small"
                 label={t(`statuses.${member.status}`)}
                 color={member.status === 'INVITED' ? 'warning' : 'default'}
-                sx={{
-                  height: 24,
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  borderRadius: '8px',
-                }}
+                sx={{ height: 20, fontSize: '11px', fontWeight: 600, borderRadius: '6px' }}
               />
             )}
           </Stack>
+          <Typography title={member.email} noWrap sx={{ fontSize: '12px', color: 'text.secondary', minWidth: 0 }}>
+            {member.email}
+          </Typography>
         </Stack>
         {menuItems.length > 0 && (
           <AppActionMenu
@@ -166,6 +143,7 @@ const TripMemberRow = ({
               name: member.name || member.email,
             })}
             size="medium"
+            minTouchTarget
           />
         )}
       </Stack>

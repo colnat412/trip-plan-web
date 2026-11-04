@@ -2,48 +2,35 @@
 
 import { Chip } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import SecurityRoundedIcon from '@mui/icons-material/SecurityRounded';
-import GroupRoundedIcon from '@mui/icons-material/GroupRounded';
-
 import type { TripMemberRole } from '../../types/member.types';
 
 interface RoleBadgeProps {
   role: TripMemberRole;
 }
 
+const ROLE_COLORS = { OWNER: 'warning', VICE: 'secondary', MEMBER: 'success' } as const;
+
 const RoleBadge = ({ role }: RoleBadgeProps) => {
   const t = useTranslations('members.roles');
-
-  const config = {
-    OWNER: {
-      color: 'warning' as const,
-      icon: <SecurityRoundedIcon sx={{ fontSize: '14px' }} />,
-    },
-    VICE: {
-      color: 'secondary' as const,
-      icon: <SecurityRoundedIcon sx={{ fontSize: '14px' }} />,
-    },
-    MEMBER: {
-      color: 'success' as const,
-      icon: <GroupRoundedIcon sx={{ fontSize: '14px' }} />,
-    },
-  }[role] || {
-    color: 'default' as const,
-    icon: <GroupRoundedIcon sx={{ fontSize: '14px' }} />,
-  };
+  const color = ROLE_COLORS[role];
 
   return (
     <Chip
       size="small"
-      icon={config.icon}
       label={t(role)}
-      color={config.color}
-      variant={role === 'OWNER' || role === 'VICE' ? 'filled' : 'outlined'}
-      sx={{
-        fontWeight: 700,
-        fontSize: '12px',
-        borderRadius: '8px',
-        height: '24px',
+      sx={(theme) => {
+        const palette = theme.vars?.palette ?? theme.palette;
+        return {
+          height: 20,
+          borderRadius: '6px',
+          fontWeight: 600,
+          fontSize: '11px',
+          flexShrink: 0,
+          color: palette[color].dark,
+          bgcolor: `color-mix(in srgb, ${palette[color].main} 12%, transparent)`,
+          ...theme.applyStyles('dark', { color: palette[color].light }),
+          '& .MuiChip-label': { px: 0.75 },
+        };
       }}
     />
   );

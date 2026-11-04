@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { TRIP_STATUS_OPTIONS } from '../../constants/trip-status';
 import {
   Box,
   IconButton,
@@ -82,11 +83,7 @@ const TripFilterBar = ({
 
   const statusOptions: AppSelectOption[] = [
     { value: '', label: tTrip('allTrips') },
-    { value: 'IN_PROGRESS', label: tTrip('inProgress') },
-    { value: 'PLANNING', label: tTrip('planning') },
-    { value: 'CONFIRMED', label: tTrip('confirmed') },
-    { value: 'COMPLETED', label: tTrip('completed') },
-    { value: 'DRAFT', label: tTrip('draft') },
+    ...TRIP_STATUS_OPTIONS.map((option) => ({ value: option.filterValue, label: tTrip(option.labelKey) })),
   ];
 
   const currencyOptions: AppSelectOption[] = [

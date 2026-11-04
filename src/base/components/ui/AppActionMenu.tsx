@@ -25,6 +25,7 @@ export interface AppActionMenuProps {
   trigger?: ReactNode;
   size?: 'small' | 'medium';
   ariaLabel?: string;
+  minTouchTarget?: boolean;
 }
 
 const AppActionMenu = ({
@@ -32,6 +33,7 @@ const AppActionMenu = ({
   trigger,
   size = 'small',
   ariaLabel = 'Actions menu',
+  minTouchTarget = false,
 }: AppActionMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
@@ -64,6 +66,7 @@ const AppActionMenu = ({
           onClick={handleOpen}
           aria-label={ariaLabel}
           sx={{
+            ...(minTouchTarget && { width: 44, height: 44 }),
             color: 'text.secondary',
             '&:hover': {
               color: 'text.primary',

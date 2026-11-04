@@ -81,26 +81,9 @@ const InviteMemberForm = ({
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{
-        p: 2.5,
-        borderRadius: '16px',
-        bgcolor: 'action.hover',
-        border: 1,
-        borderColor: 'primary.light',
-      }}
+      sx={{ minWidth: 0 }}
     >
       <Stack spacing={2}>
-        <Stack spacing={0.5}>
-          <Typography
-            sx={{ fontWeight: 800, fontSize: '15px', color: 'text.primary' }}
-          >
-            {t('inviteTitle')}
-          </Typography>
-          <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
-            {t('inviteSubtitle')}
-          </Typography>
-        </Stack>
-
         <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
           <Box sx={{ flex: 1 }}>
             <AppTextField
@@ -148,6 +131,7 @@ const InviteMemberForm = ({
           sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
         >
           <AppButton
+            data-dialog-action="cancel"
             intent="secondary"
             onClick={onCancel}
             disabled={isSubmitting}
@@ -156,6 +140,7 @@ const InviteMemberForm = ({
             {t('cancel')}
           </AppButton>
           <AppButton
+            data-dialog-action="primary"
             type="submit"
             intent="primary"
             loading={isSubmitting}

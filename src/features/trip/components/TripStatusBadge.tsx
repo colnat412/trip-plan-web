@@ -5,6 +5,8 @@ import { alpha, type Theme } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import type { TripStatus } from '../types';
 
+import { TRIP_STATUS_PRESENTATION } from '../constants/trip-status';
+
 interface TripStatusBadgeProps {
   status: TripStatus;
   size?: 'small' | 'medium';
@@ -18,31 +20,6 @@ type StatusThemeVariant =
   | 'secondary'
   | 'error'
   | 'neutral';
-
-type StatusLabelKey =
-  | 'inProgress'
-  | 'planning'
-  | 'confirmed'
-  | 'completed'
-  | 'archived'
-  | 'cancelled'
-  | 'draft';
-
-interface StatusThemeConfig {
-  variant: StatusThemeVariant;
-  labelKey: StatusLabelKey;
-}
-
-const STATUS_CONFIG_MAP: Record<TripStatus, StatusThemeConfig> = {
-  COMPLETED: { variant: 'success', labelKey: 'completed' },
-  IN_PROGRESS: { variant: 'success', labelKey: 'inProgress' },
-  PLANNING: { variant: 'info', labelKey: 'planning' },
-  CONFIRMED: { variant: 'primary', labelKey: 'confirmed' },
-  ARCHIVED: { variant: 'neutral', labelKey: 'archived' },
-  CANCELLED: { variant: 'error', labelKey: 'cancelled' },
-  DELETED: { variant: 'error', labelKey: 'cancelled' },
-  DRAFT: { variant: 'neutral', labelKey: 'draft' },
-};
 
 const getThemeStatusColors = (theme: Theme, variant: StatusThemeVariant) => {
   const palette = theme.palette;
@@ -106,7 +83,7 @@ const TripStatusBadge = ({
   size = 'medium',
 }: TripStatusBadgeProps) => {
   const t = useTranslations('trip');
-  const config = STATUS_CONFIG_MAP[status] ?? STATUS_CONFIG_MAP.DRAFT;
+  const config = TRIP_STATUS_PRESENTATION[status] ?? TRIP_STATUS_PRESENTATION.DRAFT;
   const isSmall = size === 'small';
 
   return (

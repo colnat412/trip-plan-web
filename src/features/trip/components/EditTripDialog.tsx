@@ -32,7 +32,7 @@ const EditTripDialog = ({
         onClose={onClose}
         closeDisabled={busy}
         title={t('editTitle')}
-        description={t('editDescription')}
+        // description={t('editDescription')}
         icon={<EditCalendarRoundedIcon />}
         maxWidth="sm"
       >

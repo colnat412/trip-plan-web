@@ -6,3 +6,6 @@ export * from './currency';
 export { isNavigationActive } from './navigation';
 
 export * from './maps';
+
+export * from './calendar';
+export * from './time';

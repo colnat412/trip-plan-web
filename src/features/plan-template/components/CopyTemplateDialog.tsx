@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Alert, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { useAppToast } from '@/base/providers/AppToastProvider';
-import { AppDialog, AppButton, AppTextField } from '@/base/components/ui';
+import { AppDatePicker, AppDialog, AppButton, AppTextField } from '@/base/components/ui';
 import useCopyPlanTemplate from '../hooks/useCopyPlanTemplate';
 import TemplateCheckboxOption from './TemplateCheckboxOption';
 import type { TemplateCardData } from '../types';
@@ -70,13 +70,11 @@ const CopyTemplateDialog = ({
           onChange={(e) => setName(e.target.value)}
           slotProps={{ htmlInput: { maxLength: 200 } }}
         />
-        <AppTextField
+        <AppDatePicker
           label={t('startDate')}
-          type="date"
           value={startDate}
           disabled={uncertain}
-          onChange={(e) => setStartDate(e.target.value)}
-          slotProps={{ inputLabel: { shrink: true } }}
+          onChange={(value) => setStartDate(value)}
         />
         <TemplateCheckboxOption
           label={t('includeChecklist')}

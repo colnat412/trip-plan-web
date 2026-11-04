@@ -1,8 +1,8 @@
 'use client';
 
-import { AppLoadingState } from '@/base/components/ui';
+import { AppEmptyState, AppLoadingState } from '@/base/components/ui';
 
-import { Box, Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import PeopleOutlineRoundedIcon from '@mui/icons-material/PeopleOutlineRounded';
 
@@ -39,53 +39,16 @@ const TripMemberList = ({
   }
 
   if (members.length === 0) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          py: 6,
-          px: 2,
-          textAlign: 'center',
-          gap: 2,
-        }}
-      >
-        <Box
-          sx={{
-            width: 56,
-            height: 56,
-            borderRadius: '50%',
-            bgcolor: 'action.hover',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'text.secondary',
-          }}
-        >
-          <PeopleOutlineRoundedIcon sx={{ fontSize: '32px' }} />
-        </Box>
-        <Typography
-          sx={{
-            fontWeight: 700,
-            fontSize: '16px',
-            color: 'text.primary',
-          }}
-        >
-          {t('empty.title')}
-        </Typography>
-        <Typography
-          sx={{ fontSize: '13px', color: 'text.secondary', maxWidth: '340px' }}
-        >
-          {t('empty.desc')}
-        </Typography>
-      </Box>
-    );
+    return <AppEmptyState title={t('empty.title')} icon={<PeopleOutlineRoundedIcon />} />;
   }
 
   return (
-    <Stack spacing={1.5} sx={{ minWidth: 0 }}>
+    <Stack component="ul" spacing={0} sx={{
+      minWidth: 0, m: 0, p: 0, listStyle: 'none',
+      '& > li + li': { borderTop: 1, borderColor: 'divider' },
+      '& > li:first-of-type': { pt: 0 },
+      '& > li:last-of-type': { pb: 0 },
+    }}>
       {members.map((member) => (
         <TripMemberRow
           key={member.id}
