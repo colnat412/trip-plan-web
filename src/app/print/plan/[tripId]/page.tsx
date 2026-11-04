@@ -1,13 +1,7 @@
-import PlanPrintView from '@/features/plan/components/PlanPrintView/PlanPrintView';
+import { redirect } from 'next/navigation';
 
-interface PlanPrintPageProps {
-  params: Promise<{ tripId: string }>;
-}
-
-const PlanPrintPage = async ({ params }: PlanPrintPageProps) => {
+const PlanPrintPage = async ({ params }: { params: Promise<{ tripId: string }> }) => {
   const { tripId } = await params;
-
-  return <PlanPrintView tripId={tripId} />;
+  redirect(`/export/plan/${encodeURIComponent(tripId)}`);
 };
-
 export default PlanPrintPage;

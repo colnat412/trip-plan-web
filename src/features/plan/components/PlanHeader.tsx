@@ -5,7 +5,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
-import PictureAsPdfRoundedIcon from '@mui/icons-material/PictureAsPdfRounded';
+import ImageRoundedIcon from '@mui/icons-material/ImageRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
@@ -32,7 +32,7 @@ export interface PlanHeaderProps {
   onOpenShare?: () => void;
   onOpenActivityLogs?: () => void;
   readOnly?: boolean;
-  onOpenPrint?: () => void;
+  onOpenExport?: () => void;
 }
 
 const PlanHeader = ({
@@ -48,7 +48,7 @@ const PlanHeader = ({
   onPublishTemplate,
   onOpenActivityLogs,
   readOnly = false,
-  onOpenPrint,
+  onOpenExport,
 }: PlanHeaderProps) => {
   const locale = useLocale();
   const t = useTranslations('plan');
@@ -213,13 +213,13 @@ const PlanHeader = ({
                     },
                   ]
                 : []),
-              ...(onOpenPrint
+              ...(onOpenExport
                 ? [
                     {
-                      id: 'print',
-                      label: t('print.button'),
-                      icon: <PictureAsPdfRoundedIcon fontSize="small" />,
-                      onClick: onOpenPrint,
+                      id: 'export',
+                      label: t('imageExport.title'),
+                      icon: <ImageRoundedIcon fontSize="small" />,
+                      onClick: onOpenExport,
                     },
                   ]
                 : []),

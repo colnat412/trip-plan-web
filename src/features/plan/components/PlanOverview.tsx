@@ -1,6 +1,14 @@
 'use client';
 
-import { AppLoadingState, AppButton, AppPageContainer, AppToast, AppConfirmDialog, AppInfiniteScrollTrigger, type AppToastSeverity } from '@/base/components/ui';
+import {
+  AppLoadingState,
+  AppButton,
+  AppPageContainer,
+  AppToast,
+  AppConfirmDialog,
+  AppInfiniteScrollTrigger,
+  type AppToastSeverity,
+} from '@/base/components/ui';
 
 import React, { useState } from 'react';
 import { Alert, Box, Card, Typography } from '@mui/material';
@@ -401,7 +409,11 @@ const PlanOverview = ({
           completedActivities={overview?.completedActivities ?? 0}
           totalEstimatedCost={overview?.totalEstimatedCost ?? 0}
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
-          onAddActivity={canWrite && selectedDay && !isStale ? () => setAddActivityOpen(true) : undefined}
+          onAddActivity={
+            canWrite && selectedDay && !isStale
+              ? () => setAddActivityOpen(true)
+              : undefined
+          }
           onOpenChecklist={() => setChecklistOpen(true)}
           onOpenAiPlanner={canManage ? () => setAiPlannerOpen(true) : undefined}
           onPublishTemplate={
@@ -410,13 +422,14 @@ const PlanOverview = ({
           onOpenShare={canManage ? () => setShareDialogOpen(true) : undefined}
           onOpenActivityLogs={() => setActivityLogOpen(true)}
           readOnly={!canWrite || Boolean(planError)}
-          onOpenPrint={() =>
-            router.push(`/print/plan/${encodeURIComponent(String(tripId))}`)
+          onOpenExport={() =>
+            router.push(`/export/plan/${encodeURIComponent(String(tripId))}`)
           }
         />
       ) : null}
 
-      {isLoading || (isStale && !planError) ? null : !planError && days.length > 0 ? (
+      {isLoading || (isStale && !planError) ? null : !planError &&
+        days.length > 0 ? (
         <PlanDayTabs
           days={days}
           selectedDayId={activeDayId}
@@ -459,14 +472,19 @@ const PlanOverview = ({
         <PlanDayToolbar
           day={selectedDay}
           currency={overview?.baseCurrency ?? activeTrip.baseCurrency}
-          onResetDay={canManage ? () => setResetDayConfirmOpen(true) : undefined}
+          onResetDay={
+            canManage ? () => setResetDayConfirmOpen(true) : undefined
+          }
         />
       )}
       <Box
         sx={{
           width: '100%',
           display: 'grid',
-          gridTemplateColumns: { xs: 'minmax(0, 1fr)', lg: 'minmax(0, 7fr) minmax(0, 5fr)' },
+          gridTemplateColumns: {
+            xs: 'minmax(0, 1fr)',
+            lg: 'minmax(0, 7fr) minmax(0, 5fr)',
+          },
           alignItems: 'start',
           gap: { xs: 2, md: 3 },
         }}
@@ -480,7 +498,9 @@ const PlanOverview = ({
             minWidth: 0,
           }}
         >
-          {isLoading || (isStale && !planError) || isLoadingActivities ? <AppLoadingState /> : planError || activitiesError ? (
+          {isLoading || (isStale && !planError) || isLoadingActivities ? (
+            <AppLoadingState />
+          ) : planError || activitiesError ? (
             <Alert
               severity="error"
               action={
@@ -527,7 +547,9 @@ const PlanOverview = ({
             minWidth: 0,
           }}
         >
-          {isLoading || (isStale && !planError) || isLoadingActivities ? <AppLoadingState /> : planError || activitiesError ? (
+          {isLoading || (isStale && !planError) || isLoadingActivities ? (
+            <AppLoadingState />
+          ) : planError || activitiesError ? (
             <Alert
               severity="error"
               action={

@@ -916,6 +916,24 @@
       "aiGenerateSuccess": "AI plan generated successfully!",
       "error": "An error occurred. Please try again."
     },
+    "imageExport": {
+      "fontError": "Unable to load the Trip Plan font. Check your connection and retry.",
+      "title": "Export itinerary images",
+      "downloadAll": "Download all images",
+      "day": "Day {number}",
+      "downloadDay": "Download day {number}",
+      "summary": "{count} PNG images · One image per day · 1080 px wide",
+      "cost": "Estimated",
+      "emptyDay": "Rest day / No activities planned.",
+      "emptyPlan": "This trip has no itinerary yet.",
+      "retry": "Retry",
+      "loadError": "Unable to load the full trip details.",
+      "coverError": "Unable to export the cover image. Check its URL and the image host’s CORS permissions, then retry.",
+      "tooLong": "One day contains too much content to render safely on this device. Shorten the notes or reorganize the itinerary.",
+      "renderError": "Unable to generate itinerary images. Please retry.",
+      "downloadError": "Unable to download images. Please try downloading each image individually.",
+      "noCover": "This trip has no cover image. Exported images will use the app’s background colors."
+    },
     "print": {
       "button": "Print / Save PDF",
       "loading": "Loading the full itinerary...",

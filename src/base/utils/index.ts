@@ -9,3 +9,5 @@ export * from './maps';
 
 export * from './calendar';
 export * from './time';
+export * from './canvas-font';
+export * from './download';

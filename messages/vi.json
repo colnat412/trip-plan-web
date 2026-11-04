@@ -916,6 +916,24 @@
       "aiGenerateSuccess": "Đã tạo lịch trình bằng AI thành công!",
       "error": "Đã có lỗi xảy ra. Vui lòng thử lại sau."
     },
+    "imageExport": {
+      "fontError": "Không thể tải font chữ của Trip Plan. Vui lòng kiểm tra kết nối rồi thử lại.",
+      "title": "Xuất ảnh lịch trình",
+      "downloadAll": "Tải tất cả ảnh",
+      "day": "Ngày {number}",
+      "downloadDay": "Tải ảnh ngày {number}",
+      "summary": "{count} ảnh",
+      "cost": "Dự kiến",
+      "emptyDay": "Ngày nghỉ / Chưa có hoạt động.",
+      "emptyPlan": "Chuyến đi chưa có lịch trình.",
+      "retry": "Thử lại",
+      "loadError": "Không thể tải đầy đủ thông tin chuyến đi.",
+      "coverError": "Không thể sử dụng ảnh bìa để xuất ảnh. Hãy kiểm tra đường dẫn và quyền CORS của nơi lưu ảnh rồi thử lại.",
+      "tooLong": "Một ngày có quá nhiều nội dung để tạo ảnh an toàn trên thiết bị này. Hãy rút gọn ghi chú hoặc chia lại lịch trình.",
+      "renderError": "Không thể tạo ảnh lịch trình. Vui lòng thử lại.",
+      "downloadError": "Không thể tải ảnh. Vui lòng thử tải riêng từng ảnh.",
+      "noCover": "Chuyến đi chưa có ảnh bìa. Ảnh xuất sẽ dùng nền màu của ứng dụng."
+    },
     "print": {
       "button": "In / Lưu PDF",
       "loading": "Đang tải toàn bộ lịch trình...",
