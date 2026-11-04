@@ -1159,6 +1159,7 @@
     "bannerUploadError": "Không thể tải ảnh lên. Vui lòng thử lại."
   },
   "quickCreate": {
+    "createTrip": "Tạo chuyến đi",
     "title": "+ Tạo nhanh",
     "mine": "Mẫu của tôi",
     "ai": "Tạo lịch trình bằng AI",

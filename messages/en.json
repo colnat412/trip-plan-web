@@ -1159,6 +1159,7 @@
     "bannerUploadError": "Could not upload the image. Please try again."
   },
   "quickCreate": {
+    "createTrip": "Create a trip",
     "title": "+ Quick create",
     "mine": "My templates",
     "ai": "Create an itinerary with AI",
