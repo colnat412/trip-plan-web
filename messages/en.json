@@ -1161,7 +1161,7 @@
   "quickCreate": {
     "title": "+ Quick create",
     "mine": "My templates",
-    "ai": "AI suggestions for a new trip",
+    "ai": "Create an itinerary with AI",
     "templates": "Browse itinerary templates",
     "manual": "Create manually",
     "newTrip": "Create a new trip",

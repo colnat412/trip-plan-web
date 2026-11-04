@@ -860,7 +860,7 @@
       "aiSuccessToast": "Đã tạo lịch trình bằng AI thành công!",
       "aiDestRequired": "Vui lòng nhập điểm đến của chuyến đi.",
       "aiDaysInvalid": "Số ngày chuyến đi phải từ 1 đến 30 ngày.",
-      "aiDaysDisabledHelper": "Số ngày được cố định theo thời gian bắt đầu và kết thúc của chuyến đi",
+      "aiDaysDisabledHelper": "Cố định theo thời gian bắt đầu và kết thúc của chuyến đi",
       "resetDayTitle": "Đặt lại lịch trình Ngày {day}?",
       "resetDayDesc": "Toàn bộ các hoạt động đã lên lịch trong Ngày {day} sẽ bị xóa và đưa về trạng thái trống. Bạn có chắc chắn muốn tiếp tục?",
       "confirmResetDay": "Xóa toàn bộ hoạt động"
@@ -1161,7 +1161,7 @@
   "quickCreate": {
     "title": "+ Tạo nhanh",
     "mine": "Mẫu của tôi",
-    "ai": "Gợi ý bằng AI cho chuyến mới",
+    "ai": "Tạo lịch trình bằng AI",
     "templates": "Xem mẫu lịch trình",
     "manual": "Tạo thủ công",
     "newTrip": "Tạo chuyến mới",
