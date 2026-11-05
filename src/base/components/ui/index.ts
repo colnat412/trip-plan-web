@@ -94,3 +94,8 @@ export { default as AppTimePicker } from './AppTimePicker';
 export type { AppTimePickerProps } from './AppTimePicker';
 export { default as AppPickerField } from './AppPickerField';
 export type { AppPickerFieldProps } from './AppPickerField';
+
+export {
+  default as AppMapSearchPaper,
+  AppMapSearchSourcesContext,
+} from './AppMapSearchPaper';

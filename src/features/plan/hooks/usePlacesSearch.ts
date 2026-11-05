@@ -18,6 +18,7 @@ const usePlacesSearch = (input: string) => {
   });
   return {
     options: !enabled || query.isStale ? [] : (query.data?.predictions ?? []),
+    error: enabled ? query.error : null,
     loading:
       term.length >= 2 &&
       (!enabled || (!query.error && (query.isStale || query.isFetching))),

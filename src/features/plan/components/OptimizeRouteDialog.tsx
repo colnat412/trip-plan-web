@@ -4,6 +4,7 @@ import { AppLoadingIndicator, AppCategoryChip, AppDialog } from '@/base/componen
 
 import React, { useState, useEffect, useTransition } from 'react';
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -32,7 +33,7 @@ import DirectionsCarFilledRoundedIcon from '@mui/icons-material/DirectionsCarFil
 import { useLocale, useTranslations } from 'next-intl';
 
 import type { OptimizationResult, PlanActivity } from '../types';
-import { solveOptimalRoute } from '../services/googleMapsService';
+import { solveOptimalRoute } from '../services/mapService';
 
 export interface OptimizeRouteDialogProps {
   open: boolean;
@@ -62,6 +63,8 @@ const OptimizeRouteDialog = ({
 
   const [startIndex, setStartIndex] = useState<number>(0);
   const [result, setResult] = useState<OptimizationResult | null>(null);
+  const [hasRouteError, setHasRouteError] = useState(false);
+  const [retryAttempt, setRetryAttempt] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isApplying, startApplying] = useTransition();
 
@@ -77,7 +80,11 @@ const OptimizeRouteDialog = ({
 
     let isMounted = true;
     const timer = setTimeout(() => {
-      if (isMounted) setIsLoading(true);
+      if (isMounted) {
+        setIsLoading(true);
+        setResult(null);
+        setHasRouteError(false);
+      }
     }, 0);
 
     solveOptimalRoute(activities, {
@@ -95,6 +102,8 @@ const OptimizeRouteDialog = ({
         console.error('Failed to optimize route:', err);
         if (isMounted) {
           setIsLoading(false);
+          setResult(null);
+          setHasRouteError(true);
         }
       });
 
@@ -106,6 +115,7 @@ const OptimizeRouteDialog = ({
     open,
     activities,
     startIndex,
+    retryAttempt,
     locale,
     locActivities.length,
     destinationContext,
@@ -142,6 +152,10 @@ const OptimizeRouteDialog = ({
           {t('calculating')}
         </Typography>
       </Box>
+    ) : hasRouteError ? (
+      <Alert severity="error" action={
+        <Button onClick={() => setRetryAttempt(value => value + 1)}>{t('retry')}</Button>
+      }>{t('routeError')}</Alert>
     ) : result ? (
       <Stack spacing={3}>
         <Box

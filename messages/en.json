@@ -24,7 +24,8 @@
   "locationMap": {
     "title": "Map: {location}",
     "open": "Open in Google Maps",
-    "empty": "Add a location to see it on the map."
+    "empty": "Add a location to see it on the map.",
+    "unavailable": "The map is unavailable. You can open this location in Google Maps."
   },
   "navigation": {
     "searchingTrips": "Searching trips…",
@@ -901,20 +902,19 @@
     },
     "distance": {
       "unavailable": "Travel details unavailable",
-      "osmSource": "OpenStreetMap",
       "dayTotalTitle": "Day Travel Route: {dist} ({time})",
       "dayTotalSub": "{count} travel legs between activities",
       "optimizeBtn": "Optimize Route",
       "openInGoogleMaps": "Get directions on Google Maps",
+      "fixMap": "Fix the map",
       "estimatedLabel": "Estimated",
-      "estimatedTooltip": "Estimated distance. Location could not be mapped to exact roads.",
-      "osmTooltip": "Measured via OpenStreetMap road network (Free)"
+      "estimatedTooltip": "Estimated distance. Location could not be mapped to exact roads."
     },
     "optimize": {
       "title": "Optimize Travel Route (Day {day})",
       "subtitle": "Reorder locations to minimize total travel distance and commute time",
       "notEnoughLocations": "At least 2 activities with specific locations are required to optimize the route.",
-      "calculating": "Calculating Google Maps distances and finding optimal route...",
+      "calculating": "Calculating distances and finding an optimal route...",
       "startPointLabel": "Starting Point of the Day",
       "startPointDesc": "The route will keep this location fixed as the journey departure point.",
       "startPoint": "Select start point",
@@ -924,10 +924,12 @@
       "timeSavingsText": "Save {time} travel time",
       "alreadyOptimal": "Current route is already the most optimal!",
       "optimizedSequenceTitle": "Proposed Itinerary Sequence:",
-      "footerNote": "* Distance and duration are computed via Google Maps Distance Matrix (driving mode) and cached locally to conserve monthly free quota ($200 credit).",
+      "footerNote": "Driving distances and durations come from Vietmap or OpenStreetMap/OSRM. Trip Plan calculates the suggested order.",
       "cancel": "Close",
       "applyBtn": "Apply Optimized Route",
-      "applying": "Updating..."
+      "applying": "Updating...",
+      "routeError": "Not all routes needed to optimize this itinerary are available. Please try again.",
+      "retry": "Retry"
     },
     "toasts": {
       "createActivitySuccess": "Activity added to itinerary successfully!",
@@ -1093,7 +1095,7 @@
         },
         "handling": {
           "title": "Providers and optional features",
-          "body": "Uploaded images are processed through Cloudinary. When you use AI, request content or receipts are sent to the AI service and Google Gemini for processing. Place search and distance calculations may send locations to Google Maps or OpenStreetMap services. Google sign-in uses profile information supplied by Google. Camera permission is requested only when you choose to take a photo."
+          "body": "Uploaded images are processed through Cloudinary. When you use AI, request content or receipts are sent to the AI service and Google Gemini for processing. Place search and distance calculations may send locations to Vietmap or services using OpenStreetMap data (Photon, OSRM). Maps may load data from Vietmap or OpenStreetMap. Google sign-in uses profile information supplied by Google. Camera permission is requested only when you choose to take a photo."
         },
         "choices": {
           "title": "Your choices",
@@ -1216,5 +1218,8 @@
     "navigation": "Finance navigation",
     "expenses": "Expenses",
     "settlement": "Settlements"
+  },
+  "maps": {
+    "searchUnavailable": "Place search is unavailable. Please try again."
   }
 }

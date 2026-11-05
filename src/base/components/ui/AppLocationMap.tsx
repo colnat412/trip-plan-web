@@ -25,7 +25,7 @@ const AppLocationMap = ({ location }: AppLocationMapProps) => {
             src={getGoogleMapsEmbedUrl(query, locale)}
             title={t('title', { location: query })}
             loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
+            referrerPolicy="strict-origin-when-cross-origin"
             allowFullScreen
             sx={{
               width: '100%',

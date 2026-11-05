@@ -1,4 +1,10 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { requireMapsAccess } from '@/base/api/server/maps-access';
+import { requirePolicyAcceptance } from '@/base/api/server/policy-access';
+import { forwardMaps } from '@/base/api/server/maps-proxy';
+import { mapsJson } from '@/base/api/server/maps-common';
+import type { MapPlacePrediction } from '@/base/types/maps';
+import type { NextRequest } from 'next/server';
+import type { MapsSource } from '@/base/types/maps';
 
 export interface DestinationItem {
   id: string;
@@ -7,6 +13,7 @@ export interface DestinationItem {
   country: string;
   label: string;
   isPopular?: boolean;
+  source?: MapsSource;
 }
 
 const CURATED_DESTINATIONS: DestinationItem[] = [
@@ -339,113 +346,21 @@ const CURATED_DESTINATIONS: DestinationItem[] = [
   },
 ];
 
-const removeDiacritics = (str: string): string => {
-  return str
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/Đ/g, 'D')
-    .toLowerCase();
-};
-
 export const GET = async (request: NextRequest) => {
-  try {
-    const { searchParams } = new URL(request.url);
-    const rawQuery = searchParams.get('q')?.trim() || '';
-
-    if (!rawQuery) {
-      const popular = CURATED_DESTINATIONS.filter((d) => d.isPopular);
-      return NextResponse.json({
-        status: 200,
-        destinations: popular,
-      });
-    }
-
-    const normalizedQuery = removeDiacritics(rawQuery);
-
-    const curatedMatches = CURATED_DESTINATIONS.filter((item) => {
-      const normName = removeDiacritics(item.name);
-      const normRegion = item.region ? removeDiacritics(item.region) : '';
-      const normCountry = removeDiacritics(item.country);
-      const normLabel = removeDiacritics(item.label);
-
-      return (
-        normName.includes(normalizedQuery) ||
-        normRegion.includes(normalizedQuery) ||
-        normCountry.includes(normalizedQuery) ||
-        normLabel.includes(normalizedQuery)
-      );
-    });
-
-    let apiResults: DestinationItem[] = [];
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
-
-      const apiUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
-        rawQuery,
-      )}&count=8&language=vi&format=json`;
-
-      const response = await fetch(apiUrl, {
-        signal: controller.signal,
-        headers: { Accept: 'application/json' },
-      });
-      clearTimeout(timeoutId);
-
-      if (response.ok) {
-        const data = await response.json();
-        if (Array.isArray(data?.results)) {
-          apiResults = data.results.map(
-            (res: {
-              id: number | string;
-              name: string;
-              admin1?: string;
-              country?: string;
-            }) => {
-              const name = res.name;
-              const region = res.admin1 || '';
-              const country = res.country || '';
-              const parts = [name];
-              if (region && region !== name) parts.push(region);
-              if (country) parts.push(country);
-
-              return {
-                id: `geo-${res.id}`,
-                name,
-                region,
-                country,
-                label: parts.join(', '),
-              };
-            },
-          );
-        }
-      }
-    } catch {}
-
-    const combined: DestinationItem[] = [];
-    const seenLabels = new Set<string>();
-
-    for (const item of [...curatedMatches, ...apiResults]) {
-      const lowerLabel = item.label.toLowerCase();
-      if (!seenLabels.has(lowerLabel)) {
-        seenLabels.add(lowerLabel);
-        combined.push(item);
-      }
-    }
-
-    return NextResponse.json({
-      status: 200,
-      destinations: combined.slice(0, 15),
-    });
-  } catch (error) {
-    return NextResponse.json(
-      {
-        status: 500,
-        message:
-          error instanceof Error ? error.message : 'Internal Server Error',
-        destinations: [],
-      },
-      { status: 500 },
-    );
+  const denied = await requireMapsAccess(request);
+  if (denied) return denied;
+  const query = new URL(request.url).searchParams.get('q')?.trim() || '';
+  if (!query) {
+    const policyDenied = await requirePolicyAcceptance(request);
+    if (policyDenied) return policyDenied;
+    return mapsJson({ status: 200, destinations: CURATED_DESTINATIONS.filter(item => item.isPopular) });
   }
+  const response = await forwardMaps(request, '/maps/places', true);
+  const body = await response.json();
+  if (!response.ok) return mapsJson({ ...body, destinations: [] }, response.status);
+  const destinations: DestinationItem[] = (body.predictions || []).map((place: MapPlacePrediction) => ({
+    id: place.placeId, name: place.mainText, region: place.secondaryText,
+    country: '', label: place.description, source: place.source,
+  }));
+  return mapsJson({ status: 200, source: body.source, destinations });
 };

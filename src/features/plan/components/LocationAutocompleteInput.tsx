@@ -1,12 +1,13 @@
 'use client';
 
-import { AppLoadingIndicator, AppTextField } from '@/base/components/ui';
+import type { MapsSource } from '@/base/types/maps';
+
+import { AppMapSearchPaper, AppMapSearchSourcesContext, AppLoadingIndicator, AppTextField } from '@/base/components/ui';
 
 import React, { useState, useMemo } from 'react';
 import {
   Autocomplete,
   Box,
-  Chip,
   InputAdornment,
   Typography,
 } from '@mui/material';
@@ -22,7 +23,7 @@ export interface PlacePrediction {
   mainText: string;
   secondaryText: string;
   description: string;
-  source: 'google' | 'osm' | 'custom';
+  source: MapsSource | 'custom';
 }
 
 export interface LocationAutocompleteInputProps {
@@ -48,11 +49,12 @@ const LocationAutocompleteInput = ({
 }: LocationAutocompleteInputProps) => {
   const theme = useTheme();
   const t = useTranslations('plan.dialog');
+  const tMaps = useTranslations('maps');
 
   const [prevValue, setPrevValue] = useState<string>(value || '');
   const [inputValue, setInputValue] = useState<string>(value || '');
   const [searchQuery, setSearchQuery] = useState('');
-  const { options: displayOptions, loading: isLoading } =
+  const { options: displayOptions, loading: isLoading, error: searchError } =
     usePlacesSearch(searchQuery);
 
   if ((value || '') !== prevValue) {
@@ -66,7 +68,9 @@ const LocationAutocompleteInput = ({
   }, [value]);
 
   return (
+    <AppMapSearchSourcesContext.Provider value={displayOptions.map(option => option.source)}>
     <Autocomplete<PlacePrediction | string, false, false, true>
+      slots={{ paper: AppMapSearchPaper }}
       freeSolo
       value={selectedValue}
       inputValue={inputValue}
@@ -126,7 +130,6 @@ const LocationAutocompleteInput = ({
         const mainText = typeof option === 'string' ? option : option.mainText;
         const secondaryText =
           typeof option === 'string' ? '' : option.secondaryText;
-        const source = typeof option === 'string' ? undefined : option.source;
 
         return (
           <Box
@@ -196,23 +199,6 @@ const LocationAutocompleteInput = ({
               )}
             </Box>
 
-            {source && source !== 'custom' && (
-              <Chip
-                label={source === 'google' ? 'Google Maps' : 'Bản đồ'}
-                size="small"
-                sx={{
-                  height: '18px',
-                  fontSize: '9px',
-                  fontWeight: 600,
-                  bgcolor:
-                    source === 'google'
-                      ? alpha(theme.palette.info.main, 0.1)
-                      : 'action.hover',
-                  color: source === 'google' ? 'info.main' : 'text.secondary',
-                  flexShrink: 0,
-                }}
-              />
-            )}
           </Box>
         );
       }}
@@ -225,8 +211,8 @@ const LocationAutocompleteInput = ({
           label={label}
           placeholder={placeholder}
           required={required}
-          error={error}
-          helperText={helperText}
+          error={error || Boolean(searchError)}
+          helperText={helperText || (searchError ? tMaps('searchUnavailable') : undefined)}
           slotProps={{
             inputLabel: params.slotProps.inputLabel,
             htmlInput: params.slotProps.htmlInput,
@@ -261,6 +247,7 @@ const LocationAutocompleteInput = ({
         />
       )}
     />
+    </AppMapSearchSourcesContext.Provider>
   );
 };
 

@@ -1,12 +1,14 @@
 'use client';
 
+import type { MapsSource } from '@/base/types/maps';
+
 import { Box, Typography } from '@mui/material';
 import DirectionsCarFilledRoundedIcon from '@mui/icons-material/DirectionsCarFilledRounded';
 import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppButton } from '@/base/components/ui';
-import { getGoogleMapsDirectionsUrl } from '../services/googleMapsService';
+import { getGoogleMapsDirectionsUrl } from '../services/mapService';
 import type { DistanceInfo, DurationInfo } from '../types';
 
 export interface ActivityDistanceConnectorProps {
@@ -15,7 +17,7 @@ export interface ActivityDistanceConnectorProps {
   distance?: DistanceInfo;
   duration?: DurationInfo;
   isEstimated?: boolean;
-  source?: 'google' | 'osm' | 'heuristic';
+  source?: MapsSource;
 }
 
 const ActivityDistanceConnector = ({
@@ -27,11 +29,7 @@ const ActivityDistanceConnector = ({
   source,
 }: ActivityDistanceConnectorProps) => {
   const t = useTranslations('plan.distance');
-  const hint = isEstimated
-    ? t('estimatedTooltip')
-    : source === 'osm'
-      ? t('osmTooltip')
-      : t('openInGoogleMaps');
+  const hint = isEstimated ? t('estimatedTooltip') : t('openInGoogleMaps');
 
   return (
     <Box
@@ -40,6 +38,7 @@ const ActivityDistanceConnector = ({
         display: 'flex',
         alignItems: 'stretch',
         gap: 1.5,
+        flexWrap: 'wrap',
         minWidth: 0,
       }}
     >
@@ -117,14 +116,24 @@ const ActivityDistanceConnector = ({
               · {t('estimatedLabel')}
             </Typography>
           )}
-          {source === 'osm' && (
-            <Typography component="span" sx={{ fontSize: '11px' }}>
-              · {t('osmSource')}
-            </Typography>
-          )}
         </Box>
         <OpenInNewRoundedIcon sx={{ fontSize: '14px', flexShrink: 0 }} />
       </AppButton>
+      {source === 'osm' && (
+        <Typography
+          component="a"
+          href="https://www.openstreetmap.org/fixthemap"
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{
+            fontSize: '12px',
+            color: 'text.secondary',
+            alignSelf: 'center',
+          }}
+        >
+          {t('fixMap')}
+        </Typography>
+      )}
     </Box>
   );
 };

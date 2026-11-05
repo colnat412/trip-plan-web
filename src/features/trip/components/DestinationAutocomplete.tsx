@@ -1,6 +1,11 @@
 'use client';
 
-import { AppLoadingIndicator, AppTextField } from '@/base/components/ui';
+import {
+  AppMapSearchPaper,
+  AppMapSearchSourcesContext,
+  AppLoadingIndicator,
+  AppTextField,
+} from '@/base/components/ui';
 
 import React, { useMemo, useState } from 'react';
 import {
@@ -39,9 +44,14 @@ const DestinationAutocomplete = ({
   placeholder,
 }: DestinationAutocompleteProps) => {
   const t = useTranslations('trip');
+  const tMaps = useTranslations('maps');
   const [inputValue, setInputValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const { options, loading } = useDestinationSearch(searchQuery, !disabled);
+  const {
+    options,
+    loading,
+    error: searchError,
+  } = useDestinationSearch(searchQuery, !disabled);
 
   const handleInputChange = (
     _event: React.SyntheticEvent,
@@ -67,117 +77,129 @@ const DestinationAutocomplete = ({
   }, [value]);
 
   return (
-    <Autocomplete<DestinationItem, false, false, false>
-      disabled={disabled}
-      options={options}
-      filterOptions={(items) => items}
-      loading={loading}
-      value={currentOption}
-      inputValue={inputValue}
-      onInputChange={handleInputChange}
-      onChange={(_event, selected) => {
-        if (selected) {
-          onChange(selected.label);
-        } else {
-          onChange('');
+    <AppMapSearchSourcesContext.Provider
+      value={options.map((option) => option.source)}
+    >
+      <Autocomplete<DestinationItem, false, false, false>
+        slots={{ paper: AppMapSearchPaper }}
+        disabled={disabled}
+        options={options}
+        filterOptions={(items) => items}
+        loading={loading}
+        value={currentOption}
+        inputValue={inputValue}
+        onInputChange={handleInputChange}
+        onChange={(_event, selected) => {
+          if (selected) {
+            onChange(selected.label);
+          } else {
+            onChange('');
+          }
+        }}
+        getOptionLabel={(option) =>
+          typeof option === 'string' ? option : option.label
         }
-      }}
-      getOptionLabel={(option) =>
-        typeof option === 'string' ? option : option.label
-      }
-      isOptionEqualToValue={(option, val) => option.label === val.label}
-      noOptionsText={t('noDestinationsFound')}
-      loadingText={<AppLoadingIndicator />}
-      renderOption={(props, option) => {
-        const { key, ...restProps } = props;
-        return (
-          <Box component="li" key={key} {...restProps}>
-            <Stack
-              direction="row"
-              spacing={1.5}
-              sx={{
-                width: '100%',
-                alignItems: 'center',
-                py: 0.5,
-              }}
-            >
-              <Box
+        isOptionEqualToValue={(option, val) => option.label === val.label}
+        noOptionsText={
+          searchError ? tMaps('searchUnavailable') : t('noDestinationsFound')
+        }
+        loadingText={<AppLoadingIndicator />}
+        renderOption={(props, option) => {
+          const { key, ...restProps } = props;
+          return (
+            <Box component="li" key={key} {...restProps}>
+              <Stack
+                direction="row"
+                spacing={1.5}
                 sx={{
-                  display: 'flex',
+                  width: '100%',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  width: 32,
-                  height: 32,
-                  borderRadius: '8px',
-                  bgcolor: option.isPopular ? 'warning.light' : 'action.hover',
-                  color: option.isPopular ? 'warning.dark' : 'primary.main',
-                  flexShrink: 0,
+                  py: 0.5,
                 }}
               >
-                {option.isPopular ? (
-                  <WhatshotRoundedIcon sx={{ fontSize: 18 }} />
-                ) : (
-                  <PlaceRoundedIcon sx={{ fontSize: 18 }} />
-                )}
-              </Box>
-              <Stack spacing={0.2} sx={{ minWidth: 0, flex: 1 }}>
-                <Typography
-                  variant="body2"
+                <Box
                   sx={{
-                    fontWeight: 600,
-                    color: 'text.primary',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 32,
+                    height: 32,
+                    borderRadius: '8px',
+                    bgcolor: option.isPopular
+                      ? 'warning.light'
+                      : 'action.hover',
+                    color: option.isPopular ? 'warning.dark' : 'primary.main',
+                    flexShrink: 0,
                   }}
                 >
-                  {option.name}
-                </Typography>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: 'text.secondary',
-                    fontSize: '11px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {[option.region, option.country].filter(Boolean).join(' · ')}
-                </Typography>
+                  {option.isPopular ? (
+                    <WhatshotRoundedIcon sx={{ fontSize: 18 }} />
+                  ) : (
+                    <PlaceRoundedIcon sx={{ fontSize: 18 }} />
+                  )}
+                </Box>
+                <Stack spacing={0.2} sx={{ minWidth: 0, flex: 1 }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                      color: 'text.primary',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {option.name}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: 'text.secondary',
+                      fontSize: '11px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {[option.region, option.country]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </Typography>
+                </Stack>
               </Stack>
-            </Stack>
-          </Box>
-        );
-      }}
-      renderInput={(params) => {
-        const { slotProps, ...restParams } = params;
-        return (
-          <AppTextField
-            {...restParams}
-            label={label || t('destination')}
-            placeholder={placeholder || t('destinationPlaceholder')}
-            required={required}
-            error={error}
-            // helperText={helperText || t('destinationHelper')}
-            slotProps={{
-              ...slotProps,
-              input: {
-                ...slotProps.input,
-                endAdornment: (
-                  <>
-                    {loading ? (
-                      <AppLoadingIndicator sx={{ mr: 1 }} />
-                    ) : null}
-                    {slotProps.input.endAdornment}
-                  </>
-                ),
-              },
-            }}
-          />
-        );
-      }}
-    />
+            </Box>
+          );
+        }}
+        renderInput={(params) => {
+          const { slotProps, ...restParams } = params;
+          return (
+            <AppTextField
+              {...restParams}
+              label={label || t('destination')}
+              placeholder={placeholder || t('destinationPlaceholder')}
+              required={required}
+              error={error || Boolean(searchError)}
+              helperText={
+                helperText ||
+                (searchError ? tMaps('searchUnavailable') : undefined)
+              }
+              slotProps={{
+                ...slotProps,
+                input: {
+                  ...slotProps.input,
+                  endAdornment: (
+                    <>
+                      {loading ? <AppLoadingIndicator sx={{ mr: 1 }} /> : null}
+                      {slotProps.input.endAdornment}
+                    </>
+                  ),
+                },
+              }}
+            />
+          );
+        }}
+      />
+    </AppMapSearchSourcesContext.Provider>
   );
 };
 

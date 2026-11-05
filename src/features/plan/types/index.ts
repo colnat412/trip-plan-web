@@ -1,3 +1,4 @@
+import type { MapsSource } from '@/base/types/maps';
 import type { TripCategory } from '@/base/constants';
 
 export type ActivityCategory = TripCategory;
@@ -149,7 +150,7 @@ export interface DistanceResult {
   distance: DistanceInfo;
   duration: DurationInfo;
   isEstimated?: boolean;
-  source?: 'google' | 'osm' | 'heuristic';
+  source?: MapsSource;
 }
 
 export interface RouteSegment {
@@ -160,7 +161,7 @@ export interface RouteSegment {
   distance: DistanceInfo;
   duration: DurationInfo;
   isEstimated?: boolean;
-  source?: 'google' | 'osm' | 'heuristic';
+  source?: MapsSource;
 }
 
 export interface OptimizationResult {

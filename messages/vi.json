@@ -24,7 +24,8 @@
   "locationMap": {
     "title": "Bản đồ: {location}",
     "open": "Mở trong Google Maps",
-    "empty": "Chưa có địa điểm để hiển thị bản đồ."
+    "empty": "Chưa có địa điểm để hiển thị bản đồ.",
+    "unavailable": "Chưa thể hiển thị bản đồ. Bạn có thể mở địa điểm trên Google Maps."
   },
   "navigation": {
     "searchingTrips": "Đang tìm chuyến đi…",
@@ -901,20 +902,19 @@
     },
     "distance": {
       "unavailable": "Chưa có thông tin di chuyển",
-      "osmSource": "OpenStreetMap",
       "dayTotalTitle": "Lộ trình di chuyển trong ngày: {dist} ({time})",
       "dayTotalSub": "{count} chặng di chuyển giữa các địa điểm",
       "optimizeBtn": "Tối ưu lộ trình",
       "openInGoogleMaps": "Xem chỉ đường trên Google Maps",
+      "fixMap": "Sửa bản đồ",
       "estimatedLabel": "Ước tính",
-      "estimatedTooltip": "Khoảng cách ước tính. Không tìm thấy tọa độ đường đi trên bản đồ.",
-      "osmTooltip": "Đo chính xác theo mạng lưới đường bộ OpenStreetMap (Miễn phí)"
+      "estimatedTooltip": "Khoảng cách ước tính. Không tìm thấy tọa độ đường đi trên bản đồ."
     },
     "optimize": {
       "title": "Tối ưu lộ trình di chuyển (Ngày {day})",
       "subtitle": "Sắp xếp lại thứ tự các địa điểm để giảm tối đa quãng đường và thời gian đi lại",
       "notEnoughLocations": "Cần ít nhất 2 hoạt động có địa chỉ cụ thể để tối ưu lộ trình.",
-      "calculating": "Đang đo khoảng cách Google Maps và tính toán lộ trình tối ưu...",
+      "calculating": "Đang đo khoảng cách và tính toán lộ trình tối ưu...",
       "startPointLabel": "Điểm xuất phát trong ngày",
       "startPointDesc": "Lộ trình sẽ giữ cố định điểm này làm điểm bắt đầu hành trình.",
       "startPoint": "Chọn điểm xuất phát",
@@ -924,10 +924,12 @@
       "timeSavingsText": "Tiết kiệm {time} di chuyển",
       "alreadyOptimal": "Lộ trình hiện tại đã là ngắn nhất!",
       "optimizedSequenceTitle": "Thứ tự di chuyển đề xuất:",
-      "footerNote": "* Dữ liệu khoảng cách và thời gian di chuyển được tính theo ô tô/xe máy từ Google Maps Distance Matrix và được lưu cache cục bộ để bảo vệ hạn mức miễn phí hàng tháng ($200 credit).",
+      "footerNote": "Khoảng cách và thời gian lái xe lấy từ Vietmap hoặc OpenStreetMap/OSRM. Trip Plan tính thứ tự đề xuất.",
       "cancel": "Đóng",
       "applyBtn": "Áp dụng lộ trình tối ưu",
-      "applying": "Đang cập nhật..."
+      "applying": "Đang cập nhật...",
+      "routeError": "Chưa có đủ tuyến đường để tối ưu. Vui lòng thử lại.",
+      "retry": "Thử lại"
     },
     "toasts": {
       "createActivitySuccess": "Đã thêm hoạt động vào lịch trình!",
@@ -1093,7 +1095,7 @@
         },
         "handling": {
           "title": "Nhà cung cấp và tính năng tùy chọn",
-          "body": "Ảnh tải lên được xử lý qua Cloudinary. Khi bạn dùng AI, nội dung yêu cầu hoặc hóa đơn được gửi đến dịch vụ AI và Google Gemini để xử lý. Tìm địa điểm và tính khoảng cách có thể gửi địa điểm đến Google Maps hoặc các dịch vụ OpenStreetMap. Đăng nhập Google sử dụng thông tin hồ sơ do Google cung cấp. Quyền truy cập camera chỉ được yêu cầu khi bạn chọn chụp ảnh."
+          "body": "Ảnh tải lên được xử lý qua Cloudinary. Khi bạn dùng AI, nội dung yêu cầu hoặc hóa đơn được gửi đến dịch vụ AI và Google Gemini để xử lý. Tìm địa điểm và tính khoảng cách có thể gửi địa điểm đến Vietmap hoặc dịch vụ dùng dữ liệu OpenStreetMap (Photon, OSRM). Bản đồ có thể tải dữ liệu từ Vietmap hoặc OpenStreetMap. Đăng nhập Google sử dụng thông tin hồ sơ do Google cung cấp. Quyền truy cập camera chỉ được yêu cầu khi bạn chọn chụp ảnh."
         },
         "choices": {
           "title": "Lựa chọn của bạn",
@@ -1216,5 +1218,8 @@
     "navigation": "Quản lý tài chính",
     "expenses": "Chi tiêu",
     "settlement": "Chia tiền"
+  },
+  "maps": {
+    "searchUnavailable": "Chưa thể tìm địa điểm. Vui lòng thử lại."
   }
 }
