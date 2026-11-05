@@ -250,7 +250,6 @@ const LocationAutocompleteInput = ({
                 <>
                   {isLoading ? (
                     <AppLoadingIndicator
-                      size={16}
                       sx={{ mr: 1, color: 'text.secondary' }}
                     />
                   ) : null}

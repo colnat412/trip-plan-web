@@ -109,7 +109,7 @@ const TripBudgetCard = ({
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 0.5,
                     color: tone === 'error' ? 'error.main' : 'primary.main' }}>
                     {icon}
-                    <Typography component="span" sx={{ fontSize: '10px', color: 'text.secondary' }}>
+                    <Typography component="span" sx={{ fontSize: '12px', color: 'text.secondary' }}>
                       {currency}
                     </Typography>
                   </Box>

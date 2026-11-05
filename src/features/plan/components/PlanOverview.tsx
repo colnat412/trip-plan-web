@@ -24,6 +24,7 @@ import type { CreateExpensePayload } from '@/features/expense/types';
 import UseTemplateButton from '@/features/plan-template/components/UseTemplateButton';
 import PublishTemplateDialog from '@/features/plan-template/components/PublishTemplateDialog';
 import ShareTripDialog from '@/features/trip/components/ShareTripDialog';
+import { TRIP_SHARING_ENABLED } from '@/features/trip/constants/trip-features';
 import useTripPlan from '../hooks/useTripPlan';
 import useDayActivities from '../hooks/useDayActivities';
 import {
@@ -419,7 +420,7 @@ const PlanOverview = ({
           onPublishTemplate={
             role === 'OWNER' ? () => setPublishOpen(true) : undefined
           }
-          onOpenShare={canManage ? () => setShareDialogOpen(true) : undefined}
+          onOpenShare={TRIP_SHARING_ENABLED && canManage ? () => setShareDialogOpen(true) : undefined}
           onOpenActivityLogs={() => setActivityLogOpen(true)}
           readOnly={!canWrite || Boolean(planError)}
           onOpenExport={() =>
@@ -669,7 +670,7 @@ const PlanOverview = ({
         />
       )}
 
-      {tripId && (
+      {TRIP_SHARING_ENABLED && tripId && (
         <ShareTripDialog
           open={shareDialogOpen}
           onClose={() => setShareDialogOpen(false)}

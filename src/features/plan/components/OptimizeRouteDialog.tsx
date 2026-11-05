@@ -137,7 +137,7 @@ const OptimizeRouteDialog = ({
           gap: 2,
         }}
       >
-        <AppLoadingIndicator size={36} />
+        <AppLoadingIndicator />
         <Typography sx={{ fontSize: '14px', color: 'text.secondary' }}>
           {t('calculating')}
         </Typography>
@@ -539,7 +539,7 @@ const OptimizeRouteDialog = ({
         disabled={!result || !result.isImprovement || isApplying}
         startIcon={
           isApplying ? (
-            <AppLoadingIndicator size={16} />
+            <AppLoadingIndicator />
           ) : (
             <AutoAwesomeRoundedIcon />
           )

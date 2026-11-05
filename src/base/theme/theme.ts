@@ -48,7 +48,7 @@ const appTheme = createTheme({
       palette: {
         ...brandPalette,
         mode: 'light',
-        background: { default: 'rgb(30, 58, 138)', paper: '#FFFFFF' },
+        background: { default: '#FFFFFF', paper: '#FFFFFF' },
         text: { primary: '#0F172A', secondary: '#475569' },
         divider: 'rgba(30, 58, 138, 0.12)',
       },
@@ -127,7 +127,7 @@ const appTheme = createTheme({
       defaultProps: { disableElevation: true },
       styleOverrides: {
         root: {
-          minHeight: 42,
+          minHeight: 44,
           paddingInline: 16,
           borderRadius: 12,
           textTransform: 'none',
@@ -143,6 +143,8 @@ const appTheme = createTheme({
 
           return {
             minHeight: 44,
+            // Khuyết viền theo label vẫn cập nhật ngay, không animate kích thước.
+            '& .MuiOutlinedInput-notchedOutline legend': { transition: 'none' },
             borderRadius: 12,
             backgroundColor: palette.background.paper,
             '&:hover .MuiOutlinedInput-notchedOutline': {

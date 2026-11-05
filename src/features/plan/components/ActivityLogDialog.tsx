@@ -132,7 +132,7 @@ const ActivityLogDialog = ({
             py: 6,
           }}
         >
-          <AppLoadingIndicator size={32} />
+          <AppLoadingIndicator />
         </Box>
       ) : logs.length === 0 ? (
         <Box

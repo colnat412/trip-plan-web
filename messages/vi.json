@@ -84,7 +84,8 @@
     "installError": "Chưa thể mở lời mời cài đặt. Hãy thử cài từ menu của trình duyệt."
   },
   "loading": {
-    "label": "Đang tải"
+    "label": "Đang tải",
+    "startup": "Đang mở Trip Plan…"
   },
   "preferences": {
     "settings": "Cài đặt",

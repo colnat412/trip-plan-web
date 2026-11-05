@@ -53,7 +53,7 @@ const AppAvatarStack = ({
         },
       }}
     >
-      {loading ? <AppLoadingState indicatorSize={28} sx={{ minHeight: 32, width: 32, py: 0 }} /> : items.length ? (
+      {loading ? <AppLoadingState sx={{ minHeight: 32, width: 32, py: 0 }} /> : items.length ? (
         <AvatarGroup
           total={items.length}
           max={visibleCount + 1}

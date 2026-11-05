@@ -27,50 +27,50 @@ const getThemeStatusColors = (theme: Theme, variant: StatusThemeVariant) => {
   switch (variant) {
     case 'success':
       return {
-        bg: alpha(palette.success.main, 0.22),
+        bg: alpha(palette.common.black, 0.78),
         border: alpha(palette.success.light, 0.35),
-        text: palette.success.light,
+        text: palette.common.white,
         dot: palette.success.main,
       };
     case 'warning':
       return {
-        bg: alpha(palette.warning.main, 0.22),
+        bg: alpha(palette.common.black, 0.78),
         border: alpha(palette.warning.light, 0.4),
-        text: palette.warning.light,
+        text: palette.common.white,
         dot: palette.warning.main,
       };
     case 'info':
       return {
-        bg: alpha(palette.info.main, 0.22),
+        bg: alpha(palette.common.black, 0.78),
         border: alpha(palette.info.light, 0.35),
-        text: palette.info.light,
+        text: palette.common.white,
         dot: palette.info.main,
       };
     case 'primary':
       return {
-        bg: alpha(palette.primary.light, 0.22),
+        bg: alpha(palette.common.black, 0.78),
         border: alpha(palette.primary.light, 0.35),
-        text: palette.primary.light,
+        text: palette.common.white,
         dot: palette.primary.light,
       };
     case 'secondary':
       return {
-        bg: alpha(palette.secondary.main, 0.22),
+        bg: alpha(palette.common.black, 0.78),
         border: alpha(palette.secondary.light, 0.4),
-        text: palette.secondary.light,
+        text: palette.common.white,
         dot: palette.secondary.main,
       };
     case 'error':
       return {
-        bg: alpha(palette.error.main, 0.22),
+        bg: alpha(palette.common.black, 0.78),
         border: alpha(palette.error.light, 0.35),
-        text: palette.error.light,
+        text: palette.common.white,
         dot: palette.error.main,
       };
     case 'neutral':
     default:
       return {
-        bg: alpha(palette.common.white, 0.15),
+        bg: alpha(palette.common.black, 0.78),
         border: alpha(palette.common.white, 0.25),
         text: palette.common.white,
         dot: alpha(palette.common.white, 0.7),
@@ -102,10 +102,10 @@ const TripStatusBadge = ({
           bgcolor: colors.bg,
           border: `1px solid ${colors.border}`,
           color: colors.text,
-          fontSize: isSmall ? '11px' : '12px',
+          fontSize: '12px',
           fontWeight: 700,
           fontFamily: 'var(--font-body)',
-          lineHeight: 1,
+          lineHeight: 1.4,
           whiteSpace: 'nowrap',
           flexShrink: 0,
           verticalAlign: 'middle',

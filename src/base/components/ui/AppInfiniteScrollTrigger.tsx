@@ -55,7 +55,7 @@ const AppInfiniteScrollTrigger = ({
         py: loading ? 1.5 : 0,
       }}
     >
-      {loading && <AppLoadingIndicator size={22} />}
+      {loading && <AppLoadingIndicator />}
     </Box>
   );
 };

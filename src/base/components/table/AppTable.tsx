@@ -235,7 +235,7 @@ const AppTable = <T,>({
 
       {isFetching && !shouldShowLoading && (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 0.5 }}>
-          <AppLoadingIndicator size={24} />
+          <AppLoadingIndicator />
         </Box>
       )}
 

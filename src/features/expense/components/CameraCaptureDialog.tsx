@@ -182,7 +182,6 @@ const CameraCaptureDialog = ({
         >
           {isLoading && (
             <AppLoadingIndicator
-              size={40}
               sx={{ color: 'common.white', position: 'absolute' }}
             />
           )}

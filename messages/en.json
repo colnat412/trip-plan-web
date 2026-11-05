@@ -84,7 +84,8 @@
     "installError": "Could not open the installation prompt. Try installing from your browser's menu."
   },
   "loading": {
-    "label": "Loading"
+    "label": "Loading",
+    "startup": "Opening Trip Plan…"
   },
   "preferences": {
     "settings": "Settings",

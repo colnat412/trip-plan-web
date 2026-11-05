@@ -87,7 +87,7 @@ const DestinationAutocomplete = ({
       }
       isOptionEqualToValue={(option, val) => option.label === val.label}
       noOptionsText={t('noDestinationsFound')}
-      loadingText={<AppLoadingIndicator size={24} />}
+      loadingText={<AppLoadingIndicator />}
       renderOption={(props, option) => {
         const { key, ...restProps } = props;
         return (
@@ -167,7 +167,7 @@ const DestinationAutocomplete = ({
                 endAdornment: (
                   <>
                     {loading ? (
-                      <AppLoadingIndicator size={18} sx={{ mr: 1 }} />
+                      <AppLoadingIndicator sx={{ mr: 1 }} />
                     ) : null}
                     {slotProps.input.endAdornment}
                   </>

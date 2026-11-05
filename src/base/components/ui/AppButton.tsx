@@ -5,7 +5,7 @@ import { Box, Button, ButtonProps } from "@mui/material";
 import AppLoadingIndicator from "./AppLoadingIndicator";
 
 import type { AnchorHTMLAttributes } from "react";
-import type { Theme } from "@mui/material/styles";
+import { alpha, type Theme } from "@mui/material/styles";
 import type { SxProps } from "@mui/system";
 
 export type AppButtonIntent =
@@ -20,6 +20,13 @@ export type AppButtonProps = Omit<ButtonProps, "color" | "variant"> &
     wrapLabel?: boolean;
     selected?: boolean;
   };
+
+function getPrimaryBackground(theme: Theme) {
+  const palette = theme.vars?.palette ?? theme.palette;
+  const primaryGradient = `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
+  const shade = 'var(--app-primary-button-shade, transparent)';
+  return `linear-gradient(${shade}, ${shade}), ${primaryGradient}`;
+}
 
 function getSelectedStyles(selected: boolean): SxProps<Theme> {
   if (!selected) return {};
@@ -59,7 +66,7 @@ function getButtonStyles(
 ): SxProps<Theme> {
   return (theme) => {
     const palette = theme.vars?.palette ?? theme.palette;
-    const primaryGradient = `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
+    const primaryBackground = getPrimaryBackground(theme);
     const commonStyles = {
       flexShrink: 0,
       whiteSpace: "nowrap",
@@ -76,18 +83,20 @@ function getButtonStyles(
         return {
           ...commonStyles,
 
+          '--app-primary-button-shade': alpha(theme.palette.common.black, 0.3),
+          ...theme.applyStyles('dark', { '--app-primary-button-shade': 'transparent' }),
           color: palette.primary.contrastText,
-          background: primaryGradient,
+          background: primaryBackground,
 
           "&:hover": {
             color: palette.primary.contrastText,
-            background: primaryGradient,
+            background: primaryBackground,
             filter: "brightness(0.92)",
           },
 
           "&:active": {
             color: palette.primary.contrastText,
-            background: primaryGradient,
+            background: primaryBackground,
             filter: "brightness(0.85)",
           },
 
@@ -201,7 +210,7 @@ function getMobileIconLabelStyles(intent: AppButtonIntent): SxProps<Theme> {
   return (theme) => {
     const palette = theme.vars?.palette ?? theme.palette;
     const isPrimary = intent === "primary";
-    const primaryGradient = `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
+    const primaryBackground = getPrimaryBackground(theme);
 
     return {
       [theme.breakpoints.down("sm")]: {
@@ -231,7 +240,7 @@ function getMobileIconLabelStyles(intent: AppButtonIntent): SxProps<Theme> {
           alignItems: "center",
           justifyContent: "center",
           borderRadius: "50%",
-          background: isPrimary ? primaryGradient : palette.action.selected,
+          background: isPrimary ? primaryBackground : palette.action.selected,
           color: isPrimary
             ? palette.primary.contrastText
             : palette.text.primary,
@@ -243,11 +252,11 @@ function getMobileIconLabelStyles(intent: AppButtonIntent): SxProps<Theme> {
           filter: "none",
         },
         "&:hover .MuiButton-startIcon": {
-          background: isPrimary ? primaryGradient : palette.action.hover,
+          background: isPrimary ? primaryBackground : palette.action.hover,
           filter: isPrimary ? "brightness(0.92)" : "none",
         },
         "&:active .MuiButton-startIcon": {
-          background: isPrimary ? primaryGradient : palette.action.selected,
+          background: isPrimary ? primaryBackground : palette.action.selected,
           filter: isPrimary ? "brightness(0.85)" : "none",
         },
         "&.Mui-disabled": {
@@ -287,7 +296,7 @@ const AppButton = ({
       disabled={disabled || loading}
       loading={loading}
       loadingPosition={loadingPosition}
-      loadingIndicator={loadingIndicator ?? <AppLoadingIndicator size={24} sx={{ color: "inherit" }} />}
+      loadingIndicator={loadingIndicator ?? <AppLoadingIndicator sx={{ color: "inherit" }} />}
       aria-busy={loading || undefined}
       aria-pressed={buttonProps["aria-pressed"] ?? selected}
       startIcon={startIcon}

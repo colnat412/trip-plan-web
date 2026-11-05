@@ -122,7 +122,7 @@ const AiPlannerDialog = ({
             disabled={isPending || !destination.trim()}
             startIcon={
               isPending ? (
-                <AppLoadingIndicator size={18} />
+                <AppLoadingIndicator />
               ) : (
                 <AutoAwesomeRoundedIcon />
               )

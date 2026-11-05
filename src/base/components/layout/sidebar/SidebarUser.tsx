@@ -68,7 +68,14 @@ const SidebarUser = ({
   };
 
   if (isLoading && !currentUser) {
-    return <AppLoadingIndicator size={compact ? 44 : 36} />;
+    return (
+      <Box sx={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        width: compact ? 44 : 36, height: compact ? 44 : 36, flexShrink: 0,
+      }}>
+        <AppLoadingIndicator />
+      </Box>
+    );
   }
 
   return (

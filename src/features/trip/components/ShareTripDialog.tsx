@@ -155,7 +155,7 @@ const ShareTripDialog = ({
     >
       {isLoading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-          <AppLoadingIndicator size={32} />
+          <AppLoadingIndicator />
         </Box>
       ) : (
         <Stack spacing={2.5}>

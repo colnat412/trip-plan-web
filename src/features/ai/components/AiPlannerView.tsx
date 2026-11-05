@@ -298,7 +298,7 @@ const AiPlannerView = () => {
                     gap: 2,
                   }}
                 >
-                  <AppLoadingIndicator size={32} />
+                  <AppLoadingIndicator />
                   <Box>
                     <Typography
                       variant="subtitle2"
@@ -346,7 +346,7 @@ const AiPlannerView = () => {
                   }
                   startIcon={
                     isPending ? (
-                      <AppLoadingIndicator size={20} />
+                      <AppLoadingIndicator />
                     ) : (
                       <AutoAwesomeRoundedIcon />
                     )

@@ -112,11 +112,14 @@ const TripCardItem = ({
           <Tooltip title={isActive ? t('activeTripTip') : t('makeActiveTip')}>
             <IconButton
               size="small"
+              aria-label={isActive ? t('activeTripTip') : t('makeActiveTip')}
               sx={{
                 bgcolor: 'background.paper',
                 color: isActive ? 'primary.main' : 'text.secondary',
                 boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                p: 0.5,
+                width: 44,
+                height: 44,
+                p: 1,
                 '&:hover': {
                   bgcolor: 'background.paper',
                   color: 'primary.main',
@@ -146,7 +149,7 @@ const TripCardItem = ({
             bgcolor: 'rgba(0, 0, 0, 0.65)',
             backdropFilter: 'blur(4px)',
             color: '#FFFFFF',
-            fontSize: '10.5px',
+            fontSize: '12px',
             fontWeight: 700,
           }}
         >
@@ -176,7 +179,7 @@ const TripCardItem = ({
               bgcolor: 'action.selected',
               color: 'primary.main',
               fontWeight: 800,
-              fontSize: '11.5px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
               letterSpacing: '0.25px',
             }}
@@ -189,7 +192,7 @@ const TripCardItem = ({
             noWrap
             sx={{
               color: 'text.secondary',
-              fontSize: '11.5px',
+              fontSize: '12px',
               fontFamily: 'var(--font-mono)',
             }}
           >
@@ -214,7 +217,7 @@ const TripCardItem = ({
             noWrap
             sx={{
               color: 'text.secondary',
-              fontSize: '11.5px',
+              fontSize: '12px',
               display: 'block',
               mt: 0.2,
             }}
@@ -257,7 +260,7 @@ const TripCardItem = ({
               px: 0.85,
               py: 0.2,
               borderRadius: '5px',
-              fontSize: '10.5px',
+              fontSize: '12px',
               fontWeight: 700,
               bgcolor: 'action.hover',
               color: isActive ? 'primary.main' : 'text.secondary',
@@ -285,9 +288,9 @@ const TripCardItem = ({
               }}
               startIcon={<FlightTakeoffRoundedIcon sx={{ fontSize: '13px' }} />}
               sx={{
-                minHeight: { xs: 40, sm: 28 },
+                minHeight: 44,
                 px: 1.25,
-                fontSize: '11.5px',
+                fontSize: '12px',
               }}
             >
               {t('viewTrip')}
@@ -296,6 +299,7 @@ const TripCardItem = ({
             {isOwner && (
               <Box onClick={(e) => e.stopPropagation()}>
                 <AppActionMenu
+                  minTouchTarget
                   items={[
                     ...(onEdit
                       ? [

@@ -105,7 +105,10 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
             minWidth: 0,
             overflowX: compact ? { xs: 'auto', md: 'visible' } : undefined,
             scrollSnapType: compact ? 'x proximity' : undefined,
-            pb: compact ? 0.5 : 0,
+            // Chừa chỗ cho viền focus của card đầu/cuối trong vùng cuộn.
+            p: compact ? 0.5 : 0,
+            scrollPaddingInline: compact ? '4px' : undefined,
+            '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: -2 },
           }}
         >
           {data?.content.map((item) => (

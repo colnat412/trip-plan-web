@@ -7,10 +7,9 @@ import AppLoadingIndicator from './AppLoadingIndicator';
 
 interface AppLoadingStateProps extends BoxProps {
   pageOnly?: boolean;
-  indicatorSize?: number;
 }
 
-const AppLoadingState = ({ sx, pageOnly = false, indicatorSize, ...props }: AppLoadingStateProps) => {
+const AppLoadingState = ({ sx, pageOnly = false, ...props }: AppLoadingStateProps) => {
   const context = useContext(AppPageLoadingContext);
   const registerLoading = context?.registerLoading;
   useLayoutEffect(() => registerLoading?.(), [registerLoading]);
@@ -31,7 +30,7 @@ const AppLoadingState = ({ sx, pageOnly = false, indicatorSize, ...props }: AppL
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
     >
-      <AppLoadingIndicator size={indicatorSize} />
+      <AppLoadingIndicator />
     </Box>
   );
 };

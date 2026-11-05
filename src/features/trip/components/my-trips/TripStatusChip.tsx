@@ -1,7 +1,6 @@
 'use client';
 
 import { Box, Chip } from '@mui/material';
-import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import type { TripStatus } from '../../types';
 
@@ -32,18 +31,22 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
           }}
         />
       }
-      sx={{
+      sx={(theme) => ({
         fontWeight: 700,
         fontSize: '12px',
         borderRadius: '6px',
         border: 'none',
         height: 24,
-        bgcolor: (theme) => alpha(theme.palette[config.variant].main, 0.12),
-        color: (theme) => theme.palette[config.variant].dark,
+        bgcolor: (theme) => {
+          const palette = theme.vars?.palette ?? theme.palette;
+          return `color-mix(in srgb, ${palette[config.variant].main} 8%, ${palette.background.paper})`;
+        },
+        color: `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette)[config.variant].dark} 65%, ${(theme.vars?.palette ?? theme.palette).text.primary})`,
+        ...theme.applyStyles('dark', { color: (theme.vars?.palette ?? theme.palette)[config.variant].light }),
         '& .MuiChip-label': {
           px: 1,
         },
-      }}
+      })}
     />
   );
 };

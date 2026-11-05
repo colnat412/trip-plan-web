@@ -61,13 +61,14 @@ export const AppFilterChip = ({
         </Box>
       }
       sx={{
-        height: size === 'small' ? 28 : 34,
+        height: 'auto',
+        minHeight: onClick ? 44 : size === 'small' ? 28 : 34,
         fontSize: size === 'small' ? '12px' : '13px',
         fontWeight: selected ? 700 : 500,
         borderRadius: '8px',
         cursor: 'pointer',
         flexShrink: 0,
-        transition: 'all 0.15s ease',
+        transition: 'background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease',
         border: '1px solid',
         borderColor: selected ? 'primary.main' : 'divider',
         bgcolor: selected ? 'primary.main' : 'background.paper',

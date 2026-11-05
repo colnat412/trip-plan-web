@@ -3,13 +3,11 @@
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { Box, type BoxProps } from '@mui/material';
 import { useTranslations } from 'next-intl';
+import { LOADING_INDICATOR_SIZE } from '@/base/constants/loading';
 
-export interface AppLoadingIndicatorProps extends BoxProps {
-  size?: number | string;
-}
+export type AppLoadingIndicatorProps = Omit<BoxProps, 'width' | 'height'>;
 
 const AppLoadingIndicator = ({
-  size = 56,
   sx,
   ...props
 }: AppLoadingIndicatorProps) => {
@@ -27,11 +25,17 @@ const AppLoadingIndicator = ({
           justifyContent: 'center',
           flexShrink: 0,
           color: 'primary.main',
-          width: size,
-          height: size,
           verticalAlign: 'middle',
         },
         ...(Array.isArray(sx) ? sx : [sx]),
+        {
+          width: LOADING_INDICATOR_SIZE,
+          height: LOADING_INDICATOR_SIZE,
+          minWidth: LOADING_INDICATOR_SIZE,
+          minHeight: LOADING_INDICATOR_SIZE,
+          maxWidth: LOADING_INDICATOR_SIZE,
+          maxHeight: LOADING_INDICATOR_SIZE,
+        },
       ]}
     >
       <Box
@@ -39,8 +43,8 @@ const AppLoadingIndicator = ({
         viewBox="0 0 64 64"
         aria-hidden="true"
         sx={{
-          width: size,
-          height: size,
+          width: LOADING_INDICATOR_SIZE,
+          height: LOADING_INDICATOR_SIZE,
           flexShrink: 0,
           overflow: 'visible',
           animation: 'tripbudget-orbit 1.6s linear infinite',

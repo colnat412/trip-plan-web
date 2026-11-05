@@ -128,7 +128,7 @@ const ReceiptScanBanner = ({
             }}
           >
             {isScanning ? (
-              <AppLoadingIndicator size={20} />
+              <AppLoadingIndicator />
             ) : (
               <AutoAwesomeOutlinedIcon fontSize="small" />
             )}

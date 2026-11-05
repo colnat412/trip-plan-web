@@ -55,7 +55,7 @@ const AppBottomNavigation = () => {
           sx={(theme) => {
             const palette = theme.vars?.palette ?? theme.palette;
             return {
-              height: 'var(--app-bottom-navigation-height, 72px)',
+              height: 'var(--app-bottom-navigation-height, 80px)',
               pointerEvents: 'auto',
               bgcolor: 'background.paper',
               '@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)))': {
@@ -67,7 +67,7 @@ const AppBottomNavigation = () => {
               width: '100%',
               maxWidth: 560,
               minWidth: 0,
-              p: 0.75,
+              p: 0.5,
               gap: 0.25,
               border: '1px solid',
               borderColor: `color-mix(in srgb, ${palette.text.primary} 12%, transparent)`,
@@ -80,8 +80,8 @@ const AppBottomNavigation = () => {
                 borderRadius: '999px',
                 overflow: 'hidden',
                 px: 0.5,
-                py: 0.75,
-                gap: 0.5,
+                py: 0.5,
+                gap: 0.25,
                 color: 'text.secondary',
                 transition: 'background-color 0.15s ease, color 0.15s ease',
                 '@media (hover: hover) and (pointer: fine)': {
@@ -105,7 +105,7 @@ const AppBottomNavigation = () => {
               },
               '& .MuiBottomNavigationAction-label, & .MuiBottomNavigationAction-label.Mui-selected':
                 {
-                  fontSize: { xs: '11px', sm: '12px' },
+                  fontSize: '12px',
                   fontWeight: 600,
                   whiteSpace: 'normal',
                   lineHeight: 1.25,

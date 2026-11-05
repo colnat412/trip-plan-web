@@ -16,7 +16,7 @@ const AppLoadingOverlay = ({ open, message, scope = 'screen' }: AppLoadingOverla
       flex: 1, minHeight: 160, minWidth: 0, py: 3,
       pb: 'calc(24px + var(--app-bottom-navigation-space, 0px))',
     }}>
-      <AppLoadingIndicator size={88} {...(message ? { 'aria-label': message } : {})} />
+      <AppLoadingIndicator {...(message ? { 'aria-label': message } : {})} />
     </Box>
   ) : null
 ) : (
@@ -30,7 +30,7 @@ const AppLoadingOverlay = ({ open, message, scope = 'screen' }: AppLoadingOverla
       WebkitBackdropFilter: 'blur(12px)',
     })}
   >
-    <AppLoadingIndicator size={88} {...(message ? { 'aria-label': message } : {})} />
+    <AppLoadingIndicator {...(message ? { 'aria-label': message } : {})} />
   </Backdrop>
 );
 

@@ -4,6 +4,7 @@ import { AppLoadingState, AppButton, AppPopover, AppTextField } from '@/base/com
 
 import { useId, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   Avatar,
   Box,
@@ -17,6 +18,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useTranslations } from 'next-intl';
 
 import { formatDateRange } from '@/base/utils';
@@ -29,6 +31,8 @@ interface AppTripSwitcherProps {
 
 const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
   const t = useTranslations('navigation');
+  const pathname = usePathname();
+  const isTripsPage = pathname === '/trips' || pathname.startsWith('/trips/');
   const {
     activeTrip,
     selectTrip,
@@ -222,29 +226,39 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
           />
         }
         actions={
-          <Stack spacing={1}>
-            {actions && <Box onClick={handleClose}>{actions}</Box>}
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
+          <Stack spacing={0.5}>
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'stretch' }}>
+              {actions && (
+                <Box onClick={handleClose} sx={{ display: 'flex', flex: '1 1 0', minWidth: 0 }}>
+                  {actions}
+                </Box>
+              )}
               <AppButton
                 size="small"
                 intent="primary"
                 startIcon={<AddRoundedIcon />}
                 onClick={handleCreate}
-                sx={{ minHeight: 44 }}
+                wrapLabel
+                sx={{ flex: '1 1 0', minWidth: 0, minHeight: 48, borderRadius: '12px', px: 1 }}
               >
                 {t('createTrip')}
               </AppButton>
+            </Stack>
+            {!isTripsPage && (
               <AppButton
-                size="small"
-                intent="text"
                 component={Link}
                 href="/trips"
+                intent="text"
+                size="small"
+                fullWidth
+                wrapLabel
                 onClick={handleClose}
-                sx={{ minHeight: 44 }}
+                endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: '18px' }} />}
+                sx={{ minHeight: 44, borderRadius: '12px', px: 1.5, justifyContent: 'space-between', textAlign: 'left' }}
               >
                 {t('allTrips')}
               </AppButton>
-            </Stack>
+            )}
           </Stack>
         }
       >

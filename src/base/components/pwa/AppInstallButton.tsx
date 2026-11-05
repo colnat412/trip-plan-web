@@ -68,7 +68,7 @@ const AppInstallButton = ({ menuItem = false }: AppInstallButtonProps) => {
             <IconButton
               type="button"
               loading={isInstalling}
-              loadingIndicator={<AppLoadingIndicator size={24} />}
+              loadingIndicator={<AppLoadingIndicator />}
               aria-label={t('install')}
               aria-busy={isInstalling || undefined}
               aria-haspopup={status === 'ios' ? 'dialog' : undefined}

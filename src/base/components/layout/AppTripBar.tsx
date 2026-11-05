@@ -9,6 +9,7 @@ import { AppButton } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import { useUserContext } from '@/features/user/context/UserContext';
 import ShareTripDialog from '@/features/trip/components/ShareTripDialog';
+import { TRIP_SHARING_ENABLED } from '@/features/trip/constants/trip-features';
 import AppTripSwitcher from './AppTripSwitcher';
 
 const AppTripBar = () => {
@@ -39,25 +40,37 @@ const AppTripBar = () => {
                 <Stack
                   direction="row"
                   spacing={1}
-                  sx={{ display: { xs: 'flex', sm: 'none' }, flexWrap: 'wrap' }}
+                  useFlexGap
+                  sx={{
+                    width: '100%',
+                    minWidth: 0,
+                    flexWrap: 'wrap',
+                    '& > .MuiButton-root': {
+                      flex: '1 1 0',
+                      minWidth: 0,
+                      minHeight: 48,
+                      px: 1,
+                      borderRadius: '12px',
+                    },
+                  }}
                 >
-                  {isOwner && (
+                  {TRIP_SHARING_ENABLED && isOwner && (
                     <AppButton
-                      intent="text"
+                      intent="secondary"
                       size="small"
+                      wrapLabel
                       onClick={() => setShareOpen(true)}
                       startIcon={<ShareRoundedIcon />}
-                      sx={{ minHeight: 44 }}
                     >
                       {t('shareTrip')}
                     </AppButton>
                   )}
                   <AppButton
-                    intent="text"
+                    intent="secondary"
                     size="small"
+                    wrapLabel
                     onClick={() => openMembers(false)}
                     startIcon={<GroupRoundedIcon />}
-                    sx={{ minHeight: 44 }}
                   >
                     {t('members')}
                   </AppButton>
@@ -76,7 +89,7 @@ const AppTripBar = () => {
               flexShrink: 0,
             }}
           >
-            {isOwner && (
+            {TRIP_SHARING_ENABLED && isOwner && (
               <AppButton
                 intent="text"
                 size="small"
@@ -101,7 +114,7 @@ const AppTripBar = () => {
           </Stack>
         )}
       </Box>
-      {activeTrip && isOwner && (
+      {TRIP_SHARING_ENABLED && activeTrip && isOwner && (
         <ShareTripDialog
           key={activeTrip.id}
           open={shareOpen}
