@@ -496,7 +496,7 @@
       "PERCENTAGE": "Percentage",
       "SHARE": "Shares",
       "options": {
-        "EQUAL": "Split equally among all members",
+        "EQUAL": "Split equally",
         "PERCENTAGE": "Split by percentage (%)",
         "SHARE": "Split by number of shares",
         "EXACT_AMOUNT": "Enter individual amounts manually"
@@ -520,8 +520,8 @@
       "note": "Note",
       "receipt": "Receipt / Document",
       "close": "Close",
-      "addTitle": "Add New Expense",
-      "editTitle": "Edit Expense",
+      "addTitle": "Add expense",
+      "editTitle": "Edit expense",
       "deleteTitle": "Confirm Delete Expense",
       "deleteConfirm": "Are you sure you want to delete expense \"{title}\" amounting to {amount}?",
       "deleteDesc": "This expense will be removed from the expense ledger and trip budget balances will be recalculated immediately.",
@@ -566,13 +566,13 @@
       "payerLabel": "Paid By *",
       "receiptUrlLabel": "Receipt / Invoice URL (Optional)",
       "receiptUrlPlaceholder": "https://... or receipt photo link",
-      "splitsTitle": "Member Split Breakdown",
+      "splitsTitle": "Split between",
       "allocatedTotal": "Allocated",
       "remainingToAllocate": "Remaining",
       "autoFillRemaining": "Fill Remaining",
       "exactMatch": "100% Match",
       "sharesUnit": "shares",
-      "noteLabel": "Detailed Notes",
+      "noteLabel": "Note (optional)",
       "notePlaceholder": "Add notes about location, participants...",
       "cancel": "Cancel",
       "submitAdd": "Add Expense",
@@ -587,7 +587,23 @@
         "splitErrorPercent": "Total percentage ({sum}%) must equal exactly 100%!",
         "splitErrorNoMembers": "Please select at least one member to split!",
         "splitErrorPositiveShare": "Each person's share count must be greater than 0!"
-      }
+      },
+      "detailsSection": "Expense details",
+      "sharingSection": "Who paid and who shares?",
+      "extrasSection": "Additional details",
+      "shareInputLabel": "Shares",
+      "percentageInputLabel": "Percentage",
+      "allocatedAmountLabel": "Share amount",
+      "splitTotal": "Total to split",
+      "equalSummary": "Split equally between {count} people",
+      "totalShares": "Total: {count} shares",
+      "allocationComplete": "Fully allocated",
+      "leftToSplit": "Remaining: {amount}",
+      "overAllocated": "Over by {amount}",
+      "enterAmountToSplit": "Enter the expense amount to calculate each person’s share.",
+      "selectAllMembers": "Select all",
+      "deselectAllMembers": "Deselect all",
+      "notSharing": "Not included"
     },
     "toasts": {
       "createSuccess": "Expense added successfully!",
@@ -605,7 +621,8 @@
       "description": "Attach a receipt image if available. It is uploaded only when you save the expense.",
       "imageAlt": "Expense receipt image",
       "open": "Open receipt",
-      "previewError": "The image preview is unavailable. You can open the receipt link below."
+      "previewError": "The image preview is unavailable. You can open the receipt link below.",
+      "scanAttachmentSkipped": "AI details filled in. To attach a receipt, choose a JPEG, PNG or WebP image up to 5 MB."
     }
   },
   "members": {

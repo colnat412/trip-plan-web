@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar, Box, Checkbox, Chip, Stack, Typography } from '@mui/material';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
-import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
+import { Avatar, Box, Checkbox, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import { AppButton, AppNumberInput } from '@/base/components/ui';
@@ -20,6 +18,7 @@ export interface SplitMember {
 
 export interface SplitAllocationSectionProps {
   splitType: SplitType;
+  disabled?: boolean;
   totalAmount: number;
   currency: string;
   members: SplitMember[];
@@ -39,6 +38,7 @@ interface CustomAllocation {
 
 const SplitAllocationSection = ({
   splitType,
+  disabled = false,
   totalAmount,
   currency,
   members,
@@ -311,320 +311,237 @@ const SplitAllocationSection = ({
     return null;
   }
 
+  const hasAmount = Number.isFinite(totalAmount) && totalAmount > 0;
+  const allSelected = selectedCount === members.length;
+  const canFillRemaining =
+    hasAmount &&
+    selectedCount > 0 &&
+    Math.abs(remaining) >= 0.01 &&
+    (splitType === 'EXACT_AMOUNT' || splitType === 'PERCENTAGE');
+
+  const toggleAllMembers = () => {
+    setCustomAllocations((previous) => {
+      const next = { ...previous };
+      for (const member of members) {
+        const key = String(member.userId);
+        next[key] = { ...next[key], selected: !allSelected };
+      }
+      return next;
+    });
+  };
+
+  const allocationStatus = () => {
+    if (splitType === 'EQUAL') {
+      return t('form.equalSummary', { count: selectedCount });
+    }
+    if (splitType === 'SHARE') {
+      return t('form.totalShares', { count: allocatedSum });
+    }
+    if (isValid) return t('form.allocationComplete');
+    const value =
+      splitType === 'PERCENTAGE'
+        ? `${Math.abs(remaining)}%`
+        : formatCurrency(Math.abs(remaining), currency);
+    return t(remaining < 0 ? 'form.overAllocated' : 'form.leftToSplit', {
+      amount: value,
+    });
+  };
+
   return (
-    <Stack spacing={1.5} sx={{ mt: 1 }}>
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={1}
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: { xs: 'flex-start', sm: 'center' },
-        }}
-      >
+    <Stack spacing={1.5} sx={{ minWidth: 0 }}>
+      {/* <Stack spacing={1} sx={{ p: 1.5, borderRadius: 2, bgcolor: 'action.hover', minWidth: 0 }}>
+        <Stack direction="row" spacing={1} useFlexGap sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
+          <Typography variant="body2" color="text.secondary">
+            {t('form.splitTotal')}
+          </Typography>
+          <Typography variant="body2" sx={{ fontWeight: 700, overflowWrap: 'anywhere', minWidth: 0 }}>
+            {hasAmount ? formatCurrency(totalAmount, currency) : '—'}
+          </Typography>
+        </Stack>
         <Typography
           variant="caption"
-          sx={{ fontWeight: 700, color: 'text.secondary' }}
+          aria-live="polite"
+          sx={{ color: !hasAmount ? 'text.secondary' : isValid ? 'text.secondary' : 'error.main' }}
         >
-          {t('form.splitsTitle')} ({selectedCount}/{members.length})
+          {!hasAmount ? t('form.enterAmountToSplit') : allocationStatus()}
         </Typography>
-
-        {splitType === 'EXACT_AMOUNT' && (
-          <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-            <Chip
-              size="small"
-              icon={
-                isValid ? (
-                  <CheckCircleRoundedIcon sx={{ fontSize: 15 }} />
-                ) : (
-                  <WarningAmberRoundedIcon sx={{ fontSize: 15 }} />
-                )
-              }
-              label={
-                isValid
-                  ? t('form.exactMatch')
-                  : `${t('form.remainingToAllocate')}: ${formatCurrency(remaining, currency)}`
-              }
-              color={isValid ? 'success' : 'warning'}
-              sx={{ fontWeight: 600, fontSize: '11px' }}
-            />
-          </Stack>
-        )}
-
-        {splitType === 'PERCENTAGE' && (
-          <Chip
-            size="small"
-            icon={
-              isValid ? (
-                <CheckCircleRoundedIcon sx={{ fontSize: 15 }} />
-              ) : (
-                <WarningAmberRoundedIcon sx={{ fontSize: 15 }} />
-              )
-            }
-            label={
-              isValid
-                ? '100%'
-                : `${t('form.allocatedTotal')}: ${allocatedSum}% (${t('form.remainingToAllocate')}: ${remaining}%)`
-            }
-            color={isValid ? 'success' : 'warning'}
-            sx={{ fontWeight: 600, fontSize: '11px' }}
-          />
-        )}
-
-        {splitType === 'SHARE' && (
-          <Chip
-            size="small"
-            label={`${t('form.allocatedTotal')}: ${allocatedSum} ${t('form.sharesUnit')}`}
-            color="primary"
-            variant="outlined"
-            sx={{ fontWeight: 600, fontSize: '11px' }}
-          />
-        )}
-      </Stack>
+      </Stack> */}
 
       <Stack
+        direction="row"
+        spacing={1}
+        useFlexGap
         sx={{
-          borderTop: 1,
-          borderColor: 'divider',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
         }}
       >
-        {memberAllocations.map(({ member, selected, amount, splitValue }) => (
-          <Stack
-            key={String(member.userId)}
-            direction={{ xs: 'column', sm: 'row' }}
-            spacing={1}
-            sx={{
-              alignItems: { xs: 'stretch', sm: 'center' },
-              justifyContent: 'space-between',
-              py: 1.5,
-              borderBottom: 1,
-              borderColor: 'divider',
-              opacity: selected ? 1 : 0.6,
-              transition: 'opacity 0.15s ease',
-            }}
-          >
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}
-            >
-              <Checkbox
-                size="small"
-                checked={selected}
-                onChange={() => handleToggleMember(member.userId)}
-                slotProps={{ input: { 'aria-label': member.name || member.email || String(member.userId) } }}
-                sx={{ p: 1 }}
-              />
-              <Avatar
-                src={member.avatarUrl || undefined}
-                sx={{
-                  width: 28,
-                  height: 28,
-                  fontSize: '12px',
-                  bgcolor: 'primary.light',
-                }}
-              >
-                {getUserInitials(member.name || member.email)}
-              </Avatar>
-              <Box sx={{ minWidth: 0 }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: 600,
-                    fontSize: '13px',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {member.name || member.email || String(member.userId)}
-                </Typography>
-                {member.email && member.name && (
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: 'text.secondary',
-                      fontSize: '11px',
-                      display: 'block',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {member.email}
-                  </Typography>
-                )}
-              </Box>
-            </Stack>
+        <Typography variant="body2" sx={{ fontWeight: 700 }}>
+          {t('form.splitsTitle')} ({selectedCount}/{members.length})
+        </Typography>
+        <AppButton
+          type="button"
+          intent="text"
+          size="small"
+          disabled={disabled}
+          onClick={toggleAllMembers}
+          sx={{ minHeight: 44, px: 1 }}
+        >
+          {t(allSelected ? 'form.deselectAllMembers' : 'form.selectAllMembers')}
+        </AppButton>
+      </Stack>
 
+      <Stack sx={{ borderTop: 1, borderColor: 'divider' }}>
+        {memberAllocations.map(({ member, selected, amount, splitValue }) => {
+          const memberLabel =
+            member.name || member.email || String(member.userId);
+          // Dùng cùng kết quả với payload để số tiền xem trước khớp số tiền gửi đi.
+          const allocatedAmount =
+            generatedSplits.find(
+              (split) => String(split.userId) === String(member.userId),
+            )?.allocatedAmount ?? 0;
+          const inputLabel =
+            splitType === 'EXACT_AMOUNT'
+              ? t('form.allocatedAmountLabel')
+              : t(
+                  splitType === 'PERCENTAGE'
+                    ? 'form.percentageInputLabel'
+                    : 'form.shareInputLabel',
+                );
+
+          return (
             <Stack
-              direction="row"
-              spacing={1}
+              key={String(member.userId)}
+              spacing={1.5}
               sx={{
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                flexShrink: 0,
-                width: { xs: '100%', sm: 'auto' },
-                flexWrap: 'wrap',
-                gap: 1,
+                py: 2,
+                borderBottom: 1,
+                borderColor: 'divider',
                 minWidth: 0,
               }}
             >
-              {splitType === 'EQUAL' && selected && (
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: 600,
-                    color: 'text.primary',
-                    fontSize: '13px',
-                  }}
-                >
-                  {formatCurrency(
-                    selectedCount > 0 ? totalAmount / selectedCount : 0,
-                    currency,
-                  )}
-                </Typography>
-              )}
-
-              {splitType === 'EXACT_AMOUNT' && (
+              <Stack
+                direction="row"
+                spacing={1.5}
+                sx={{ alignItems: 'center', minWidth: 0 }}
+              >
                 <Stack
-                  spacing={0.5}
-                  sx={{ width: { xs: '100%', sm: 190 }, alignItems: 'stretch' }}
+                  direction="row"
+                  spacing={1}
+                  sx={{ alignItems: 'center', flex: 1, minWidth: 0 }}
                 >
-                  <Box sx={{ width: '100%' }}>
-                    <AppNumberInput
-                      size="small"
-                      fullWidth
-                      disabled={!selected}
-                      value={amount}
-                      currencySuffix={currency}
-                      onValueChange={(val) =>
-                        handleAmountChange(member.userId, val)
-                      }
-                      slotProps={{
-                        htmlInput: {
-                          'aria-label': `${t('form.amountLabel')} — ${member.name || member.email || member.userId}`,
-                          style: {
-                            textAlign: 'right',
-                            fontSize: '14px',
-                          },
-                        },
-                      }}
-                    />
+                  <Checkbox
+                    size="small"
+                    checked={selected}
+                    disabled={disabled}
+                    onChange={() => handleToggleMember(member.userId)}
+                    slotProps={{ input: { 'aria-label': memberLabel } }}
+                    sx={{ p: 1, width: 44, height: 44, flexShrink: 0 }}
+                  />
+                  <Avatar
+                    src={member.avatarUrl || undefined}
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      fontSize: '12px',
+                      bgcolor: 'primary.light',
+                    }}
+                  >
+                    {getUserInitials(member.name || member.email)}
+                  </Avatar>
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography
+                      variant="body2"
+                      noWrap
+                      title={memberLabel}
+                      sx={{ fontWeight: 600 }}
+                    >
+                      {memberLabel}
+                    </Typography>
+                    {member.email && member.name && (
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        noWrap
+                        title={member.email}
+                        sx={{ display: 'block' }}
+                      >
+                        {member.email}
+                      </Typography>
+                    )}
                   </Box>
-                  {selected && Math.abs(remaining) > 0 && (
+                </Stack>
+                <Box sx={{ maxWidth: '45%', minWidth: 0, textAlign: 'right' }}>
+                  {selected ? (
+                    <>
+                      <Typography variant="caption" color="text.secondary">
+                        {t('form.allocatedAmountLabel')}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ fontWeight: 700, overflowWrap: 'anywhere' }}
+                      >
+                        {hasAmount
+                          ? formatCurrency(allocatedAmount, currency)
+                          : '—'}
+                      </Typography>
+                    </>
+                  ) : (
+                    <Typography variant="caption" color="text.secondary">
+                      {t('form.notSharing')}
+                    </Typography>
+                  )}
+                </Box>
+              </Stack>
+
+              {selected && splitType !== 'EQUAL' && (
+                <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+                  <AppNumberInput
+                    fullWidth
+                    disabled={disabled}
+                    label={inputLabel}
+                    value={splitType === 'EXACT_AMOUNT' ? amount : splitValue}
+                    currencySuffix={
+                      splitType === 'EXACT_AMOUNT'
+                        ? currency
+                        : splitType === 'PERCENTAGE'
+                          ? '%'
+                          : t('form.sharesUnit')
+                    }
+                    onValueChange={(value) =>
+                      splitType === 'EXACT_AMOUNT'
+                        ? handleAmountChange(member.userId, value)
+                        : handleSplitValueChange(member.userId, value)
+                    }
+                    slotProps={{
+                      htmlInput: {
+                        'aria-label': `${inputLabel} — ${memberLabel}`,
+                        style: { textAlign: 'right', fontSize: '16px' },
+                      },
+                    }}
+                  />
+                  {canFillRemaining && (
                     <AppButton
+                      type="button"
                       size="small"
                       intent="text"
+                      disabled={disabled}
                       onClick={() => handleAutoFillRemaining(member.userId)}
-                      sx={{ alignSelf: 'flex-end', minHeight: 44, px: 1, fontSize: '12px' }}
+                      sx={{ alignSelf: 'flex-end', minHeight: 44, px: 1 }}
                     >
                       {t('form.autoFillRemaining')}
                     </AppButton>
                   )}
                 </Stack>
               )}
-
-              {splitType === 'PERCENTAGE' && (
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  sx={{ alignItems: 'center' }}
-                >
-                  <Box sx={{ width: 85 }}>
-                    <AppNumberInput
-                      size="small"
-                      disabled={!selected}
-                      value={splitValue}
-                      currencySuffix="%"
-                      onValueChange={(val) =>
-                        handleSplitValueChange(member.userId, val)
-                      }
-                      slotProps={{
-                        htmlInput: {
-                          style: {
-                            textAlign: 'right',
-                            fontSize: '12px',
-                            padding: '4px 8px',
-                          },
-                        },
-                      }}
-                    />
-                  </Box>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      minWidth: 75,
-                      maxWidth: '100%',
-                      overflowWrap: 'anywhere',
-                      textAlign: 'right',
-                      color: 'text.secondary',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {formatCurrency(
-                      totalAmount * ((splitValue || 0) / 100),
-                      currency,
-                    )}
-                  </Typography>
-                </Stack>
-              )}
-
-              {splitType === 'SHARE' && (
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  sx={{ alignItems: 'center' }}
-                >
-                  <Box sx={{ width: 85 }}>
-                    <AppNumberInput
-                      size="small"
-                      disabled={!selected}
-                      value={splitValue}
-                      currencySuffix={t('form.sharesUnit')}
-                      onValueChange={(val) =>
-                        handleSplitValueChange(member.userId, val)
-                      }
-                      slotProps={{
-                        htmlInput: {
-                          style: {
-                            textAlign: 'right',
-                            fontSize: '12px',
-                            padding: '4px 8px',
-                          },
-                        },
-                      }}
-                    />
-                  </Box>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      minWidth: 75,
-                      maxWidth: '100%',
-                      overflowWrap: 'anywhere',
-                      textAlign: 'right',
-                      color: 'text.secondary',
-                      fontWeight: 500,
-                    }}
-                  >
-                    {formatCurrency(
-                      allocatedSum > 0
-                        ? totalAmount * ((splitValue || 0) / allocatedSum)
-                        : 0,
-                      currency,
-                    )}
-                  </Typography>
-                </Stack>
-              )}
             </Stack>
-          </Stack>
-        ))}
+          );
+        })}
       </Stack>
 
-      {errorMessage && (
-        <Typography
-          variant="caption"
-          sx={{ color: 'error.main', fontWeight: 500 }}
-        >
+      {errorMessage && (hasAmount || selectedCount === 0) && (
+        <Typography variant="caption" role="alert" color="error.main">
           {errorMessage}
         </Typography>
       )}

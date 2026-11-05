@@ -1,12 +1,12 @@
 'use client';
 
 import { Stack, Typography } from '@mui/material';
-import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import { useTranslations } from 'next-intl';
 import { AppImageUploader } from '@/base/components/ui';
 
-const ReceiptImageField = ({ src, disabled, onChange }: {
+const ReceiptImageField = ({ src, file, disabled, onChange }: {
   src?: string | null;
+  file?: File | null;
   disabled?: boolean;
   onChange: (file: File | null) => void;
 }) => {
@@ -15,9 +15,8 @@ const ReceiptImageField = ({ src, disabled, onChange }: {
     <Typography component="h3" sx={{ fontSize: '14px', fontWeight: 700, color: 'text.primary' }}>
       {t('label')}
     </Typography>
-    <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>{t('description')}</Typography>
-    <AppImageUploader src={src} alt={t('imageAlt')} variant="receipt" disabled={disabled}
-      fallback={<ReceiptLongRoundedIcon sx={{ fontSize: '40px' }} />} onChange={onChange} />
+    <AppImageUploader src={src} file={file} alt={t('imageAlt')} variant="receipt" compact disabled={disabled}
+      onChange={onChange} />
   </Stack>;
 };
 

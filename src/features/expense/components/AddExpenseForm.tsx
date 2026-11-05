@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import {
   AppDatePicker,
-  AppButton,
   AppNumberInput,
   AppTextField,
   AppSelect,
@@ -31,7 +30,7 @@ export interface AddExpenseFormProps {
   isLoading?: boolean;
   members?: TripMember[];
   onSubmit: (payload: CreateExpensePayload) => void;
-  onCancel: () => void;
+  formId: string;
   initialData?: AddExpenseInitialData;
 }
 
@@ -40,7 +39,7 @@ const AddExpenseForm = ({
   isLoading = false,
   members = [],
   onSubmit,
-  onCancel,
+  formId,
   initialData,
 }: AddExpenseFormProps) => {
   const tForm = useTranslations('expense.form');
@@ -79,6 +78,7 @@ const AddExpenseForm = ({
   const [payerId, setPayerId] = useState<string | number | ''>(() => {
     return members.length > 0 ? members[0].userId : '';
   });
+  const selectedPayerId = payerId || members[0]?.userId || '';
   const [receiptFile, setReceiptFile] = useState<File | null | undefined>(
     undefined,
   );
@@ -95,7 +95,8 @@ const AddExpenseForm = ({
     [],
   );
 
-  const handleScanSuccess = (scanned: ScannedReceipt) => {
+  const handleScanSuccess = (scanned: ScannedReceipt, sourceImage?: File) => {
+    if (sourceImage) setReceiptFile(sourceImage);
     if (scanned.merchant_name) {
       setTitle(scanned.merchant_name);
       setErrors((prev) => ({ ...prev, title: undefined }));
@@ -145,7 +146,7 @@ const AddExpenseForm = ({
     if (!expenseDate || !expenseDate.trim()) {
       newErrors.expenseDate = tForm('errors.dateRequired');
     }
-    if (members && members.length > 1 && !payerId) {
+    if (members && members.length > 1 && !selectedPayerId) {
       newErrors.payerId = tForm('errors.payerRequired');
     }
     setErrors(newErrors);
@@ -163,7 +164,7 @@ const AddExpenseForm = ({
       currency: tripCurrency,
       expenseDate,
       splitType,
-      payerId: payerId ? payerId : undefined,
+      payerId: selectedPayerId || undefined,
       receiptFile,
       note: note.trim() || undefined,
       splits: splitsRef.current.length > 0 ? splitsRef.current : undefined,
@@ -172,147 +173,152 @@ const AddExpenseForm = ({
 
   return (
     <Box
+      id={formId}
       component="form"
       onSubmit={handleSubmit}
       noValidate
-      sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+      sx={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}
     >
       <ReceiptScanBanner
         onScanSuccess={handleScanSuccess}
         disabled={isLoading}
       />
 
-      <AppTextField
-        label={tForm('titleLabel')}
-        placeholder={tForm('titlePlaceholder')}
-        value={title}
-        onChange={(e) => {
-          setTitle(e.target.value);
-          if (errors.title)
-            setErrors((prev) => ({ ...prev, title: undefined }));
-        }}
-        error={Boolean(errors.title)}
-        helperText={errors.title}
-        autoFocus
-      />
-
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <AppNumberInput
-            label={tForm('amountLabel')}
-            placeholder="0"
-            currencySuffix={tripCurrency}
-            value={amount}
+      <Stack component="fieldset" disabled={isLoading} spacing={2.5}
+        sx={{ border: 0, p: 0, m: 0, minWidth: 0 }}>
+        <Stack component="section" aria-label={tForm('detailsSection')} spacing={2.5}>
+          <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
+            {tForm('detailsSection')}
+          </Typography>
+          <AppTextField
+            disabled={isLoading}
+            label={tForm('titleLabel')}
+            placeholder={tForm('titlePlaceholder')}
+            value={title}
             onChange={(e) => {
-              setAmount(e.target.value);
-              if (errors.amount)
-                setErrors((prev) => ({ ...prev, amount: undefined }));
+              setTitle(e.target.value);
+              if (errors.title)
+                setErrors((prev) => ({ ...prev, title: undefined }));
             }}
-            error={Boolean(errors.amount)}
-            helperText={errors.amount}
+            error={Boolean(errors.title)}
+            helperText={errors.title}
           />
-        </Box>
 
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <AppSelect
-            label={tForm('categoryLabel')}
-            value={category}
-            options={categoryOptions}
-            onChange={(e) => setCategory(e.target.value as ExpenseCategory)}
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <AppNumberInput
+              disabled={isLoading}
+              label={tForm('amountLabel')}
+              placeholder="0"
+              currencySuffix={tripCurrency}
+              value={amount}
+              onChange={(e) => {
+                setAmount(e.target.value);
+                if (errors.amount)
+                  setErrors((prev) => ({ ...prev, amount: undefined }));
+              }}
+              error={Boolean(errors.amount)}
+              helperText={errors.amount}
+            />
+          </Box>
+
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <AppDatePicker
+                disabled={isLoading}
+                label={tForm('dateLabel')}
+                value={expenseDate}
+                onChange={(value) => {
+                  setExpenseDate(value);
+                  if (errors.expenseDate) {
+                    setErrors((prev) => ({ ...prev, expenseDate: undefined }));
+                  }
+                }}
+                error={Boolean(errors.expenseDate)}
+                helperText={errors.expenseDate}
+              />
+            </Box>
+
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <AppSelect
+                disabled={isLoading}
+                label={tForm('categoryLabel')}
+                value={category}
+                options={categoryOptions}
+                onChange={(e) => setCategory(e.target.value as ExpenseCategory)}
+              />
+            </Box>
+          </Stack>
+        </Stack>
+
+        <Stack component="section" aria-label={tForm('sharingSection')} spacing={2.5}
+          sx={{ borderTop: 1, borderColor: 'divider', pt: 2.5 }}>
+          <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
+            {tForm('sharingSection')}
+          </Typography>
+
+          {members && members.length > 1 && (
+            <AppSelect
+              disabled={isLoading}
+              label={tForm('payerLabel')}
+              renderValue={(value) => {
+                const member = members.find((item) => String(item.userId) === String(value));
+                return member?.name || member?.email || String(value);
+              }}
+              value={selectedPayerId}
+              options={members.map((m) => ({
+                value: m.userId,
+                label: m.name && m.email ? `${m.name} (${m.email})` : m.name || m.email || String(m.userId),
+              }))}
+              onChange={(e) => {
+                setPayerId(e.target.value as string | number);
+                if (errors.payerId) {
+                  setErrors((prev) => ({ ...prev, payerId: undefined }));
+                }
+              }}
+              error={Boolean(errors.payerId)}
+              helperText={errors.payerId}
+            />
+          )}
+
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <AppSelect
+              disabled={isLoading}
+              label={tForm('splitTypeLabel')}
+              value={splitType}
+              options={splitOptions}
+              onChange={(e) => setSplitType(e.target.value as SplitType)}
+            />
+          </Box>
+
+          {members && members.length > 0 && (
+            <SplitAllocationSection
+              disabled={isLoading}
+              splitType={splitType}
+              totalAmount={Number(amount) || 0}
+              currency={tripCurrency}
+              members={members}
+              onChange={handleSplitChange}
+            />
+          )}
+        </Stack>
+
+        <Stack component="section" aria-label={tForm('extrasSection')} spacing={2.5}
+          sx={{ borderTop: 1, borderColor: 'divider', pt: 2.5 }}>
+          <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
+            {tForm('extrasSection')}
+          </Typography>
+          <AppTextField
+            disabled={isLoading}
+            label={tForm('noteLabel')}
+            placeholder={tForm('notePlaceholder')}
+            multiline
+            rows={2}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
           />
-        </Box>
-      </Stack>
 
-      <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <AppDatePicker
-            label={tForm('dateLabel')}
-            value={expenseDate}
-            onChange={(value) => {
-              setExpenseDate(value);
-              if (errors.expenseDate) {
-                setErrors((prev) => ({ ...prev, expenseDate: undefined }));
-              }
-            }}
-            error={Boolean(errors.expenseDate)}
-            helperText={errors.expenseDate}
-          />
-        </Box>
-
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <AppSelect
-            label={tForm('splitTypeLabel')}
-            value={splitType}
-            options={splitOptions}
-            onChange={(e) => setSplitType(e.target.value as SplitType)}
-          />
-        </Box>
-      </Stack>
-
-      {members && members.length > 1 && (
-        <AppSelect
-          label={tForm('payerLabel')}
-          value={payerId}
-          options={members.map((m) => ({
-            value: m.userId,
-            label: `${m.name} (${m.email})`,
-          }))}
-          onChange={(e) => {
-            setPayerId(e.target.value as string | number);
-            if (errors.payerId) {
-              setErrors((prev) => ({ ...prev, payerId: undefined }));
-            }
-          }}
-          error={Boolean(errors.payerId)}
-          helperText={errors.payerId}
-        />
-      )}
-
-      {members && members.length > 0 && (
-        <SplitAllocationSection
-          splitType={splitType}
-          totalAmount={Number(amount) || 0}
-          currency={tripCurrency}
-          members={members}
-          onChange={handleSplitChange}
-        />
-      )}
-
-      <ReceiptImageField disabled={isLoading} onChange={setReceiptFile} />
-
-      <AppTextField
-        label={tForm('noteLabel')}
-        placeholder={tForm('notePlaceholder')}
-        multiline
-        rows={2}
-        value={note}
-        onChange={(e) => setNote(e.target.value)}
-      />
-
-      <Stack
-        direction="row"
-        spacing={1.5}
-        useFlexGap
-        sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
-      >
-        <AppButton
-          data-dialog-action="cancel"
-          intent="secondary"
-          size="medium"
-          onClick={onCancel}
-          disabled={isLoading}
-        >
-          {tForm('cancel')}
-        </AppButton>
-        <AppButton
-          data-dialog-action="primary"
-          type="submit"
-          intent="primary"
-          size="medium"
-          loading={isLoading}
-        >
-          {tForm('submitAdd')}
-        </AppButton>
+          <ReceiptImageField file={receiptFile} disabled={isLoading} onChange={setReceiptFile} />
+        </Stack>
       </Stack>
     </Box>
   );

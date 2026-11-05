@@ -10,6 +10,7 @@ import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import { useTranslations } from 'next-intl';
+import { IMAGE_MIME_TYPES, MAX_IMAGE_BYTES } from '@/base/types';
 
 import { useScanReceipt } from '../hooks/useScanReceipt';
 import type { ScannedReceipt } from '../types';
@@ -28,7 +29,7 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export interface ReceiptScanBannerProps {
-  onScanSuccess: (scanned: ScannedReceipt) => void;
+  onScanSuccess: (scanned: ScannedReceipt, sourceImage?: File) => void;
   onScanError?: (errorMessage: string) => void;
   disabled?: boolean;
 }
@@ -39,25 +40,30 @@ const ReceiptScanBanner = ({
   disabled = false,
 }: ReceiptScanBannerProps) => {
   const tForm = useTranslations('expense.form');
+  const tReceipt = useTranslations('expense.receipt');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [attachmentSkipped, setAttachmentSkipped] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const { scanReceiptAsync, isPending: isScanning } = useScanReceipt();
 
   const processFile = async (file: Blob, defaultName = 'receipt.jpg') => {
+    const sourceFile = file instanceof File
+      ? file
+      : new File([file], defaultName, { type: file.type });
     const formData = new FormData();
-    if (file instanceof File) {
-      formData.append('file', file);
-    } else {
-      formData.append('file', file, defaultName);
-    }
+    formData.append('file', sourceFile);
 
     try {
       setErrorMessage(null);
+      setAttachmentSkipped(false);
       const response = await scanReceiptAsync(formData);
       const scanned = response.data;
       if (scanned) {
-        onScanSuccess(scanned);
+        const canAttach = IMAGE_MIME_TYPES.includes(sourceFile.type) &&
+          sourceFile.size > 0 && sourceFile.size <= MAX_IMAGE_BYTES;
+        onScanSuccess(scanned, canAttach ? sourceFile : undefined);
+        setAttachmentSkipped(!canAttach);
       }
     } catch (err: unknown) {
       console.error('Scan receipt error:', err);
@@ -75,9 +81,9 @@ const ReceiptScanBanner = ({
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = '';
     if (!file) return;
     await processFile(file);
-    e.target.value = '';
   };
 
   const handleCameraCapture = async (blob: Blob) => {
@@ -181,11 +187,18 @@ const ReceiptScanBanner = ({
             <VisuallyHiddenInput
               type="file"
               accept="image/*,application/pdf"
+              disabled={disabled || isScanning}
               onChange={handleFileSelect}
             />
           </AppButton>
         </Box>
       </Box>
+
+      {attachmentSkipped && (
+        <Alert severity="info" onClose={() => setAttachmentSkipped(false)}>
+          {tReceipt('scanAttachmentSkipped')}
+        </Alert>
+      )}
 
       {errorMessage && (
         <Alert
