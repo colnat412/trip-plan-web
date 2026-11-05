@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "node scripts/next.mjs dev",
-    "build": "node scripts/next.mjs build",
-    "start": "node scripts/next.mjs start",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint",
     "git:fix": "rm -f .git/index && git reset"
   },
