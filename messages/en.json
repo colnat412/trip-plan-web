@@ -1221,5 +1221,10 @@
   },
   "maps": {
     "searchUnavailable": "Place search is unavailable. Please try again."
+  },
+  "errors": {
+    "title": "Something went wrong. Please try again.",
+    "retry": "Try again",
+    "home": "Back to home"
   }
 }

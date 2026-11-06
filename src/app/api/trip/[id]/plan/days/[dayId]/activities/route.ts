@@ -1,8 +1,6 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
-
-const NEXT_PUBLIC_CORE_SERVICE_URL =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 interface RouteContext {
   params: Promise<{ id: string; dayId: string }>;
@@ -28,7 +26,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const query = Object.fromEntries(searchParams.entries());
 
     const response = await axios.get(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/plan/days/${dayId}/activities`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/plan/days/${dayId}/activities`,
       {
         params: query,
         headers: {
@@ -85,7 +83,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
     const body = await request.json().catch(() => ({}));
 
     const response = await axios.post(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/plan/days/${dayId}/activities`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/plan/days/${dayId}/activities`,
       body,
       {
         headers: {
@@ -142,7 +140,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     const { id, dayId } = await context.params;
 
     const response = await axios.delete(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/plan/days/${dayId}/activities`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/plan/days/${dayId}/activities`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

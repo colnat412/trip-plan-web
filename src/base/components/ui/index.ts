@@ -99,3 +99,6 @@ export {
   default as AppMapSearchPaper,
   AppMapSearchSourcesContext,
 } from './AppMapSearchPaper';
+
+export { default as AppErrorState } from './AppErrorState';
+export type { AppErrorStateProps } from './AppErrorState';

@@ -1,15 +1,16 @@
 'use client';
 
-import { AppLoadingState, AppButton, AppCard, AppLinearProgress, AppMetricValue } from '@/base/components/ui';
+import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import {
-  Alert,
-  Box,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+  AppLoadingState,
+  AppButton,
+  AppCard,
+  AppLinearProgress,
+  AppMetricValue,
+} from '@/base/components/ui';
+
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import { useLocale, useTranslations } from 'next-intl';
@@ -23,7 +24,8 @@ export interface MobileBudgetSummaryCardProps {
   onOpenSetBudget?: () => void;
   isLoading?: boolean;
   hasError?: boolean;
-  onRetry?: () => void;
+  errorStatus?: number | null;
+  onRetry?: () => unknown | Promise<unknown>;
 }
 
 const MobileBudgetSummaryCard = ({
@@ -32,6 +34,7 @@ const MobileBudgetSummaryCard = ({
   onOpenSetBudget,
   isLoading = false,
   hasError = false,
+  errorStatus,
   onRetry,
 }: MobileBudgetSummaryCardProps) => {
   const t = useTranslations('expense.metrics');
@@ -75,19 +78,10 @@ const MobileBudgetSummaryCard = ({
         overflowWrap: 'anywhere',
       }}
     >
-      {isLoading ? <AppLoadingState /> : unavailable ? (
-        <Alert
-          severity="error"
-          action={
-            onRetry && (
-              <AppButton intent="text" size="small" wrapLabel onClick={onRetry}>
-                {t('retry')}
-              </AppButton>
-            )
-          }
-        >
-          {t('loadError')}
-        </Alert>
+      {isLoading ? (
+        <AppLoadingState />
+      ) : unavailable ? (
+        <AppErrorState status={errorStatus} onRetry={onRetry} compact />
       ) : (
         <Stack spacing={1.5}>
           <Stack

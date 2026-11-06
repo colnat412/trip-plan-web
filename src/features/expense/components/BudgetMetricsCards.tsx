@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { Box, Typography, Stack } from '@mui/material';
 import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
@@ -20,6 +21,7 @@ const BudgetMetricsCards = ({
   onOpenSetBudget,
   isLoading,
   hasError,
+  errorStatus,
   onRetry,
 }: BudgetMetricsCardsProps) => {
   const locale = useLocale();
@@ -41,6 +43,17 @@ const BudgetMetricsCards = ({
     borderLeftColor: colorToken,
   });
 
+  if (hasError) {
+    return (
+      <AppErrorState
+        status={errorStatus}
+        onRetry={onRetry}
+        compact
+        sx={{ gridColumn: '1 / -1' }}
+      />
+    );
+  }
+
   return (
     <>
       <MobileBudgetSummaryCard
@@ -49,6 +62,7 @@ const BudgetMetricsCards = ({
         onOpenSetBudget={onOpenSetBudget}
         isLoading={isLoading}
         hasError={hasError}
+        errorStatus={errorStatus}
         onRetry={onRetry}
       />
       <Box

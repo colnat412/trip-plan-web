@@ -1,9 +1,11 @@
 'use client';
 
-import { AppLoadingState, AppButton, AppEmptyState, AppMetricValue } from '@/base/components/ui';
+import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import React, { useState } from 'react';
-import { Alert, Box, Stack, Typography, ButtonBase } from '@mui/material';
+import { AppLoadingState, AppEmptyState, AppMetricValue } from '@/base/components/ui';
+
+import { useState } from 'react';
+import { Box, Stack, Typography, ButtonBase } from '@mui/material';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import { useLocale, useTranslations } from 'next-intl';
 
@@ -38,11 +40,7 @@ const RecentExpenseList = ({
   }
 
   if (error) {
-    return <Alert severity="error" action={
-      <AppButton intent="text" size="small" onClick={() => void refetch().catch(() => undefined)}>
-        {tOverview('retry')}
-      </AppButton>
-    }>{tOverview('recentError')}</Alert>;
+    return <AppErrorState status={error.status} onRetry={() => refetch()} compact />;
   }
   if (!expenses.length) {
     return <AppEmptyState icon={<ReceiptLongRoundedIcon />}

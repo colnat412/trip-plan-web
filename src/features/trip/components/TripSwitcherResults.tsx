@@ -1,13 +1,10 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { AppLoadingState, AppButton, AppInfiniteScrollTrigger } from '@/base/components/ui';
 
-import {
-  Avatar,
-  Box,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Avatar, Box, Stack, Typography } from '@mui/material';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import { useTranslations } from 'next-intl';
@@ -133,23 +130,12 @@ const TripSwitcherResults = ({
           </Typography>
         )}
         {error && (
-          <Stack spacing={1} sx={{ alignItems: 'center', py: 2 }}>
-            <Typography
-              role="alert"
-              sx={{ fontSize: '13px', color: 'error.main' }}
-            >
-              {t('tripLoadError')}
-            </Typography>
-            <AppButton
-              intent="text"
-              size="small"
-              onClick={() => {
-                void refetch();
-              }}
-            >
-              {t('retry')}
-            </AppButton>
-          </Stack>
+          <AppErrorState
+            status={error.status}
+            compact
+            onRetry={() => refetch()}
+            retrying={isFetching}
+          />
         )}
         <AppInfiniteScrollTrigger
           hasMore={hasNextPage && !error}

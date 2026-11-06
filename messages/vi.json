@@ -1221,5 +1221,10 @@
   },
   "maps": {
     "searchUnavailable": "Chưa thể tìm địa điểm. Vui lòng thử lại."
+  },
+  "errors": {
+    "title": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+    "retry": "Thử lại",
+    "home": "Về trang chủ"
   }
 }

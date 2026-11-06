@@ -1,11 +1,13 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { AppLoadingState, AppButton, AppCard, AppEmptyState, AppSectionHeader } from '@/base/components/ui';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
-import { Alert, Box, Pagination, Stack, Typography } from '@mui/material';
+import { Box, Pagination, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import useTemplateLibrary from '../hooks/useTemplateLibrary';
@@ -29,7 +31,7 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
   const query = useTemplateLibrary({
     savedOnly, search, duration, tag, sort, page, size: compact ? 3 : 12, initialData,
   });
-  const data = query.listing;
+  const data = query.error ? null : query.listing;
   const content = (
     <Stack spacing={2} sx={{ width: '100%', minWidth: 0 }}>
       {compact ? (
@@ -67,11 +69,7 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
         />
       )}
       {query.error && (
-        <Alert severity="error" action={
-          <AppButton intent="text" onClick={() => void query.refetch().catch(() => undefined)}>
-            {t('retry')}
-          </AppButton>
-        }>{t('loadError')}</Alert>
+        <AppErrorState status={query.error.status} onRetry={() => query.refetch()} compact />
       )}
       {!data && !query.error && <AppLoadingState />}
       {data && !data.content.length && (

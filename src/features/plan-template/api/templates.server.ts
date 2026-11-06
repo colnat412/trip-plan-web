@@ -1,7 +1,7 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import 'server-only';
 import type { ApiResponse } from '@/base/api';
-const core =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
+const core = CORE_SERVICE_URL;
 export async function getPublicTemplateData<T>(
   path: string,
 ): Promise<{ data: T | null; status: number }> {

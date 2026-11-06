@@ -1,15 +1,14 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { AppLoadingState, AppDialog, AppButton, AppTextField, AppImageUploader, AppToast } from '@/base/components/ui';
 import { useEffect, useId, useRef, useState } from 'react';
 import { Alert, Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { useAppToast } from '@/base/providers/AppToastProvider';
 
-import {
-  usePreviewPlanTemplate,
-  usePublishPlanTemplate,
-} from '../hooks/usePlanTemplateMutation';
+import { usePreviewPlanTemplate, usePublishPlanTemplate } from '../hooks/usePlanTemplateMutation';
 import type { Trip } from '@/features/trip/types';
 import type { PlanChecklist } from '@/features/plan/types';
 import useTripPlan from '@/features/plan/hooks/useTripPlan';
@@ -149,9 +148,7 @@ const PublishTemplateDialog = ({
           onClose={() => setValidationMessage('')}
         />
         {planQuery.error ? (
-            <Alert severity="error" action={
-              <AppButton onClick={() => void planQuery.refetch().catch(() => undefined)}>{t('retry')}</AppButton>
-            }>{t('publishPlanLoadError')}</Alert>
+            <AppErrorState status={planQuery.error.status} onRetry={() => planQuery.refetch()} compact />
           ) : !planReady ? (
             <AppLoadingState />
           ) : null}
@@ -182,9 +179,7 @@ const PublishTemplateDialog = ({
                   update({ coverUploadId: undefined, removeCover: file === null });
                 }}
               /> : !coverQuery.error ? <AppLoadingState /> : (
-                <Alert severity="error" action={<AppButton onClick={() => void coverQuery.refetch().catch(() => undefined)}>{t('retry')}</AppButton>}>
-                  {t('bannerLoadError')}
-                </Alert>
+                <AppErrorState status={coverQuery.error?.status} onRetry={() => coverQuery.refetch()} compact />
               )}
               {coverUpload.error && <Alert severity="error">{t('bannerUploadError')}</Alert>}
             </Stack>

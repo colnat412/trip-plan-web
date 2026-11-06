@@ -1,16 +1,13 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+
 import { Box } from '@mui/material';
 
-import {
-  AppPageContainer,
-  AppButton,
-  type ColumnFilterValue,
-  type TableSortState,
-} from '@/base/components/ui';
+import { AppPageContainer, type ColumnFilterValue, type TableSortState } from '@/base/components/ui';
 import { useDebouncedValue } from '@/base/hooks';
 import useMyTrips from '../hooks/useMyTrips';
 import { useTripContext } from '../context/TripContext';
@@ -25,7 +22,6 @@ import type { Trip } from '../types';
 
 const MyTrips = () => {
   const router = useRouter();
-  const tNavigation = useTranslations('navigation');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
   const [sort, setSort] = useState<TableSortState | null>(null);
@@ -187,28 +183,7 @@ const MyTrips = () => {
       />
 
       {error && !isDebouncing ? (
-        <Box
-          role="alert"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: 1,
-          }}
-        >
-          <Box component="span" sx={{ color: 'error.main', fontSize: '14px' }}>
-            {tNavigation('tripLoadError')}
-          </Box>
-          <AppButton
-            intent="text"
-            size="small"
-            onClick={() => {
-              void refetch().catch(() => undefined);
-            }}
-          >
-            {tNavigation('retry')}
-          </AppButton>
-        </Box>
+        <AppErrorState status={error.status} onRetry={() => refetch()} />
       ) : viewMode === 'grid' ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
           <TripCardGrid

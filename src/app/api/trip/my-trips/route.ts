@@ -1,8 +1,6 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
-
-const NEXT_PUBLIC_CORE_SERVICE_URL =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8866';
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,7 +21,7 @@ export async function GET(request: NextRequest) {
     const query = Object.fromEntries(searchParams.entries());
 
     const response = await axios.get(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/my-trips`,
+      `${CORE_SERVICE_URL}/api/trip/my-trips`,
       {
         params: query,
         headers: {

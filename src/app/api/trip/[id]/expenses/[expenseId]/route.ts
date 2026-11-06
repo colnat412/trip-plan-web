@@ -1,8 +1,6 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
-
-const NEXT_PUBLIC_CORE_SERVICE_URL =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 interface RouteContext {
   params: Promise<{ id: string; expenseId: string }>;
@@ -26,7 +24,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     const { id, expenseId } = await context.params;
 
     const response = await axios.get(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/expenses/${expenseId}`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/expenses/${expenseId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -82,7 +80,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     const body = await request.json().catch(() => ({}));
 
     const response = await axios.put(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/expenses/${expenseId}`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/expenses/${expenseId}`,
       body,
       {
         headers: {
@@ -139,7 +137,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     const { id, expenseId } = await context.params;
 
     const response = await axios.delete(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/expenses/${expenseId}`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/expenses/${expenseId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

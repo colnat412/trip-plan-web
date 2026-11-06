@@ -1,10 +1,15 @@
 'use client';
 
-import { AppLoadingIndicator, AppCategoryChip, AppDialog } from '@/base/components/ui';
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
+import {
+  AppLoadingIndicator,
+  AppCategoryChip,
+  AppDialog,
+} from '@/base/components/ui';
 
 import React, { useState, useEffect, useTransition } from 'react';
 import {
-  Alert,
   Box,
   Button,
   Card,
@@ -129,7 +134,7 @@ const OptimizeRouteDialog = ({
     });
   };
 
-  const content = (
+  const content =
     locActivities.length < 2 ? (
       <Box sx={{ py: 4, textAlign: 'center' }}>
         <Typography sx={{ color: 'text.secondary' }}>
@@ -153,9 +158,10 @@ const OptimizeRouteDialog = ({
         </Typography>
       </Box>
     ) : hasRouteError ? (
-      <Alert severity="error" action={
-        <Button onClick={() => setRetryAttempt(value => value + 1)}>{t('retry')}</Button>
-      }>{t('routeError')}</Alert>
+      <AppErrorState
+        onRetry={() => setRetryAttempt((value) => value + 1)}
+        compact
+      />
     ) : result ? (
       <Stack spacing={3}>
         <Box
@@ -247,9 +253,7 @@ const OptimizeRouteDialog = ({
               >
                 {result.formattedOriginalDistance}
               </Typography>
-              <Typography
-                sx={{ fontSize: '12px', color: 'text.secondary' }}
-              >
+              <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
                 {result.formattedOriginalDuration}
               </Typography>
             </Box>
@@ -282,16 +286,12 @@ const OptimizeRouteDialog = ({
                 sx={{
                   fontSize: '20px',
                   fontWeight: 800,
-                  color: result.isImprovement
-                    ? 'success.main'
-                    : 'text.primary',
+                  color: result.isImprovement ? 'success.main' : 'text.primary',
                 }}
               >
                 {result.formattedOptimizedDistance}
               </Typography>
-              <Typography
-                sx={{ fontSize: '12px', color: 'text.secondary' }}
-              >
+              <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
                 {result.formattedOptimizedDuration}
               </Typography>
             </Box>
@@ -311,9 +311,7 @@ const OptimizeRouteDialog = ({
                   : alpha(theme.palette.info.main, 0.3),
               }}
             >
-              <Box
-                sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}
-              >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                 {result.isImprovement ? (
                   <AutoAwesomeRoundedIcon sx={{ fontSize: '18px' }} />
                 ) : (
@@ -327,9 +325,9 @@ const OptimizeRouteDialog = ({
                 >
                   {result.isImprovement
                     ? t('savingsText', {
-                      dist: result.formattedSavedDistance,
-                      pct: result.savedPercentage,
-                    })
+                        dist: result.formattedSavedDistance,
+                        pct: result.savedPercentage,
+                      })
                     : t('alreadyOptimal')}
                 </Typography>
               </Box>
@@ -527,8 +525,7 @@ const OptimizeRouteDialog = ({
           {t('footerNote')}
         </Typography>
       </Stack>
-    ) : null
-  );
+    ) : null;
 
   const actions = (
     <>
@@ -546,17 +543,12 @@ const OptimizeRouteDialog = ({
       </Button>
 
       <Button
-
         data-dialog-action="primary"
         variant="contained"
         onClick={handleApply}
         disabled={!result || !result.isImprovement || isApplying}
         startIcon={
-          isApplying ? (
-            <AppLoadingIndicator />
-          ) : (
-            <AutoAwesomeRoundedIcon />
-          )
+          isApplying ? <AppLoadingIndicator /> : <AutoAwesomeRoundedIcon />
         }
         sx={{
           textTransform: 'none',
@@ -659,9 +651,7 @@ const OptimizeRouteDialog = ({
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ p: { xs: 2, sm: 3 } }}>
-        {content}
-      </DialogContent>
+      <DialogContent sx={{ p: { xs: 2, sm: 3 } }}>{content}</DialogContent>
 
       <DialogActions
         sx={{

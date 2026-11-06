@@ -66,6 +66,6 @@ export default function useTemplateSaves(ids: string[], onChange?: () => void) {
     pending: save.isPending || unsave.isPending,
     ready: !status.isStale && !status.error,
     statusError: status.error,
-    retry: () => void status.refetch().catch(() => undefined),
+    retry: () => status.refetch(),
   };
 }

@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import { Box } from '@mui/material';
 import AppLoadingOverlay from '@/base/components/ui/AppLoadingOverlay';
@@ -64,7 +57,7 @@ const AppPageLoadingProvider = ({ children }: { children: ReactNode }) => {
     <AppPageLoadingContext.Provider value={context}>
       <Box aria-busy={isPageLoading} sx={{ display: 'flex', flexDirection: 'column', minHeight: '100%', minWidth: 0 }}>
         {/* Keep queries mounted while their initial content is hidden. */}
-        <Box hidden={isPageLoading} inert={isPageLoading} sx={{ flex: 1, minWidth: 0 }}>
+        <Box hidden={isPageLoading} inert={isPageLoading} sx={{ flex: 1, minWidth: 0, display: isPageLoading ? 'none' : 'flex', flexDirection: 'column' }}>
           {children}
         </Box>
         <AppLoadingOverlay open={isPageLoading} scope="content" />

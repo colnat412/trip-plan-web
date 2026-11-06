@@ -1,5 +1,7 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import {
   AppLoadingState,
   AppButton,
@@ -10,8 +12,8 @@ import {
   type AppToastSeverity,
 } from '@/base/components/ui';
 
-import React, { useState } from 'react';
-import { Alert, Box, Card, Typography } from '@mui/material';
+import { useState } from 'react';
+import { Box, Card, Typography } from '@mui/material';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useTranslations } from 'next-intl';
 
@@ -65,7 +67,12 @@ const PlanOverview = ({
   initialPublishOpen?: boolean;
 }) => {
   const t = useTranslations('plan');
-  const { activeTrip } = useTripContext();
+  const {
+    activeTrip,
+    error: tripError,
+    refetchTrips,
+    isLoading: tripLoading,
+  } = useTripContext();
   const tripId = activeTrip?.id;
   const router = useRouter();
   // only get selected day
@@ -137,10 +144,11 @@ const PlanOverview = ({
     refetch: refetchDayActivities,
   } = useDayActivities({ tripId, dayId: selectedDay?.id });
 
-  const refreshPlan = () => {
-    void refetch().catch(() => undefined);
-    if (selectedDay) void refetchDayActivities();
-  };
+  const refreshPlan = () =>
+    Promise.allSettled([
+      refetch(),
+      ...(selectedDay ? [refetchDayActivities()] : []),
+    ]);
 
   const handleOpenOptimizeRoute = async () => {
     await fetchAllDayActivities();
@@ -338,6 +346,24 @@ const PlanOverview = ({
     }
   };
 
+  if (tripError || planError) {
+    return (
+      <AppPageContainer>
+        {activeTrip && <ActiveTripBanner trip={activeTrip} compact />}
+        <AppErrorState
+          status={(tripError ?? planError)?.status}
+          onRetry={() => (tripError ? refetchTrips() : refetch())}
+        />
+      </AppPageContainer>
+    );
+  }
+  if (tripLoading)
+    return (
+      <AppPageContainer>
+        <AppLoadingState />
+      </AppPageContainer>
+    );
+
   if (!tripId) {
     return (
       <AppPageContainer
@@ -420,7 +446,11 @@ const PlanOverview = ({
           onPublishTemplate={
             role === 'OWNER' ? () => setPublishOpen(true) : undefined
           }
-          onOpenShare={TRIP_SHARING_ENABLED && canManage ? () => setShareDialogOpen(true) : undefined}
+          onOpenShare={
+            TRIP_SHARING_ENABLED && canManage
+              ? () => setShareDialogOpen(true)
+              : undefined
+          }
           onOpenActivityLogs={() => setActivityLogOpen(true)}
           readOnly={!canWrite || Boolean(planError)}
           onOpenExport={() =>
@@ -478,104 +508,89 @@ const PlanOverview = ({
           }
         />
       )}
-      <Box
-        sx={{
-          width: '100%',
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: 'minmax(0, 1fr)',
-            lg: 'minmax(0, 7fr) minmax(0, 5fr)',
-          },
-          alignItems: 'start',
-          gap: { xs: 2, md: 3 },
-        }}
-      >
+      {activitiesError ? (
+        <AppErrorState
+          status={activitiesError.status}
+          onRetry={() => refetchDayActivities()}
+        />
+      ) : (
         <Box
           sx={{
-            display: {
-              xs: mobileView === 'timeline' ? 'block' : 'none',
-              lg: 'block',
+            width: '100%',
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: 'minmax(0, 1fr)',
+              lg: 'minmax(0, 7fr) minmax(0, 5fr)',
             },
-            minWidth: 0,
+            alignItems: 'start',
+            gap: { xs: 2, md: 3 },
           }}
         >
-          {isLoading || (isStale && !planError) || isLoadingActivities ? (
-            <AppLoadingState />
-          ) : planError || activitiesError ? (
-            <Alert
-              severity="error"
-              action={
-                <AppButton intent="text" onClick={refreshPlan}>
-                  {t('retry')}
-                </AppButton>
-              }
-            >
-              {t('loadError')}
-            </Alert>
-          ) : (
-            <DayTimelineList
-              activities={dayActivities}
-              currency={
-                overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
-              }
-              destinationContext={activeTrip?.destination}
-              onEditActivity={(activity) => setEditingActivity(activity)}
-              canDeleteActivity={(activity) =>
-                canManageRecord(activity.createdBy)
-              }
-              onDeleteActivity={(activity) => setDeletingActivity(activity)}
-              onToggleStatus={handleToggleActivityStatus}
-              onConvertToExpense={handleConvertToExpense}
-              onOpenOptimizeRoute={() => void handleOpenOptimizeRoute()}
-              readOnly={!canWrite || Boolean(planError)}
-            />
-          )}
+          <Box
+            sx={{
+              display: {
+                xs: mobileView === 'timeline' ? 'block' : 'none',
+                lg: 'block',
+              },
+              minWidth: 0,
+            }}
+          >
+            {isLoading || (isStale && !planError) || isLoadingActivities ? (
+              <AppLoadingState />
+            ) : (
+              <DayTimelineList
+                activities={dayActivities}
+                currency={
+                  overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
+                }
+                destinationContext={activeTrip?.destination}
+                onEditActivity={(activity) => setEditingActivity(activity)}
+                canDeleteActivity={(activity) =>
+                  canManageRecord(activity.createdBy)
+                }
+                onDeleteActivity={(activity) => setDeletingActivity(activity)}
+                onToggleStatus={handleToggleActivityStatus}
+                onConvertToExpense={handleConvertToExpense}
+                onOpenOptimizeRoute={() => void handleOpenOptimizeRoute()}
+                readOnly={!canWrite || Boolean(planError)}
+              />
+            )}
 
-          {!isLoading && !isStale && !planError && !isLoadingActivities && (
-            <AppInfiniteScrollTrigger
-              hasMore={hasMoreActivities && !activitiesError}
-              loading={isFetchingMoreActivities}
-              onLoadMore={() => void fetchMoreActivities()}
-            />
-          )}
+            {!isLoading && !isStale && !planError && !isLoadingActivities && (
+              <AppInfiniteScrollTrigger
+                hasMore={hasMoreActivities && !activitiesError}
+                loading={isFetchingMoreActivities}
+                onLoadMore={() => void fetchMoreActivities()}
+              />
+            )}
+          </Box>
+          <Box
+            sx={{
+              display: {
+                xs: mobileView === 'map' ? 'block' : 'none',
+                lg: 'block',
+              },
+              minWidth: 0,
+            }}
+          >
+            {isLoading || (isStale && !planError) || isLoadingActivities ? (
+              <AppLoadingState />
+            ) : (
+              <PlanMapPanel
+                key={`${tripId}:${activeDayId}`}
+                activities={dayActivities}
+                currency={
+                  overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
+                }
+                destination={activeTrip?.destination}
+                hasMore={hasMoreActivities}
+                loadingMore={isFetchingMoreActivities}
+                onLoadMore={() => void fetchMoreActivities()}
+              />
+            )}
+          </Box>
         </Box>
-        <Box
-          sx={{
-            display: {
-              xs: mobileView === 'map' ? 'block' : 'none',
-              lg: 'block',
-            },
-            minWidth: 0,
-          }}
-        >
-          {isLoading || (isStale && !planError) || isLoadingActivities ? (
-            <AppLoadingState />
-          ) : planError || activitiesError ? (
-            <Alert
-              severity="error"
-              action={
-                <AppButton intent="text" onClick={refreshPlan}>
-                  {t('retry')}
-                </AppButton>
-              }
-            >
-              {t('loadError')}
-            </Alert>
-          ) : (
-            <PlanMapPanel
-              key={`${tripId}:${activeDayId}`}
-              activities={dayActivities}
-              currency={
-                overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
-              }
-              destination={activeTrip?.destination}
-              hasMore={hasMoreActivities}
-              loadingMore={isFetchingMoreActivities}
-              onLoadMore={() => void fetchMoreActivities()}
-            />
-          )}
-        </Box>
-      </Box>
+      )}
 
       <AddActivityDialog
         open={addActivityOpen}

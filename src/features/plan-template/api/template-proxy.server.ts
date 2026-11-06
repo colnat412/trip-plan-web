@@ -1,8 +1,8 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import 'server-only';
 import axios from 'axios';
 import { NextResponse, type NextRequest } from 'next/server';
-const core =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
+const core = CORE_SERVICE_URL;
 export async function proxyTemplate(
   request: NextRequest,
   path: string,
@@ -26,7 +26,9 @@ export async function proxyTemplate(
     const response = await axios.request({
       url: `${core}/api/${path}${request.nextUrl.search}`,
       method: request.method,
-      data: ['GET', 'DELETE'].includes(request.method) ? undefined : await request.json(),
+      data: ['GET', 'DELETE'].includes(request.method)
+        ? undefined
+        : await request.json(),
       timeout: 30000,
       headers: {
         Accept: 'application/json',

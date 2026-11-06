@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import AppErrorState from '@/base/components/ui/AppErrorState';
+import AppLoadingState from '@/base/components/ui/AppLoadingState';
+
+import { useState } from 'react';
 import { Box, Typography, Stack } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
@@ -47,7 +50,12 @@ import type {
 const ExpenseOverview = () => {
   const router = useRouter();
   const t = useTranslations('expense');
-  const { activeTrip } = useTripContext();
+  const {
+    activeTrip,
+    error: tripError,
+    refetchTrips,
+    isLoading: isTripLoading,
+  } = useTripContext();
   const tripId = activeTrip?.id;
 
   const { canWrite, canManage, canManageRecord } = useTripPermissions(tripId);
@@ -117,6 +125,7 @@ const ExpenseOverview = () => {
 
   const {
     expenses,
+    error: expensesError,
     pagination,
     isLoading: isExpensesLoading,
     isFetching: isExpensesFetching,
@@ -217,11 +226,37 @@ const ExpenseOverview = () => {
     await setBudgetAsync(payload);
   };
 
+  if (tripError || summaryError || expensesError) {
+    return (
+      <AppPageContainer>
+        <AppErrorState
+          status={(tripError ?? summaryError ?? expensesError)?.status}
+          onRetry={() =>
+            tripError
+              ? refetchTrips()
+              : Promise.allSettled([refetchSummary(), refetchExpenses()])
+          }
+        />
+      </AppPageContainer>
+    );
+  }
+  if (isTripLoading) {
+    return (
+      <AppPageContainer>
+        <FinanceNavigation active="expenses" />
+        <AppLoadingState />
+      </AppPageContainer>
+    );
+  }
+
   if (!activeTrip) {
     return (
       <AppPageContainer>
         <FinanceNavigation active="expenses" />
-        <Stack spacing={2} sx={{ alignItems: 'center', textAlign: 'center', py: 8 }}>
+        <Stack
+          spacing={2}
+          sx={{ alignItems: 'center', textAlign: 'center', py: 8 }}
+        >
           <Box
             sx={{
               p: 3,
@@ -345,30 +380,42 @@ const ExpenseOverview = () => {
       >
         <BudgetMetricsCards
           summary={summary}
-          isLoading={isSummaryLoading || (isSummaryStale && !summaryError)}
-          hasError={Boolean(summaryError)}
-          onRetry={() => void refetchSummary().catch(() => undefined)}
+          isLoading={isSummaryLoading || isSummaryStale}
+          onRetry={() => refetchSummary()}
           currency={activeTrip.baseCurrency}
           onOpenSetBudget={canManage ? () => setSetBudgetOpen(true) : undefined}
         />
       </Box>
 
-      {!summaryError && summary?.categoryBreakdown && (
+      {summary?.categoryBreakdown && (
         <Stack spacing={1.5}>
           <CategorySpendingChart
             key={String(tripId)}
             breakdown={summary.categoryBreakdown}
             currency={summary.currency || activeTrip.baseCurrency}
           />
-          {summary.categoryBreakdown.some((item) => item.spentAmount > 0 || item.limitAmount > 0) && (
+          {summary.categoryBreakdown.some(
+            (item) => item.spentAmount > 0 || item.limitAmount > 0,
+          ) && (
             <Box component="details">
-              <Box component="summary" sx={{ cursor: 'pointer', color: 'primary.main', py: 1.5, fontSize: '14px', fontWeight: 600 }}>
+              <Box
+                component="summary"
+                sx={{
+                  cursor: 'pointer',
+                  color: 'primary.main',
+                  py: 1.5,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                }}
+              >
                 {t('spendingChart.budgetDetails')}
               </Box>
               <CategorySpendingList
                 breakdown={summary.categoryBreakdown}
                 currency={summary.currency || activeTrip.baseCurrency}
-                onOpenSetBudget={canManage ? () => setSetBudgetOpen(true) : undefined}
+                onOpenSetBudget={
+                  canManage ? () => setSetBudgetOpen(true) : undefined
+                }
               />
             </Box>
           )}

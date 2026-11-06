@@ -1,8 +1,6 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
-
-const NEXT_PUBLIC_CORE_SERVICE_URL =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,7 +20,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
 
     const response = await axios.post(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/create`,
+      `${CORE_SERVICE_URL}/api/trip/create`,
       body,
       {
         headers: {

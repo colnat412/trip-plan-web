@@ -1,10 +1,12 @@
 'use client';
 
-import { AppLoadingState, AppButton, AppPageContainer } from '@/base/components/ui';
+import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { Alert, useMediaQuery } from '@mui/material';
+import { AppLoadingState, AppPageContainer } from '@/base/components/ui';
+
+import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useTranslations } from 'next-intl';
+
 
 import { useTripContext } from '../context/TripContext';
 import TemplateLibrary from '@/features/plan-template/components/TemplateLibrary';
@@ -15,7 +17,6 @@ import EmptyTripState from './overview/EmptyTripState';
 import TripBudgetCard from './overview/TripBudgetCard';
 
 const Overview = () => {
-  const tNav = useTranslations('navigation');
   const desktop = useMediaQuery(useTheme().breakpoints.up('md'));
   const { trips, activeTrip, isLoading, error, refetchTrips, openCreateTrip } =
     useTripContext();
@@ -25,19 +26,7 @@ const Overview = () => {
   if (error)
     return (
       <AppPageContainer>
-        <Alert
-          severity="error"
-          action={
-            <AppButton
-              intent="text"
-              onClick={() => void refetchTrips().catch(() => undefined)}
-            >
-              {tNav('retry')}
-            </AppButton>
-          }
-        >
-          {tNav('tripLoadError')}
-        </Alert>
+        <AppErrorState status={error.status} onRetry={() => refetchTrips()} />
       </AppPageContainer>
     );
   if (!trips?.length)

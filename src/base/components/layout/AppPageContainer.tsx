@@ -31,6 +31,11 @@ const AppPageContainer = ({
         display: 'flex',
         flexDirection: 'column',
         gap: { xs: 2.5, sm: spacing },
+        '&:has(> [data-page-error]:only-child)': {
+          justifyContent: 'center',
+          alignItems: 'center',
+          flex: 1,
+        },
         ...sx,
       }}
     >

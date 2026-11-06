@@ -1,5 +1,7 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { AppLoadingState, AppEmptyState, AppPageHeader, AppButton } from '@/base/components/ui';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -19,7 +21,7 @@ const MyTemplates = () => {
       await query.refetch();
     },
   });
-  const currentData = query.listing;
+  const currentData = query.error ? null : query.listing;
   return (
       <Stack spacing={2}>
         <AppPageHeader
@@ -38,20 +40,7 @@ const MyTemplates = () => {
           }
         />
         {query.error && (
-          <Alert
-            severity="error"
-            action={
-              <AppButton
-                intent="text"
-                wrapLabel
-                onClick={() => void query.refetch().catch(() => undefined)}
-              >
-                {t('retry')}
-              </AppButton>
-            }
-          >
-            {t('loadError')}
-          </Alert>
+          <AppErrorState status={query.error.status} onRetry={() => query.refetch()} compact />
         )}
         {(query.isLoading || (query.isStale && !query.error)) && <AppLoadingState />}
         {currentData?.content.length === 0 && (

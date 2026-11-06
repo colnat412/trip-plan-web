@@ -1,9 +1,10 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import 'server-only';
 import axios from 'axios';
 import { NextResponse, type NextRequest } from 'next/server';
 
 const identityClient = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL}/api`,
+  baseURL: `${CORE_SERVICE_URL}/api`,
   timeout: 90_000,
 });
 

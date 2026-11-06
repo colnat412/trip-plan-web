@@ -1,3 +1,4 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
@@ -5,9 +6,6 @@ interface VerifyOtpRequestBody {
   email?: string;
   otp?: string;
 }
-
-const NEXT_PUBLIC_IDENTITY_SERVICE_URL =
-  process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || 'http://localhost:8888';
 
 export async function POST(request: NextRequest) {
   try {
@@ -32,7 +30,7 @@ export async function POST(request: NextRequest) {
     let identityResponse;
     try {
       identityResponse = await axios.post(
-        `${NEXT_PUBLIC_IDENTITY_SERVICE_URL}/api/auth/verify-otp`,
+        `${CORE_SERVICE_URL}/api/auth/verify-otp`,
         {
           email: normalizedEmail,
           otp: otp.trim(),

@@ -1,7 +1,9 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { useState } from 'react';
-import { Alert } from '@mui/material';
+
 import { useTranslations } from 'next-intl';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 
@@ -13,18 +15,8 @@ import { axiosClient } from '@/base/api';
 import { useUserContext } from '@/features/user/context/UserContext';
 import useCurrentUser from '@/features/user/hooks/useCurrentUser';
 import type { UserProfile } from '@/features/auth/types';
-import {
-  useTripMembers,
-  useInviteMember,
-  useUpdateMemberRole,
-  useRemoveMember,
-  useLeaveTrip,
-} from '../../hooks/useTripMembers';
-import type {
-  InviteMemberPayload,
-  TripMember,
-  TripMemberRole,
-} from '../../types/member.types';
+import { useTripMembers, useInviteMember, useUpdateMemberRole, useRemoveMember, useLeaveTrip } from '../../hooks/useTripMembers';
+import type { InviteMemberPayload, TripMember, TripMemberRole } from '../../types/member.types';
 import TripMemberList from './TripMemberList';
 import InviteMemberForm from './InviteMemberForm';
 import EditMemberRoleDialog from './EditMemberRoleDialog';
@@ -252,20 +244,7 @@ const TripMembersDialog = ({
         ) : undefined}
       >
         {error ? (
-          <Alert
-            severity="error"
-            action={
-              <AppButton
-                intent="text"
-                size="small"
-                onClick={() => void refetch().catch(() => undefined)}
-              >
-                {t('retry')}
-              </AppButton>
-            }
-          >
-            {t('loadError')}
-          </Alert>
+          <AppErrorState status={error.status} onRetry={() => refetch()} compact />
         ) : (
           <TripMemberList
             members={isStale ? [] : members}

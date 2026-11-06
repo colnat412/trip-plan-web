@@ -1,10 +1,12 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { AppLoadingState, AppButton, AppCard, AppPageContainer, AppPageHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
 
 import FinanceNavigation from '@/features/expense/components/FinanceNavigation';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
@@ -12,21 +14,13 @@ import { useTranslations } from 'next-intl';
 
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import { useTripContext } from '@/features/trip/context/TripContext';
-import {
-  useCreateSettlement,
-  useDeleteSettlement,
-  useTripSettlementSummary,
-} from '../hooks/useTripSettlement';
+import { useCreateSettlement, useDeleteSettlement, useTripSettlementSummary } from '../hooks/useTripSettlement';
 import MemberBalancesTable from './MemberBalancesTable';
 import MyBalanceCard from './MyBalanceCard';
 import RecordSettlementDialog from './RecordSettlementDialog';
 import SettlementHistoryTable from './SettlementHistoryTable';
 import SuggestedSettlementsList from './SuggestedSettlementsList';
-import type {
-  CreateSettlementRequest,
-  Settlement,
-  SuggestedSettlement,
-} from '../types';
+import type { CreateSettlementRequest, Settlement, SuggestedSettlement } from '../types';
 
 const SettlementOverview = () => {
   const t = useTranslations('settlement');
@@ -35,6 +29,8 @@ const SettlementOverview = () => {
     activeTrip,
     trips,
     isLoading: isTripLoading,
+    error: tripError,
+    refetchTrips,
     openCreateTrip,
   } = useTripContext();
 
@@ -46,6 +42,7 @@ const SettlementOverview = () => {
   const {
     summary,
     isLoading: isSummaryLoading,
+    error: summaryError,
     refetch,
   } = useTripSettlementSummary({
     tripId,
@@ -124,6 +121,17 @@ const SettlementOverview = () => {
 
   if (isTripLoading || (tripId && isSummaryLoading)) {
     return <AppPageContainer><FinanceNavigation active="settlement" /><AppLoadingState sx={{ minHeight: 320 }} /></AppPageContainer>;
+  }
+
+  if (tripError || summaryError) {
+    return (
+      <AppPageContainer>
+        <AppErrorState
+          status={(tripError ?? summaryError)?.status}
+          onRetry={() => tripError ? refetchTrips() : refetch()}
+        />
+      </AppPageContainer>
+    );
   }
 
   if (!currentTrip) {

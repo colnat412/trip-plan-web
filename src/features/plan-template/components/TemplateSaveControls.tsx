@@ -1,5 +1,7 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { createContext, useContext, type ReactNode } from 'react';
 import Link from 'next/link';
 import { Alert, Stack, IconButton, Tooltip } from '@mui/material';
@@ -26,12 +28,7 @@ export function TemplateSaveProvider({
     <SaveContext.Provider value={state}>
       <Stack spacing={2} sx={{ minWidth: 0 }}>
         {state.statusError && (
-          <Alert
-            severity="warning"
-            action={<AppButton onClick={state.retry}>{t('retry')}</AppButton>}
-          >
-            {t('saveStatusError')}
-          </Alert>
+          <AppErrorState status={state.statusError.status} onRetry={state.retry} compact />
         )}
         {state.error && (
           <Alert

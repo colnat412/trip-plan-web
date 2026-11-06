@@ -1,15 +1,15 @@
 'use client';
 
-import { AppLoadingIndicator, AppDialog, AppButton, AppInfiniteScrollTrigger } from '@/base/components/ui';
+import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import React from 'react';
 import {
-  Avatar,
-  Box,
-  Chip,
-  Stack,
-  Typography,
-} from '@mui/material';
+  AppLoadingIndicator,
+  AppDialog,
+  AppButton,
+  AppInfiniteScrollTrigger,
+} from '@/base/components/ui';
+
+import { Avatar, Box, Chip, Stack, Typography } from '@mui/material';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -101,6 +101,7 @@ const ActivityLogDialog = ({
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
+    refetch,
   } = usePlanActivityLogs({ tripId, enabled: open });
 
   const getActionConfig = (action: ActivityLogAction) => {
@@ -134,6 +135,12 @@ const ActivityLogDialog = ({
         >
           <AppLoadingIndicator />
         </Box>
+      ) : error ? (
+        <AppErrorState
+          status={error.status}
+          onRetry={() => refetch()}
+          compact
+        />
       ) : logs.length === 0 ? (
         <Box
           sx={{

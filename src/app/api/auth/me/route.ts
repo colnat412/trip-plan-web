@@ -1,8 +1,6 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
-
-const NEXT_PUBLIC_IDENTITY_SERVICE_URL =
-  process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || 'http://localhost:8888';
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,7 +18,7 @@ export async function GET(request: NextRequest) {
     }
 
     const response = await axios.get(
-      `${NEXT_PUBLIC_IDENTITY_SERVICE_URL}/api/auth/me`,
+      `${CORE_SERVICE_URL}/api/auth/me`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

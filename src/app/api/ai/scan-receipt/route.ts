@@ -1,14 +1,6 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import { requirePolicyAcceptance } from '@/base/api/server/policy-access';
-
-const AI_SERVICE_URL =
-  process.env.AI_SERVICE_URL ||
-  process.env.NEXT_PUBLIC_AI_SERVICE_URL ||
-  'http://localhost:8000';
-
-const AI_SERVICE_INTERNAL_KEY =
-  process.env.AI_SERVICE_INTERNAL_KEY ||
-  process.env.NEXT_PUBLIC_AI_SERVICE_INTERNAL_KEY;
 
 export async function POST(request: NextRequest) {
   const denied = await requirePolicyAcceptance(request);
@@ -44,10 +36,10 @@ export async function POST(request: NextRequest) {
     const forwardFormData = new FormData();
     forwardFormData.append('file', file);
 
-    const response = await fetch(`${AI_SERVICE_URL}/api/ai/scan-receipt`, {
+    const response = await fetch(`${CORE_SERVICE_URL}/api/ai/scan-receipt`, {
       method: 'POST',
       headers: {
-        'X-Internal-API-Key': AI_SERVICE_INTERNAL_KEY ?? '',
+        Authorization: `Bearer ${accessToken}`,
       },
       body: forwardFormData,
     });
@@ -78,7 +70,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error(
-      `Error in BFF POST /api/ai/scan-receipt (Target URL: ${AI_SERVICE_URL}):`,
+      `Error in BFF POST /api/ai/scan-receipt (Target URL: ${CORE_SERVICE_URL}):`,
       error,
     );
     return NextResponse.json(

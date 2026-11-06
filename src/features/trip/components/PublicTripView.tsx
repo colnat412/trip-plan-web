@@ -1,17 +1,11 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import React, { useState, useEffect } from 'react';
-import {
-  Alert,
-  Box,
-  Card,
-  Chip,
-  Container,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Card, Chip, Container, Stack, Typography } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
-import LockRoundedIcon from '@mui/icons-material/LockRounded';
+
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
@@ -24,11 +18,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
-import {
-  AppButton,
-  AppToast,
-  type AppToastSeverity,
-} from '@/base/components/ui';
+import { AppButton, AppToast, type AppToastSeverity } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import PlanDayTabs from '@/features/plan/components/PlanDayTabs';
 import DayTimelineList from '@/features/plan/components/DayTimelineList';
@@ -137,68 +127,20 @@ const PublicTripView = ({
 
   if (errorStatus === 403 || errorStatus === 404 || !trip) {
     const isPrivate = errorStatus === 403;
+    const notFound = errorStatus === 404;
     return (
       <PublicPageSurface>
-        <Container maxWidth="sm" sx={{ py: 8, textAlign: 'center' }}>
-          <Card
-            variant="outlined"
-            sx={{
-              p: { xs: 3, sm: 5 },
-              borderRadius: '24px',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.06)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 2,
-            }}
-          >
-            <Box
-              sx={{
-                width: 64,
-                height: 64,
-                borderRadius: '20px',
-                bgcolor: alpha(theme.palette.warning.main, 0.12),
-                color: 'warning.main',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <LockRoundedIcon sx={{ fontSize: '32px' }} />
-            </Box>
-
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: 800, fontFamily: 'var(--font-display)' }}
-            >
-              {isPrivate ? t('privateErrorTitle') : t('notFoundErrorTitle')}
-            </Typography>
-
-            <Typography
-              sx={{ color: 'text.secondary', fontSize: '14px', maxWidth: 400 }}
-            >
-              {isPrivate ? t('privateErrorDesc') : t('notFoundErrorDesc')}
-            </Typography>
-
-            <Stack
-              direction="row"
-              spacing={1.5}
-              sx={{ mt: 2, flexWrap: 'wrap', justifyContent: 'center' }}
-            >
-              <Link
-                href={`/login?redirect=/share/trip/${token}`}
-                passHref
-                style={{ textDecoration: 'none' }}
-              >
-                <AppButton intent="primary" startIcon={<LoginRoundedIcon />}>
-                  {t('loginBtn')}
-                </AppButton>
-              </Link>
-              <Link href="/" passHref style={{ textDecoration: 'none' }}>
-                <AppButton intent="secondary">{t('homeBtn')}</AppButton>
-              </Link>
-            </Stack>
-          </Card>
+        <Container maxWidth="sm" sx={{ py: { xs: 4, sm: 8 } }}>
+          <AppErrorState
+            variant={isPrivate ? 'forbidden' : notFound ? 'notFound' : 'load'}
+            onRetry={() => router.refresh()}
+            action={isPrivate ? (
+              <>
+                <AppButton component={Link} href={`/login?redirect=/share/trip/${token}`} startIcon={<LoginRoundedIcon />}>{t('loginBtn')}</AppButton>
+                <AppButton component={Link} href="/overview" intent="secondary">{t('homeBtn')}</AppButton>
+              </>
+            ) : undefined}
+          />
         </Container>
       </PublicPageSurface>
     );

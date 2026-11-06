@@ -1,3 +1,4 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import 'server-only';
 import axios from 'axios';
 import type { NextRequest } from 'next/server';
@@ -12,11 +13,7 @@ export async function forwardMaps(
   const denied = await requireMapsAccess(request);
   if (denied) return denied;
   try {
-    const coreBaseUrl = (
-      process.env.CORE_SERVICE_URL ||
-      process.env.NEXT_PUBLIC_CORE_SERVICE_URL ||
-      'http://localhost:8081'
-    ).replace(/\/$/, '');
+    const coreBaseUrl = CORE_SERVICE_URL;
     if (
       process.env.NODE_ENV === 'production' &&
       new URL(coreBaseUrl).protocol !== 'https:'

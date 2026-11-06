@@ -1,8 +1,6 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
-
-const NEXT_PUBLIC_CORE_SERVICE_URL =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 interface RouteContext {
   params: Promise<{ id: string; settlementId: string }>;
@@ -26,7 +24,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     const { id, settlementId } = await context.params;
 
     const response = await axios.delete(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/settlement/${settlementId}`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/settlement/${settlementId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

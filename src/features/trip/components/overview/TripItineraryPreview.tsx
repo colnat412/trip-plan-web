@@ -1,10 +1,12 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { AppLoadingState, AppButton, AppCard, AppSectionHeader } from '@/base/components/ui';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Alert, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { useTranslations } from 'next-intl';
 
@@ -17,7 +19,6 @@ import type { Trip } from '../../types';
 
 const TripItineraryPreview = ({ trip }: { trip: Trip }) => {
   const t = useTranslations('overview');
-  const tNav = useTranslations('navigation');
   const [selectedDayId, setSelectedDayId] = useState('');
   const { plan, isLoading, isStale, error, refetch } = useTripPlan({
     tripId: trip.id,
@@ -57,19 +58,7 @@ const TripItineraryPreview = ({ trip }: { trip: Trip }) => {
           }
         />
         {isLoading || (isStale && !error) ? <AppLoadingState /> : error ? (
-          <Alert
-            severity="error"
-            action={
-              <AppButton
-                intent="text"
-                onClick={() => void refetch().catch(() => undefined)}
-              >
-                {tNav('retry')}
-              </AppButton>
-            }
-          >
-            {t('itineraryError')}
-          </Alert>
+          <AppErrorState status={error.status} onRetry={() => refetch()} compact />
         ) : (
           <>
             {plan?.days && plan.days.length > 0 && (
@@ -81,19 +70,7 @@ const TripItineraryPreview = ({ trip }: { trip: Trip }) => {
               />
             )}
             {loadingActivities ? <AppLoadingState /> : activityError ? (
-              <Alert
-                severity="error"
-                action={
-                  <AppButton
-                    intent="text"
-                    onClick={() => void retryActivities()}
-                  >
-                    {tNav('retry')}
-                  </AppButton>
-                }
-              >
-                {t('itineraryError')}
-              </Alert>
+              <AppErrorState status={activityError.status} onRetry={() => retryActivities()} compact />
             ) : activities.length ? (
               <Stack spacing={0}>
                 {activities.slice(0, 3).map((activity, index) => (

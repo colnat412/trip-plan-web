@@ -1,3 +1,4 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import 'server-only';
 import axios from 'axios';
 import { NextResponse, type NextRequest } from 'next/server';
@@ -7,8 +8,7 @@ export async function requirePolicyAcceptance(request: NextRequest) {
   const token = request.cookies.get('access_token')?.value;
   if (!token) return identityError(401, 'Unauthorized');
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_IDENTITY_SERVICE_URL || 'http://localhost:8888';
+    const baseUrl = CORE_SERVICE_URL;
     const response = await axios.get(`${baseUrl}/api/auth/me`, {
       timeout: 10_000,
       headers: { Authorization: `Bearer ${token}` },

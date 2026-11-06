@@ -1,8 +1,10 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { AppLoadingState, AppButton, AppCard, AppLinearProgress, AppMetricValue, AppSectionHeader } from '@/base/components/ui';
 
-import { Box, Stack, Typography, Alert, Tooltip } from '@mui/material';
+import { Box, Stack, Typography, Tooltip } from '@mui/material';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
@@ -23,7 +25,6 @@ const TripBudgetCard = ({
 }) => {
   const locale = useLocale();
   const t = useTranslations('overview');
-  const tNav = useTranslations('navigation');
   const tMetrics = useTranslations('expense.metrics');
   const { summary, isLoading, isStale, error, refetch } = useTripBudgetSummary({
     tripId: trip.id,
@@ -79,20 +80,7 @@ const TripBudgetCard = ({
         {isLoading || (isStale && !error) ? (
           <AppLoadingState />
         ) : error || !summary ? (
-          <Alert
-            severity="error"
-            action={
-              <AppButton
-                intent="text"
-                size="small"
-                onClick={() => void refetch().catch(() => undefined)}
-              >
-                {tNav('retry')}
-              </AppButton>
-            }
-          >
-            {t('budgetError')}
-          </Alert>
+          <AppErrorState status={error?.status} onRetry={() => refetch()} compact />
         ) : (
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 1 }}>
             {metrics.map(({ id, label, amount, tone, icon }) => {
@@ -143,19 +131,7 @@ const TripBudgetCard = ({
         {isLoading ? (
           <AppLoadingState />
         ) : error ? (
-          <Alert
-            severity="error"
-            action={
-              <AppButton
-                intent="text"
-                onClick={() => void refetch().catch(() => undefined)}
-              >
-                {tNav('retry')}
-              </AppButton>
-            }
-          >
-            {t('budgetError')}
-          </Alert>
+          <AppErrorState status={error?.status} onRetry={() => refetch()} compact />
         ) : summary ? (
           <>
             <Stack spacing={0.75}>

@@ -1,8 +1,10 @@
 'use client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import AppErrorState from '@/base/components/ui/AppErrorState';
 import Link from 'next/link';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import { Alert, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { useLocale, useTranslations } from 'next-intl';
 import { AppPageContainer, AppButton } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
@@ -19,6 +21,7 @@ const TemplateDetail = ({
   status: number;
 }) => {
   const locale = useLocale();
+  const router = useRouter();
   const t = useTranslations('planTemplate');
   const [copyOpen, setCopyOpen] = useState(false);
   return (
@@ -40,9 +43,10 @@ const TemplateDetail = ({
           {t('backToLibrary')}
         </AppButton>
         {!detail ? (
-          <Alert severity="warning">
-            {t(status === 404 ? 'unavailable' : 'loadError')}
-          </Alert>
+          <AppErrorState
+            variant={status === 404 ? 'notFound' : status === 403 ? 'forbidden' : 'load'}
+            onRetry={() => router.refresh()}
+          />
         ) : (
           <TemplateSaveProvider key={detail.template.id} ids={[detail.template.id]}>
             {detail.template.coverUrl && <TemplateBanner src={detail.template.coverUrl} title={detail.template.title} />}

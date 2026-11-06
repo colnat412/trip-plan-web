@@ -1,8 +1,6 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
-
-const NEXT_PUBLIC_CORE_SERVICE_URL =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 interface RouteContext {
   params: Promise<{ id: string; checklistId: string }>;
@@ -27,7 +25,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
     const body = await request.json().catch(() => ({}));
 
     const response = await axios.put(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/plan/checklists/${checklistId}`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/plan/checklists/${checklistId}`,
       body,
       {
         headers: {
@@ -84,7 +82,7 @@ export async function DELETE(request: NextRequest, context: RouteContext) {
     const { id, checklistId } = await context.params;
 
     const response = await axios.delete(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/plan/checklists/${checklistId}`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/plan/checklists/${checklistId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

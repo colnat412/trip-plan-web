@@ -1,3 +1,4 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
@@ -5,9 +6,6 @@ import {
   expirePublicTripCache,
   getTripShareToken,
 } from '@/features/trip/api/public-trip.server';
-
-const NEXT_PUBLIC_CORE_SERVICE_URL =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 interface RouteContext {
   params: Promise<{ id: string }>;
@@ -32,7 +30,7 @@ export async function POST(request: NextRequest, context: RouteContext) {
     const oldShareToken = await getTripShareToken(id, accessToken);
 
     const response = await axios.post(
-      `${NEXT_PUBLIC_CORE_SERVICE_URL}/api/trip/${id}/share/regenerate`,
+      `${CORE_SERVICE_URL}/api/trip/${id}/share/regenerate`,
       {},
       {
         headers: {

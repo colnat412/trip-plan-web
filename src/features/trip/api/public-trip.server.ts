@@ -1,9 +1,7 @@
+import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { revalidateTag } from 'next/cache';
 
 import type { PublicTripSnapshot } from '../types';
-
-const CORE_SERVICE_URL =
-  process.env.NEXT_PUBLIC_CORE_SERVICE_URL || 'http://localhost:8081';
 
 const SHARE_TOKEN_PATTERN = /^[a-f0-9]{32}$/;
 

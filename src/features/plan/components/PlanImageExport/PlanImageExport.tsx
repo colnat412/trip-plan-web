@@ -1,16 +1,13 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { useEffect, useState } from 'react';
 import { Alert, Box, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import { useLocale, useTranslations } from 'next-intl';
-import {
-  AppButton,
-  AppLoadingState,
-  AppPageContainer,
-  AppPageHeader,
-} from '@/base/components/ui';
+import { AppButton, AppLoadingState, AppPageContainer, AppPageHeader } from '@/base/components/ui';
 import { downloadBlob, loadCanvasFont } from '@/base/utils';
 import useTripDetail from '@/features/trip/hooks/useTripDetail';
 import useTripPlan from '../../hooks/useTripPlan';
@@ -181,12 +178,7 @@ const PlanImageExport = ({ tripId }: { tripId: string }) => {
       />
       <Stack spacing={2}>
         {loadError || current?.error ? (
-          <>
-            <Alert severity="error">{current?.error || t('loadError')}</Alert>
-            <AppButton intent="secondary" onClick={retry}>
-              {t('retry')}
-            </AppButton>
-          </>
+          <AppErrorState status={loadError?.status} onRetry={retry} />
         ) : !current ? (
           <AppLoadingState />
         ) : images.length === 0 ? (

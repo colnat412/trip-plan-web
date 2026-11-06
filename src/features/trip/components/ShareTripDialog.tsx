@@ -1,20 +1,11 @@
 'use client';
 
+import AppErrorState from '@/base/components/ui/AppErrorState';
+
 import { AppLoadingIndicator, AppButton, AppDialog } from '@/base/components/ui';
 
 import React, { useState } from 'react';
-import {
-  Box,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Divider, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Stack, Tooltip, Typography } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
@@ -23,11 +14,7 @@ import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import { useTranslations } from 'next-intl';
 
-import {
-  useTripShareSettings,
-  useUpdateShareSettings,
-  useRegenerateShareToken,
-} from '../hooks/useTripShare';
+import { useTripShareSettings, useUpdateShareSettings, useRegenerateShareToken } from '../hooks/useTripShare';
 import type { TripVisibility } from '../types';
 import { useTripPermissions } from '../hooks/useTripPermissions';
 import { Share } from '@mui/icons-material';
@@ -49,7 +36,7 @@ const ShareTripDialog = ({
   const { canManage } = useTripPermissions(tripId, open);
   const t = useTranslations('trip.share');
 
-  const { shareSettings, isLoading } = useTripShareSettings({
+  const { shareSettings, isLoading, error, refetch } = useTripShareSettings({
     tripId,
     enabled: open,
   });
@@ -146,7 +133,7 @@ const ShareTripDialog = ({
             intent="primary"
             onClick={handleSave}
             loading={isUpdating}
-            disabled={!canManage}
+            disabled={!canManage || isLoading || Boolean(error)}
           >
             {t('saveChanges')}
           </AppButton>
@@ -157,6 +144,8 @@ const ShareTripDialog = ({
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
           <AppLoadingIndicator />
         </Box>
+      ) : error ? (
+        <AppErrorState status={error.status} onRetry={() => refetch()} compact />
       ) : (
         <Stack spacing={2.5}>
           <FormControl
@@ -209,7 +198,7 @@ const ShareTripDialog = ({
               >
                 <FormControlLabel
                   value="PRIVATE"
-                  disabled={!canManage}
+                  disabled={!canManage || isLoading || Boolean(error)}
                   control={<Radio size="small" />}
                   label={
                     <Box
@@ -279,7 +268,7 @@ const ShareTripDialog = ({
               >
                 <FormControlLabel
                   value="PUBLIC"
-                  disabled={!canManage}
+                  disabled={!canManage || isLoading || Boolean(error)}
                   control={<Radio size="small" />}
                   label={
                     <Box
