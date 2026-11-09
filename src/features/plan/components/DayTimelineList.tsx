@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
 import { Stack } from '@mui/material';
 import { useLocale } from 'next-intl';
 
@@ -9,7 +9,7 @@ import type { ActivityStatus, PlanActivity, RouteSegment } from '../types';
 import ActivityTimelineCard from './ActivityTimelineCard';
 import ActivityDistanceConnector from './ActivityDistanceConnector';
 import PlanEmptyState from './PlanEmptyState';
-import { getConsecutiveDistances } from '../services/mapService';
+import useDayRouteDistances from '../hooks/useDayRouteDistances';
 
 export interface DayTimelineListProps {
   activities: PlanActivity[];
@@ -20,7 +20,6 @@ export interface DayTimelineListProps {
   onDeleteActivity?: (activity: PlanActivity) => void;
   onToggleStatus?: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
   onConvertToExpense?: (activity: PlanActivity) => void;
-  onOpenOptimizeRoute?: () => void;
   readOnly?: boolean;
   canDeleteActivity?: (activity: PlanActivity) => boolean;
 }
@@ -38,66 +37,14 @@ const DayTimelineList = ({
   canDeleteActivity,
 }: DayTimelineListProps) => {
   const locale = useLocale();
-
-  const language = locale === 'en' ? 'en' : 'vi';
-  const activitiesRef = useRef(activities);
-  const distanceRequestKey = JSON.stringify([
-    activities.map((activity) => [
-      activity.tripId,
-      activity.dayId,
-      activity.id,
-      activity.location?.trim() || '',
-    ]),
-    language,
-    destinationContext,
-  ]);
-  const [distanceData, setDistanceData] = useState<{
-    requestKey: string;
-    segments: RouteSegment[];
-    formattedTotalDistance: string;
-    formattedTotalDuration: string;
-    totalDistanceMeters: number;
-  } | null>(null);
-
-  useEffect(() => {
-    activitiesRef.current = activities;
-  }, [activities]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const timeoutId = window.setTimeout(() => {
-      void getConsecutiveDistances(
-        activitiesRef.current,
-        language,
-        destinationContext,
-      )
-        .then((data) => {
-          if (isMounted) {
-            setDistanceData({ ...data, requestKey: distanceRequestKey });
-          }
-        })
-        .catch((err) => {
-          console.error('Failed to get consecutive distances:', err);
-          if (isMounted) setDistanceData(null);
-        });
-    }, 0);
-
-    return () => {
-      isMounted = false;
-      window.clearTimeout(timeoutId);
-    };
-  }, [language, destinationContext, distanceRequestKey]);
+  const distanceData = useDayRouteDistances(activities, locale, destinationContext);
 
   if (activities.length === 0) {
     return <PlanEmptyState onAddActivity={onAddActivity} readOnly={readOnly} />;
   }
 
   const segmentMap = new Map<string, RouteSegment>();
-  (distanceData?.requestKey === distanceRequestKey
-    ? distanceData.segments
-    : []
-  ).forEach((seg) => {
+  (distanceData?.segments ?? []).forEach((seg) => {
     segmentMap.set(`${seg.fromActivityId}->${seg.toActivityId}`, seg);
   });
 

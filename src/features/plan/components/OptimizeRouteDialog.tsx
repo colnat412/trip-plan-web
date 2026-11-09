@@ -8,7 +8,7 @@ import {
   AppDialog,
 } from '@/base/components/ui';
 
-import React, { useState, useEffect, useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import {
   Box,
   Button,
@@ -37,8 +37,8 @@ import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import DirectionsCarFilledRoundedIcon from '@mui/icons-material/DirectionsCarFilledRounded';
 import { useLocale, useTranslations } from 'next-intl';
 
-import type { OptimizationResult, PlanActivity } from '../types';
-import { solveOptimalRoute } from '../services/mapService';
+import type { PlanActivity } from '../types';
+import useOptimizedRoute from '../hooks/useOptimizedRoute';
 
 export interface OptimizeRouteDialogProps {
   open: boolean;
@@ -67,70 +67,21 @@ const OptimizeRouteDialog = ({
   );
 
   const [startIndex, setStartIndex] = useState<number>(0);
-  const [result, setResult] = useState<OptimizationResult | null>(null);
-  const [hasRouteError, setHasRouteError] = useState(false);
-  const [retryAttempt, setRetryAttempt] = useState(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { result, hasRouteError, isLoading, retry } = useOptimizedRoute({
+    open, activities, startIndex, locale, destinationContext,
+  });
   const [isApplying, startApplying] = useTransition();
-
-  const handleClose = () => {
-    setResult(null);
-    onClose();
-  };
-
-  useEffect(() => {
-    if (!open || locActivities.length < 2) {
-      return;
-    }
-
-    let isMounted = true;
-    const timer = setTimeout(() => {
-      if (isMounted) {
-        setIsLoading(true);
-        setResult(null);
-        setHasRouteError(false);
-      }
-    }, 0);
-
-    solveOptimalRoute(activities, {
-      startIndex,
-      lang: locale === 'en' ? 'en' : 'vi',
-      destinationContext,
-    })
-      .then((res) => {
-        if (isMounted) {
-          setResult(res);
-          setIsLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to optimize route:', err);
-        if (isMounted) {
-          setIsLoading(false);
-          setResult(null);
-          setHasRouteError(true);
-        }
-      });
-
-    return () => {
-      isMounted = false;
-      clearTimeout(timer);
-    };
-  }, [
-    open,
-    activities,
-    startIndex,
-    retryAttempt,
-    locale,
-    locActivities.length,
-    destinationContext,
-  ]);
+  const handleClose = onClose;
 
   const handleApply = () => {
     if (!result) return;
     startApplying(async () => {
-      await onApplyRoute(result.optimizedActivities);
-      handleClose();
+      try {
+        await onApplyRoute(result.optimizedActivities);
+        handleClose();
+      } catch {
+        // The mutation hook displays the error; retain the proposed route for retry.
+      }
     });
   };
 
@@ -159,7 +110,7 @@ const OptimizeRouteDialog = ({
       </Box>
     ) : hasRouteError ? (
       <AppErrorState
-        onRetry={() => setRetryAttempt((value) => value + 1)}
+        onRetry={retry}
         compact
       />
     ) : result ? (
@@ -331,7 +282,7 @@ const OptimizeRouteDialog = ({
                     : t('alreadyOptimal')}
                 </Typography>
               </Box>
-              {result.isImprovement && (
+              {result.isImprovement && result.savedDurationSeconds > 0 && (
                 <Typography
                   sx={{
                     fontSize: '11px',

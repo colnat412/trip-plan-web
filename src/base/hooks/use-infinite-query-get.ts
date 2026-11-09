@@ -184,7 +184,9 @@ const useInfiniteQueryGet = <TItem>({
       const pageBefore = lastPageRef.current;
       await fetchNextPage();
       // Stop when error request, not loop infinitive
-      if (lastPageRef.current === pageBefore) break;
+      if (lastPageRef.current === pageBefore) {
+        throw new Error('Could not load the complete list. Please retry.');
+      }
     }
 
     return itemsRef.current;

@@ -12,12 +12,12 @@ import {
   type AppToastSeverity,
 } from '@/base/components/ui';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Box, Card, Typography } from '@mui/material';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useTranslations } from 'next-intl';
 
-import { axiosClient } from '@/base/api';
+import { useCreateExpense } from '@/features/expense/hooks/useExpenseMutation';
 
 import { useTripContext } from '@/features/trip/context/TripContext';
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
@@ -30,6 +30,10 @@ import { TRIP_SHARING_ENABLED } from '@/features/trip/constants/trip-features';
 import useTripPlan from '../hooks/useTripPlan';
 import useDayActivities from '../hooks/useDayActivities';
 import {
+  useUpdateActivityStatus,
+  useToggleChecklist,
+  useDeleteChecklist,
+  useReorderDayActivities,
   useCreateActivity,
   useCreateChecklist,
   useDeleteActivity,
@@ -92,6 +96,8 @@ const PlanOverview = ({
   const [aiPlannerOpen, setAiPlannerOpen] = useState(initialAiOpen);
   const [checklistOpen, setChecklistOpen] = useState(false);
   const [resetDayConfirmOpen, setResetDayConfirmOpen] = useState(false);
+  const [isLoadingRoute, setIsLoadingRoute] = useState(false);
+  const openingRoute = useRef(false);
   const [optimizeDialogOpen, setOptimizeDialogOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
@@ -151,8 +157,18 @@ const PlanOverview = ({
     ]);
 
   const handleOpenOptimizeRoute = async () => {
-    await fetchAllDayActivities();
-    setOptimizeDialogOpen(true);
+    if (openingRoute.current) return;
+    openingRoute.current = true;
+    setIsLoadingRoute(true);
+    try {
+      await fetchAllDayActivities();
+      setOptimizeDialogOpen(true);
+    } catch {
+      showToast(t('toasts.error'), 'error');
+    } finally {
+      openingRoute.current = false;
+      setIsLoadingRoute(false);
+    }
   };
 
   const { createActivityAsync, isPending: isCreatingActivity } =
@@ -233,117 +249,60 @@ const PlanOverview = ({
       },
     });
 
-  const handleToggleActivityStatus = async (
-    activity: PlanActivity,
-    nextStatus: ActivityStatus,
-  ) => {
-    try {
-      await axiosClient.patch(
-        `/trip/${tripId}/plan/activities/${activity.id}/status`,
-        {
-          status: nextStatus,
-        },
-      );
-      showToast(t('toasts.statusUpdateSuccess'));
-      refreshPlan();
-    } catch {
-      showToast(t('toasts.error'), 'error');
-    }
-  };
-
-  const handleToggleChecklist = async (item: PlanChecklist) => {
-    try {
-      await axiosClient.patch(
-        `/trip/${tripId}/plan/checklists/${item.id}/toggle`,
-      );
-      refreshPlan();
-    } catch {
-      showToast(t('toasts.error'), 'error');
-    }
-  };
-
-  const handleDeleteChecklist = async (item: PlanChecklist) => {
-    try {
-      await axiosClient.delete(`/trip/${tripId}/plan/checklists/${item.id}`);
-      showToast(t('toasts.deleteChecklistSuccess'));
-      refreshPlan();
-    } catch {
-      showToast(t('toasts.error'), 'error');
-    }
-  };
-
-  const handleConvertToExpense = (activity: PlanActivity) => {
-    setConvertExpenseActivity(activity);
-  };
-
-  const handleCreateConvertedExpense = async (
-    payload: CreateExpensePayload,
-  ) => {
-    try {
-      const response = await axiosClient.post(`/trip/${tripId}/expenses`, {
-        ...payload,
-        activityId: convertExpenseActivity?.id,
-      });
-      const createdExpenseId = response.data?.data?.id;
-
-      if (convertExpenseActivity && createdExpenseId) {
-        const nextSpent =
-          (Number(convertExpenseActivity.actualSpent) || 0) +
-          Number(payload.amount || 0);
-        const shouldComplete =
-          convertExpenseActivity.estimatedCost > 0 &&
-          nextSpent >= convertExpenseActivity.estimatedCost;
-
-        await axiosClient.put(
-          `/trip/${tripId}/plan/activities/${convertExpenseActivity.id}`,
-          {
-            title: convertExpenseActivity.title,
-            category: convertExpenseActivity.category,
-            startTime: convertExpenseActivity.startTime || undefined,
-            endTime: convertExpenseActivity.endTime || undefined,
-            location: convertExpenseActivity.location || undefined,
-            estimatedCost: convertExpenseActivity.estimatedCost,
-            note: convertExpenseActivity.note || undefined,
-            expenseId: createdExpenseId,
-            status: shouldComplete
-              ? 'COMPLETED'
-              : convertExpenseActivity.status,
-          },
-        );
-      }
-      showToast(t('toasts.updateActivitySuccess'));
-      setConvertExpenseActivity(null);
-      refreshPlan();
-    } catch {
-      showToast(t('toasts.error'), 'error');
-    }
-  };
-
-  const handleApplyOptimizedRoute = async (
-    optimizedActivities: PlanActivity[],
-  ) => {
-    try {
-      const updates = optimizedActivities.map((act, index) => {
-        return axiosClient.put(`/trip/${tripId}/plan/activities/${act.id}`, {
-          title: act.title,
-          startTime: act.startTime || undefined,
-          endTime: act.endTime || undefined,
-          location: act.location || undefined,
-          category: act.category,
-          estimatedCost: act.estimatedCost,
-          status: act.status,
-          orderIndex: index,
-          note: act.note || undefined,
-          expenseId: act.expenseId || undefined,
-        });
-      });
-
-      await Promise.all(updates);
-      showToast(t('toasts.optimizeSuccess'));
-      refreshPlan();
-    } catch {
-      showToast(t('toasts.error'), 'error');
-    }
+  const mutationError = () => showToast(t('toasts.error'), 'error');
+  const { updateStatus, isPending: isUpdatingStatus } = useUpdateActivityStatus({
+    tripId: tripId ?? '',
+    options: {
+      onSuccess: () => {
+        showToast(t('toasts.statusUpdateSuccess'));
+        void refreshPlan();
+      },
+      onError: mutationError,
+    },
+  });
+  const { toggleChecklist, isPending: isTogglingChecklist } = useToggleChecklist({
+    tripId: tripId ?? '',
+    options: {
+      onSuccess: () => { void refreshPlan(); },
+      onError: mutationError,
+    },
+  });
+  const { deleteChecklist, isPending: isDeletingChecklist } = useDeleteChecklist({
+    tripId: tripId ?? '',
+    options: {
+      onSuccess: () => {
+        showToast(t('toasts.deleteChecklistSuccess'));
+        void refreshPlan();
+      },
+      onError: mutationError,
+    },
+  });
+  const { createExpense, isPending: isCreatingConvertedExpense } = useCreateExpense({
+    tripId: tripId ?? '',
+    options: {
+      onSuccess: () => {
+        showToast(t('toasts.updateActivitySuccess'));
+        setConvertExpenseActivity(null);
+        void refreshPlan();
+      },
+      onError: mutationError,
+    },
+  });
+  const { reorderActivitiesAsync } = useReorderDayActivities({
+    tripId: tripId ?? '',
+    dayId: selectedDay?.id ?? '',
+    options: {
+      onSuccess: () => {
+        showToast(t('toasts.optimizeSuccess'));
+        void refreshPlan();
+      },
+      onError: mutationError,
+    },
+  });
+  const handleApplyOptimizedRoute = async (activities: PlanActivity[]) => {
+    await reorderActivitiesAsync({
+      activityIds: activities.map((activity) => activity.id),
+    });
   };
 
   if (tripError || planError) {
@@ -503,6 +462,8 @@ const PlanOverview = ({
         <PlanDayToolbar
           day={selectedDay}
           currency={overview?.baseCurrency ?? activeTrip.baseCurrency}
+          onOptimizeRoute={canWrite ? () => void handleOpenOptimizeRoute() : undefined}
+          isLoadingRoute={isLoadingRoute}
           onResetDay={
             canManage ? () => setResetDayConfirmOpen(true) : undefined
           }
@@ -549,9 +510,11 @@ const PlanOverview = ({
                   canManageRecord(activity.createdBy)
                 }
                 onDeleteActivity={(activity) => setDeletingActivity(activity)}
-                onToggleStatus={handleToggleActivityStatus}
-                onConvertToExpense={handleConvertToExpense}
-                onOpenOptimizeRoute={() => void handleOpenOptimizeRoute()}
+                onToggleStatus={
+                  isUpdatingStatus ? undefined : (activity: PlanActivity, status: ActivityStatus) =>
+                    updateStatus({ activityId: activity.id, status })
+                }
+                onConvertToExpense={setConvertExpenseActivity}
                 readOnly={!canWrite || Boolean(planError)}
               />
             )}
@@ -632,13 +595,14 @@ const PlanOverview = ({
         onAdd={(payload: CreateChecklistPayload) =>
           createChecklistAsync(payload)
         }
-        onToggle={handleToggleChecklist}
-        onDelete={handleDeleteChecklist}
-        isLoading={isCreatingChecklist}
+        onToggle={(item: PlanChecklist) => toggleChecklist({ checklistId: item.id })}
+        onDelete={(item: PlanChecklist) => deleteChecklist({ checklistId: item.id })}
+        isLoading={isCreatingChecklist || isTogglingChecklist || isDeletingChecklist}
         readOnly={!canWrite || Boolean(planError)}
       />
 
       <OptimizeRouteDialog
+        key={`${tripId}:${activeDayId}`}
         open={optimizeDialogOpen}
         onClose={() => setOptimizeDialogOpen(false)}
         dayNumber={selectedDay?.dayNumber ?? 1}
@@ -651,7 +615,10 @@ const PlanOverview = ({
         <AddExpenseDialog
           open={!!convertExpenseActivity}
           onClose={() => setConvertExpenseActivity(null)}
-          onSubmit={handleCreateConvertedExpense}
+          isLoading={isCreatingConvertedExpense}
+          onSubmit={(payload: CreateExpensePayload) => createExpense({
+            ...payload, activityId: convertExpenseActivity.id,
+          })}
           tripCurrency={
             overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
           }

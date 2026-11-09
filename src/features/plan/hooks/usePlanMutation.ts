@@ -1,7 +1,8 @@
 'use client';
 
-import type { ApiResponse } from '@/base/api';
+import { axiosPatch, type ApiResponse } from '@/base/api';
 import {
+  useMutationRequest,
   useMutationPost,
   useMutationPut,
   useMutationDelete,
@@ -100,29 +101,24 @@ export function useDeleteActivity({
   };
 }
 
-export interface UseUpdateActivityStatusParams {
-  tripId: string | number;
+interface UpdateActivityStatusPayload {
   activityId: string | number;
-  options?: MutationCallbacks<
-    ApiResponse<PlanActivity>,
-    { status: ActivityStatus }
-  >;
+  status: ActivityStatus;
 }
 
 export function useUpdateActivityStatus({
   tripId,
-  activityId,
   options,
-}: UseUpdateActivityStatusParams) {
-  const mutation = useMutationPut<
-    ApiResponse<PlanActivity>,
-    { status: ActivityStatus }
-  >({
-    mutationKey: ['plan', 'activity', 'status', tripId, activityId],
-    endPoint: `/trip/${tripId}/plan/activities/${activityId}/status`,
+}: {
+  tripId: string | number;
+  options?: MutationCallbacks<ApiResponse<PlanActivity>, UpdateActivityStatusPayload>;
+}) {
+  const mutation = useMutationRequest<ApiResponse<PlanActivity>, UpdateActivityStatusPayload>({
+    mutationKey: ['plan', 'activity', 'status', tripId],
+    mutationFn: ({ activityId, status }) =>
+      axiosPatch(`/trip/${tripId}/plan/activities/${activityId}/status`, { status }),
     options,
   });
-
   return {
     ...mutation,
     updateStatus: mutation.mutate,
@@ -255,29 +251,23 @@ export function useUpdateChecklist({
   };
 }
 
-export interface UseToggleChecklistParams {
-  tripId: string | number;
+interface ChecklistActionPayload {
   checklistId: string | number;
-  options?: MutationCallbacks<
-    ApiResponse<PlanChecklist>,
-    Record<string, never>
-  >;
 }
 
 export function useToggleChecklist({
   tripId,
-  checklistId,
   options,
-}: UseToggleChecklistParams) {
-  const mutation = useMutationPut<
-    ApiResponse<PlanChecklist>,
-    Record<string, never>
-  >({
-    mutationKey: ['plan', 'checklist', 'toggle', tripId, checklistId],
-    endPoint: `/trip/${tripId}/plan/checklists/${checklistId}/toggle`,
+}: {
+  tripId: string | number;
+  options?: MutationCallbacks<ApiResponse<PlanChecklist>, ChecklistActionPayload>;
+}) {
+  const mutation = useMutationRequest<ApiResponse<PlanChecklist>, ChecklistActionPayload>({
+    mutationKey: ['plan', 'checklist', 'toggle', tripId],
+    mutationFn: ({ checklistId }) =>
+      axiosPatch(`/trip/${tripId}/plan/checklists/${checklistId}/toggle`, {}),
     options,
   });
-
   return {
     ...mutation,
     toggleChecklist: mutation.mutate,
@@ -285,27 +275,44 @@ export function useToggleChecklist({
   };
 }
 
-export interface UseDeleteChecklistParams {
-  tripId: string | number;
-  checklistId: string | number;
-  options?: MutationCallbacks<ApiResponse<null>, Record<string, never>>;
-}
-
 export function useDeleteChecklist({
   tripId,
-  checklistId,
   options,
-}: UseDeleteChecklistParams) {
-  const mutation = useMutationDelete<ApiResponse<null>, Record<string, never>>({
-    mutationKey: ['plan', 'checklist', 'delete', tripId, checklistId],
-    endPoint: `/trip/${tripId}/plan/checklists/${checklistId}`,
+}: {
+  tripId: string | number;
+  options?: MutationCallbacks<ApiResponse<null>, ChecklistActionPayload>;
+}) {
+  const mutation = useMutationDelete<ApiResponse<null>, ChecklistActionPayload>({
+    mutationKey: ['plan', 'checklist', 'delete', tripId],
+    endPoint: `/trip/${tripId}/plan/checklists`,
+    getEndPoint: (endPoint, { checklistId }) => `${endPoint}/${checklistId}`,
+    getPayload: () => ({}),
     options,
   });
-
   return {
     ...mutation,
     deleteChecklist: mutation.mutate,
     deleteChecklistAsync: mutation.mutateAsync,
+  };
+}
+
+export function useReorderDayActivities({
+  tripId,
+  dayId,
+  options,
+}: {
+  tripId: string | number;
+  dayId: string | number;
+  options?: MutationCallbacks<ApiResponse<null>, { activityIds: (string | number)[] }>;
+}) {
+  const mutation = useMutationPut<ApiResponse<null>, { activityIds: (string | number)[] }>({
+    mutationKey: ['plan', 'day', 'order', tripId, dayId],
+    endPoint: `/trip/${tripId}/plan/days/${dayId}/activities/order`,
+    options,
+  });
+  return {
+    ...mutation,
+    reorderActivitiesAsync: mutation.mutateAsync,
   };
 }
 
@@ -376,6 +383,7 @@ const usePlanMutation = () => {
     useDeleteChecklist,
     useGenerateAiPlan,
     useResetDayActivities,
+    useReorderDayActivities,
   };
 };
 
