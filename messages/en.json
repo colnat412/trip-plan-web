@@ -1226,5 +1226,26 @@
     "title": "Something went wrong. Please try again.",
     "retry": "Try again",
     "home": "Back to home"
+  },
+  "weather": {
+    "summaryLabel": "{count, plural, one {# day} other {# days}} forecast: {condition}, average {temperature}°C",
+    "loading": "Loading weather…",
+    "OUT_OF_RANGE": "Trip forecast not yet available",
+    "PAST": "Departure date has passed",
+    "UNAVAILABLE": "Weather unavailable",
+    "LOCATION_UNAVAILABLE": "Forecast location unavailable",
+    "HIDDEN": "",
+    "READY": "Weather forecast",
+    "conditions": {
+      "UNKNOWN": "Unknown conditions",
+      "CLEAR": "Clear sky",
+      "PARTLY_CLOUDY": "Partly cloudy",
+      "CLOUDY": "Overcast",
+      "FOG": "Fog",
+      "DRIZZLE": "Drizzle",
+      "RAIN": "Rain",
+      "SNOW": "Snow",
+      "THUNDERSTORM": "Thunderstorms"
+    }
   }
 }

@@ -1226,5 +1226,26 @@
     "title": "Đã có lỗi xảy ra. Vui lòng thử lại.",
     "retry": "Thử lại",
     "home": "Về trang chủ"
+  },
+  "weather": {
+    "summaryLabel": "Dự báo {count} ngày: {condition}, trung bình {temperature}°C",
+    "loading": "Đang tải thời tiết…",
+    "OUT_OF_RANGE": "Chưa có dự báo cho chuyến đi",
+    "PAST": "Ngày đi đã qua",
+    "UNAVAILABLE": "Chưa tải được thời tiết",
+    "LOCATION_UNAVAILABLE": "Chưa xác định được điểm dự báo",
+    "HIDDEN": "",
+    "READY": "Dự báo thời tiết",
+    "conditions": {
+      "UNKNOWN": "Chưa rõ trạng thái",
+      "CLEAR": "Trời quang",
+      "PARTLY_CLOUDY": "Ít mây",
+      "CLOUDY": "Nhiều mây",
+      "FOG": "Sương mù",
+      "DRIZZLE": "Mưa phùn",
+      "RAIN": "Mưa",
+      "SNOW": "Tuyết",
+      "THUNDERSTORM": "Giông"
+    }
   }
 }

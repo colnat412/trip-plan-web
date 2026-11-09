@@ -12,6 +12,7 @@ import { useTripContext } from '../../context/TripContext';
 import { useTripMembers } from '../../hooks/useTripMembers';
 import type { Trip } from '../../types';
 import TripStatusBadge from '../TripStatusBadge';
+import TripWeatherText from './TripWeatherText';
 
 interface ActiveTripBannerProps {
   trip: Trip;
@@ -95,38 +96,45 @@ const ActiveTripBanner = ({ trip, compact = false }: ActiveTripBannerProps) => {
             {trip.name}
           </Typography>
           <Stack
-            direction="row"
+            direction={{ xs: 'column', sm: 'row' }}
             useFlexGap
-            spacing={2}
-            sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+            sx={{
+              alignItems: 'flex-start',
+              flexWrap: 'wrap',
+              rowGap: '8px',
+              columnGap: '16px',
+              minWidth: 0,
+            }}
           >
             {trip.destination && (
               <Stack
                 direction="row"
-                spacing={0.75}
-                sx={{ alignItems: 'center', minWidth: 0 }}
+                useFlexGap
+                sx={{ alignItems: 'flex-start', gap: '6px', minWidth: 0 }}
               >
                 <LocationOnRoundedIcon
-                  sx={{ fontSize: '18px', flexShrink: 0 }}
+                  sx={{ fontSize: '16px', flexShrink: 0, mt: '2.5px' }}
                 />
                 <Typography
                   sx={{
                     fontSize: '14px',
                     overflowWrap: 'anywhere',
                     color: 'inherit',
+                    lineHeight: 1.5,
                   }}
                 >
                   {trip.destination}
                 </Typography>
               </Stack>
             )}
-            <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
-              <CalendarTodayRoundedIcon
-                sx={{ fontSize: '16px', flexShrink: 0 }}
-              />
-              <Typography sx={{ fontSize: '14px', color: 'inherit' }}>
-                {formatDateRange(trip.startDate, trip.endDate, 'DD/MM/YYYY')}
-              </Typography>
+            <Stack direction="row" useFlexGap sx={{ alignItems: 'center', gap: '12px', minWidth: 0, maxWidth: '100%' }}>
+              <Stack direction="row" useFlexGap sx={{ alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                <CalendarTodayRoundedIcon sx={{ fontSize: '16px', flexShrink: 0 }} />
+                <Typography sx={{ fontSize: '14px', color: 'inherit', lineHeight: 1.5 }}>
+                  {formatDateRange(trip.startDate, trip.endDate, 'DD/MM/YYYY')}
+                </Typography>
+              </Stack>
+              <TripWeatherText key={`${trip.id}:${trip.startDate}:${trip.endDate}:${trip.destination}`} trip={trip} />
             </Stack>
           </Stack>
         </Stack>
