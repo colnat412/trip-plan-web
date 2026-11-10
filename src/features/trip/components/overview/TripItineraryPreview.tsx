@@ -1,95 +1,232 @@
 'use client';
 
-import AppErrorState from '@/base/components/ui/AppErrorState';
-
-import { AppLoadingState, AppButton, AppCard, AppSectionHeader } from '@/base/components/ui';
-
 import { useState } from 'react';
 import Link from 'next/link';
-import { Stack } from '@mui/material';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import { Box, Stack, Typography } from '@mui/material';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded';
+import {
+  AppLoadingState,
+  AppButton,
+  AppCard,
+  AppSectionHeader,
+  AppSectionLink,
+  AppEmptyState,
+  AppErrorState,
+  AppToast,
+  type AppToastSeverity,
+} from '@/base/components/ui';
 import { useTranslations } from 'next-intl';
-
+import { formatDate, getZonedDateTime } from '@/base/utils';
 import useTripPlan from '@/features/plan/hooks/useTripPlan';
-import useDayActivities from '@/features/plan/hooks/useDayActivities';
+import { useCreateActivity } from '@/features/plan/hooks/usePlanMutation';
+import {
+  getUpcomingActivity,
+  getSuggestedActivityDay,
+} from '@/features/plan/utils/upcoming-activity';
 import ActivityTimelineCard from '@/features/plan/components/ActivityTimelineCard';
-import PlanDayTabs from '@/features/plan/components/PlanDayTabs';
-import PlanEmptyState from '@/features/plan/components/PlanEmptyState';
+import AddActivityDialog from '@/features/plan/components/AddActivityDialog';
+import { useTripPermissions } from '../../hooks/useTripPermissions';
+import { getTripTiming } from '../../utils/trip-timing';
 import type { Trip } from '../../types';
 
-const TripItineraryPreview = ({ trip }: { trip: Trip }) => {
-  const t = useTranslations('overview');
-  const [selectedDayId, setSelectedDayId] = useState('');
+interface TripItineraryPreviewProps {
+  trip: Trip;
+  now: Date | null;
+}
+
+const TripItineraryPreview = ({ trip, now }: TripItineraryPreviewProps) => {
+  const t = useTranslations('overview.nextActivity');
+  const tPlan = useTranslations('plan');
+  const timing = now ? getTripTiming(trip, now) : null;
+  const finished =
+    timing?.phase === 'completed' || timing?.phase === 'cancelled';
   const { plan, isLoading, isStale, error, refetch } = useTripPlan({
     tripId: trip.id,
-    includeActivities: false,
+    includeActivities: true,
+    enabled: Boolean(now) && !finished,
   });
-  const dayId = isStale
-    ? undefined
-    : (plan?.days.find((day) => String(day.id) === selectedDayId)?.id ??
-      plan?.days[0]?.id);
-  const {
-    activities,
-    isLoading: loadingActivities,
-    error: activityError,
-    refetch: retryActivities,
-  } = useDayActivities({ tripId: trip.id, dayId });
+  const { canWrite, canManage } = useTripPermissions(trip.id);
+  const days = isStale ? [] : (plan?.days ?? []);
+  const clock = now ? getZonedDateTime(now) : null;
+  const next = clock ? getUpcomingActivity(days, clock.date, clock.time) : null;
+  const targetDay = clock ? getSuggestedActivityDay(days, clock.date) : null;
+  const empty = plan?.totalActivities === 0;
+  const [addingDayId, setAddingDayId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    severity: AppToastSeverity;
+  } | null>(null);
+  const { createActivityAsync, isPending } = useCreateActivity({
+    tripId: trip.id,
+    dayId: addingDayId ?? targetDay?.id ?? '',
+    options: {
+      onSuccess: () => {
+        setAddingDayId(null);
+        setToast({
+          message: tPlan('toasts.createActivitySuccess'),
+          severity: 'success',
+        });
+        void refetch().catch(() => undefined);
+      },
+      onError: () =>
+        setToast({ message: tPlan('toasts.error'), severity: 'error' }),
+    },
+  });
+  const planHref = `/plan?tripId=${encodeURIComponent(String(trip.id))}${next ? `&dayId=${encodeURIComponent(next.day.id)}` : ''}`;
+  const heading = finished
+    ? t('summary')
+    : timing?.phase === 'upcoming' && next
+      ? t('first')
+      : next?.kind === 'inProgress'
+        ? t('inProgress')
+        : next?.kind === 'scheduledNow'
+          ? t('scheduledNow')
+          : t('title');
 
   return (
-    <AppCard
-      component="section"
-      sx={{ p: { xs: 2, md: 3 }, borderRadius: '20px', minWidth: 0 }}
-    >
-      <Stack spacing={3} sx={{ minWidth: 0 }}>
-        <AppSectionHeader
-          title={t('yourItinerary')}
-          subtitle={t('itineraryIntro')}
-          actions={
-            <AppButton
-              component={Link}
-              href="/plan"
-              intent="text"
-              size="medium"
-              sx={{ minHeight: 44 }}
-              endIcon={<ArrowForwardRoundedIcon />}
-            >
-              {t('openItinerary')}
-            </AppButton>
-          }
-        />
-        {isLoading || (isStale && !error) ? <AppLoadingState /> : error ? (
-          <AppErrorState status={error.status} onRetry={() => refetch()} compact />
-        ) : (
-          <>
-            {plan?.days && plan.days.length > 0 && (
-              <PlanDayTabs
-                days={plan.days}
-                selectedDayId={String(dayId ?? '')}
+    <>
+      <AppCard
+        component="section"
+        sx={{
+          p: { xs: 2, md: 3 },
+          minWidth: 0,
+          width: '100%',
+          borderRadius: '20px',
+        }}
+      >
+        <Stack spacing={2} sx={{ minWidth: 0 }}>
+          <AppSectionHeader
+            title={heading}
+            actions={
+              <AppSectionLink href={planHref}>{t('viewPlan')}</AppSectionLink>
+            }
+          />
+          {finished ? (
+            <AppEmptyState
+              title={t(
+                timing?.phase === 'cancelled' ? 'cancelled' : 'completed',
+              )}
+              icon={<EventAvailableRoundedIcon />}
+              sx={{ py: 1 }}
+              action={
+                timing?.phase === 'completed' ? (
+                  <AppSectionLink href="/settlement">
+                    {t('viewSettlement')}
+                  </AppSectionLink>
+                ) : undefined
+              }
+            />
+          ) : !now || isLoading || (isStale && !error) ? (
+            <AppLoadingState />
+          ) : error ? (
+            <AppErrorState
+              status={error.status}
+              onRetry={() => refetch()}
+              compact
+            />
+          ) : next ? (
+            <Stack spacing={1} sx={{ minWidth: 0 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 1,
+                  flexWrap: 'wrap',
+                  color: 'text.secondary',
+                  minWidth: 0,
+                }}
+              >
+                <Typography sx={{ fontSize: '13px' }}>
+                  {formatDate(next.day.planDate)}
+                </Typography>
+                {next.kind === 'unscheduled' && (
+                  <Typography sx={{ fontSize: '13px' }}>
+                    {t('unscheduled')}
+                  </Typography>
+                )}
+              </Box>
+              <ActivityTimelineCard
+                activity={next.activity}
                 currency={trip.baseCurrency}
-                onSelectDay={setSelectedDayId}
+                readOnly
+                compact
               />
-            )}
-            {loadingActivities ? <AppLoadingState /> : activityError ? (
-              <AppErrorState status={activityError.status} onRetry={() => retryActivities()} compact />
-            ) : activities.length ? (
-              <Stack spacing={0}>
-                {activities.slice(0, 3).map((activity, index) => (
-                  <ActivityTimelineCard
-                    key={activity.id}
-                    activity={activity}
-                    hasNext={index < Math.min(activities.length, 3) - 1}
-                    currency={trip.baseCurrency}
-                    readOnly
-                  />
-                ))}
-              </Stack>
-            ) : (
-              <PlanEmptyState readOnly />
-            )}
-          </>
+            </Stack>
+          ) : (
+            <AppEmptyState
+              title={t(empty ? 'emptyPlan' : 'nothingNext')}
+              icon={<EventAvailableRoundedIcon />}
+              sx={{
+                p: 2,
+                border: '1px dashed',
+                borderColor: 'divider',
+                borderRadius: '12px',
+              }}
+              action={
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    '& > .MuiButton-root': {
+                      minHeight: 44,
+                      minWidth: 0,
+                    },
+                    gap: 1,
+                    minWidth: 0,
+                    width: '100%',
+                  }}
+                >
+                  {canWrite && targetDay && (
+                    <AppButton
+                      intent="primary"
+                      wrapLabel
+                      startIcon={<AddRoundedIcon />}
+                      onClick={() => setAddingDayId(targetDay.id)}
+                    >
+                      {t('add')}
+                    </AppButton>
+                  )}
+                  {canManage && empty && (
+                    <AppButton
+                      component={Link}
+                      href={`${planHref}&ai=1`}
+                      intent="text"
+                      wrapLabel
+                      startIcon={<AutoAwesomeRoundedIcon />}
+                    >
+                      {t('ai')}
+                    </AppButton>
+                  )}
+                </Box>
+              }
+            />
+          )}
+        </Stack>
+      </AppCard>
+      {addingDayId &&
+        canWrite &&
+        days.some((day) => day.id === addingDayId) &&
+        !finished && (
+          <AddActivityDialog
+            open
+            onClose={() => setAddingDayId(null)}
+            tripCurrency={trip.baseCurrency}
+            planDate={days.find((day) => day.id === addingDayId)?.planDate}
+            isLoading={isPending}
+            onSubmit={(payload) => {
+              void createActivityAsync(payload).catch(() => undefined);
+            }}
+          />
         )}
-      </Stack>
-    </AppCard>
+      <AppToast
+        open={Boolean(toast)}
+        message={toast?.message ?? ''}
+        severity={toast?.severity ?? 'success'}
+        onClose={() => setToast(null)}
+      />
+    </>
   );
 };
 

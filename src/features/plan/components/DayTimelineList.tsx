@@ -37,7 +37,11 @@ const DayTimelineList = ({
   canDeleteActivity,
 }: DayTimelineListProps) => {
   const locale = useLocale();
-  const distanceData = useDayRouteDistances(activities, locale, destinationContext);
+  const distanceData = useDayRouteDistances(
+    activities,
+    locale,
+    destinationContext,
+  );
 
   if (activities.length === 0) {
     return <PlanEmptyState onAddActivity={onAddActivity} readOnly={readOnly} />;
@@ -51,13 +55,19 @@ const DayTimelineList = ({
   return (
     <AppCard
       component="section"
+      variant="transparent"
       sx={{
         width: '100%',
         minWidth: 0,
-        p: { xs: 2, md: 3 },
+        p: 0,
         borderRadius: '20px',
       }}
-      contentSx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+      contentSx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        minWidth: 0,
+      }}
     >
       <Stack spacing={0}>
         {activities.map((activity, idx) => {

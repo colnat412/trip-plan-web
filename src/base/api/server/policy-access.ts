@@ -19,7 +19,7 @@ export async function requirePolicyAcceptance(request: NextRequest) {
         {
           status: 403,
           code: 'POLICY_ACCEPTANCE_REQUIRED',
-          message: 'Accept the policies before using Trip Plan',
+          message: 'Accept the policies before using Vi Vu',
           data: null,
         },
         { status: 403 },

@@ -151,7 +151,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
                 {formatDateRange(
                   activeTrip.startDate,
                   activeTrip.endDate,
-                  'DD/MM',
+                  'DD/MM/YYYY',
                 )}
               </Box>
               <Box

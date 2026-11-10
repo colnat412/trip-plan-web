@@ -114,7 +114,8 @@ const EditTripForm = ({
           onClose();
         },
         onError: (err) => {
-          setToastMessage(err.message || t('updateFailed'));
+          setToastMessage(err.message?.includes('TRIP_DATES_HAVE_ACTIVITIES')
+            ? t('datesHaveActivities') : err.message || t('updateFailed'));
         },
       },
     );

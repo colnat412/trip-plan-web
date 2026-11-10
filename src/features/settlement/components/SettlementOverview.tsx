@@ -165,8 +165,6 @@ const SettlementOverview = () => {
         <FinanceNavigation active="settlement" />
       <AppPageHeader
         title={t('pageTitle')}
-        badge={currentTrip.name}
-        subtitle={t('pageSubtitle')}
         actions={
           <AppButton
             intent="primary"

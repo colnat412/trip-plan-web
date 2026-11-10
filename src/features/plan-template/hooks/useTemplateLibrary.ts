@@ -3,6 +3,7 @@
 import { useDebouncedValue, useQueryGet } from '@/base/hooks';
 import type { ApiResponse } from '@/base/api';
 import type { TemplateListing } from '../types';
+import { getTemplateDurationParams } from '../utils/template-filters';
 import { templateQueryKeys } from '../constants/template-keys';
 
 export interface UseTemplateLibraryParams {
@@ -42,7 +43,7 @@ const useTemplateLibrary = ({
     config: {
       params: {
         search: settled,
-        duration: duration || undefined,
+        ...getTemplateDurationParams(duration),
         tag: tag || undefined,
         sort,
         page: page - 1,

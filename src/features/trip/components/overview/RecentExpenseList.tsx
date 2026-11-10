@@ -2,15 +2,19 @@
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppLoadingState, AppEmptyState, AppMetricValue } from '@/base/components/ui';
+import {
+  AppLoadingState,
+  AppEmptyState,
+  AppFinanceRow,
+  AppCategoryIcon,
+} from '@/base/components/ui';
 
 import { useState } from 'react';
-import { Box, Stack, Typography, ButtonBase } from '@mui/material';
+import { Stack } from '@mui/material';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import { useLocale, useTranslations } from 'next-intl';
 
 import { formatCurrency, formatDate } from '@/base/utils';
-import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
 import useTripExpenses from '@/features/expense/hooks/useTripExpenses';
 import ExpenseDetailDialog from '@/features/expense/components/ExpenseDetailDialog';
 import type { Expense } from '@/features/expense/types';
@@ -32,7 +36,7 @@ const RecentExpenseList = ({
   const { expenses, isLoading, isStale, error, refetch } = useTripExpenses({
     tripId,
     page: 0,
-    size: 5,
+    size: 3,
   });
 
   if (isLoading || (isStale && !error)) {
@@ -40,91 +44,37 @@ const RecentExpenseList = ({
   }
 
   if (error) {
-    return <AppErrorState status={error.status} onRetry={() => refetch()} compact />;
+    return (
+      <AppErrorState status={error.status} onRetry={() => refetch()} compact />
+    );
   }
   if (!expenses.length) {
-    return <AppEmptyState icon={<ReceiptLongRoundedIcon />}
-      title={tExpense('table.emptyTitle')} description={tExpense('table.emptyDesc')} />;
+    return (
+      <AppEmptyState
+        icon={<ReceiptLongRoundedIcon />}
+        title={tExpense('table.emptyTitle')}
+        description={tExpense('table.emptyDesc')}
+      />
+    );
   }
 
   return (
     <>
       <Stack>
-        {expenses.map((expense, index) => {
-          const config =
-            CATEGORY_CONFIG[expense.category] || CATEGORY_CONFIG.OTHER;
-          const payerText = expense.payerName || tOverview('defaultMember');
-          const dateText = formatDate(expense.expenseDate, 'DD/MM');
-
-          return (
-            <ButtonBase
-              key={expense.id}
-              onClick={() => setSelectedExpense(expense)}
-              sx={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'flex-start',
-                textAlign: 'left',
-                borderRadius: 0,
-                px: 0.5,
-                py: 0.75,
-                borderBottom: index < expenses.length - 1 ? 1 : 0,
-                borderColor: 'divider',
-                transition: 'background-color 0.15s',
-                '&:hover': {
-                  bgcolor: 'action.hover',
-                },
-              }}
-            >
-              <Stack
-                direction="row"
-                spacing={1.5}
-                sx={{
-                  alignItems: 'center',
-                  width: '100%',
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                    borderRadius: '12px',
-                    color: config.color,
-                    bgcolor: config.bg,
-                    '& svg': { fontSize: '22px' },
-                  }}
-                >
-                  {config.icon}
-                </Box>
-                <Stack spacing={0.25} sx={{ minWidth: 0, flexGrow: 1 }}>
-                  <Typography
-                    noWrap
-                    sx={{
-                      color: 'text.primary',
-                      fontSize: '14px',
-                      fontWeight: 700,
-                    }}
-                  >
-                    {expense.title}
-                  </Typography>
-                  <Typography
-                    noWrap
-                    sx={{ color: 'text.secondary', fontSize: '11px' }}
-                  >
-                    {payerText} · {dateText}
-                  </Typography>
-                </Stack>
-                <AppMetricValue sx={{ flexShrink: 0, fontSize: '14px' }}>
-                  {formatCurrency(expense.amount, expense.currency || currency, locale)}
-                </AppMetricValue>
-              </Stack>
-            </ButtonBase>
-          );
-        })}
+        {expenses.map((expense) => (
+          <AppFinanceRow
+            key={expense.id}
+            icon={<AppCategoryIcon category={expense.category} />}
+            title={expense.title}
+            subtitle={`${expense.payerName || tOverview('defaultMember')} · ${formatDate(expense.expenseDate)}`}
+            amount={formatCurrency(
+              expense.amount,
+              expense.currency || currency,
+              locale,
+            )}
+            onClick={() => setSelectedExpense(expense)}
+          />
+        ))}
       </Stack>
 
       <ExpenseDetailDialog

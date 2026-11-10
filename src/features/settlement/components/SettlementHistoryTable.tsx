@@ -20,7 +20,7 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppCard, AppConfirmDialog } from '@/base/components/ui';
+import { AppCard, AppConfirmDialog, AppFinanceRow } from '@/base/components/ui';
 import { formatCurrency, formatDate, getUserInitials } from '@/base/utils';
 import type { Settlement } from '../types';
 
@@ -82,7 +82,23 @@ const SettlementHistoryTable = ({
           </Typography>
         </Box>
 
-        <TableContainer>
+        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+          {settlements.map((settlement) => (
+            <AppFinanceRow key={settlement.id}
+              icon={<Avatar src={settlement.payerAvatarUrl || undefined} sx={{ width: 40, height: 40 }}>{getUserInitials(settlement.payerName || '')}</Avatar>}
+              title={`${settlement.payerName || '—'} → ${settlement.payeeName || '—'}`}
+              subtitle={<>{formatDate(settlement.settledAt)} · {t(settlement.paymentMethod === 'BANK_TRANSFER' ? 'methodBank' : settlement.paymentMethod === 'CASH' ? 'methodCash' : 'methodOther')}
+                {settlement.note && <><br />{settlement.note}</>}</>}
+              amount={formatCurrency(settlement.amount, settlement.currency)}
+              action={onDelete && (canDelete?.(settlement) ?? true) ? (
+                <IconButton aria-label={t('deleteConfirm.title')} onClick={() => setSelectedSettlement(settlement)} sx={{ width: 44, height: 44 }}>
+                  <DeleteOutlineRoundedIcon fontSize="small" />
+                </IconButton>
+              ) : undefined}
+            />
+          ))}
+        </Box>
+        <TableContainer sx={{ display: { xs: 'none', sm: 'block' } }}>
           <Table sx={{ minWidth: 650 }}>
             <TableHead>
               <TableRow sx={{ bgcolor: 'action.hover' }}>

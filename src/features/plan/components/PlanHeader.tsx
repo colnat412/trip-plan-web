@@ -1,7 +1,6 @@
 'use client';
 
-import { Box, Typography } from '@mui/material';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
@@ -17,7 +16,8 @@ import {
   AppPageHeader,
 } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
-import UseTemplateButton from '@/features/plan-template/components/UseTemplateButton';
+import CollectionsBookmarkOutlinedIcon from '@mui/icons-material/CollectionsBookmarkOutlined';
+import { useRouter } from 'next/navigation';
 
 export interface PlanHeaderProps {
   totalDays: number;
@@ -26,7 +26,6 @@ export interface PlanHeaderProps {
   totalEstimatedCost: number;
   currency: string;
   onOpenChecklist: () => void;
-  onAddActivity?: () => void;
   onOpenAiPlanner?: () => void;
   onPublishTemplate?: () => void;
   onOpenShare?: () => void;
@@ -42,7 +41,6 @@ const PlanHeader = ({
   totalEstimatedCost,
   currency,
   onOpenChecklist,
-  onAddActivity,
   onOpenAiPlanner,
   onOpenShare,
   onPublishTemplate,
@@ -51,31 +49,16 @@ const PlanHeader = ({
   onOpenExport,
 }: PlanHeaderProps) => {
   const locale = useLocale();
+  const router = useRouter();
   const t = useTranslations('plan');
   const tTemplate = useTranslations('planTemplate');
-  const tNavigation = useTranslations('navigation');
+  const theme = useTheme();
+  const isNarrow = useMediaQuery(theme.breakpoints.down(360));
 
   return (
     <AppPageHeader
       sx={{ alignItems: { xs: 'stretch', md: 'center' } }}
-      title={
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          gap: 1.5, flexWrap: 'wrap', width: '100%', minWidth: 0 }}>
-          <Typography
-            component="h1"
-            sx={{
-              fontFamily: 'var(--font-display)',
-              fontSize: { xs: '24px', sm: '28px' },
-              fontWeight: 700,
-            }}
-          >
-            {t('pageTitle')}
-          </Typography>
-          <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-            <UseTemplateButton />
-          </Box>
-        </Box>
-      }
+      title={t('pageTitle')}
       subtitle={
         <Box
           sx={{
@@ -115,78 +98,49 @@ const PlanHeader = ({
           )}
         </Box>
       }
-      actions={
+      titleActions={
         <Box
           sx={{
-            width: '100%',
             display: 'flex',
-            alignItems: { xs: 'flex-start', sm: 'center' },
+            alignItems: 'center',
             gap: 1,
-            flexWrap: { xs: 'nowrap', sm: 'wrap' },
-            '& > *': { flex: { xs: '1 1 0', sm: '0 0 auto' }, minWidth: 0 },
-            '& .MuiButton-root': { minHeight: { sm: 44 }, fontSize: { sm: '14px' } },
+            flexWrap: 'nowrap',
+            minWidth: 0,
           }}
         >
-          <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-            <UseTemplateButton />
-          </Box>
-          {!readOnly && onAddActivity && (
-            <AppButton
-              intent="primary"
-              mobileIconLabel
-              size="medium"
-              startIcon={<AddRoundedIcon />}
-              onClick={onAddActivity}
-            >
-              {t('addActivity')}
-            </AppButton>
-          )}
-          {!readOnly && onOpenAiPlanner && (
+          {!isNarrow && !readOnly && onOpenAiPlanner && (
             <AppButton
               intent="secondary"
-              mobileIconLabel
-              size="medium"
+              size="small"
+              wrapLabel
               startIcon={<AutoAwesomeRoundedIcon />}
               onClick={onOpenAiPlanner}
+              sx={{ minHeight: 44 }}
             >
               {t('aiPlannerBtn')}
             </AppButton>
           )}
-          {!readOnly && onPublishTemplate && (
-            <AppButton
-              intent="secondary"
-              mobileIconLabel
-              size="medium"
-              startIcon={<PublishRoundedIcon />}
-              onClick={onPublishTemplate}
-            >
-              {tTemplate('publish')}
-            </AppButton>
-          )}
           <AppActionMenu
-            ariaLabel={tNavigation('more')}
-            trigger={
-              <AppButton
-                intent="secondary"
-                mobileIconLabel
-                size="medium"
-                aria-label={tNavigation('more')}
-                startIcon={<MoreHorizRoundedIcon />}
-                sx={{
-                  minWidth: { sm: 44 },
-                  px: { sm: 1.25 },
-                  '& .MuiButton-startIcon': { margin: 0 },
-                }}
-              >
-                <Box
-                  component="span"
-                  sx={{ display: { xs: 'block', sm: 'none' } }}
-                >
-                  {tNavigation('more')}
-                </Box>
-              </AppButton>
-            }
+            ariaLabel={t('actionsLabel')}
+            triggerIcon={<MoreHorizRoundedIcon />}
+            minTouchTarget
             items={[
+              ...(isNarrow && !readOnly && onOpenAiPlanner
+                ? [
+                    {
+                      id: 'ai',
+                      label: t('aiPlannerBtn'),
+                      icon: <AutoAwesomeRoundedIcon fontSize="small" />,
+                      onClick: onOpenAiPlanner,
+                    },
+                  ]
+                : []),
+              {
+                id: 'templates',
+                label: tTemplate('chooseTemplate'),
+                icon: <CollectionsBookmarkOutlinedIcon fontSize="small" />,
+                onClick: () => router.push('/templates'),
+              },
               {
                 id: 'checklist',
                 label: t('checklistBtn'),
@@ -203,6 +157,16 @@ const PlanHeader = ({
                     },
                   ]
                 : []),
+              ...(onOpenExport
+                ? [
+                    {
+                      id: 'export',
+                      label: t('imageExport.title'),
+                      icon: <ImageRoundedIcon fontSize="small" />,
+                      onClick: onOpenExport,
+                    },
+                  ]
+                : []),
               ...(!readOnly && onOpenShare
                 ? [
                     {
@@ -213,13 +177,13 @@ const PlanHeader = ({
                     },
                   ]
                 : []),
-              ...(onOpenExport
+              ...(!readOnly && onPublishTemplate
                 ? [
                     {
-                      id: 'export',
-                      label: t('imageExport.title'),
-                      icon: <ImageRoundedIcon fontSize="small" />,
-                      onClick: onOpenExport,
+                      id: 'publish',
+                      label: tTemplate('publish'),
+                      icon: <PublishRoundedIcon fontSize="small" />,
+                      onClick: onPublishTemplate,
                     },
                   ]
                 : []),

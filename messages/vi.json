@@ -1,4 +1,12 @@
 {
+  "select": {
+    "searchPlaceholder": "Tìm lựa chọn...",
+    "searchLabel": "Tìm trong {label}",
+    "noResults": "Không tìm thấy lựa chọn phù hợp",
+    "clear": "Xóa lựa chọn",
+    "open": "Mở lựa chọn",
+    "close": "Đóng lựa chọn"
+  },
   "timePicker": {
     "placeholder": "HH:mm",
     "rangePlaceholder": "Giờ bắt đầu – Giờ kết thúc",
@@ -30,9 +38,9 @@
   "navigation": {
     "searchingTrips": "Đang tìm chuyến đi…",
     "clearSearch": "Xóa nội dung tìm kiếm",
-    "brandName": "Trip Plan",
+    "brandName": "Vi Vu",
     "brandTag": "Đi cùng nhau",
-    "homeLink": "Trip Plan · Trang chủ",
+    "homeLink": "Vi Vu · Trang chủ",
     "main": "Điều hướng chính",
     "items": {
       "overview": "Trang chủ",
@@ -75,18 +83,18 @@
   },
   "pwa": {
     "install": "Cài ứng dụng",
-    "iosTitle": "Cài Trip Plan",
-    "iosDescription": "Thêm Trip Plan vào màn hình chính để mở nhanh hơn.",
+    "iosTitle": "Cài Vi Vu",
+    "iosDescription": "Thêm Vi Vu vào màn hình chính để mở nhanh hơn.",
     "iosShare": "1. Mở menu Chia sẻ của trình duyệt.",
     "iosAdd": "2. Chọn Thêm vào Màn hình chính.",
-    "iosConfirm": "3. Xác nhận tên Trip Plan rồi chọn Thêm.",
+    "iosConfirm": "3. Xác nhận tên Vi Vu rồi chọn Thêm.",
     "iosBrowserHint": "Nếu không thấy tùy chọn này, hãy mở trang bằng Safari và thử lại.",
     "understood": "Đã hiểu",
     "installError": "Chưa thể mở lời mời cài đặt. Hãy thử cài từ menu của trình duyệt."
   },
   "loading": {
     "label": "Đang tải",
-    "startup": "Đang mở Trip Plan…"
+    "startup": "Đang mở Vi Vu…"
   },
   "preferences": {
     "settings": "Cài đặt",
@@ -161,7 +169,31 @@
     "showDetails": "Xem thêm thông tin chuyến",
     "hideDetails": "Thu gọn thông tin chuyến",
     "recentError": "Không thể tải chi tiêu gần đây.",
-    "retry": "Thử lại"
+    "retry": "Thử lại",
+    "countdown": {
+      "upcoming": "Còn {count} ngày nữa",
+      "today": "Khởi hành hôm nay",
+      "remaining": "Còn {count} ngày trong chuyến đi",
+      "lastDay": "Ngày cuối của chuyến đi",
+      "completed": "Chuyến đi đã kết thúc",
+      "cancelled": "Chuyến đi đã hủy"
+    },
+    "nextActivity": {
+      "title": "Hoạt động tiếp theo",
+      "first": "Sắp tới",
+      "inProgress": "Đang diễn ra",
+      "scheduledNow": "Theo lịch lúc này",
+      "summary": "Tổng kết chuyến đi",
+      "emptyPlan": "Lịch trình còn trống",
+      "nothingNext": "Chưa có hoạt động tiếp theo",
+      "unscheduled": "Chưa có giờ bắt đầu",
+      "viewPlan": "Xem lịch trình",
+      "add": "Thêm hoạt động",
+      "ai": "Gợi ý bằng AI",
+      "completed": "Chuyến đi đã kết thúc",
+      "cancelled": "Chuyến đi đã hủy",
+      "viewSettlement": "Xem chia tiền"
+    }
   },
   "sidebar": {
     "navigation": "Điều hướng chính",
@@ -181,7 +213,7 @@
   },
   "login": {
     "banner": {
-      "label": "Khám phá hành trình cùng Trip Plan",
+      "label": "Khám phá hành trình cùng Vi Vu",
       "eyebrow": "Cùng nhau, đi xa hơn",
       "headline": "Bớt lo chi phí.",
       "headlineAccent": "Thêm nhiều kỷ niệm.",
@@ -323,7 +355,8 @@
       "loginBtn": "Đăng nhập",
       "homeBtn": "Về trang chủ",
       "noActivitiesNotice": "Chuyến đi này chưa có hoạt động nào trong lịch trình."
-    }
+    },
+    "datesHaveActivities": "Các ngày bị rút ngắn đang có hoạt động. Hãy chuyển hoặc xóa các hoạt động đó trước khi đổi ngày."
   },
   "myTrips": {
     "title": "Chuyến đi của tôi",
@@ -440,7 +473,9 @@
       "noBudgetHint": "Chưa đặt ngân sách toàn chuyến. Chưa thể tính tỷ lệ sử dụng hoặc số tiền còn lại.",
       "retry": "Thử lại",
       "loadError": "Không tải được tổng ngân sách chuyến đi.",
-      "editBudgetLabel": "Điều chỉnh ngân sách"
+      "editBudgetLabel": "Điều chỉnh ngân sách",
+      "lowBudget": "Ngân sách sắp hết",
+      "spendingRatioLabel": "Đã chi / Ngân sách"
     },
     "progress": {
       "title": "Ngân sách đã dùng",
@@ -538,7 +573,8 @@
       "warningOverAllocated": "Tổng các hạng mục vượt quá Tổng ngân sách {amount}!",
       "syncTotalBudget": "Đồng bộ Tổng ngân sách",
       "remainingUnallocated": "Còn lại {amount} chưa phân bổ (quỹ dự phòng)",
-      "exactAllocated": "Đã phân bổ khớp 100% ngân sách"
+      "exactAllocated": "Đã phân bổ khớp 100% ngân sách",
+      "memberFallback": "Thành viên #{id}"
     },
     "camera": {
       "dialogTitle": "Chụp Ảnh Hóa Đơn",
@@ -706,7 +742,13 @@
     "noData": "Chưa có dữ liệu",
     "sortBy": "Sắp xếp theo {column}",
     "rowsPerPage": "Số dòng mỗi trang",
-    "displayedRows": "{from}–{to} trên {count}"
+    "displayedRows": "{from}–{to} trên {count}",
+    "mobileControls": "Lọc và sắp xếp",
+    "sortLabel": "Sắp xếp",
+    "unsorted": "Mặc định",
+    "ascending": "Tăng dần",
+    "descending": "Giảm dần",
+    "resetControls": "Đặt lại"
   },
   "settlement": {
     "pageTitle": "Chia tiền",
@@ -776,15 +818,18 @@
       "createError": "Chưa lưu được. Vui lòng thử lại.",
       "deleteSuccess": "Đã xóa khoản ghi nhận.",
       "deleteError": "Chưa xóa được. Vui lòng thử lại."
-    }
+    },
+    "transferTo": "Trả cho {name}"
   },
   "plan": {
+    "actionsLabel": "Thao tác lịch trình",
     "activityActions": "Thao tác với {title}",
     "map": {
       "title": "Điểm dừng trong ngày",
       "description": "Chọn một điểm dừng để xem vị trí trên bản đồ.",
       "noStops": "Thêm địa điểm vào hoạt động để xem các điểm dừng tại đây.",
-      "loadMore": "Tải thêm hoạt động"
+      "loadMore": "Tải thêm hoạt động",
+      "chooseStop": "Địa điểm"
     },
     "loadError": "Chưa thể tải lịch trình. Vui lòng thử lại.",
     "retry": "Thử lại",
@@ -845,7 +890,7 @@
     },
     "dialog": {
       "addTitle": "Thêm hoạt động mới",
-      "editTitle": "Chỉnh sửa hoạt động",
+      "editTitle": "Chỉnh sửa",
       "titleLabel": "Tên hoạt động *",
       "titlePlaceholder": "Ví dụ: Ăn sáng Bún bò, Tham quan Phố cổ...",
       "titleRequired": "Vui lòng nhập tên hoạt động",
@@ -865,8 +910,8 @@
       "saveBtn": "Lưu hoạt động",
       "deleteTitle": "Xóa hoạt động",
       "deleteDesc": "Bạn có chắc chắn muốn xóa hoạt động này khỏi lịch trình không?",
-      "confirmDelete": "Xóa hoạt động",
-      "convertToExpense": "Ghi nhận thành chi tiêu",
+      "confirmDelete": "Xóa",
+      "convertToExpense": "Ghi chi tiêu",
       "markCompleted": "Đánh dấu hoàn thành",
       "markPlanned": "Đặt lại dự kiến",
       "aiPlannerTitle": "AI Thiết Kế Lịch Trình Chuyến Đi",
@@ -892,13 +937,14 @@
       "confirmResetDay": "Xóa toàn bộ hoạt động"
     },
     "checklist": {
-      "title": "Danh mục đồ dùng & việc chuẩn bị",
+      "title": "Chuẩn bị chuyến đi",
       "subtitle": "Kiểm tra kỹ lưỡng hành lý trước khi lên đường",
-      "inputPlaceholder": "Nhập đồ đạc hoặc việc cần làm (vd: Hộ chiếu, Sạc dự phòng...)",
+      "inputPlaceholder": "Ví dụ: Hộ chiếu, sạc dự phòng",
+      "itemLabel": "Tên đồ dùng hoặc công việc",
       "categorySelect": "Phân loại",
       "addBtn": "Thêm",
       "completedCount": "Đã chuẩn bị {completed}/{total} mục",
-      "emptyChecklist": "Chưa có mục nào trong danh sách chuẩn bị."
+      "emptyChecklist": "Chưa có mục chuẩn bị"
     },
     "distance": {
       "unavailable": "Chưa có thông tin di chuyển",
@@ -944,7 +990,7 @@
       "error": "Đã có lỗi xảy ra. Vui lòng thử lại sau."
     },
     "imageExport": {
-      "fontError": "Không thể tải font chữ của Trip Plan. Vui lòng kiểm tra kết nối rồi thử lại.",
+      "fontError": "Không thể tải font chữ của Vi Vu. Vui lòng kiểm tra kết nối rồi thử lại.",
       "title": "Xuất ảnh lịch trình",
       "downloadAll": "Tải tất cả ảnh",
       "day": "Ngày {number}",
@@ -973,7 +1019,8 @@
       "emptyDay": "Ngày này chưa có hoạt động.",
       "emptyPlan": "Chuyến đi chưa có lịch trình.",
       "printError": "Không thể mở hộp thoại in. Vui lòng thử lại."
-    }
+    },
+    "spendingRatio": "Đã chi {spent} / Dự kiến {estimated}"
   },
   "aiPlanner": {
     "managerRequired": "Chỉ Chủ hoặc Phó chuyến đi được dùng AI để tạo lịch trình.",
@@ -1027,12 +1074,12 @@
   },
   "legal": {
     "title": "Trước khi bắt đầu chuyến đi",
-    "description": "Vui lòng đọc và xác nhận cả ba chính sách để tiếp tục sử dụng Trip Plan. Bạn có thể mở từng tài liệu trước khi quyết định.",
+    "description": "Vui lòng đọc và xác nhận cả ba chính sách để tiếp tục sử dụng Vi Vu. Bạn có thể mở từng tài liệu trước khi quyết định.",
     "version": "Phiên bản {version}",
     "read": "Đọc {name}",
     "continue": "Đồng ý và tiếp tục",
     "decline": "Đăng xuất",
-    "recordNotice": "Trip Plan lưu thời điểm, phiên bản và ngôn ngữ của lần xác nhận đầu tiên trên tài khoản của bạn.",
+    "recordNotice": "Vi Vu lưu thời điểm, phiên bản và ngôn ngữ của lần xác nhận đầu tiên trên tài khoản của bạn.",
     "saveError": "Không thể hoàn tất thao tác. Vui lòng thử lại; trạng thái xác nhận của bạn chưa được cập nhật trên màn hình.",
     "loadError": "Không thể kiểm tra trạng thái tài khoản. Vui lòng thử lại.",
     "loading": "Đang kiểm tra tài khoản...",
@@ -1041,11 +1088,11 @@
     "documents": {
       "terms": {
         "title": "Điều khoản sử dụng",
-        "summary": "Quy tắc sử dụng tài khoản, lập kế hoạch và quản lý chi tiêu trên Trip Plan.",
+        "summary": "Quy tắc sử dụng tài khoản, lập kế hoạch và quản lý chi tiêu trên Vi Vu.",
         "accept": "Tôi đồng ý với Điều khoản sử dụng.",
         "scope": {
           "title": "Phạm vi dịch vụ",
-          "body": "Trip Plan giúp bạn tạo chuyến đi, quản lý lịch trình, ghi nhận chi tiêu, chia tiền và sử dụng các tính năng AI. Các khoản chi và quyết toán trong ứng dụng là dữ liệu ghi nhận; ứng dụng không thực hiện chuyển tiền hoặc đặt dịch vụ thay bạn."
+          "body": "Vi Vu giúp bạn tạo chuyến đi, quản lý lịch trình, ghi nhận chi tiêu, chia tiền và sử dụng các tính năng AI. Các khoản chi và quyết toán trong ứng dụng là dữ liệu ghi nhận; ứng dụng không thực hiện chuyển tiền hoặc đặt dịch vụ thay bạn."
         },
         "responsibility": {
           "title": "Trách nhiệm tài khoản",
@@ -1087,7 +1134,7 @@
         "accept": "Tôi đã đọc và xác nhận Chính sách quyền riêng tư.",
         "scope": {
           "title": "Dữ liệu được xử lý",
-          "body": "Trip Plan xử lý thông tin tài khoản như tên, email và ảnh đại diện; dữ liệu chuyến đi, thành viên, lịch trình, chi tiêu và quyết toán; cùng các tệp bạn tải lên. Hệ thống lưu phiên đăng nhập và thời điểm, phiên bản, ngôn ngữ xác nhận chính sách để vận hành tài khoản."
+          "body": "Vi Vu xử lý thông tin tài khoản như tên, email và ảnh đại diện; dữ liệu chuyến đi, thành viên, lịch trình, chi tiêu và quyết toán; cùng các tệp bạn tải lên. Hệ thống lưu phiên đăng nhập và thời điểm, phiên bản, ngôn ngữ xác nhận chính sách để vận hành tài khoản."
         },
         "responsibility": {
           "title": "Mục đích và quyền truy cập",
@@ -1107,7 +1154,7 @@
     "readDocument": "Xem nội dung",
     "acceptedCount": "Đã xác nhận {count}/{total}",
     "readShort": "Đọc",
-    "compactDescription": "Đọc và xác nhận các chính sách dưới đây để bắt đầu sử dụng Trip Plan.",
+    "compactDescription": "Đọc và xác nhận các chính sách dưới đây để bắt đầu sử dụng Vi Vu.",
     "compactRecordNotice": "Lựa chọn được lưu một lần trên tài khoản, cùng phiên bản và thời điểm xác nhận.",
     "backToAcceptance": "Quay lại xác nhận"
   },
@@ -1201,7 +1248,11 @@
     "chooseTemplateHint": "Tạo chuyến mới từ một mẫu lịch trình có sẵn.",
     "banner": "Ảnh bìa mẫu lịch trình",
     "bannerLoadError": "Không thể tải ảnh bìa hiện tại. Vui lòng thử lại.",
-    "bannerUploadError": "Không thể tải ảnh lên. Vui lòng thử lại."
+    "bannerUploadError": "Không thể tải ảnh lên. Vui lòng thử lại.",
+    "filters": "Bộ lọc",
+    "filtersCount": "Bộ lọc ({count})",
+    "clearFilters": "Xóa bộ lọc",
+    "filtersDone": "Xong"
   },
   "quickCreate": {
     "createTrip": "Tạo chuyến đi",

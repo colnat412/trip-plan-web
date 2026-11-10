@@ -5,6 +5,7 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 import {
   AppLoadingState,
   AppButton,
+  AppFloatingActionButton,
   AppPageContainer,
   AppToast,
   AppConfirmDialog,
@@ -64,9 +65,11 @@ import ActiveTripBanner from '@/features/trip/components/overview/ActiveTripBann
 import { useRouter } from 'next/navigation';
 
 const PlanOverview = ({
+  initialDayId = '',
   initialAiOpen = false,
   initialPublishOpen = false,
 }: {
+  initialDayId?: string;
   initialAiOpen?: boolean;
   initialPublishOpen?: boolean;
 }) => {
@@ -91,7 +94,7 @@ const PlanOverview = ({
     useTripPermissions(tripId);
 
   const [mobileView, setMobileView] = useState<'timeline' | 'map'>('timeline');
-  const [selectedDayId, setSelectedDayId] = useState<string>('');
+  const [selectedDayId, setSelectedDayId] = useState<string>(initialDayId);
   const [addActivityOpen, setAddActivityOpen] = useState(false);
   const [aiPlannerOpen, setAiPlannerOpen] = useState(initialAiOpen);
   const [checklistOpen, setChecklistOpen] = useState(false);
@@ -384,7 +387,9 @@ const PlanOverview = ({
   }
 
   return (
-    <AppPageContainer>
+    <AppPageContainer floatingAction={canWrite && selectedDay && !isLoading && !isStale && !planError && !activitiesError ? (
+      <AppFloatingActionButton label={t('addActivity')} onClick={() => setAddActivityOpen(true)} />
+    ) : undefined}>
       {activeTrip && (
         <ActiveTripBanner key={activeTrip.id} trip={activeTrip} compact />
       )}
@@ -395,11 +400,6 @@ const PlanOverview = ({
           completedActivities={overview?.completedActivities ?? 0}
           totalEstimatedCost={overview?.totalEstimatedCost ?? 0}
           currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
-          onAddActivity={
-            canWrite && selectedDay && !isStale
-              ? () => setAddActivityOpen(true)
-              : undefined
-          }
           onOpenChecklist={() => setChecklistOpen(true)}
           onOpenAiPlanner={canManage ? () => setAiPlannerOpen(true) : undefined}
           onPublishTemplate={
@@ -428,7 +428,7 @@ const PlanOverview = ({
         />
       ) : null}
 
-      <Box sx={{ width: '100%', display: { xs: 'flex', lg: 'none' }, gap: 1 }}>
+      <Box sx={{ width: '100%', display: 'flex', gap: 1 }}>
         <AppButton
           intent="secondary"
           aria-pressed={mobileView === 'timeline'}
@@ -478,21 +478,16 @@ const PlanOverview = ({
         <Box
           sx={{
             width: '100%',
-            display: 'grid',
-            gridTemplateColumns: {
-              xs: 'minmax(0, 1fr)',
-              lg: 'minmax(0, 7fr) minmax(0, 5fr)',
-            },
+            display: 'flex',
+            flexDirection: 'column',
             alignItems: 'start',
             gap: { xs: 2, md: 3 },
           }}
         >
           <Box
             sx={{
-              display: {
-                xs: mobileView === 'timeline' ? 'block' : 'none',
-                lg: 'block',
-              },
+              display: mobileView === 'timeline' ? 'block' : 'none',
+              width: '100%',
               minWidth: 0,
             }}
           >
@@ -529,10 +524,8 @@ const PlanOverview = ({
           </Box>
           <Box
             sx={{
-              display: {
-                xs: mobileView === 'map' ? 'block' : 'none',
-                lg: 'block',
-              },
+              display: mobileView === 'map' ? 'block' : 'none',
+              width: '100%',
               minWidth: 0,
             }}
           >
@@ -556,6 +549,7 @@ const PlanOverview = ({
       )}
 
       <AddActivityDialog
+        planDate={selectedDay?.planDate}
         open={addActivityOpen}
         onClose={() => setAddActivityOpen(false)}
         onSubmit={(payload: CreateActivityPayload) =>

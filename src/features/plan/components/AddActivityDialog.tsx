@@ -5,6 +5,7 @@ import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRou
 import { useTranslations } from 'next-intl';
 
 import { AppDialog } from '@/base/components/ui';
+import { formatDate } from '@/base/utils';
 import AddActivityForm from './AddActivityForm';
 import type { CreateActivityPayload } from '../types';
 
@@ -14,6 +15,7 @@ export interface AddActivityDialogProps {
   onSubmit: (payload: CreateActivityPayload) => void;
   isLoading?: boolean;
   tripCurrency?: string;
+  planDate?: string | null;
 }
 
 const AddActivityDialog = ({
@@ -22,6 +24,7 @@ const AddActivityDialog = ({
   onSubmit,
   isLoading = false,
   tripCurrency = 'VND',
+  planDate,
 }: AddActivityDialogProps) => {
   const t = useTranslations('plan.dialog');
 
@@ -30,6 +33,7 @@ const AddActivityDialog = ({
       open={open}
       onClose={onClose}
       title={t('addTitle')}
+      description={planDate ? formatDate(planDate) : undefined}
       icon={<AddCircleOutlineRoundedIcon />}
       maxWidth="sm"
     >

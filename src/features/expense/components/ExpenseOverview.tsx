@@ -306,40 +306,6 @@ const ExpenseOverview = () => {
         icon={<AccountBalanceWalletRoundedIcon sx={{ fontSize: '24px' }} />}
         title={t('pageTitle')}
         badge={activeTrip.baseCurrency}
-        subtitle={
-          <Stack spacing={0.5}>
-            <Typography
-              sx={{
-                fontSize: '14px',
-                color: 'text.secondary',
-                overflowWrap: 'anywhere',
-              }}
-            >
-              {t('trip')}:{' '}
-              <Box
-                component="span"
-                sx={{ color: 'primary.main', fontWeight: 600 }}
-              >
-                {activeTrip.name}
-              </Box>
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '14px',
-                color: 'text.secondary',
-                overflowWrap: 'anywhere',
-              }}
-            >
-              {t('destination')}:{' '}
-              <Box
-                component="span"
-                sx={{ color: 'text.primary', fontWeight: 500 }}
-              >
-                {activeTrip.destination || t('notUpdated')}
-              </Box>
-            </Typography>
-          </Stack>
-        }
         actions={
           canWrite ? (
             <>

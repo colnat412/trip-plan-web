@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type MouseEvent, type ReactNode } from 'react';
+import { useId, useState, type MouseEvent, type ReactNode } from 'react';
 import {
   IconButton,
   ListItemIcon,
@@ -23,6 +23,7 @@ export interface AppActionMenuItem {
 export interface AppActionMenuProps {
   items: AppActionMenuItem[];
   trigger?: ReactNode;
+  triggerIcon?: ReactNode;
   size?: 'small' | 'medium';
   ariaLabel?: string;
   minTouchTarget?: boolean;
@@ -31,10 +32,12 @@ export interface AppActionMenuProps {
 const AppActionMenu = ({
   items,
   trigger,
+  triggerIcon,
   size = 'small',
   ariaLabel = 'Actions menu',
   minTouchTarget = false,
 }: AppActionMenuProps) => {
+  const menuId = useId();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
@@ -65,6 +68,9 @@ const AppActionMenu = ({
           size={size}
           onClick={handleOpen}
           aria-label={ariaLabel}
+          aria-haspopup="menu"
+          aria-expanded={open}
+          aria-controls={open ? menuId : undefined}
           sx={{
             ...(minTouchTarget && { width: 44, height: 44 }),
             color: 'text.secondary',
@@ -74,11 +80,12 @@ const AppActionMenu = ({
             },
           }}
         >
-          <MoreVertRoundedIcon fontSize={size} />
+          {triggerIcon ?? <MoreVertRoundedIcon fontSize={size} />}
         </IconButton>
       )}
 
       <Menu
+        id={menuId}
         anchorEl={anchorEl}
         open={open}
         onClose={(_e) => handleClose(_e as unknown as MouseEvent)}

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { APP_NAME } from '@/base/constants/brand';
 
 import PublicTripView from '@/features/trip/components/PublicTripView';
 import { getPublicTripSnapshot } from '@/features/trip/api/public-trip.server';
@@ -12,10 +13,10 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { token } = await params;
   const { snapshot } = await getPublicTripSnapshot(token);
-  if (!snapshot) return { title: 'TripBudget' };
+  if (!snapshot) return { title: APP_NAME };
 
   return {
-    title: `${snapshot.trip.name} · TripBudget`,
+    title: `${snapshot.trip.name} · ${APP_NAME}`,
     description: snapshot.trip.description ?? snapshot.trip.destination,
   };
 }

@@ -2,17 +2,15 @@
 
 import React from 'react';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton, AppPageHeader } from '@/base/components/ui';
+import { AppPageHeader } from '@/base/components/ui';
 
 interface MyTripsHeaderProps {
   totalTrips: number;
-  onCreateTrip: () => void;
 }
 
-const MyTripsHeader = ({ totalTrips, onCreateTrip }: MyTripsHeaderProps) => {
+const MyTripsHeader = ({ totalTrips }: MyTripsHeaderProps) => {
   const t = useTranslations('myTrips');
 
   return (
@@ -21,16 +19,6 @@ const MyTripsHeader = ({ totalTrips, onCreateTrip }: MyTripsHeaderProps) => {
       title={t('title')}
       badge={totalTrips > 0 ? totalTrips : undefined}
       subtitle={t('description')}
-      actions={
-        <AppButton
-          intent="primary"
-          size="medium"
-          startIcon={<AddRoundedIcon fontSize="small" />}
-          onClick={onCreateTrip}
-        >
-          {t('createNew')}
-        </AppButton>
-      }
     />
   );
 };

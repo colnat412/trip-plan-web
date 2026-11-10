@@ -11,6 +11,8 @@ import {
   type SelectChangeEvent,
   Box,
 } from '@mui/material';
+import AppSelectInput from './AppSelectInput';
+import useSelectMenu from '@/base/hooks/use-select-menu';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
@@ -24,6 +26,8 @@ export interface AppSelectProps extends Omit<SelectProps, 'onChange'> {
   label: string;
   options: AppSelectOption[];
   helperText?: string;
+  searchable?: boolean;
+  searchPlaceholder?: string;
   error?: boolean;
   variantType?: 'form' | 'filter' | 'compact';
   onChange?: (
@@ -36,6 +40,8 @@ const AppSelect = ({
   label,
   options,
   helperText,
+  searchable = false,
+  searchPlaceholder,
   error,
   fullWidth,
   size = 'medium',
@@ -46,9 +52,30 @@ const AppSelect = ({
   ...selectProps
 }: AppSelectProps) => {
   const labelId = React.useId();
+  const menu = useSelectMenu(selectProps);
+  if (searchable && !selectProps.native) {
+    return (
+      <AppSelectInput
+        {...selectProps}
+        label={label}
+        options={options}
+        helperText={helperText}
+        error={error}
+        fullWidth={fullWidth}
+        size={size}
+        value={value}
+        variantType={variantType}
+        onChange={onChange}
+        sx={sx}
+        searchPlaceholder={searchPlaceholder}
+      />
+    );
+  }
 
   if (variantType === 'filter') {
-    const isFiltered = Boolean(value && value !== 'ALL' && value !== '');
+    const isFiltered = Array.isArray(value)
+      ? value.length > 0
+      : Boolean(value && value !== 'ALL' && value !== '');
     const selectedOption = options.find(
       (opt) => String(opt.value) === String(value),
     );
@@ -56,14 +83,21 @@ const AppSelect = ({
     return (
       <Select
         {...selectProps}
+        {...menu}
         value={value ?? ''}
         onChange={onChange}
         displayEmpty
+        inputProps={{ 'aria-label': label, ...selectProps.inputProps }}
         size="small"
         fullWidth={fullWidth ?? false}
         IconComponent={KeyboardArrowDownRoundedIcon}
         renderValue={(selected) => {
-          if (!selected || selected === 'ALL' || selected === '') {
+          if (
+            !selected ||
+            selected === 'ALL' ||
+            selected === '' ||
+            (Array.isArray(selected) && selected.length === 0)
+          ) {
             return (
               <Box
                 component="span"
@@ -103,24 +137,37 @@ const AppSelect = ({
                   display: 'block',
                 }}
               >
-                {selectedOption?.label || String(selected)}
+                {Array.isArray(selected)
+                  ? selected
+                      .map(
+                        (item) =>
+                          options.find(
+                            (option) => String(option.value) === String(item),
+                          )?.label ?? String(item),
+                      )
+                      .join(', ')
+                  : selectedOption?.label || String(selected)}
               </Box>
             </Box>
           );
         }}
         MenuProps={{
+          ...menu.MenuProps,
           slotProps: {
-            paper: {
-              sx: {
-                mt: 0.75,
-                borderRadius: '12px',
-                boxShadow: '0 10px 28px rgba(0,0,0,0.12)',
-                border: '1px solid',
-                borderColor: 'divider',
-                minWidth: 150,
-                maxHeight: 300,
-              },
-            },
+            ...menu.MenuProps.slotProps,
+            paper: (ownerState) => ({
+              ...menu.MenuProps.slotProps.paper(ownerState),
+              sx: [
+                {
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 28px rgba(0,0,0,0.12)',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  minWidth: 150,
+                },
+                ...menu.MenuProps.slotProps.paper(ownerState).sx,
+              ],
+            }),
           },
         }}
         sx={{
@@ -132,7 +179,8 @@ const AppSelect = ({
           borderColor: isFiltered ? 'primary.main' : 'divider',
           fontSize: '13px',
           fontWeight: 600,
-          transition: 'background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease',
+          transition:
+            'background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease',
           '& fieldset': {
             border: 'none',
           },
@@ -158,16 +206,18 @@ const AppSelect = ({
         }}
       >
         {options.map((option) => {
-          const isSelected = String(option.value) === String(value);
+          const isSelected = Array.isArray(value)
+            ? value.some((item) => String(item) === String(option.value))
+            : String(option.value) === String(value);
           return (
             <MenuItem
               key={String(option.value)}
               value={option.value}
               selected={isSelected}
               sx={{
+                display: 'flex',
                 fontSize: '13px',
                 fontWeight: isSelected ? 700 : 500,
-                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: 1,
@@ -197,6 +247,7 @@ const AppSelect = ({
     return (
       <Select
         {...selectProps}
+        {...menu}
         value={value ?? ''}
         onChange={onChange}
         size="small"
@@ -214,22 +265,35 @@ const AppSelect = ({
               display: 'block',
             }}
           >
-            {selectedOption?.label || String(selected)}
+            {Array.isArray(selected)
+              ? selected
+                  .map(
+                    (item) =>
+                      options.find(
+                        (option) => String(option.value) === String(item),
+                      )?.label ?? String(item),
+                  )
+                  .join(', ')
+              : selectedOption?.label || String(selected)}
           </Box>
         )}
         MenuProps={{
+          ...menu.MenuProps,
           slotProps: {
-            paper: {
-              sx: {
-                mt: 0.5,
-                borderRadius: '10px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
-                border: '1px solid',
-                borderColor: 'divider',
-                minWidth: 120,
-                maxHeight: 260,
-              },
-            },
+            ...menu.MenuProps.slotProps,
+            paper: (ownerState) => ({
+              ...menu.MenuProps.slotProps.paper(ownerState),
+              sx: [
+                {
+                  borderRadius: '10px',
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  minWidth: 120,
+                },
+                ...menu.MenuProps.slotProps.paper(ownerState).sx,
+              ],
+            }),
           },
         }}
         sx={{
@@ -265,16 +329,18 @@ const AppSelect = ({
         }}
       >
         {options.map((option) => {
-          const isSelected = String(option.value) === String(value);
+          const isSelected = Array.isArray(value)
+            ? value.some((item) => String(item) === String(option.value))
+            : String(option.value) === String(value);
           return (
             <MenuItem
               key={String(option.value)}
               value={option.value}
               selected={isSelected}
               sx={{
+                display: 'flex',
                 fontSize: '12px',
                 fontWeight: isSelected ? 700 : 500,
-                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: 1,
@@ -302,6 +368,7 @@ const AppSelect = ({
       <InputLabel id={labelId}>{label}</InputLabel>
       <Select
         {...selectProps}
+        {...menu}
         labelId={labelId}
         label={label}
         value={value}

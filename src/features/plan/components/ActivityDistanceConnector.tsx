@@ -1,13 +1,11 @@
 'use client';
 
 import type { MapsSource } from '@/base/types/maps';
-
 import { Box, Typography } from '@mui/material';
-import DirectionsCarFilledRoundedIcon from '@mui/icons-material/DirectionsCarFilledRounded';
-import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
+import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import { useTranslations } from 'next-intl';
-
-import { AppButton } from '@/base/components/ui';
+import { AppButton, AppTimelineRail, AppIconText } from '@/base/components/ui';
 import { getGoogleMapsDirectionsUrl } from '../services/mapService';
 import type { DistanceInfo, DurationInfo } from '../types';
 
@@ -26,33 +24,19 @@ const ActivityDistanceConnector = ({
   distance,
   duration,
   isEstimated,
-  source,
 }: ActivityDistanceConnectorProps) => {
   const t = useTranslations('plan.distance');
-  const hint = isEstimated ? t('estimatedTooltip') : t('openInGoogleMaps');
-
   return (
     <Box
       sx={{
         width: '100%',
         display: 'flex',
         alignItems: 'stretch',
-        gap: 1.5,
-        flexWrap: 'wrap',
+        gap: 1,
         minWidth: 0,
       }}
     >
-      <Box
-        aria-hidden="true"
-        sx={{
-          width: 40,
-          flexShrink: 0,
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        <Box sx={{ width: 2, minHeight: 44, bgcolor: 'divider' }} />
-      </Box>
+      <AppTimelineRail />
       <AppButton
         component="a"
         href={getGoogleMapsDirectionsUrl(originLocation, destinationLocation)}
@@ -62,78 +46,45 @@ const ActivityDistanceConnector = ({
         size="small"
         wrapLabel
         aria-label={`${t('openInGoogleMaps')}: ${originLocation} → ${destinationLocation}`}
-        title={hint}
+        title={isEstimated ? t('estimatedTooltip') : t('openInGoogleMaps')}
         sx={{
+          flex: 1,
           minWidth: 0,
           minHeight: 44,
-          px: 1,
+          px: 1.5,
+          py: 1,
           gap: 1,
-          justifyContent: 'flex-start',
+          flexWrap: 'wrap',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           color: 'text.secondary',
-          flexShrink: 1,
-          fontWeight: 400,
-          '&:hover': {
-            color: 'primary.main',
-            backgroundColor: 'action.hover',
-          },
-          '&:active': {
-            backgroundColor: 'action.selected',
-          },
-          '&.Mui-focusVisible': {
-            outlineOffset: -2,
-          },
+          borderRadius: '8px',
+          '&:hover': { color: 'primary.main', bgcolor: 'action.hover' },
+          '&.Mui-focusVisible': { outlineOffset: -2 },
         }}
       >
-        <DirectionsCarFilledRoundedIcon
-          sx={{ fontSize: '16px', flexShrink: 0 }}
-        />
-        <Box
-          component="span"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            gap: 0.75,
-            minWidth: 0,
-          }}
-        >
+        <AppIconText icon={<RouteRoundedIcon />} sx={{ flex: '1 1 100px' }}>
+          {distance?.text || t('unavailable')}
+        </AppIconText>
+        {duration && (
+          <AppIconText icon={<AccessTimeRoundedIcon />}>
+            {duration.text}
+          </AppIconText>
+        )}
+        {isEstimated && (
           <Typography
             component="span"
-            sx={{ fontSize: '12px', overflowWrap: 'anywhere' }}
+            sx={{
+              flexBasis: '100%',
+              fontSize: '11px',
+              lineHeight: '16px',
+              textAlign: 'left',
+            }}
           >
-            {distance?.text || t('unavailable')}
+            {t('estimatedLabel')}
           </Typography>
-          {duration && (
-            <Typography
-              component="span"
-              sx={{ fontSize: '12px', overflowWrap: 'anywhere' }}
-            >
-              · {duration.text}
-            </Typography>
-          )}
-          {isEstimated && (
-            <Typography component="span" sx={{ fontSize: '11px' }}>
-              · {t('estimatedLabel')}
-            </Typography>
-          )}
-        </Box>
-        <OpenInNewRoundedIcon sx={{ fontSize: '14px', flexShrink: 0 }} />
+        )}
       </AppButton>
-      {source === 'osm' && (
-        <Typography
-          component="a"
-          href="https://www.openstreetmap.org/fixthemap"
-          target="_blank"
-          rel="noopener noreferrer"
-          sx={{
-            fontSize: '12px',
-            color: 'text.secondary',
-            alignSelf: 'center',
-          }}
-        >
-          {t('fixMap')}
-        </Typography>
-      )}
     </Box>
   );
 };

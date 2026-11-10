@@ -38,6 +38,7 @@ export const AppFilterChip = ({
       {...chipProps}
       size={size}
       onClick={onClick}
+      aria-pressed={onClick ? selected : undefined}
       label={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
           <span>{label}</span>
@@ -63,6 +64,7 @@ export const AppFilterChip = ({
       sx={{
         height: 'auto',
         minHeight: onClick ? 44 : size === 'small' ? 28 : 34,
+        minWidth: onClick ? 44 : undefined,
         fontSize: size === 'small' ? '12px' : '13px',
         fontWeight: selected ? 700 : 500,
         borderRadius: '8px',
@@ -111,6 +113,8 @@ export const AppFilterChipGroup = <T extends string | number>({
 
   return (
     <Stack
+      role={label ? 'group' : undefined}
+      aria-label={label}
       direction="row"
       spacing={0.75}
       sx={{

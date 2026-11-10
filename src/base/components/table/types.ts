@@ -60,6 +60,7 @@ export interface AppTableEmptyStateProps {
 export interface AppTableProps<T> {
   columns: AppTableColumn<T>[];
   data: T[];
+  renderMobileRow?: (item: T, index: number, rows: T[]) => React.ReactNode;
   keyExtractor?: (item: T, index: number) => string | number;
   isLoading?: boolean;
   isFetching?: boolean;

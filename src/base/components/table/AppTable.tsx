@@ -5,6 +5,8 @@ import {
   Box,
   Chip,
   Collapse,
+  IconButton,
+  Tooltip,
   Paper,
   Stack,
   Table,
@@ -16,6 +18,8 @@ import {
   Typography,
   alpha,
 } from '@mui/material';
+import AppTableControlsDialog from './AppTableControlsDialog';
+import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
 import FilterAltOffRoundedIcon from '@mui/icons-material/FilterAltOffRounded';
 import { useTranslations } from 'next-intl';
 
@@ -29,6 +33,7 @@ const AppTable = <T,>({
   columns,
   data,
   keyExtractor,
+  renderMobileRow,
   isLoading = false,
   isFetching = false,
   pagination,
@@ -48,6 +53,7 @@ const AppTable = <T,>({
   sx,
 }: AppTableProps<T>) => {
   const t = useTranslations('table');
+  const [mobileControlsOpen, setMobileControlsOpen] = useState(false);
 
   const [internalSort, setInternalSort] = useState<TableSortState | null>(null);
   const activeSort =
@@ -142,7 +148,68 @@ const AppTable = <T,>({
         ...sx,
       }}
     >
-      {header && <Box>{header}</Box>}
+      {(header || renderMobileRow) && (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            minWidth: 0,
+            borderBottom: 1,
+            borderColor: 'divider',
+          }}
+        >
+          {header && <Box sx={{ flex: 1, minWidth: 0 }}>{header}</Box>}
+          {renderMobileRow &&
+            columns.some((column) => column.sortable || column.filterable) && (
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  p: 1,
+                  ...(!header && { flex: 1 }),
+                }}
+              >
+                <Tooltip title={t('mobileControls')}>
+                  <IconButton
+                    aria-label={t('mobileControls')}
+                    aria-haspopup="dialog"
+                    aria-expanded={mobileControlsOpen}
+                    onClick={() => setMobileControlsOpen(true)}
+                    sx={{
+                      width: 44,
+                      height: 44,
+                      color:
+                        activeFilterEntries.length || activeSort
+                          ? 'primary.main'
+                          : 'text.secondary',
+                      bgcolor:
+                        activeFilterEntries.length || activeSort
+                          ? 'action.selected'
+                          : undefined,
+                    }}
+                  >
+                    <FilterAltRoundedIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            )}
+        </Box>
+      )}
+      {mobileControlsOpen && (
+        <AppTableControlsDialog
+          columns={columns}
+          filters={activeFilters}
+          sort={activeSort}
+          onClose={() => setMobileControlsOpen(false)}
+          onApply={(nextFilters, nextSort) => {
+            if (controlledOnFilterChange) controlledOnFilterChange(nextFilters);
+            else setInternalFilters(nextFilters);
+            if (controlledOnSortChange) controlledOnSortChange(nextSort);
+            else setInternalSort(nextSort);
+            setMobileControlsOpen(false);
+          }}
+        />
+      )}
 
       <Collapse in={activeFilterEntries.length > 0} unmountOnExit>
         <Stack
@@ -239,10 +306,47 @@ const AppTable = <T,>({
         </Box>
       )}
 
+      {renderMobileRow && (
+        <Stack sx={{ display: { xs: 'flex', sm: 'none' }, minWidth: 0 }}>
+          {shouldShowLoading ? (
+            <AppLoadingState />
+          ) : displayData.length === 0 ? (
+            <AppEmptyState
+              title={
+                activeFilterEntries.length > 0
+                  ? t('noResultsFound')
+                  : emptyState?.title || t('noData')
+              }
+              icon={emptyState?.icon}
+              action={
+                activeFilterEntries.length > 0 ? (
+                  <AppButton intent="secondary" onClick={handleClearAllFilters}>
+                    {t('clearFilter')}
+                  </AppButton>
+                ) : emptyState?.onAction && emptyState.actionLabel ? (
+                  <AppButton intent="primary" onClick={emptyState.onAction}>
+                    {emptyState.actionLabel}
+                  </AppButton>
+                ) : undefined
+              }
+            />
+          ) : (
+            <Box sx={{ opacity: isFetching ? 0.6 : 1 }}>
+              {displayData.map((row, index) => (
+                <React.Fragment key={defaultKeyExtractor(row, index)}>
+                  {renderMobileRow(row, index, displayData)}
+                </React.Fragment>
+              ))}
+            </Box>
+          )}
+        </Stack>
+      )}
+
       <TableContainer
         component={Paper}
         elevation={0}
         sx={{
+          display: renderMobileRow ? { xs: 'none', sm: 'block' } : undefined,
           borderRadius: 0,
           overflow: tableMaxHeight ? 'auto' : 'hidden',
           maxHeight: tableMaxHeight,
@@ -303,24 +407,37 @@ const AppTable = <T,>({
                   >
                     <AppEmptyState
                       icon={emptyState?.icon}
-                      title={emptyState?.title || (activeFilterEntries.length > 0
-                        ? t('noResultsFound') : t('noData'))}
+                      title={
+                        emptyState?.title ||
+                        (activeFilterEntries.length > 0
+                          ? t('noResultsFound')
+                          : t('noData'))
+                      }
                       description={emptyState?.description}
                       sx={{ py: 0 }}
-                      action={emptyState?.actionLabel && emptyState?.onAction ? (
-                        <AppButton intent="primary" size="small" onClick={emptyState.onAction}>
-                          {emptyState.actionLabel}
-                        </AppButton>
-                      ) : activeFilterEntries.length > 0 && !emptyState?.actionLabel ? (
-                        <AppButton
-                          intent="secondary"
-                          size="small"
-                          startIcon={<FilterAltOffRoundedIcon sx={{ fontSize: 14 }} />}
-                          onClick={handleClearAllFilters}
-                        >
-                          {t('clearFilter')}
-                        </AppButton>
-                      ) : undefined}
+                      action={
+                        emptyState?.actionLabel && emptyState?.onAction ? (
+                          <AppButton
+                            intent="primary"
+                            size="small"
+                            onClick={emptyState.onAction}
+                          >
+                            {emptyState.actionLabel}
+                          </AppButton>
+                        ) : activeFilterEntries.length > 0 &&
+                          !emptyState?.actionLabel ? (
+                          <AppButton
+                            intent="secondary"
+                            size="small"
+                            startIcon={
+                              <FilterAltOffRoundedIcon sx={{ fontSize: 14 }} />
+                            }
+                            onClick={handleClearAllFilters}
+                          >
+                            {t('clearFilter')}
+                          </AppButton>
+                        ) : undefined
+                      }
                     />
                   </TableCell>
                 </TableRow>

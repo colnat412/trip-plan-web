@@ -3,7 +3,7 @@
 import { Typography, type TypographyProps } from '@mui/material';
 
 export interface AppMetricValueProps extends TypographyProps {
-  tone?: 'primary' | 'success' | 'error';
+  tone?: 'primary' | 'success' | 'warning' | 'error';
 }
 
 const AppMetricValue = ({

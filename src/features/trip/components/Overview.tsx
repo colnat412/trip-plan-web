@@ -4,9 +4,7 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { AppLoadingState, AppPageContainer } from '@/base/components/ui';
 
-import { useMediaQuery } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
-
+import { useCurrentTime } from '@/base/hooks';
 
 import { useTripContext } from '../context/TripContext';
 import TemplateLibrary from '@/features/plan-template/components/TemplateLibrary';
@@ -14,15 +12,20 @@ import QuickCreate from '@/features/plan-template/components/QuickCreate';
 import ActiveTripBanner from './overview/ActiveTripBanner';
 import OverviewDetails from './overview/OverviewDetails';
 import EmptyTripState from './overview/EmptyTripState';
-import TripBudgetCard from './overview/TripBudgetCard';
+import TripCountdown from './overview/TripCountdown';
 
 const Overview = () => {
-  const desktop = useMediaQuery(useTheme().breakpoints.up('md'));
+  const now = useCurrentTime();
   const { trips, activeTrip, isLoading, error, refetchTrips, openCreateTrip } =
     useTripContext();
 
-  if (isLoading)
-    { return <AppPageContainer><AppLoadingState sx={{ minHeight: 320 }} /></AppPageContainer>; }
+  if (isLoading) {
+    return (
+      <AppPageContainer>
+        <AppLoadingState sx={{ minHeight: 320 }} />
+      </AppPageContainer>
+    );
+  }
   if (error)
     return (
       <AppPageContainer>
@@ -41,15 +44,17 @@ const Overview = () => {
 
   return (
     <AppPageContainer>
-      <ActiveTripBanner key={currentTrip.id} trip={currentTrip} compact />
-      {!desktop && (
-        <TripBudgetCard
-          key={`budget-${currentTrip.id}`}
-          trip={currentTrip}
-          compact
-        />
-      )}
-      <OverviewDetails key={`details-${currentTrip.id}`} trip={currentTrip} />
+      <ActiveTripBanner
+        key={currentTrip.id}
+        trip={currentTrip}
+        compact
+        notice={<TripCountdown trip={currentTrip} now={now} />}
+      />
+      <OverviewDetails
+        key={`details-${currentTrip.id}`}
+        trip={currentTrip}
+        now={now}
+      />
     </AppPageContainer>
   );
 };

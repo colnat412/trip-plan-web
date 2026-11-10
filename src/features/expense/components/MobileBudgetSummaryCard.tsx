@@ -8,6 +8,7 @@ import {
   AppCard,
   AppLinearProgress,
   AppMetricValue,
+  AppAmountRatio,
 } from '@/base/components/ui';
 
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
@@ -15,7 +16,7 @@ import type { Theme } from '@mui/material/styles';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { formatCurrency } from '@/base/utils';
+import { formatCurrency, getBudgetBalanceTone } from '@/base/utils';
 import type { TripBudgetSummary } from '../types';
 
 export interface MobileBudgetSummaryCardProps {
@@ -47,7 +48,7 @@ const MobileBudgetSummaryCard = ({
   const percentage = summary?.percentageUsed ?? 0;
   const color = over
     ? 'error.main'
-    : percentage > 85
+    : percentage >= 85
       ? 'warning.main'
       : 'primary.main';
   const curr = summary?.currency || currency;
@@ -137,12 +138,13 @@ const MobileBudgetSummaryCard = ({
             <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
               {t('compactSpent')}
             </Typography>
-            <AppMetricValue
+            <AppAmountRatio
+              amount={spent}
+              total={total > 0 ? total : null}
+              currency={curr}
               tone={over ? 'error' : 'primary'}
-              sx={{ fontSize: '24px', minWidth: 0, overflowWrap: 'anywhere' }}
-            >
-              {formatCurrency(spent, curr, locale)}
-            </AppMetricValue>
+              label={t('spendingRatioLabel')}
+            />
           </Stack>
           {hasBudget ? (
             <>
@@ -166,7 +168,7 @@ const MobileBudgetSummaryCard = ({
                     minWidth: 0,
                   }}
                 >
-                  {t('totalBudget')}: {formatCurrency(total, curr, locale)}
+                  {/* {t('totalBudget')}: {formatCurrency(total, curr, locale)} */}
                 </Typography>
                 <Typography
                   sx={[
@@ -193,7 +195,7 @@ const MobileBudgetSummaryCard = ({
                   {t(over ? 'overBudget' : 'compactRemaining')}
                 </Typography>
                 <AppMetricValue
-                  tone={over ? 'error' : 'success'}
+                  tone={getBudgetBalanceTone(total, remaining)}
                   sx={{
                     fontSize: '17px',
                     minWidth: 0,

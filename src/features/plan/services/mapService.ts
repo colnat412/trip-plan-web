@@ -1,3 +1,5 @@
+import { formatDuration } from '@/base/utils/duration';
+export { formatDuration } from '@/base/utils/duration';
 import { axiosClient } from '@/base/api/axios-client';
 import type {
   DistanceResult,
@@ -18,21 +20,6 @@ export const formatDistance = (meters: number): string => {
   }
   const km = (meters / 1000).toFixed(1);
   return `${km} km`;
-};
-
-export const formatDuration = (seconds: number, lang = 'vi'): string => {
-  const mins = Math.max(1, Math.round(seconds / 60));
-  if (mins < 60) {
-    return lang === 'en' ? `~${mins} mins` : `~${mins} phút`;
-  }
-  const hours = Math.floor(mins / 60);
-  const remainingMins = mins % 60;
-  if (remainingMins === 0) {
-    return lang === 'en' ? `~${hours} hrs` : `~${hours} giờ`;
-  }
-  return lang === 'en'
-    ? `~${hours} hrs ${remainingMins} mins`
-    : `~${hours} giờ ${remainingMins} phút`;
 };
 
 export function fetchDistanceMatrix(
@@ -125,7 +112,13 @@ async function requestDistanceMatrix(
             ) {
               const origin = originBatch[originIndex];
               const destination = destinationBatch[destinationIndex];
-              results.set(`${origin}:::${destination}`, element);
+              results.set(`${origin}:::${destination}`, {
+                ...element,
+                duration: {
+                  ...element.duration,
+                  text: formatDuration(element.duration.value, lang),
+                },
+              });
             }
           });
         },
@@ -156,7 +149,7 @@ export async function getConsecutiveDistances(
       totalDistanceMeters: 0,
       totalDurationSeconds: 0,
       formattedTotalDistance: '0 km',
-      formattedTotalDuration: '0 phút',
+      formattedTotalDuration: formatDuration(0, lang),
     };
   }
 
@@ -248,9 +241,9 @@ export async function solveOptimalRoute(
     formattedOriginalDistance: '0 km',
     formattedOptimizedDistance: '0 km',
     formattedSavedDistance: '0 km',
-    formattedOriginalDuration: '0 phút',
-    formattedOptimizedDuration: '0 phút',
-    formattedSavedDuration: '0 phút',
+    formattedOriginalDuration: formatDuration(0, lang),
+    formattedOptimizedDuration: formatDuration(0, lang),
+    formattedSavedDuration: formatDuration(0, lang),
     isImprovement: false,
     segments: [],
   };

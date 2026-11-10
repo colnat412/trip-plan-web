@@ -2,6 +2,7 @@
 
 import type { ApiResponse } from '@/base/api';
 import { useQueryGet } from '@/base/hooks';
+import { useTripContext } from '@/features/trip/context/TripContext';
 import type { TripPlanOverview } from '../types';
 
 export interface UseTripPlanParams {
@@ -15,8 +16,9 @@ const useTripPlan = ({
   enabled = true,
   includeActivities = true,
 }: UseTripPlanParams) => {
+  const { tripsVersion } = useTripContext();
   const query = useQueryGet<ApiResponse<TripPlanOverview>>({
-    queryKey: ['trip', 'plan', tripId ?? 'none', { includeActivities }],
+    queryKey: ['trip', 'plan', tripId ?? 'none', { includeActivities, tripsVersion }],
     endPoint: `/trip/${tripId}/plan`,
     config: { params: { includeActivities } },
     enabled: Boolean(tripId) && enabled,

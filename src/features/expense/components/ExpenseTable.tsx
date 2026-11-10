@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { Avatar, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Stack, Typography } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -11,6 +11,8 @@ import { useTranslations } from 'next-intl';
 
 import {
   AppActionMenu,
+  AppCategoryIcon,
+  AppFinanceRow,
   AppButton,
   AppCategoryChip,
   AppTable,
@@ -298,6 +300,38 @@ const ExpenseTable = ({
   return (
     <AppTable<Expense>
       columns={columns}
+      renderMobileRow={(expense, index, rows) => (
+        <Box>
+          {(index === 0 ||
+            rows[index - 1].expenseDate !== expense.expenseDate) && (
+            <Typography
+              sx={{
+                px: 1.5,
+                pt: 1.5,
+                fontSize: '12px',
+                color: 'text.secondary',
+                fontWeight: 600,
+              }}
+            >
+              {formatDate(expense.expenseDate)}
+            </Typography>
+          )}
+          <AppFinanceRow
+            icon={<AppCategoryIcon category={expense.category} />}
+            title={expense.title}
+            subtitle={`${t(`categories.${expense.category}`)} · ${expense.payerName || '—'}`}
+            amount={formatCurrency(expense.amount, expense.currency)}
+            onClick={onViewDetail ? () => onViewDetail(expense) : undefined}
+            action={
+              !readOnly
+                ? columns
+                    .find((column) => column.id === 'actions')
+                    ?.renderCell(expense, index)
+                : undefined
+            }
+          />
+        </Box>
+      )}
       data={expenses}
       isLoading={isLoading}
       isFetching={isFetching}
@@ -314,8 +348,6 @@ const ExpenseTable = ({
           stackActionsOnMobile
           sx={{
             p: { xs: 2, sm: 2.5 },
-            borderBottom: 1,
-            borderColor: 'divider',
           }}
           actions={
             !readOnly && onAddNew ? (

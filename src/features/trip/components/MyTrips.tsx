@@ -4,10 +4,16 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 import { Box } from '@mui/material';
 
-import { AppPageContainer, type ColumnFilterValue, type TableSortState } from '@/base/components/ui';
+import {
+  AppFloatingActionButton,
+  AppPageContainer,
+  type ColumnFilterValue,
+  type TableSortState,
+} from '@/base/components/ui';
 import { useDebouncedValue } from '@/base/hooks';
 import useMyTrips from '../hooks/useMyTrips';
 import { useTripContext } from '../context/TripContext';
@@ -21,6 +27,7 @@ import DeleteTripDialog from './DeleteTripDialog';
 import type { Trip } from '../types';
 
 const MyTrips = () => {
+  const t = useTranslations('myTrips');
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
@@ -169,8 +176,15 @@ const MyTrips = () => {
   const totalCount = pagination?.totalElements ?? trips.length;
 
   return (
-    <AppPageContainer>
-      <MyTripsHeader totalTrips={totalCount} onCreateTrip={openCreateTrip} />
+    <AppPageContainer
+      floatingAction={
+        <AppFloatingActionButton
+          label={t('createNew')}
+          onClick={openCreateTrip}
+        />
+      }
+    >
+      <MyTripsHeader totalTrips={totalCount} />
 
       <TripFilterBar
         filters={filterValues}

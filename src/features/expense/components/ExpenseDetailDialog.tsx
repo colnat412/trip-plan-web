@@ -1,16 +1,22 @@
 'use client';
 
-import React from 'react';
-import { Box, Typography, Stack, Avatar, Chip } from '@mui/material';
+import { Avatar, Box, Stack, Typography } from '@mui/material';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import HourglassEmptyRoundedIcon from '@mui/icons-material/HourglassEmptyRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
+import { useLocale, useTranslations } from 'next-intl';
+import {
+  AppDialog,
+  AppButton,
+  AppCategoryChip,
+  AppFinanceRow,
+  AppMetricValue,
+  AppSectionHeader,
+  AppStatusChip,
+} from '@/base/components/ui';
+import { formatCurrency, formatDate, getUserInitials } from '@/base/utils';
 import ExpenseReceiptPreview from './ExpenseReceiptPreview';
-import { useTranslations } from 'next-intl';
-import { AppDialog, AppButton, AppCategoryChip } from '@/base/components/ui';
-import { formatCurrency, formatDate } from '@/base/utils';
 import type { Expense } from '../types';
 
 export interface ExpenseDetailDialogProps {
@@ -29,41 +35,36 @@ const ExpenseDetailDialog = ({
   readOnly = false,
 }: ExpenseDetailDialogProps) => {
   const t = useTranslations('expense');
-
+  const locale = useLocale();
   if (!expense) return null;
 
-  const splitSummary =
-    expense.splitType in { EQUAL: 1, EXACT_AMOUNT: 1, PERCENTAGE: 1, SHARE: 1 }
-      ? t(
-          `splits.${expense.splitType as 'EQUAL' | 'EXACT_AMOUNT' | 'PERCENTAGE' | 'SHARE'}`,
-        )
-      : t('splits.EQUAL');
+  const splitType = ['EQUAL', 'EXACT_AMOUNT', 'PERCENTAGE', 'SHARE'].includes(
+    expense.splitType,
+  )
+    ? expense.splitType
+    : 'EQUAL';
 
   return (
     <AppDialog
       open={open}
       onClose={onClose}
       title={t('dialog.detailTitle')}
-      icon={<ReceiptLongRoundedIcon color="primary" />}
+      icon={<ReceiptLongRoundedIcon />}
       maxWidth="sm"
       actions={
-        <Stack
-          direction="row"
-          spacing={1.5}
-          useFlexGap
-          sx={{
-            width: '100%',
-            justifyContent: 'flex-end',
-            flexWrap: 'wrap',
-            gap: 1.5,
-          }}
-        >
-          <AppButton intent="secondary" onClick={onClose}>
+        <>
+          <AppButton
+            intent="secondary"
+            data-dialog-action="cancel"
+            onClick={onClose}
+          >
             {t('dialog.close')}
           </AppButton>
           {onEdit && !readOnly && (
             <AppButton
               intent="primary"
+              data-dialog-action="primary"
+              wrapLabel
               startIcon={<EditRoundedIcon fontSize="small" />}
               onClick={() => {
                 onClose();
@@ -73,329 +74,184 @@ const ExpenseDetailDialog = ({
               {t('row.edit')}
             </AppButton>
           )}
-        </Stack>
+        </>
       }
     >
-      <Stack spacing={2.5}>
-        <Box
+      <Stack spacing={2.5} sx={{ minWidth: 0 }}>
+        <Stack
+          spacing={1.5}
           sx={{
-            p: 2.5,
+            p: 2,
+            minWidth: 0,
             borderRadius: '14px',
             bgcolor: 'action.hover',
             border: 1,
             borderColor: 'divider',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1.5,
           }}
         >
-          <Stack
-            direction="row"
+          <Box
             sx={{
-              justifyContent: 'space-between',
+              display: 'flex',
               alignItems: 'flex-start',
-              gap: 1.5,
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 1,
+              minWidth: 0,
             }}
           >
-            <Stack spacing={0.5}>
+            <Stack spacing={0.5} sx={{ flex: '1 1 160px', minWidth: 0 }}>
               <Typography
                 sx={{
-                  fontFamily: 'var(--font-display)',
                   fontSize: '18px',
                   fontWeight: 700,
-                  color: 'text.primary',
+                  overflowWrap: 'anywhere',
                 }}
               >
                 {expense.title}
               </Typography>
-              <Typography
-                sx={{
-                  fontSize: '13px',
-                  color: 'text.secondary',
-                  fontFamily: 'var(--font-mono)',
-                }}
-              >
-                {formatDate(expense.expenseDate, 'DD/MM/YYYY')}
+              <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+                {formatDate(expense.expenseDate)}
               </Typography>
             </Stack>
             <AppCategoryChip category={expense.category} />
-          </Stack>
-
-          <Stack
-            direction="row"
+          </Box>
+          <Box
             sx={{
-              justifyContent: 'space-between',
+              display: 'flex',
               alignItems: 'baseline',
-              pt: 1,
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 1,
+              pt: 1.5,
               borderTop: 1,
               borderColor: 'divider',
+              minWidth: 0,
             }}
           >
             <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
               {t('table.colAmount')}
             </Typography>
-            <Typography
-              sx={{
-                fontSize: '22px',
-                fontWeight: 800,
-                color: 'primary.main',
-                fontFamily: 'var(--font-mono)',
-              }}
-            >
-              {formatCurrency(expense.amount, expense.currency)}
-            </Typography>
-          </Stack>
-        </Box>
+            <AppMetricValue sx={{ fontSize: '22px', whiteSpace: 'nowrap' }}>
+              {formatCurrency(expense.amount, expense.currency, locale)}
+            </AppMetricValue>
+          </Box>
+        </Stack>
 
-        <Stack spacing={1}>
-          <Typography
-            sx={{
-              fontSize: '12px',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              color: 'text.secondary',
-            }}
-          >
-            {t('dialog.paidBy')}
-          </Typography>
+        <Stack spacing={1} sx={{ minWidth: 0 }}>
+          <AppSectionHeader title={t('dialog.paidBy')} />
           <Box
             sx={{
-              p: 1.75,
-              borderRadius: '12px',
               border: 1,
               borderColor: 'divider',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 1.5,
+              borderRadius: '12px',
+              minWidth: 0,
             }}
           >
-            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-              <Avatar
-                src={expense.payerAvatarUrl || undefined}
-                alt={expense.payerName || 'Payer'}
-                sx={{
-                  width: 36,
-                  height: 36,
-                  fontWeight: 700,
-                  fontSize: '14px',
-                  bgcolor: 'primary.main',
-                  color: 'primary.contrastText',
-                }}
-              >
-                {expense.payerName
-                  ? expense.payerName.charAt(0).toUpperCase()
-                  : 'U'}
-              </Avatar>
-              <Stack spacing={0.25}>
-                <Typography
-                  sx={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: 'text.primary',
-                  }}
+            <AppFinanceRow
+              icon={
+                <Avatar
+                  src={expense.payerAvatarUrl || undefined}
+                  sx={{ width: 36, height: 36 }}
                 >
-                  {expense.payerName || '—'}
-                </Typography>
-                {expense.payerEmail && (
-                  <Typography
-                    sx={{ fontSize: '12px', color: 'text.secondary' }}
-                  >
-                    {expense.payerEmail}
-                  </Typography>
-                )}
-              </Stack>
-            </Stack>
-            <Chip
-              label={t('dialog.paidFullAmount', {
-                amount: formatCurrency(expense.amount, expense.currency),
-              })}
-              size="small"
-              sx={{
-                bgcolor: 'success.light',
-                color: 'success.dark',
-                fontWeight: 600,
-                fontSize: '12px',
-              }}
+                  {getUserInitials(expense.payerName || '')}
+                </Avatar>
+              }
+              title={expense.payerName || '—'}
+              subtitle={expense.payerEmail}
+              amount={formatCurrency(expense.amount, expense.currency, locale)}
+              amountCaption={
+                <AppStatusChip
+                  tone="success"
+                  label={t('dialog.settled')}
+                  icon={<CheckCircleRoundedIcon />}
+                />
+              }
             />
           </Box>
         </Stack>
 
-        <Stack spacing={1.25}>
+        <Stack spacing={1} sx={{ minWidth: 0 }}>
+          <AppSectionHeader
+            title={t('dialog.splitBreakdown', {
+              count: expense.splits?.length || 0,
+            })}
+            actions={
+              <AppStatusChip
+                label={t(`splits.${splitType}`)}
+                variant="outlined"
+              />
+            }
+          />
           <Stack
-            direction="row"
             sx={{
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize: '12px',
-                fontWeight: 700,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                color: 'text.secondary',
-              }}
-            >
-              {t('dialog.splitBreakdown', {
-                count: expense.splits?.length || 0,
-              })}
-            </Typography>
-            <Chip
-              label={splitSummary}
-              size="small"
-              variant="outlined"
-              sx={{ fontSize: '12px', fontWeight: 600 }}
-            />
-          </Stack>
-
-          <Stack
-            spacing={1}
-            sx={{
-              p: 1,
-              borderRadius: '12px',
               border: 1,
               borderColor: 'divider',
-              maxHeight: 220,
-              overflowY: 'auto',
+              borderRadius: '12px',
+              minWidth: 0,
             }}
           >
-            {expense.splits && expense.splits.length > 0 ? (
+            {expense.splits?.length ? (
               expense.splits.map((split) => {
                 const percent =
                   expense.amount > 0
-                    ? `${Math.round((split.allocatedAmount / expense.amount) * 100)}%`
-                    : '0%';
-
+                    ? Math.round((split.allocatedAmount / expense.amount) * 100)
+                    : 0;
                 return (
-                  <Box
+                  <AppFinanceRow
                     key={split.id}
-                    sx={{
-                      p: 1.25,
-                      borderRadius: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: 1.5,
-                      '&:hover': { bgcolor: 'action.hover' },
-                    }}
-                  >
-                    <Stack
-                      direction="row"
-                      spacing={1.25}
-                      sx={{ alignItems: 'center' }}
-                    >
+                    icon={
                       <Avatar
                         src={split.userAvatarUrl || undefined}
-                        alt={split.userName || 'Member'}
+                        sx={{ width: 32, height: 32 }}
+                      >
+                        {getUserInitials(split.userName || '')}
+                      </Avatar>
+                    }
+                    title={
+                      split.userName ||
+                      t('dialog.memberFallback', { id: split.userId })
+                    }
+                    subtitle={split.userEmail}
+                    amount={formatCurrency(
+                      split.allocatedAmount,
+                      expense.currency,
+                      locale,
+                    )}
+                    amountCaption={
+                      <Stack
+                        spacing={0.5}
                         sx={{
-                          width: 30,
-                          height: 30,
-                          fontSize: '13px',
-                          fontWeight: 600,
-                          bgcolor: 'secondary.main',
-                          color: 'secondary.contrastText',
+                          alignItems: 'flex-end',
+                          minWidth: 0,
+                          maxWidth: '100%',
                         }}
                       >
-                        {split.userName
-                          ? split.userName.charAt(0).toUpperCase()
-                          : 'M'}
-                      </Avatar>
-                      <Stack spacing={0}>
-                        <Typography
-                          sx={{
-                            fontSize: '13px',
-                            fontWeight: 600,
-                            color: 'text.primary',
-                          }}
-                        >
-                          {split.userName || `User #${split.userId}`}
-                        </Typography>
-                        {split.userEmail && (
-                          <Typography
-                            sx={{ fontSize: '11px', color: 'text.secondary' }}
-                          >
-                            {split.userEmail}
-                          </Typography>
-                        )}
-                      </Stack>
-                    </Stack>
-
-                    <Stack
-                      direction="row"
-                      spacing={1.5}
-                      sx={{ alignItems: 'center' }}
-                    >
-                      <Stack spacing={0} sx={{ textAlign: 'right' }}>
-                        <Typography
-                          sx={{
-                            fontSize: '13px',
-                            fontWeight: 700,
-                            fontFamily: 'var(--font-mono)',
-                            color: 'text.primary',
-                          }}
-                        >
-                          {formatCurrency(
-                            split.allocatedAmount,
-                            expense.currency,
-                          )}
-                        </Typography>
                         <Typography
                           sx={{ fontSize: '11px', color: 'text.secondary' }}
                         >
-                          {percent}
+                          {percent}%
                         </Typography>
+                        <AppStatusChip
+                          tone={split.settled ? 'success' : 'warning'}
+                          label={t(
+                            split.settled ? 'dialog.settled' : 'dialog.pending',
+                          )}
+                          icon={
+                            split.settled ? (
+                              <CheckCircleRoundedIcon />
+                            ) : (
+                              <HourglassEmptyRoundedIcon />
+                            )
+                          }
+                        />
                       </Stack>
-
-                      {split.settled ? (
-                        <Chip
-                          icon={
-                            <CheckCircleRoundedIcon
-                              sx={{ fontSize: '14px !important' }}
-                            />
-                          }
-                          label={t('dialog.settled')}
-                          size="small"
-                          sx={{
-                            bgcolor: 'success.light',
-                            color: 'success.dark',
-                            fontWeight: 600,
-                            fontSize: '11px',
-                            height: 24,
-                          }}
-                        />
-                      ) : (
-                        <Chip
-                          icon={
-                            <HourglassEmptyRoundedIcon
-                              sx={{ fontSize: '14px !important' }}
-                            />
-                          }
-                          label={t('dialog.pending')}
-                          size="small"
-                          sx={{
-                            bgcolor: 'warning.light',
-                            color: 'warning.dark',
-                            fontWeight: 600,
-                            fontSize: '11px',
-                            height: 24,
-                          }}
-                        />
-                      )}
-                    </Stack>
-                  </Box>
+                    }
+                  />
                 );
               })
             ) : (
               <Typography
-                sx={{
-                  py: 2,
-                  textAlign: 'center',
-                  fontSize: '13px',
-                  color: 'text.secondary',
-                }}
+                sx={{ p: 2, textAlign: 'center', color: 'text.secondary' }}
               >
                 —
               </Typography>
@@ -404,45 +260,23 @@ const ExpenseDetailDialog = ({
         </Stack>
 
         {expense.note && (
-          <Stack spacing={0.75}>
-            <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
-              <NotesRoundedIcon
-                sx={{ fontSize: 16, color: 'text.secondary' }}
-              />
-              <Typography
-                sx={{
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  color: 'text.secondary',
-                }}
-              >
-                {t('dialog.note')}
-              </Typography>
-            </Stack>
-            <Box
+          <Stack spacing={1} sx={{ minWidth: 0 }}>
+            <AppSectionHeader title={t('dialog.note')} />
+            <Typography
               sx={{
                 p: 1.5,
                 borderRadius: '10px',
                 bgcolor: 'action.hover',
-                border: 1,
-                borderColor: 'divider',
+                fontSize: '13px',
+                color: 'text.secondary',
+                whiteSpace: 'pre-wrap',
+                overflowWrap: 'anywhere',
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: '13px',
-                  color: 'text.primary',
-                  whiteSpace: 'pre-wrap',
-                }}
-              >
-                {expense.note}
-              </Typography>
-            </Box>
+              {expense.note}
+            </Typography>
           </Stack>
         )}
-
         {expense.receiptUrl && (
           <ExpenseReceiptPreview
             key={expense.receiptUrl}

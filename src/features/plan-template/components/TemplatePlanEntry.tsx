@@ -5,15 +5,16 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 import { AppLoadingState, AppPageContainer } from '@/base/components/ui';
 import { useEffect } from 'react';
 
-
 import { useTripContext } from '@/features/trip/context/TripContext';
 import PlanOverview from '@/features/plan/components/PlanOverview';
 const TemplatePlanEntry = ({
   tripId,
+  dayId,
   ai,
   publish,
 }: {
   tripId?: string;
+  dayId?: string;
   ai: boolean;
   publish: boolean;
 }) => {
@@ -33,7 +34,8 @@ const TemplatePlanEntry = ({
     );
   return (
     <PlanOverview
-      key={tripId}
+      key={`${tripId ?? activeTrip?.id ?? ''}:${dayId ?? ''}`}
+      initialDayId={dayId}
       initialAiOpen={ai}
       initialPublishOpen={publish}
     />

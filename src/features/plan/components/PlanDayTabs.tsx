@@ -26,9 +26,7 @@ const PlanDayTabs = ({
       sx={{
         width: '100%',
         minWidth: 0,
-        display: 'grid',
-        gridAutoFlow: 'column',
-        gridAutoColumns: { xs: 'minmax(88px, 1fr)', sm: 'minmax(104px, 1fr)' },
+        display: 'flex',
         gap: 1,
         overflowX: 'auto',
         overscrollBehaviorX: 'contain',
@@ -55,13 +53,14 @@ const PlanDayTabs = ({
               borderRadius: '12px',
               border: 1,
               borderColor: isSelected ? 'primary.main' : 'divider',
-              bgcolor: isSelected ? 'action.selected' : 'background.paper',
-              color: isSelected ? 'primary.main' : 'text.primary',
-              minWidth: 0,
-              minHeight: 64,
+              bgcolor: isSelected ? 'primary.main' : 'background.paper',
+              color: isSelected ? 'primary.contrastText' : 'text.primary',
+              minWidth: 112,
+              flex: '1 0 112px',
+              minHeight: 48,
               scrollSnapAlign: 'start',
               '&:hover': {
-                bgcolor: isSelected ? 'action.selected' : 'action.hover',
+                bgcolor: isSelected ? 'primary.dark' : 'action.hover',
               },
               '&.Mui-focusVisible': {
                 outline: '2px solid',
@@ -80,20 +79,7 @@ const PlanDayTabs = ({
                 overflowWrap: 'anywhere',
               }}
             >
-              {t('dayTab', { day: day.dayNumber })}
-            </Typography>
-            <Typography
-              component="span"
-              sx={{
-                fontSize: '12px',
-                color: 'text.secondary',
-                maxWidth: '100%',
-                overflowWrap: 'anywhere',
-              }}
-            >
-              {day.planDate
-                ? formatDate(day.planDate, 'DD/MM')
-                : t('activityCount', { count: day.totalActivities })}
+              {day.planDate ? formatDate(day.planDate) : t('dayTab', { day: day.dayNumber })}
             </Typography>
           </ButtonBase>
         );

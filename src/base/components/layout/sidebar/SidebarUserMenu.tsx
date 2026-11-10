@@ -167,7 +167,7 @@ const SidebarUserMenu = ({
         <Box sx={{ px: 0.5, pt: 1.5, pb: 0.5 }}>
           <AppButton
             type="button"
-            intent="text"
+            intent="danger"
             size="small"
             loading={isLoggingOut}
             disabled={isLoggingOut}

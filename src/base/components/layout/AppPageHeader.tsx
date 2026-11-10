@@ -16,6 +16,7 @@ export interface AppPageHeaderProps {
   badge?: React.ReactNode;
   subtitle?: React.ReactNode;
   actions?: React.ReactNode;
+  titleActions?: React.ReactNode;
   sx?: SxProps<Theme>;
 }
 
@@ -25,6 +26,7 @@ const AppPageHeader = ({
   badge,
   subtitle,
   actions,
+  titleActions,
   sx,
 }: AppPageHeaderProps) => {
   return (
@@ -49,73 +51,102 @@ const AppPageHeader = ({
           minWidth: 0,
           maxWidth: '100%',
           flex: { xs: '0 1 auto', md: '1 1 240px' },
+          ...(titleActions && { width: '100%' }),
         }}
       >
         <Stack
           direction="row"
           spacing={1}
           useFlexGap
-          sx={{ alignItems: 'center', flexWrap: 'wrap' }}
+          sx={{
+            alignItems: 'center',
+            flexWrap: titleActions ? 'nowrap' : 'wrap',
+            minWidth: 0,
+            width: '100%',
+          }}
         >
-          {icon && (
-            <Box
-              sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                color: 'primary.main',
-                fontSize: '24px',
-              }}
-            >
-              {icon}
-            </Box>
-          )}
-
-          {typeof title === 'string' ? (
-            <Typography
-              component="h1"
-              sx={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '24px',
-                fontWeight: 700,
-                color: 'text.primary',
-                letterSpacing: '-0.5px',
-                minWidth: 0,
-                overflowWrap: 'anywhere',
-              }}
-            >
-              {title}
-            </Typography>
-          ) : (
-            title
-          )}
-
-          {badge !== undefined &&
-            badge !== null &&
-            badge !== '' &&
-            (typeof badge === 'string' || typeof badge === 'number' ? (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 1,
+              minWidth: 0,
+              ...(titleActions && { flex: 1 }),
+            }}
+          >
+            {icon && (
               <Box
                 sx={{
-                  px: 1,
-                  py: 0.2,
-                  borderRadius: '999px',
-                  bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-                  border: 0,
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  color: 'primary.main',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  lineHeight: 1.4,
+                  color: 'primary.main',
+                  fontSize: '24px',
+                }}
+              >
+                {icon}
+              </Box>
+            )}
+
+            {typeof title === 'string' ? (
+              <Typography
+                component="h1"
+                sx={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '24px',
+                  fontWeight: 700,
+                  color: 'text.primary',
+                  letterSpacing: '-0.5px',
                   minWidth: 0,
-                  maxWidth: '100%',
                   overflowWrap: 'anywhere',
                 }}
               >
-                {badge}
-              </Box>
+                {title}
+              </Typography>
             ) : (
-              badge
-            ))}
+              title
+            )}
+
+            {badge !== undefined &&
+              badge !== null &&
+              badge !== '' &&
+              (typeof badge === 'string' || typeof badge === 'number' ? (
+                <Box
+                  sx={{
+                    px: 1,
+                    py: 0.2,
+                    borderRadius: '999px',
+                    bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+                    border: 0,
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    color: 'primary.main',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    lineHeight: 1.4,
+                    minWidth: 0,
+                    maxWidth: '100%',
+                    overflowWrap: 'anywhere',
+                  }}
+                >
+                  {badge}
+                </Box>
+              ) : (
+                badge
+              ))}
+          </Box>
+          {titleActions && (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                flexShrink: 0,
+                gap: 1,
+              }}
+            >
+              {titleActions}
+            </Box>
+          )}
         </Stack>
 
         {subtitle &&

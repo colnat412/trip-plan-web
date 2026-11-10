@@ -5,7 +5,11 @@ import { Box, Stack, Typography } from '@mui/material';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppDialog, AppLinearProgress } from '@/base/components/ui';
+import {
+  AppDialog,
+  AppEmptyState,
+  AppLinearProgress,
+} from '@/base/components/ui';
 import type { CreateChecklistPayload, PlanChecklist } from '../types';
 import AddChecklistForm from './AddChecklistForm';
 import ChecklistRow from './ChecklistRow';
@@ -43,88 +47,74 @@ const ChecklistDialog = ({
       onClose={onClose}
       title={t('checklist.title')}
       icon={<ChecklistRoundedIcon />}
-      maxWidth="md"
+      maxWidth="sm"
+      showSheetHandle
     >
       <Stack spacing={2.5}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Typography
+        {total > 0 && (
+          <Stack spacing={1}>
+            <Box
               sx={{
-                fontSize: '13px',
-                fontWeight: 600,
-                color: 'text.secondary',
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 1,
               }}
             >
-              {t('checklist.subtitle')}
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: '13px',
-                fontWeight: 700,
-                fontFamily: 'var(--font-mono)',
-                color:
-                  completed === total && total > 0
-                    ? 'success.main'
-                    : 'primary.main',
-              }}
-            >
-              {t('checklist.completedCount', { completed, total })} (
-              {progressPercent}%)
-            </Typography>
-          </Box>
-          <AppLinearProgress value={progressPercent} />
-        </Box>
+              <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+                {t('checklist.completedCount', { completed, total })}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: completed === total ? 'success.main' : 'primary.main',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {progressPercent}%
+              </Typography>
+            </Box>
+            <AppLinearProgress
+              value={progressPercent}
+              height={6}
+              aria-label={t('checklist.completedCount', { completed, total })}
+              barColor={completed === total ? 'success.main' : 'primary.main'}
+            />
+          </Stack>
+        )}
 
         {!readOnly && (
           <AddChecklistForm onSubmit={onAdd} isLoading={isLoading} />
         )}
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            maxHeight: 380,
-            overflowY: 'auto',
-            pr: 0.5,
-            '&::-webkit-scrollbar': { width: 6 },
-            '&::-webkit-scrollbar-thumb': {
-              bgcolor: 'action.hover',
-              borderRadius: '999px',
-            },
-          }}
-        >
-          {checklists.length === 0 ? (
-            <Box
-              sx={{
-                py: 4,
-                textAlign: 'center',
-                color: 'text.secondary',
-                fontSize: '13px',
-              }}
-            >
-              {t('checklist.emptyChecklist')}
-            </Box>
-          ) : (
-            <Stack spacing={1}>
-              {checklists.map((item) => (
-                <ChecklistRow
-                  key={item.id}
-                  item={item}
-                  onToggle={onToggle}
-                  onDelete={onDelete}
-                  disabled={isLoading}
-                  readOnly={readOnly}
-                />
-              ))}
-            </Stack>
-          )}
-        </Box>
+        {total === 0 ? (
+          <AppEmptyState
+            title={t('checklist.emptyChecklist')}
+            icon={<ChecklistRoundedIcon />}
+            compact
+            sx={{
+              p: 2,
+              border: '1px dashed',
+              borderColor: 'divider',
+              borderRadius: '12px',
+            }}
+          />
+        ) : (
+          <Stack spacing={1}>
+            {checklists.map((item) => (
+              <ChecklistRow
+                key={item.id}
+                item={item}
+                onToggle={onToggle}
+                onDelete={onDelete}
+                disabled={isLoading}
+                readOnly={readOnly}
+              />
+            ))}
+          </Stack>
+        )}
       </Stack>
     </AppDialog>
   );

@@ -35,14 +35,23 @@ const TemplateItinerary = ({
             selectedDayId={selectedDay.id}
             onSelectDay={setSelectedDayId}
           />
-          <AppCard component="section" sx={{ minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: '20px' }}>
+          <AppCard
+            component="section"
+            sx={{ minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: '20px' }}
+          >
             <Stack spacing={2}>
-              <Typography component="h2" sx={{ fontSize: '18px', fontWeight: 700 }}>
+              <Typography
+                component="h2"
+                sx={{ fontSize: '18px', fontWeight: 700 }}
+              >
                 {t('day', { number: selectedDay.dayNumber })}
                 {selectedDay.title ? ` · ${selectedDay.title}` : ''}
               </Typography>
               {selectedDay.note && (
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary' }}>
+                <Typography
+                  variant="body2"
+                  sx={{ whiteSpace: 'pre-wrap', color: 'text.secondary' }}
+                >
                   {selectedDay.note}
                 </Typography>
               )}
@@ -63,7 +72,10 @@ const TemplateItinerary = ({
                   ))}
                 </Stack>
               ) : (
-                <AppEmptyState title={t('restDay')} icon={<EventAvailableRoundedIcon />} />
+                <AppEmptyState
+                  title={t('restDay')}
+                  icon={<EventAvailableRoundedIcon />}
+                />
               )}
             </Stack>
           </AppCard>

@@ -8,9 +8,10 @@ import { getGoogleMapsSearchUrl, getGoogleMapsEmbedUrl } from '@/base/utils';
 
 export interface AppLocationMapProps {
   location: string;
+  expanded?: boolean;
 }
 
-const AppLocationMap = ({ location }: AppLocationMapProps) => {
+const AppLocationMap = ({ location, expanded = false }: AppLocationMapProps) => {
   const locale = useLocale();
   const t = useTranslations('locationMap');
   const query = location.trim();
@@ -29,7 +30,8 @@ const AppLocationMap = ({ location }: AppLocationMapProps) => {
             allowFullScreen
             sx={{
               width: '100%',
-              height: { xs: 320, lg: 400 },
+              height: expanded ? { xs: '60dvh', lg: '65dvh' } : { xs: 320, lg: 400 },
+              minHeight: expanded ? 360 : undefined,
               border: 0,
               borderRadius: '16px',
               bgcolor: 'action.hover',

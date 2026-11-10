@@ -12,19 +12,31 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import {
   AppActionMenu,
+  AppAmountRatio,
   AppButton,
   AppCategoryIcon,
   AppTimelineRow,
   type AppActionMenuItem,
 } from '@/base/components/ui';
-import { formatCurrency, formatTimeRange } from '@/base/utils';
+import { formatCurrency } from '@/base/utils';
 import type { ActivityStatus, PlanActivity } from '../types';
 
-export type ActivityTimelineData = Pick<PlanActivity,
-  'title' | 'category' | 'status' | 'startTime' | 'endTime' |
-  'location' | 'note' | 'estimatedCost' | 'actualSpent'>;
+export type ActivityTimelineData = Pick<
+  PlanActivity,
+  | 'title'
+  | 'category'
+  | 'status'
+  | 'startTime'
+  | 'endTime'
+  | 'location'
+  | 'note'
+  | 'estimatedCost'
+  | 'actualSpent'
+>;
 
-export interface ActivityTimelineCardProps<T extends ActivityTimelineData = PlanActivity> {
+export interface ActivityTimelineCardProps<
+  T extends ActivityTimelineData = PlanActivity,
+> {
   activity: T;
   currency: string;
   onEdit?: (activity: T) => void;
@@ -38,7 +50,7 @@ export interface ActivityTimelineCardProps<T extends ActivityTimelineData = Plan
   onSelect?: () => void;
 }
 
-const ActivityTimelineCard = <T extends ActivityTimelineData,>({
+const ActivityTimelineCard = <T extends ActivityTimelineData>({
   activity,
   currency,
   onEdit,
@@ -116,28 +128,45 @@ const ActivityTimelineCard = <T extends ActivityTimelineData,>({
   return (
     <AppTimelineRow
       title={activity.title}
-      icon={<AppCategoryIcon category={activity.category} />}
+      icon={<AppCategoryIcon category={activity.category} size={28} />}
       hasNext={hasNext}
       selected={selected}
       onSelect={onSelect}
-      meta={
+      leading={
         activity.startTime || activity.endTime ? (
-          <Typography
-            component="span"
+          <Stack
+            direction="row"
+            spacing={0.75}
+            useFlexGap
             sx={{
-              color: 'text.primary',
-              fontSize: '12px',
-              fontWeight: 700,
+              flexWrap: 'wrap',
+              alignItems: 'center',
               fontVariantNumeric: 'tabular-nums',
-              lineHeight: 1.8,
-              whiteSpace: 'nowrap',
             }}
           >
-            {!activity.startTime && activity.endTime && (
-              <>{tDialog('endTimeLabel')}: </>
+            {activity.startTime && (
+              <Typography
+                component="span"
+                sx={{ fontSize: '13px', fontWeight: 700, whiteSpace: 'nowrap' }}
+              >
+                {activity.startTime.slice(0, 5)}
+              </Typography>
             )}
-            {formatTimeRange(activity.startTime, activity.endTime)}
-          </Typography>
+            {activity.endTime && (
+              <Typography
+                component="span"
+                aria-label={`${tDialog('endTimeLabel')}: ${activity.endTime.slice(0, 5)}`}
+                sx={{
+                  fontSize: '11px',
+                  color: 'text.secondary',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {'– '}
+                {activity.endTime.slice(0, 5)}
+              </Typography>
+            )}
+          </Stack>
         ) : undefined
       }
       actions={
@@ -258,47 +287,32 @@ const ActivityTimelineCard = <T extends ActivityTimelineData,>({
       )}
       {!compact &&
         (activity.estimatedCost > 0 || Number(activity.actualSpent) > 0) && (
-          <Stack
-            direction="row"
-            spacing={1.5}
-            useFlexGap
-            sx={{ flexWrap: 'wrap', minWidth: 0 }}
-          >
-            {activity.estimatedCost > 0 && (
-              <Typography
-                component="span"
-                sx={{
-                  color: 'text.secondary',
-                  fontSize: '12px',
-                  overflowWrap: 'anywhere',
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {t('estimatedCost', {
-                  cost: formatCurrency(activity.estimatedCost, currency, locale),
-                })}
-              </Typography>
-            )}
-            {Number(activity.actualSpent) > 0 && (
-              <Typography
-                component="span"
-                sx={{
-                  color: 'text.secondary',
-                  fontSize: '12px',
-                  overflowWrap: 'anywhere',
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {t('spentChip')}:{' '}
-                <Box
-                  component="span"
-                  sx={{ color: 'text.primary', fontWeight: 700 }}
-                >
-                  {formatCurrency(activity.actualSpent ?? 0, currency, locale)}
-                </Box>
-              </Typography>
-            )}
-          </Stack>
+          <AppAmountRatio
+            amount={Number(activity.actualSpent ?? 0)}
+            total={activity.estimatedCost > 0 ? activity.estimatedCost : null}
+            currency={currency}
+            highlighted
+            tone={
+              activity.estimatedCost > 0 &&
+              Number(activity.actualSpent) > activity.estimatedCost
+                ? 'error'
+                : activity.estimatedCost > 0 &&
+                    Number(activity.actualSpent) === activity.estimatedCost
+                  ? 'success'
+                  : 'primary'
+            }
+            label={t('spendingRatio', {
+              spent: formatCurrency(
+                activity.actualSpent ?? 0,
+                currency,
+                locale,
+              ),
+              estimated:
+                activity.estimatedCost > 0
+                  ? formatCurrency(activity.estimatedCost, currency, locale)
+                  : '—',
+            })}
+          />
         )}
     </AppTimelineRow>
   );

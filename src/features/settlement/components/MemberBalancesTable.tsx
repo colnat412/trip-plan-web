@@ -4,7 +4,6 @@ import React from 'react';
 import {
   Avatar,
   Box,
-  Chip,
   Stack,
   Table,
   TableBody,
@@ -16,7 +15,7 @@ import {
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
-import { AppCard } from '@/base/components/ui';
+import { AppCard, AppFinanceRow, AppStatusChip } from '@/base/components/ui';
 import { formatCurrency, getUserInitials } from '@/base/utils';
 import type { MemberBalance } from '../types';
 
@@ -49,7 +48,65 @@ const MemberBalancesTable = ({
         </Typography>
       </Box>
 
-      <TableContainer>
+      <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+        {memberBalances.map((member) => (
+          <AppFinanceRow
+            key={member.userId}
+            icon={
+              <Avatar
+                src={member.avatarUrl || undefined}
+                sx={{ width: 40, height: 40 }}
+              >
+                {getUserInitials(member.name)}
+              </Avatar>
+            }
+            title={member.name || t('defaultMember')}
+            subtitle={
+              <Stack spacing={0.5}>
+                <span>
+                  {t(
+                    member.status === 'OWED'
+                      ? 'statusOwed'
+                      : member.status === 'OWES'
+                        ? 'statusOwes'
+                        : 'statusSettled',
+                  )}
+                </span>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    columnGap: 1.5,
+                    rowGap: 0.5,
+                  }}
+                >
+                  <Box component="span">
+                    {t('paid')}:{' '}
+                    <Box component="span" sx={{ whiteSpace: 'nowrap' }}>
+                      {formatCurrency(member.totalPaid, currency)}
+                    </Box>
+                  </Box>
+                  <Box component="span">
+                    {t('owed')}:{' '}
+                    <Box component="span" sx={{ whiteSpace: 'nowrap' }}>
+                      {formatCurrency(member.totalOwed, currency)}
+                    </Box>
+                  </Box>
+                </Box>
+              </Stack>
+            }
+            amount={formatCurrency(Math.abs(member.netBalance), currency)}
+            amountColor={
+              member.status === 'OWED'
+                ? 'success.main'
+                : member.status === 'OWES'
+                  ? 'error.main'
+                  : 'text.secondary'
+            }
+          />
+        ))}
+      </Box>
+      <TableContainer sx={{ display: { xs: 'none', sm: 'block' } }}>
         <Table sx={{ minWidth: 600 }}>
           <TableHead>
             <TableRow sx={{ bgcolor: 'action.hover' }}>
@@ -213,30 +270,15 @@ const MemberBalancesTable = ({
                   </TableCell>
 
                   <TableCell align="center" sx={{ py: 2, px: 2.5 }}>
-                    <Chip
-                      size="small"
-                      label={
+                    <AppStatusChip
+                      tone={isOwed ? 'success' : isOwes ? 'error' : 'neutral'}
+                      label={t(
                         isOwed
-                          ? t('statusOwed')
+                          ? 'statusOwed'
                           : isOwes
-                            ? t('statusOwes')
-                            : t('statusSettled')
-                      }
-                      sx={{
-                        fontWeight: 700,
-                        fontSize: '11px',
-                        borderRadius: '999px',
-                        bgcolor: isOwed
-                          ? 'success.light'
-                          : isOwes
-                            ? 'error.light'
-                            : 'action.hover',
-                        color: isOwed
-                          ? 'success.dark'
-                          : isOwes
-                            ? 'error.dark'
-                            : 'text.secondary',
-                      }}
+                            ? 'statusOwes'
+                            : 'statusSettled',
+                      )}
                     />
                   </TableCell>
                 </TableRow>

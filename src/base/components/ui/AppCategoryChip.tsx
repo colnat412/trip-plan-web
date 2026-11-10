@@ -44,6 +44,10 @@ const AppCategoryChip = ({
         fontWeight: 600,
         fontSize: '12px',
         borderRadius: '6px',
+        maxWidth: '100%',
+        height: 'auto',
+        minHeight: 24,
+        '& .MuiChip-label': { whiteSpace: 'normal', overflowWrap: 'anywhere', py: 0.25 },
         '& .MuiChip-icon': {
           color: config.color,
         },

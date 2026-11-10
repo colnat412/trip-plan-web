@@ -16,6 +16,7 @@ export interface AppEmptyStateProps {
   icon?: ReactNode;
   action?: ReactNode;
   illustration?: ReactNode;
+  compact?: boolean;
   role?: 'status' | 'alert';
   sx?: SxProps<Theme>;
 }
@@ -26,6 +27,7 @@ const AppEmptyState = ({
   icon = <InboxRoundedIcon sx={{ fontSize: 40 }} />,
   action,
   illustration,
+  compact = false,
   role = 'status',
   sx,
 }: AppEmptyStateProps) => {
@@ -35,48 +37,63 @@ const AppEmptyState = ({
       spacing={1.5}
       sx={[
         {
-          alignItems: 'center',
+          alignItems: compact ? 'stretch' : 'center',
           justifyContent: 'center',
-          textAlign: 'center',
+          textAlign: compact ? 'left' : 'center',
           minWidth: 0,
           width: '100%',
-          py: 4,
-          px: 2,
+          py: compact ? 0 : 4,
+          px: compact ? 0 : 2,
           overflowWrap: 'anywhere',
         },
         ...(Array.isArray(sx) ? sx : [sx]),
       ]}
     >
-      {illustration ?? (
-        <Box
-          aria-hidden="true"
+      <Stack
+        direction={compact ? 'row' : 'column'}
+        spacing={1.5}
+        sx={{ alignItems: 'center', minWidth: 0 }}
+      >
+        {illustration ?? (
+          <Box
+            aria-hidden="true"
+            sx={{
+              p: compact ? 1.25 : 2,
+              borderRadius: '50%',
+              bgcolor: 'action.hover',
+              color: 'text.secondary',
+              display: 'inline-flex',
+              flexShrink: 0,
+              '& .MuiSvgIcon-root': { fontSize: compact ? 24 : 40 },
+            }}
+          >
+            {icon}
+          </Box>
+        )}
+        <Stack
+          spacing={0.5}
           sx={{
-            p: 2,
-            borderRadius: '50%',
-            bgcolor: 'action.hover',
-            color: 'text.secondary',
-            display: 'inline-flex',
-            '& .MuiSvgIcon-root': { fontSize: 40 },
+            alignItems: compact ? 'flex-start' : 'center',
+            minWidth: 0,
+            maxWidth: compact ? '100%' : 380,
           }}
         >
-          {icon}
-        </Box>
-      )}
-      <Stack
-        spacing={0.5}
-        sx={{ alignItems: 'center', minWidth: 0, maxWidth: 380 }}
-      >
-        <Typography
-          component="p"
-          sx={{ fontSize: 16, fontWeight: 700, color: 'text.primary' }}
-        >
-          {title}
-        </Typography>
-        {description && (
-          <Typography variant="body2" color="text.secondary">
-            {description}
+          <Typography
+            component="p"
+            sx={{
+              fontSize: compact ? 14 : 16,
+              fontWeight: 700,
+              color: 'text.primary',
+            }}
+          >
+            {title}
           </Typography>
-        )}
+          {description && (
+            <Typography variant="body2" color="text.secondary">
+              {description}
+            </Typography>
+          )}
+        </Stack>
       </Stack>
       {action}
     </Stack>

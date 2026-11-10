@@ -44,6 +44,7 @@ const AppSectionHeader = ({
           sm: 'center',
         },
         justifyContent: 'space-between',
+        flexWrap: 'wrap',
         gap: 1.5,
         minWidth: 0,
       }}
@@ -53,7 +54,10 @@ const AppSectionHeader = ({
           display: 'flex',
           alignItems: 'center',
           gap: 1,
-          flex: '1 1 auto',
+          flex: {
+            xs: stackActionsOnMobile ? '1 1 auto' : '1 1 160px',
+            sm: '1 1 160px',
+          },
           minWidth: 0,
         }}
       >
@@ -92,12 +96,18 @@ const AppSectionHeader = ({
         <Box
           sx={{
             display: 'flex',
-            flexShrink: 0,
+            flex: '0 1 auto',
+            flexWrap: 'wrap',
+            maxWidth: '100%',
             alignItems: 'center',
             justifyContent: 'flex-end',
             gap: 1,
             minWidth: 0,
             '& > .MuiButton-root': {
+              minWidth: 0,
+              maxWidth: '100%',
+              whiteSpace: 'normal',
+              overflowWrap: 'anywhere',
               width: { xs: stackActionsOnMobile ? '100%' : 'auto', sm: 'auto' },
             },
           }}

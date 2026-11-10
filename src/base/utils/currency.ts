@@ -17,11 +17,7 @@ export function formatCurrency(
   currency = 'VND',
   locale?: string,
 ): string {
-  if (amount === null || amount === undefined || isNaN(Number(amount))) {
-    return `0 ${currency}`;
-  }
-
-  const numericAmount = Number(amount);
+  const numericAmount = amount == null || isNaN(Number(amount)) ? 0 : Number(amount);
   const curr = currency.toUpperCase();
   const resolved = resolveLocale(locale);
   const isEnglish = resolved.toLowerCase().startsWith('en');
@@ -50,11 +46,7 @@ export function formatCompactCurrency(
   currency = 'VND',
   locale?: string,
 ): string {
-  if (amount === null || amount === undefined || isNaN(Number(amount))) {
-    return `0 ${currency}`;
-  }
-
-  const numericAmount = Number(amount);
+  const numericAmount = amount == null || isNaN(Number(amount)) ? 0 : Number(amount);
   const curr = currency.toUpperCase();
   const resolved = resolveLocale(locale);
   const isEnglish = resolved.toLowerCase().startsWith('en');

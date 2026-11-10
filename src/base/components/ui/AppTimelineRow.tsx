@@ -1,12 +1,15 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import { Box, ButtonBase, Stack, Typography } from '@mui/material';
+import { Box, ButtonBase, Typography } from '@mui/material';
+import AppTimelineRail from './AppTimelineRail';
 
 export interface AppTimelineRowProps {
   icon: ReactNode;
   title: string;
   meta?: ReactNode;
+  leading?: ReactNode;
+  railWidth?: number;
   children?: ReactNode;
   actions?: ReactNode;
   hasNext?: boolean;
@@ -18,6 +21,8 @@ const AppTimelineRow = ({
   icon,
   title,
   meta,
+  leading,
+  railWidth,
   children,
   actions,
   hasNext = false,
@@ -30,98 +35,94 @@ const AppTimelineRow = ({
       width: '100%',
       alignItems: 'stretch',
       minWidth: 0,
-      gap: 0.5,
+      gap: 1,
     }}
   >
-    <Box
-      component={onSelect ? ButtonBase : 'div'}
-      onClick={onSelect}
-      aria-pressed={onSelect ? selected : undefined}
-      sx={{
-        display: 'flex',
-        alignItems: 'stretch',
-        gap: 1.5,
-        flex: 1,
-        minWidth: 0,
-        textAlign: 'left',
-        borderRadius: '12px',
-        px: onSelect ? 1 : 0,
-        bgcolor: selected ? 'action.selected' : 'transparent',
-        outline: selected ? '1px solid' : undefined,
-        outlineColor: selected ? 'primary.main' : undefined,
-        outlineOffset: -1,
-        color: 'text.primary',
-        '&:hover': onSelect ? { bgcolor: 'action.hover' } : undefined,
-        '&.Mui-focusVisible': {
-          outline: '2px solid',
-          outlineColor: 'primary.main',
-          outlineOffset: -2,
-        },
-      }}
-    >
-      <Stack
-        spacing={1}
-        useFlexGap
-        sx={{ width: 40, flexShrink: 0, alignItems: 'center', pt: 1.5 }}
-      >
-        {icon}
-        {hasNext && (
-          <Box
-            aria-hidden="true"
-            sx={{ width: 2, flex: 1, minHeight: 12, bgcolor: 'divider' }}
-          />
-        )}
-      </Stack>
-      <Stack
-        spacing={0.75}
+    <AppTimelineRail marker={icon} width={railWidth} hasNext={hasNext} />
+    <Box sx={{ flex: 1, minWidth: 0, pb: hasNext ? 1 : 0 }}>
+      <Box
         sx={{
+          display: 'flex',
           flex: 1,
           minWidth: 0,
-          py: 1.5,
-          borderBottom: hasNext ? 1 : 0,
-          borderColor: 'divider',
+          border: 1,
+          borderRadius: '14px',
+          borderColor: selected ? 'primary.main' : 'divider',
+          bgcolor: selected ? 'action.selected' : 'background.paper',
         }}
       >
         <Box
+          component={onSelect ? ButtonBase : 'div'}
+          onClick={onSelect}
+          aria-pressed={onSelect ? selected : undefined}
           sx={{
             display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 1.5,
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            justifyContent: 'flex-start',
+            flex: 1,
             minWidth: 0,
-            flexWrap: 'wrap',
+            gap: 0.75,
+            p: 1.5,
+            textAlign: 'left',
+            borderRadius: '14px',
+            color: 'text.primary',
+            '&:hover': onSelect ? { bgcolor: 'action.hover' } : undefined,
+            '&.Mui-focusVisible': {
+              outline: '2px solid',
+              outlineColor: 'primary.main',
+              outlineOffset: -2,
+            },
           }}
         >
-          <Typography
-            component="span"
+          {leading}
+          <Box
             sx={{
-              flex: '1 1 120px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              gap: 1,
               minWidth: 0,
-              fontSize: { xs: '14px', sm: '15px' },
-              fontWeight: 700,
-              lineHeight: 1.6,
-              overflowWrap: 'anywhere',
+              flexWrap: 'wrap',
             }}
           >
-            {title}
-          </Typography>
-          {meta && <Box sx={{ flexShrink: 0 }}>{meta}</Box>}
+            <Typography
+              component="span"
+              sx={{
+                flex: '1 1 120px',
+                minWidth: 0,
+                fontSize: { xs: '14px', sm: '15px' },
+                fontWeight: 700,
+                lineHeight: 1.6,
+                overflowWrap: 'anywhere',
+              }}
+            >
+              {title}
+            </Typography>
+            {meta && (
+              <Box
+                sx={{ minWidth: 0, maxWidth: '100%', overflowWrap: 'anywhere' }}
+              >
+                {meta}
+              </Box>
+            )}
+          </Box>
+          {children}
         </Box>
-        {children}
-      </Stack>
-    </Box>
-    {actions && (
-      <Box
-        sx={{
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'flex-start',
-          pt: 0.5,
-        }}
-      >
-        {actions}
+        {actions && (
+          <Box
+            sx={{
+              flexShrink: 0,
+              display: 'flex',
+              alignItems: 'flex-start',
+              pt: 0.5,
+            }}
+          >
+            {actions}
+          </Box>
+        )}
       </Box>
-    )}
+    </Box>
   </Box>
 );
 

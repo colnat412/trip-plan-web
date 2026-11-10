@@ -1,4 +1,12 @@
 {
+  "select": {
+    "searchPlaceholder": "Search options...",
+    "searchLabel": "Search in {label}",
+    "noResults": "No matching options",
+    "clear": "Clear selection",
+    "open": "Open options",
+    "close": "Close options"
+  },
   "timePicker": {
     "placeholder": "HH:mm",
     "rangePlaceholder": "Start time – End time",
@@ -30,9 +38,9 @@
   "navigation": {
     "searchingTrips": "Searching trips…",
     "clearSearch": "Clear search",
-    "brandName": "Trip Plan",
+    "brandName": "Vi Vu",
     "brandTag": "Travel together",
-    "homeLink": "Trip Plan · Home",
+    "homeLink": "Vi Vu · Home",
     "main": "Main navigation",
     "items": {
       "overview": "Home",
@@ -75,18 +83,18 @@
   },
   "pwa": {
     "install": "Install app",
-    "iosTitle": "Install Trip Plan",
-    "iosDescription": "Add Trip Plan to your Home Screen for quicker access.",
+    "iosTitle": "Install Vi Vu",
+    "iosDescription": "Add Vi Vu to your Home Screen for quicker access.",
     "iosShare": "1. Open your browser's Share menu.",
     "iosAdd": "2. Choose Add to Home Screen.",
-    "iosConfirm": "3. Confirm the name Trip Plan and tap Add.",
+    "iosConfirm": "3. Confirm the name Vi Vu and tap Add.",
     "iosBrowserHint": "If this option is missing, open this page in Safari and try again.",
     "understood": "Got it",
     "installError": "Could not open the installation prompt. Try installing from your browser's menu."
   },
   "loading": {
     "label": "Loading",
-    "startup": "Opening Trip Plan…"
+    "startup": "Opening Vi Vu…"
   },
   "preferences": {
     "settings": "Settings",
@@ -161,7 +169,31 @@
     "showDetails": "Show trip details",
     "hideDetails": "Hide trip details",
     "recentError": "Could not load recent expenses.",
-    "retry": "Retry"
+    "retry": "Retry",
+    "countdown": {
+      "upcoming": "{count, plural, one {# day until departure} other {# days until departure}}",
+      "today": "Departing today",
+      "remaining": "{count, plural, one {# day left in your trip} other {# days left in your trip}}",
+      "lastDay": "Last day of your trip",
+      "completed": "Trip ended",
+      "cancelled": "Trip cancelled"
+    },
+    "nextActivity": {
+      "title": "Up next",
+      "first": "Upcoming",
+      "inProgress": "In progress",
+      "scheduledNow": "On the schedule now",
+      "summary": "Trip wrap-up",
+      "emptyPlan": "Your itinerary is empty",
+      "nothingNext": "No upcoming activities",
+      "unscheduled": "Start time not set",
+      "viewPlan": "View itinerary",
+      "add": "Add activity",
+      "ai": "Plan with AI",
+      "completed": "Your trip has ended",
+      "cancelled": "Your trip is cancelled",
+      "viewSettlement": "View settlements"
+    }
   },
   "sidebar": {
     "navigation": "Main navigation",
@@ -181,7 +213,7 @@
   },
   "login": {
     "banner": {
-      "label": "Explore your next journey with Trip Plan",
+      "label": "Explore your next journey with Vi Vu",
       "eyebrow": "Go further, together",
       "headline": "Less money worries.",
       "headlineAccent": "More memories.",
@@ -323,7 +355,8 @@
       "loginBtn": "Log in",
       "homeBtn": "Go Home",
       "noActivitiesNotice": "This trip has no activities planned yet."
-    }
+    },
+    "datesHaveActivities": "Days outside the new trip dates contain activities. Move or remove those activities before changing the dates."
   },
   "myTrips": {
     "title": "My Trips",
@@ -440,7 +473,9 @@
       "noBudgetHint": "No trip budget set. Usage and remaining funds cannot be calculated yet.",
       "retry": "Retry",
       "loadError": "Unable to load the trip budget.",
-      "editBudgetLabel": "Adjust trip budget"
+      "editBudgetLabel": "Adjust trip budget",
+      "lowBudget": "Budget running low",
+      "spendingRatioLabel": "Spent / Budget"
     },
     "progress": {
       "title": "Budget used",
@@ -538,7 +573,8 @@
       "warningOverAllocated": "Category limits exceed Total Budget by {amount}!",
       "syncTotalBudget": "Sync Total Budget",
       "remainingUnallocated": "{amount} unallocated (contingency fund)",
-      "exactAllocated": "100% budget fully allocated"
+      "exactAllocated": "100% budget fully allocated",
+      "memberFallback": "Member #{id}"
     },
     "camera": {
       "dialogTitle": "Take Receipt Photo",
@@ -706,7 +742,13 @@
     "noData": "No data available",
     "sortBy": "Sort by {column}",
     "rowsPerPage": "Rows per page",
-    "displayedRows": "{from}–{to} of {count}"
+    "displayedRows": "{from}–{to} of {count}",
+    "mobileControls": "Filter and sort",
+    "sortLabel": "Sort by",
+    "unsorted": "Default",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "resetControls": "Reset"
   },
   "settlement": {
     "pageTitle": "Split costs",
@@ -776,15 +818,18 @@
       "createError": "Could not save. Please retry.",
       "deleteSuccess": "Payment record deleted.",
       "deleteError": "Could not delete. Please retry."
-    }
+    },
+    "transferTo": "Pay {name}"
   },
   "plan": {
+    "actionsLabel": "Itinerary actions",
     "activityActions": "Actions for {title}",
     "map": {
       "title": "Stops for the day",
       "description": "Choose a stop to see its location on the map.",
       "noStops": "Add locations to your activities to see your stops here.",
-      "loadMore": "Load more activities"
+      "loadMore": "Load more activities",
+      "chooseStop": "Location"
     },
     "loadError": "Could not load the itinerary. Please try again.",
     "retry": "Try again",
@@ -845,7 +890,7 @@
     },
     "dialog": {
       "addTitle": "Add New Activity",
-      "editTitle": "Edit Activity",
+      "editTitle": "Edit",
       "titleLabel": "Activity Title *",
       "titlePlaceholder": "e.g., Breakfast, Old Quarter walking tour...",
       "titleRequired": "Please enter activity title",
@@ -863,9 +908,9 @@
       "notePlaceholder": "Dress code, tickets, booking tips...",
       "cancelBtn": "Cancel",
       "saveBtn": "Save Activity",
-      "deleteTitle": "Delete Activity",
+      "deleteTitle": "Delete",
       "deleteDesc": "Are you sure you want to delete this activity from your itinerary?",
-      "confirmDelete": "Delete Activity",
+      "confirmDelete": "Delete",
       "convertToExpense": "Record as Expense",
       "markCompleted": "Mark as Completed",
       "markPlanned": "Set to Planned",
@@ -892,13 +937,14 @@
       "confirmResetDay": "Clear all activities"
     },
     "checklist": {
-      "title": "Pre-Trip Packing & Tasks Checklist",
+      "title": "Trip preparation",
       "subtitle": "Check off all essential items and tasks before departure",
-      "inputPlaceholder": "Add item or task (e.g., Passport, Power bank, Book hotel...)",
+      "inputPlaceholder": "E.g. passport, power bank",
+      "itemLabel": "Item or task name",
       "categorySelect": "Category",
       "addBtn": "Add",
       "completedCount": "{completed} of {total} items prepared",
-      "emptyChecklist": "No items in preparation checklist yet."
+      "emptyChecklist": "No preparation items yet"
     },
     "distance": {
       "unavailable": "Travel details unavailable",
@@ -944,7 +990,7 @@
       "error": "An error occurred. Please try again."
     },
     "imageExport": {
-      "fontError": "Unable to load the Trip Plan font. Check your connection and retry.",
+      "fontError": "Unable to load the Vi Vu font. Check your connection and retry.",
       "title": "Export itinerary images",
       "downloadAll": "Download all images",
       "day": "Day {number}",
@@ -973,7 +1019,8 @@
       "emptyDay": "No activities planned for this day.",
       "emptyPlan": "This trip has no itinerary yet.",
       "printError": "Unable to open the print dialog. Please try again."
-    }
+    },
+    "spendingRatio": "Spent {spent} / Estimated {estimated}"
   },
   "aiPlanner": {
     "managerRequired": "Only the trip Owner or Vice can use AI to generate an itinerary.",
@@ -1027,12 +1074,12 @@
   },
   "legal": {
     "title": "Before your journey begins",
-    "description": "Please read and acknowledge all three policies to continue using Trip Plan. Open each document before making your decision.",
+    "description": "Please read and acknowledge all three policies to continue using Vi Vu. Open each document before making your decision.",
     "version": "Version {version}",
     "read": "Read {name}",
     "continue": "Agree and continue",
     "decline": "Sign out",
-    "recordNotice": "Trip Plan records the time, version and language of your first acceptance on your account.",
+    "recordNotice": "Vi Vu records the time, version and language of your first acceptance on your account.",
     "saveError": "Unable to complete the action. Please retry; your acceptance has not been updated on this screen.",
     "loadError": "Unable to check your account status. Please retry.",
     "loading": "Checking your account...",
@@ -1041,11 +1088,11 @@
     "documents": {
       "terms": {
         "title": "Terms of Use",
-        "summary": "Rules for accounts, travel planning and expense management on Trip Plan.",
+        "summary": "Rules for accounts, travel planning and expense management on Vi Vu.",
         "accept": "I agree to the Terms of Use.",
         "scope": {
           "title": "Service scope",
-          "body": "Trip Plan helps you create trips, manage itineraries, record expenses, split costs and use AI features. Expenses and settlements are records; the application does not transfer money or book services on your behalf."
+          "body": "Vi Vu helps you create trips, manage itineraries, record expenses, split costs and use AI features. Expenses and settlements are records; the application does not transfer money or book services on your behalf."
         },
         "responsibility": {
           "title": "Account responsibility",
@@ -1087,7 +1134,7 @@
         "accept": "I have read and acknowledge the Privacy Policy.",
         "scope": {
           "title": "Data processed",
-          "body": "Trip Plan processes account information such as name, email and avatar; trip, member, itinerary, expense and settlement data; and uploaded files. The system stores login sessions and the time, version and language of policy acceptance to operate accounts."
+          "body": "Vi Vu processes account information such as name, email and avatar; trip, member, itinerary, expense and settlement data; and uploaded files. The system stores login sessions and the time, version and language of policy acceptance to operate accounts."
         },
         "responsibility": {
           "title": "Purposes and access",
@@ -1107,7 +1154,7 @@
     "readDocument": "Read policy",
     "acceptedCount": "{count}/{total} acknowledged",
     "readShort": "Read",
-    "compactDescription": "Read and acknowledge the policies below to start using Trip Plan.",
+    "compactDescription": "Read and acknowledge the policies below to start using Vi Vu.",
     "compactRecordNotice": "Your acceptance is saved once on your account with the policy version and timestamp.",
     "backToAcceptance": "Back to acknowledgement"
   },
@@ -1201,7 +1248,11 @@
     "chooseTemplateHint": "Create a new trip from an existing itinerary template.",
     "banner": "Itinerary template cover",
     "bannerLoadError": "Could not load the current cover. Please try again.",
-    "bannerUploadError": "Could not upload the image. Please try again."
+    "bannerUploadError": "Could not upload the image. Please try again.",
+    "filters": "Filters",
+    "filtersCount": "Filters ({count})",
+    "clearFilters": "Clear filters",
+    "filtersDone": "Done"
   },
   "quickCreate": {
     "createTrip": "Create a trip",

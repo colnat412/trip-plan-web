@@ -6,6 +6,7 @@ import { CATEGORY_CONFIG, type TripCategory } from '@/base/constants';
 
 export interface AppCategoryIconProps {
   category: TripCategory | string;
+  size?: number;
 }
 
 const CATEGORY_TONES = {
@@ -16,7 +17,7 @@ const CATEGORY_TONES = {
   SHOPPING: 'secondary',
 } as const;
 
-const AppCategoryIcon = ({ category }: AppCategoryIconProps) => {
+const AppCategoryIcon = ({ category, size = 40 }: AppCategoryIconProps) => {
   const t = useTranslations('expense.categories');
   const config = CATEGORY_CONFIG[category] ?? CATEGORY_CONFIG.OTHER;
   const tone = CATEGORY_TONES[category as keyof typeof CATEGORY_TONES];
@@ -36,15 +37,15 @@ const AppCategoryIcon = ({ category }: AppCategoryIconProps) => {
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: 40,
-          height: 40,
+          width: size,
+          height: size,
           flexShrink: 0,
           borderRadius: '50%',
           bgcolor: tone
             ? `color-mix(in srgb, ${palette[tone].main} 10%, ${palette.background.paper})`
             : palette.action.selected,
           color: tone ? palette[tone].dark : palette.text.secondary,
-          '& .MuiSvgIcon-root': { fontSize: '22px' },
+          '& .MuiSvgIcon-root': { fontSize: Math.round(size * 0.55) },
           ...theme.applyStyles('dark', {
             color: tone ? palette[tone].light : palette.text.secondary,
           }),

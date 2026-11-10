@@ -7,8 +7,17 @@ import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceW
 import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppCard, AppButton, AppMetricValue } from '@/base/components/ui';
-import { formatCurrency, formatCompactCurrency } from '@/base/utils';
+import {
+  AppCard,
+  AppButton,
+  AppMetricValue,
+  AppAmountRatio,
+} from '@/base/components/ui';
+import {
+  formatCurrency,
+  formatCompactCurrency,
+  getBudgetBalanceTone,
+} from '@/base/utils';
 import MobileBudgetSummaryCard, {
   type MobileBudgetSummaryCardProps,
 } from './MobileBudgetSummaryCard';
@@ -32,7 +41,8 @@ const BudgetMetricsCards = ({
   const percentageUsed = summary?.percentageUsed ?? 0;
   const curr = summary?.currency || currency;
 
-  const isOverBudget = remainingBudget < 0;
+  const remainingTone = getBudgetBalanceTone(totalBudget, remainingBudget);
+  const isOverBudget = totalBudget > 0 && remainingBudget < 0;
   const isWarning = percentageUsed > 85 && !isOverBudget;
   const overLimitCategoriesCount = (summary?.categoryBreakdown || []).filter(
     (item) => item.limitAmount > 0 && item.spentAmount > item.limitAmount,
@@ -257,15 +267,13 @@ const BudgetMetricsCards = ({
               )}
             </Stack>
 
-            <AppMetricValue
+            <AppAmountRatio
+              amount={actualSpent}
+              total={totalBudget > 0 ? totalBudget : null}
+              currency={curr}
               tone={isOverBudget ? 'error' : 'primary'}
-              sx={{
-                fontSize: { xs: '18px', sm: '20px', xl: '22px' },
-                width: '100%',
-              }}
-            >
-              {formatCurrency(actualSpent, curr, locale)}
-            </AppMetricValue>
+              label={t('spendingRatioLabel')}
+            />
           </Stack>
 
           <Stack
@@ -324,9 +332,7 @@ const BudgetMetricsCards = ({
             borderRadius: '16px',
             border: 1,
             borderColor: 'divider',
-            ...cardBorderLeftStyle(
-              isOverBudget ? 'error.main' : 'success.main',
-            ),
+            ...cardBorderLeftStyle(`${remainingTone}.main`),
           }}
           contentSx={{
             height: '100%',
@@ -343,7 +349,7 @@ const BudgetMetricsCards = ({
                   p: 0.6,
                   borderRadius: '8px',
                   bgcolor: 'action.hover',
-                  color: isOverBudget ? 'error.main' : 'success.main',
+                  color: `${remainingTone}.main`,
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -364,27 +370,35 @@ const BudgetMetricsCards = ({
             </Stack>
 
             <AppMetricValue
-              tone={isOverBudget ? 'error' : 'success'}
+              tone={remainingTone}
               sx={{
                 fontSize: { xs: '18px', sm: '20px', xl: '22px' },
                 width: '100%',
               }}
             >
-              {formatCurrency(Math.abs(remainingBudget), curr, locale)}
+              {totalBudget > 0
+                ? formatCurrency(Math.abs(remainingBudget), curr, locale)
+                : '—'}
             </AppMetricValue>
           </Stack>
 
           <Typography
             sx={{
               fontSize: '11px',
-              color: isOverBudget ? 'error.main' : 'success.main',
+              color: `${remainingTone}.main`,
               fontWeight: 600,
               whiteSpace: 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             }}
           >
-            {isOverBudget ? t('warningNeedCompensation') : t('underControl')}
+            {totalBudget <= 0
+              ? t('noLimit')
+              : isOverBudget
+                ? t('warningNeedCompensation')
+                : remainingTone === 'warning' || remainingTone === 'error'
+                  ? t('lowBudget')
+                  : t('underControl')}
           </Typography>
         </AppCard>
       </Box>

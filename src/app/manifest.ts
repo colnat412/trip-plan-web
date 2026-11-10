@@ -1,10 +1,11 @@
 import type { MetadataRoute } from 'next';
+import { APP_NAME } from '@/base/constants/brand';
 
-export default function manifest(): MetadataRoute.Manifest {
+const manifest = (): MetadataRoute.Manifest => {
   return {
     id: '/',
-    name: 'Trip Plan',
-    short_name: 'Trip Plan',
+    name: APP_NAME,
+    short_name: APP_NAME,
     start_url: '/',
     scope: '/',
     display: 'standalone',
@@ -31,4 +32,6 @@ export default function manifest(): MetadataRoute.Manifest {
       },
     ],
   };
-}
+};
+
+export default manifest;

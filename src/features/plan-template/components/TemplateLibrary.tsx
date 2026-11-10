@@ -2,11 +2,10 @@
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppLoadingState, AppButton, AppCard, AppEmptyState, AppSectionHeader } from '@/base/components/ui';
+import { AppLoadingState, AppButton, AppCard, AppEmptyState, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import { Box, Pagination, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
@@ -36,21 +35,9 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
     <Stack spacing={2} sx={{ width: '100%', minWidth: 0 }}>
       {compact ? (
         <AppSectionHeader title={t('homeLibrary')} actions={
-          <AppButton
-            component={Link}
-            href="/templates"
-            intent="text"
-            size="medium"
-            disableRipple
-            sx={{
-              minHeight: 44,
-              WebkitTapHighlightColor: 'transparent',
-              '&:hover, &:active': { backgroundColor: 'transparent', color: 'primary.dark' },
-            }}
-            endIcon={<ArrowForwardRoundedIcon />}
-          >
+          <AppSectionLink href="/templates">
             {t('all')}
-          </AppButton>
+          </AppSectionLink>
         } />
       ) : (
         <Typography component="h1" sx={{

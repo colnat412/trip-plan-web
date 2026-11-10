@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { APP_NAME } from '@/base/constants/brand';
 import { cookies } from 'next/headers';
 import { Comfortaa } from 'next/font/google';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
@@ -6,7 +7,11 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 
 import { AppShell } from '@/base/components/layout';
-import { AUTH_COOKIE_NAMES, PUBLIC_AUTH_PATHS, PUBLIC_PATHS } from '@/base/constants';
+import {
+  AUTH_COOKIE_NAMES,
+  PUBLIC_AUTH_PATHS,
+  PUBLIC_PATHS,
+} from '@/base/constants';
 import AppThemeProvider from '@/base/providers/AppThemProvider';
 import AppInstallListener from '@/base/components/pwa/AppInstallListener';
 import AppStartupHost from '@/base/components/layout/AppStartupHost';
@@ -20,9 +25,10 @@ const comfortaa = Comfortaa({
 });
 
 export const metadata: Metadata = {
-  title: 'Trip Plan',
+  applicationName: APP_NAME,
+  title: APP_NAME,
   appleWebApp: {
-    title: 'Trip Plan',
+    title: APP_NAME,
   },
   icons: {
     icon: [
@@ -48,21 +54,22 @@ const sidebarDisabledPaths: readonly string[] = [
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   const locale = await getLocale();
   const cookieStore = await cookies();
-  const hasSession = AUTH_COOKIE_NAMES.some((name) => Boolean(cookieStore.get(name)?.value));
+  const hasSession = AUTH_COOKIE_NAMES.some((name) =>
+    Boolean(cookieStore.get(name)?.value),
+  );
 
   return (
-    <html
-      lang={locale}
-      suppressHydrationWarning
-      className={comfortaa.variable}
-    >
+    <html lang={locale} suppressHydrationWarning className={comfortaa.variable}>
       <body>
         <InitColorSchemeScript attribute="data" defaultMode="light" />
         <AppInstallListener />
         <NextIntlClientProvider>
           <AppThemeProvider>
             <AppStartupHost />
-            <AppShell sidebarDisabledPaths={sidebarDisabledPaths} hasSession={hasSession}>
+            <AppShell
+              sidebarDisabledPaths={sidebarDisabledPaths}
+              hasSession={hasSession}
+            >
               {children}
             </AppShell>
           </AppThemeProvider>
