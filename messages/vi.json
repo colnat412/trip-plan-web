@@ -681,6 +681,7 @@
     "emailInvalid": "Định dạng email không hợp lệ",
     "roleLabel": "Vai trò *",
     "sendInvite": "Gửi lời mời",
+    "saveChanges": "Lưu thay đổi",
     "cancel": "Hủy",
     "roles": {
       "OWNER": "Chủ chuyến đi",

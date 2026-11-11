@@ -681,6 +681,7 @@
     "emailInvalid": "Invalid email address format",
     "roleLabel": "Role *",
     "sendInvite": "Send invitation",
+    "saveChanges": "Save changes",
     "cancel": "Cancel",
     "roles": {
       "OWNER": "Trip Owner",

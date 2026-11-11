@@ -99,7 +99,7 @@ const EditMemberRoleDialog = ({
             onClick={handleSave}
             loading={isSubmitting}
           >
-            {t('sendInvite')}
+            {t('saveChanges')}
           </AppButton>
         </Stack>
       }

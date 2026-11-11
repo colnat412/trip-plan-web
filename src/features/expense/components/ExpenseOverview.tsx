@@ -5,7 +5,6 @@ import AppLoadingState from '@/base/components/ui/AppLoadingState';
 
 import { useState } from 'react';
 import { Box, Typography, Stack } from '@mui/material';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
@@ -13,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   AppButton,
+  AppFloatingActionButton,
   AppPageContainer,
   AppPageHeader,
   AppToast,
@@ -300,37 +300,30 @@ const ExpenseOverview = () => {
   }
 
   return (
-    <AppPageContainer>
+    <AppPageContainer
+      floatingAction={canWrite ? (
+        <AppFloatingActionButton
+          label={t('addExpense')}
+          onClick={() => setAddOpen(true)}
+        />
+      ) : undefined}
+    >
       <FinanceNavigation active="expenses" />
       <AppPageHeader
         icon={<AccountBalanceWalletRoundedIcon sx={{ fontSize: '24px' }} />}
         title={t('pageTitle')}
         badge={activeTrip.baseCurrency}
-        actions={
-          canWrite ? (
-            <>
-              {canManage && (
-                <AppButton
-                  intent="secondary"
-                  size="medium"
-                  startIcon={<TuneRoundedIcon fontSize="small" />}
-                  sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
-                  onClick={() => setSetBudgetOpen(true)}
-                >
-                  {t('setBudget')}
-                </AppButton>
-              )}
-              <AppButton
-                intent="primary"
-                size="medium"
-                startIcon={<AddRoundedIcon fontSize="small" />}
-                onClick={() => setAddOpen(true)}
-              >
-                {t('addExpense')}
-              </AppButton>
-            </>
-          ) : null
-        }
+        actions={canWrite && canManage ? (
+          <AppButton
+            intent="secondary"
+            size="medium"
+            startIcon={<TuneRoundedIcon fontSize="small" />}
+            sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
+            onClick={() => setSetBudgetOpen(true)}
+          >
+            {t('setBudget')}
+          </AppButton>
+        ) : undefined}
       />
 
       <Box

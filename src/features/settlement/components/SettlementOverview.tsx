@@ -2,7 +2,7 @@
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppLoadingState, AppButton, AppCard, AppPageContainer, AppPageHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
+import { AppLoadingState, AppButton, AppFloatingActionButton, AppCard, AppPageContainer, AppPageHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
 
 import FinanceNavigation from '@/features/expense/components/FinanceNavigation';
 
@@ -161,21 +161,17 @@ const SettlementOverview = () => {
   const currency = summary?.currency || currentTrip.baseCurrency || 'VND';
 
   return (
-    <AppPageContainer>
-        <FinanceNavigation active="settlement" />
-      <AppPageHeader
-        title={t('pageTitle')}
-        actions={
-          <AppButton
-            intent="primary"
-            startIcon={<HandshakeRoundedIcon sx={{ fontSize: '18px' }} />}
-            disabled={!canWrite}
-            onClick={() => handleOpenRecordPayment()}
-          >
-            {t('recordPayment')}
-          </AppButton>
-        }
-      />
+    <AppPageContainer
+      floatingAction={canWrite ? (
+        <AppFloatingActionButton
+          label={t('recordPayment')}
+          icon={<HandshakeRoundedIcon />}
+          onClick={() => handleOpenRecordPayment()}
+        />
+      ) : undefined}
+    >
+      <FinanceNavigation active="settlement" />
+      <AppPageHeader title={t('pageTitle')} />
 
       <MyBalanceCard
         myBalance={summary?.myBalance ?? 0}
