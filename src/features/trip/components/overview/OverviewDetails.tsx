@@ -29,13 +29,13 @@ const OverviewDetails = ({ trip, now }: { trip: Trip; now: Date | null }) => {
           minWidth: 0,
         }}
       >
-        <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Box sx={{ flex: { xs: '0 0 auto', md: '1 1 0%' }, minWidth: 0 }}>
           <TripBudgetCard key={trip.id} trip={trip} compact={!desktop} />
         </Box>
         <AppCard
           component="section"
           sx={{
-            flex: 1,
+            flex: { xs: '0 0 auto', md: '1 1 0%' },
             minWidth: 0,
             p: { xs: 2, md: 3 },
             borderRadius: '20px',

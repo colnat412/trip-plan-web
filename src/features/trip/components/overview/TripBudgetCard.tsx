@@ -98,8 +98,8 @@ const TripBudgetCard = ({
         ) : (
           <Box
             sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+              display: 'flex',
+              alignItems: 'stretch',
               gap: 1,
             }}
           >
@@ -112,12 +112,18 @@ const TripBudgetCard = ({
                 <AppCard
                   key={id}
                   variant={id === 'spent' ? 'primary' : 'outlined'}
-                  sx={{ minWidth: 0, p: { xs: 1, sm: 1.5 }, height: '100%' }}
+                  sx={{
+                    flex: '1 1 0%',
+                    minWidth: 0,
+                    p: { xs: 1, sm: 1.5 },
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
                   contentSx={{
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 1,
-                    height: '100%',
+                    flex: 1,
                   }}
                 >
                   <Box
