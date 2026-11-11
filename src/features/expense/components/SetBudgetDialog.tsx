@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useId } from 'react';
 import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 import { useTranslations } from 'next-intl';
-import { AppDialog } from '@/base/components/ui';
+import { AppButton, AppDialog } from '@/base/components/ui';
 import SetBudgetForm from './SetBudgetForm';
 import type { SetBudgetPayload, TripBudgetSummary } from '../types';
 
@@ -25,6 +25,7 @@ const SetBudgetDialog = ({
   onSubmit,
 }: SetBudgetDialogProps) => {
   const t = useTranslations('expense');
+  const formId = useId();
 
   return (
     <AppDialog
@@ -34,6 +35,17 @@ const SetBudgetDialog = ({
       title={t('dialog.setBudgetTitle')}
       icon={<AccountBalanceWalletRoundedIcon />}
       maxWidth="sm"
+      showSheetHandle
+      actions={
+        <>
+          <AppButton data-dialog-action="cancel" intent="secondary" onClick={onClose} disabled={isLoading}>
+            {t('form.cancel')}
+          </AppButton>
+          <AppButton data-dialog-action="primary" type="submit" form={formId} intent="primary" loading={isLoading} sx={{ minHeight: 44 }}>
+            {t('dialog.saveBudget')}
+          </AppButton>
+        </>
+      }
       mobileCloseLabel={t('form.cancel')}
     >
       <SetBudgetForm
@@ -42,7 +54,7 @@ const SetBudgetDialog = ({
         tripCurrency={tripCurrency}
         isLoading={isLoading}
         onSubmit={onSubmit}
-        onCancel={onClose}
+        formId={formId}
       />
     </AppDialog>
   );

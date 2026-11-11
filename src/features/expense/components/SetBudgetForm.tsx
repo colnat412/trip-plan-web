@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { Box, Stack, Typography, Divider } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppNumberInput } from '@/base/components/ui';
+import { AppButton, AppLinearProgress, AppNumberInput } from '@/base/components/ui';
 import { TRIP_CATEGORIES } from '@/base/constants';
 import { formatCurrency } from '@/base/utils';
 import type {
@@ -18,7 +18,7 @@ export interface SetBudgetFormProps {
   tripCurrency?: string;
   isLoading?: boolean;
   onSubmit: (payload: SetBudgetPayload) => void;
-  onCancel: () => void;
+  formId: string;
 }
 
 const CATEGORY_KEYS = TRIP_CATEGORIES;
@@ -28,7 +28,7 @@ const SetBudgetForm = ({
   tripCurrency = 'VND',
   isLoading = false,
   onSubmit,
-  onCancel,
+  formId,
 }: SetBudgetFormProps) => {
   const tDialog = useTranslations('expense.dialog');
   const tForm = useTranslations('expense.form');
@@ -104,6 +104,7 @@ const SetBudgetForm = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
     if (
       totalBudget.trim() === '' ||
       isNaN(Number(totalBudget)) ||
@@ -136,9 +137,10 @@ const SetBudgetForm = ({
   return (
     <Box
       component="form"
+      id={formId}
       onSubmit={handleSubmit}
       noValidate
-      sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+      sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, flexShrink: 0, '& .MuiInputBase-input': { fontSize: { xs: '16px', sm: '14px' } } }}
     >
       <AppNumberInput
         label={tDialog('totalBudgetLabel')}
@@ -151,7 +153,7 @@ const SetBudgetForm = ({
         }}
         error={Boolean(error)}
         helperText={error}
-        autoFocus
+        disabled={isLoading}
       />
 
       {numericTotalBudget > 0 && (
@@ -171,8 +173,8 @@ const SetBudgetForm = ({
         >
           <Stack spacing={1}>
             <Stack
-              direction="row"
-              sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+              spacing={0.5}
+              sx={{ minWidth: 0 }}
             >
               <Typography
                 sx={{
@@ -185,8 +187,10 @@ const SetBudgetForm = ({
               </Typography>
               <Typography
                 sx={{
-                  fontSize: '13px',
+                  fontSize: { xs: '15px', sm: '16px' },
                   fontWeight: 800,
+                  overflowWrap: 'anywhere',
+                  fontVariantNumeric: 'tabular-nums',
                   color: isOverAllocated ? 'error.main' : 'success.main',
                 }}
               >
@@ -195,24 +199,12 @@ const SetBudgetForm = ({
               </Typography>
             </Stack>
 
-            <Box
-              sx={{
-                width: '100%',
-                height: 6,
-                borderRadius: 3,
-                bgcolor: 'divider',
-                overflow: 'hidden',
-              }}
-            >
-              <Box
-                sx={{
-                  height: '100%',
-                  width: `${Math.min(100, (allocatedTotal / numericTotalBudget) * 100)}%`,
-                  bgcolor: isOverAllocated ? 'error.main' : 'success.main',
-                  transition: 'width 0.3s ease',
-                }}
-              />
-            </Box>
+            <AppLinearProgress
+              value={(allocatedTotal / numericTotalBudget) * 100}
+              height={6}
+              barColor={isOverAllocated ? 'error.main' : 'success.main'}
+              aria-label={tDialog('allocationStatus')}
+            />
 
             {isOverAllocated ? (
               <Stack
@@ -238,13 +230,14 @@ const SetBudgetForm = ({
                 </Typography>
                 <AppButton
                   size="small"
+                  disabled={isLoading}
                   intent="secondary"
                   onClick={() => setTotalBudget(String(allocatedTotal))}
                   sx={{
                     fontSize: '11px',
                     py: 0.25,
                     px: 1.25,
-                    height: '26px',
+                    minHeight: 44,
                     whiteSpace: 'nowrap',
                     alignSelf: { xs: 'flex-start', sm: 'center' },
                   }}
@@ -303,6 +296,8 @@ const SetBudgetForm = ({
           >
             <AppNumberInput
               label={cat.label}
+              disabled={isLoading}
+              slotProps={{ inputLabel: { shrink: true } }}
               size="small"
               placeholder="0"
               currencySuffix={tripCurrency}
@@ -313,31 +308,6 @@ const SetBudgetForm = ({
         ))}
       </Box>
 
-      <Stack
-        direction="row"
-        spacing={1.5}
-        useFlexGap
-        sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
-      >
-        <AppButton
-          data-dialog-action="cancel"
-          intent="secondary"
-          size="medium"
-          onClick={onCancel}
-          disabled={isLoading}
-        >
-          {tForm('cancel')}
-        </AppButton>
-        <AppButton
-          data-dialog-action="primary"
-          type="submit"
-          intent="primary"
-          size="medium"
-          loading={isLoading}
-        >
-          {tDialog('saveBudget')}
-        </AppButton>
-      </Stack>
     </Box>
   );
 };

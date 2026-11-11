@@ -2,10 +2,9 @@
 
 import { AppLoadingIndicator, AppButton } from '@/base/components/ui';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import axios from 'axios';
 import { Alert, Box, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
@@ -15,18 +14,6 @@ import { IMAGE_MIME_TYPES, MAX_IMAGE_BYTES } from '@/base/types';
 import { useScanReceipt } from '../hooks/useScanReceipt';
 import type { ScannedReceipt } from '../types';
 import CameraCaptureDialog from './CameraCaptureDialog';
-
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
 
 export interface ReceiptScanBannerProps {
   onScanSuccess: (scanned: ScannedReceipt, sourceImage?: File) => void;
@@ -39,6 +26,7 @@ const ReceiptScanBanner = ({
   onScanError,
   disabled = false,
 }: ReceiptScanBannerProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const tForm = useTranslations('expense.form');
   const tReceipt = useTranslations('expense.receipt');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -48,6 +36,7 @@ const ReceiptScanBanner = ({
   const { scanReceiptAsync, isPending: isScanning } = useScanReceipt();
 
   const processFile = async (file: Blob, defaultName = 'receipt.jpg') => {
+    if (disabled || isScanning) return;
     const sourceFile = file instanceof File
       ? file
       : new File([file], defaultName, { type: file.type });
@@ -91,17 +80,18 @@ const ReceiptScanBanner = ({
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, minWidth: 0, maxWidth: '100%', overflowWrap: 'anywhere' }}>
       <Box
         sx={{
-          p: 1.5,
-          borderRadius: 2,
-          border: '1px dashed',
+          minWidth: 0,
+          p: 2,
+          borderRadius: '16px',
+          border: '1px solid',
           borderColor: isScanning ? 'primary.main' : 'divider',
           bgcolor: isScanning ? 'action.selected' : 'action.hover',
           display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          alignItems: { xs: 'flex-start', sm: 'center' },
+          flexDirection: 'column',
+          alignItems: 'stretch',
           justifyContent: 'space-between',
           gap: 1.5,
         }}
@@ -110,14 +100,14 @@ const ReceiptScanBanner = ({
           sx={{
             display: 'flex',
             alignItems: 'center',
-            gap: 1.5,
+            gap: 1,
             minWidth: 0,
           }}
         >
           <Box
             sx={{
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 32,
               borderRadius: 1.5,
               bgcolor: 'action.selected',
               display: 'flex',
@@ -133,18 +123,12 @@ const ReceiptScanBanner = ({
               <AutoAwesomeOutlinedIcon fontSize="small" />
             )}
           </Box>
-          <Box sx={{ minWidth: 0 }}>
+          <Box role="status" aria-live="polite" sx={{ minWidth: 0 }}>
             <Typography
               variant="subtitle2"
-              sx={{ fontWeight: 600, fontSize: '0.875rem', lineHeight: 1.3 }}
+              sx={{ fontWeight: 700, fontSize: '14px', lineHeight: 1.5, overflowWrap: 'anywhere' }}
             >
               {isScanning ? tForm('scanReceiptLoading') : tForm('scanReceipt')}
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{ color: 'text.secondary', display: 'block', lineHeight: 1.3 }}
-            >
-              {tForm('scanReceiptDesc')}
             </Typography>
           </Box>
         </Box>
@@ -155,43 +139,48 @@ const ReceiptScanBanner = ({
             alignItems: 'center',
             gap: 1,
             flexShrink: 0,
-            alignSelf: { xs: 'stretch', sm: 'center' },
+            flexWrap: 'wrap',
           }}
         >
           <AppButton
-            size="small"
+            type="button"
+            size="medium"
+            wrapLabel
             intent="secondary"
             startIcon={<CameraAltOutlinedIcon fontSize="small" />}
-            loading={isScanning}
             disabled={disabled || isScanning}
             onClick={() => setIsCameraOpen(true)}
-            sx={{ flex: { xs: 1, sm: 'none' } }}
+            sx={{ flex: '1 1 128px', minWidth: 0, minHeight: 44 }}
           >
             {tForm('takePhotoButton')}
           </AppButton>
 
           <AppButton
-            component="label"
-            role={undefined}
-            tabIndex={-1}
-            size="small"
+            type="button"
+            size="medium"
+            wrapLabel
             intent="secondary"
             startIcon={<UploadFileOutlinedIcon fontSize="small" />}
+            onClick={() => fileInputRef.current?.click()}
             disabled={disabled || isScanning}
             sx={{
-              flex: { xs: 1, sm: 'none' },
+              flex: '1 1 128px',
+              minWidth: 0,
+              minHeight: 44,
               cursor: 'pointer',
             }}
           >
             {tForm('uploadFileButton')}
-            <VisuallyHiddenInput
-              type="file"
-              accept="image/*,application/pdf"
-              disabled={disabled || isScanning}
-              onChange={handleFileSelect}
-            />
           </AppButton>
         </Box>
+        <input
+          ref={fileInputRef}
+          type="file"
+          hidden
+          accept="image/*,application/pdf"
+          disabled={disabled || isScanning}
+          onChange={handleFileSelect}
+        />
       </Box>
 
       {attachmentSkipped && (
