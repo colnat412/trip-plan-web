@@ -82,6 +82,34 @@
     "signIn": "Sign in"
   },
   "pwa": {
+    "guide": {
+      "safari": {
+        "copy": "Copy",
+        "bookmark": "Add Bookmark",
+        "readingList": "Add to Reading List",
+        "cancel": "Cancel",
+        "website": "Website address",
+        "confirmHint": "The icon will be added to your Home Screen."
+      },
+      "share": {
+        "title": "Open Safari and tap Share",
+        "alt": "Illustrated Safari toolbar highlighting the square with an upward arrow.",
+        "hint": "If browsing inside another app, open this page in Safari. If Share is hidden, tap More (…)."
+      },
+      "home": {
+        "title": "Choose Add to Home Screen",
+        "action": "Add to Home Screen",
+        "alt": "Illustrated Share menu highlighting Add to Home Screen and its plus icon.",
+        "hint": "Scroll down the list. If the option is missing, look under Edit Actions."
+      },
+      "confirm": {
+        "title": "Confirm adding Vi Vu",
+        "action": "Add",
+        "alt": "Illustrated confirmation screen with the Vi Vu icon and Add highlighted at the top right.",
+        "hint": "Keep the name Vi Vu, enable Open as Web App if available, then tap Add. Launch the app from its Home Screen icon."
+      },
+      "note": "Recreated Safari iOS 18 light-mode interface, not screenshots. Button positions and labels may differ on your device."
+    },
     "install": "Install app",
     "iosTitle": "Install Vi Vu",
     "iosDescription": "Add Vi Vu to your Home Screen for quicker access.",

@@ -82,6 +82,34 @@
     "signIn": "Đăng nhập"
   },
   "pwa": {
+    "guide": {
+      "safari": {
+        "copy": "Sao chép",
+        "bookmark": "Thêm dấu trang",
+        "readingList": "Thêm vào Danh sách đọc",
+        "cancel": "Hủy",
+        "website": "Địa chỉ trang web",
+        "confirmHint": "Biểu tượng sẽ được thêm vào màn hình chính."
+      },
+      "share": {
+        "title": "Mở Safari và bấm Chia sẻ",
+        "alt": "Minh họa thanh Safari, khoanh nút hình vuông có mũi tên hướng lên.",
+        "hint": "Nếu đang mở từ Zalo/Facebook, hãy mở trang bằng Safari. Nếu chưa thấy Chia sẻ, bấm nút ba chấm (…)."
+      },
+      "home": {
+        "title": "Chọn Thêm vào Màn hình chính",
+        "action": "Thêm vào Màn hình chính",
+        "alt": "Minh họa menu Chia sẻ, khoanh dòng Thêm vào Màn hình chính có biểu tượng dấu cộng.",
+        "hint": "Cuộn xuống danh sách. Nếu thiếu mục này, tìm trong Sửa tác vụ."
+      },
+      "confirm": {
+        "title": "Xác nhận thêm Vi Vu",
+        "action": "Thêm",
+        "alt": "Minh họa màn hình xác nhận với logo Vi Vu và nút Thêm được khoanh ở góc trên phải.",
+        "hint": "Giữ tên Vi Vu, bật Mở dưới dạng ứng dụng web nếu có, rồi bấm Thêm. Mở app từ biểu tượng trên màn hình chính."
+      },
+      "note": "Hình dựng theo Safari iOS 18 (giao diện sáng), không phải ảnh chụp màn hình. Vị trí và tên nút có thể khác trên máy của bạn."
+    },
     "install": "Cài ứng dụng",
     "iosTitle": "Cài Vi Vu",
     "iosDescription": "Thêm Vi Vu vào màn hình chính để mở nhanh hơn.",

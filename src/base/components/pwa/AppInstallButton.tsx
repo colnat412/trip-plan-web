@@ -2,7 +2,7 @@
 
 import { useState, useSyncExternalStore } from 'react';
 import { useTranslations } from 'next-intl';
-import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import { AppButton, AppDialog, AppToast, AppLoadingIndicator } from '@/base/components/ui';
 import {
@@ -12,6 +12,8 @@ import {
   requestInstallation,
   subscribeToInstall,
 } from '@/base/pwa/install-store';
+
+import IOSInstallGuide from './IOSInstallGuide';
 
 interface AppInstallButtonProps {
   menuItem?: boolean;
@@ -25,6 +27,7 @@ const AppInstallButton = ({ menuItem = false }: AppInstallButtonProps) => {
     getInstallState,
     getServerInstallState,
   );
+  const opensGuide = status === 'ios';
   const visible = status === 'prompt' || status === 'ios';
 
   return (
@@ -38,11 +41,11 @@ const AppInstallButton = ({ menuItem = false }: AppInstallButtonProps) => {
             loading={isInstalling}
             aria-label={t('install')}
             aria-busy={isInstalling || undefined}
-            aria-haspopup={status === 'ios' ? 'dialog' : undefined}
-            aria-expanded={status === 'ios' ? guideOpen : undefined}
+            aria-haspopup={opensGuide ? 'dialog' : undefined}
+            aria-expanded={opensGuide ? guideOpen : undefined}
             startIcon={<DownloadRoundedIcon sx={{ fontSize: '18px' }} />}
             onClick={() => {
-              if (status === 'ios') setGuideOpen(true);
+              if (opensGuide) setGuideOpen(true);
               else void requestInstallation();
             }}
             sx={{
@@ -71,10 +74,10 @@ const AppInstallButton = ({ menuItem = false }: AppInstallButtonProps) => {
               loadingIndicator={<AppLoadingIndicator />}
               aria-label={t('install')}
               aria-busy={isInstalling || undefined}
-              aria-haspopup={status === 'ios' ? 'dialog' : undefined}
-              aria-expanded={status === 'ios' ? guideOpen : undefined}
+              aria-haspopup={opensGuide ? 'dialog' : undefined}
+              aria-expanded={opensGuide ? guideOpen : undefined}
               onClick={() => {
-                if (status === 'ios') setGuideOpen(true);
+                if (opensGuide) setGuideOpen(true);
                 else void requestInstallation();
               }}
               sx={{
@@ -93,8 +96,9 @@ const AppInstallButton = ({ menuItem = false }: AppInstallButtonProps) => {
         )
       )}
       <AppDialog
-      mobilePresentation="dialog"
-        open={guideOpen && status === 'ios'}
+        mobilePresentation="sheet"
+        showSheetHandle
+        open={guideOpen && opensGuide}
         onClose={() => setGuideOpen(false)}
         title={t('iosTitle')}
         description={t('iosDescription')}
@@ -106,14 +110,7 @@ const AppInstallButton = ({ menuItem = false }: AppInstallButtonProps) => {
           </AppButton>
         }
       >
-        <Stack spacing={1.5}>
-          <Typography>{t('iosShare')}</Typography>
-          <Typography>{t('iosAdd')}</Typography>
-          <Typography>{t('iosConfirm')}</Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: '13px' }}>
-            {t('iosBrowserHint')}
-          </Typography>
-        </Stack>
+        <IOSInstallGuide />
       </AppDialog>
       <AppToast
         open={hasError}
