@@ -149,7 +149,8 @@ const TripItineraryPreview = ({ trip, now }: TripItineraryPreviewProps) => {
               <ActivityTimelineCard
                 activity={next.activity}
                 currency={trip.baseCurrency}
-                readOnly
+                readOnly={!canWrite}
+                onImageSaved={() => void refetch().catch(() => undefined)}
                 compact
               />
             </Stack>

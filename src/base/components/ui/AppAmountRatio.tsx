@@ -36,11 +36,14 @@ const AppAmountRatio = ({
           gap: 0.75,
           minWidth: 0,
           maxWidth: '100%',
+          // Nhấn bằng nền nhạt và vạch màu bên trái; số tiền giữ cỡ chữ thường.
           ...(highlighted && {
             alignSelf: 'flex-start',
-            px: 1.25,
-            py: 0.75,
-            borderRadius: '10px',
+            px: 1,
+            py: 0.5,
+            borderRadius: '8px',
+            borderLeft: '3px solid',
+            borderColor: palette[tone].main,
             bgcolor: `color-mix(in srgb, ${palette[tone].main} 8%, ${palette.background.paper})`,
           }),
         };
@@ -48,7 +51,11 @@ const AppAmountRatio = ({
     >
       <AppMetricValue
         tone={tone}
-        sx={{ whiteSpace: 'nowrap', fontSize: highlighted ? '17px' : '20px' }}
+        sx={{
+          whiteSpace: 'nowrap',
+          fontSize: highlighted ? '13px' : '20px',
+          ...(highlighted && { color: 'text.primary' }),
+        }}
       >
         {formatCurrency(amount, currency, locale)}
       </AppMetricValue>

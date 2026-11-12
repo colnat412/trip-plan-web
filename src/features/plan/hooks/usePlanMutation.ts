@@ -1,6 +1,6 @@
 'use client';
 
-import { axiosPatch, type ApiResponse } from '@/base/api';
+import { axiosPatch, axiosPut, type ApiResponse } from '@/base/api';
 import {
   useMutationRequest,
   useMutationPost,
@@ -104,6 +104,47 @@ export function useDeleteActivity({
 interface UpdateActivityStatusPayload {
   activityId: string | number;
   status: ActivityStatus;
+}
+
+export interface UpdateActivityTimePayload {
+  activityId: string | number;
+  payload: UpdateActivityPayload;
+}
+
+// Đổi nhanh giờ ngay trên thẻ; activityId nằm trong biến mutation nên dùng được cho mọi thẻ.
+export function useUpdateActivityTime({
+  tripId,
+  options,
+}: {
+  tripId: string | number;
+  options?: MutationCallbacks<ApiResponse<PlanActivity>, UpdateActivityTimePayload>;
+}) {
+  const mutation = useMutationRequest<ApiResponse<PlanActivity>, UpdateActivityTimePayload>({
+    mutationKey: ['plan', 'activity', 'time', tripId],
+    mutationFn: ({ activityId, payload }) =>
+      axiosPut(`/trip/${tripId}/plan/activities/${activityId}`, payload),
+    options,
+  });
+  return {
+    ...mutation,
+    updateTime: mutation.mutate,
+    updateTimeAsync: mutation.mutateAsync,
+  };
+}
+
+export interface UpdateActivityImagePayload {
+  imageUploadId?: string;
+  removeImage: boolean;
+}
+
+export function useUpdateActivityImage(tripId: string, activityId: string) {
+  return useMutationRequest<ApiResponse<PlanActivity>, UpdateActivityImagePayload>({
+    mutationKey: ['plan', 'activity', 'image', tripId, activityId],
+    mutationFn: (payload) => axiosPatch(
+      `/trip/${encodeURIComponent(tripId)}/plan/activities/${encodeURIComponent(activityId)}/image`,
+      payload,
+    ),
+  });
 }
 
 export function useUpdateActivityStatus({
@@ -374,6 +415,8 @@ const usePlanMutation = () => {
     useUpdateActivity,
     useDeleteActivity,
     useUpdateActivityStatus,
+    useUpdateActivityImage,
+    useUpdateActivityTime,
     useCreatePlanDay,
     useUpdatePlanDay,
     useDeletePlanDay,

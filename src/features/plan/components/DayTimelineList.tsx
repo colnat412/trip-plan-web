@@ -14,12 +14,17 @@ import useDayRouteDistances from '../hooks/useDayRouteDistances';
 export interface DayTimelineListProps {
   activities: PlanActivity[];
   currency: string;
+  onImageSaved?: () => void;
   destinationContext?: string;
   onAddActivity?: () => void;
   onEditActivity?: (activity: PlanActivity) => void;
   onDeleteActivity?: (activity: PlanActivity) => void;
   onToggleStatus?: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
   onConvertToExpense?: (activity: PlanActivity) => void;
+  onChangeActivityTime?: (
+    activity: PlanActivity,
+    time: { startTime: string; endTime: string },
+  ) => void;
   readOnly?: boolean;
   canDeleteActivity?: (activity: PlanActivity) => boolean;
 }
@@ -27,12 +32,14 @@ export interface DayTimelineListProps {
 const DayTimelineList = ({
   activities,
   currency,
+  onImageSaved,
   destinationContext,
   onAddActivity,
   onEditActivity,
   onDeleteActivity,
   onToggleStatus,
   onConvertToExpense,
+  onChangeActivityTime,
   readOnly = false,
   canDeleteActivity,
 }: DayTimelineListProps) => {
@@ -87,6 +94,7 @@ const DayTimelineList = ({
             <React.Fragment key={activity.id}>
               <ActivityTimelineCard
                 activity={activity}
+                onImageSaved={onImageSaved}
                 hasNext={idx < activities.length - 1}
                 currency={currency}
                 onEdit={onEditActivity}
@@ -97,7 +105,9 @@ const DayTimelineList = ({
                 }
                 onToggleStatus={onToggleStatus}
                 onConvertToExpense={onConvertToExpense}
+                onChangeTime={onChangeActivityTime}
                 readOnly={readOnly}
+                order={idx + 1}
               />
 
               {nextActivity && hasLocationCurrent && hasLocationNext && (

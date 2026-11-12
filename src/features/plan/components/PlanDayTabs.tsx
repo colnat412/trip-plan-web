@@ -79,7 +79,7 @@ const PlanDayTabs = ({
                 overflowWrap: 'anywhere',
               }}
             >
-              {day.planDate ? formatDate(day.planDate) : t('dayTab', { day: day.dayNumber })}
+              {day.planDate ? formatDate(day.planDate, 'DD/MM') : t('dayTab', { day: day.dayNumber })}
             </Typography>
           </ButtonBase>
         );

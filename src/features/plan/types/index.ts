@@ -31,6 +31,7 @@ export interface PlanActivity {
   status: ActivityStatus;
   orderIndex: number;
   note?: string | null;
+  imageUrl?: string | null;
   expenseId?: string | null;
   actualSpent?: number | null;
   createdAt: string;
@@ -102,6 +103,8 @@ export interface CreateActivityPayload {
 }
 
 export interface UpdateActivityPayload {
+  imageUploadId?: string;
+  removeImage?: boolean;
   title?: string;
   startTime?: string;
   endTime?: string;

@@ -26,18 +26,23 @@ const PlanDayToolbar = ({ day, currency }: PlanDayToolbarProps) => {
             display: 'flex',
             alignItems: 'center',
             flexWrap: 'wrap',
-            gap: 1.5,
+            gap: 1,
             fontSize: 13,
           }}
         >
           <span>{t('activityCount', { count: day.totalActivities })}</span>
           {day.totalEstimatedCost > 0 && (
-            <span>
-              {t('dayTotalCostLabel')}:{' '}
-              <AppMetricValue component="span">
-                {formatCurrency(day.totalEstimatedCost, currency, locale)}
-              </AppMetricValue>
-            </span>
+            <>
+              <Box component="span" aria-hidden="true" sx={{ color: 'text.disabled' }}>
+                •
+              </Box>
+              <span>
+                {t('dayTotalCostLabel')}:{' '}
+                <AppMetricValue component="span">
+                  {formatCurrency(day.totalEstimatedCost, currency, locale)}
+                </AppMetricValue>
+              </span>
+            </>
           )}
         </Box>
       }

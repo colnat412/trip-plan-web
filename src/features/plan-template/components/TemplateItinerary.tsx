@@ -66,6 +66,7 @@ const TemplateItinerary = ({
                         status: 'PLANNED',
                       }}
                       currency={currency}
+                      order={index + 1}
                       hasNext={index < selectedDay.activities.length - 1}
                       readOnly
                     />

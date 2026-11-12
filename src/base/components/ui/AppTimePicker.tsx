@@ -20,6 +20,14 @@ interface CommonTimePickerProps {
   required?: boolean;
   error?: boolean;
   helperText?: ReactNode;
+  // Thay ô nhập mặc định bằng nút tuỳ ý (ví dụ nhãn giờ trên thẻ hoạt động).
+  renderTrigger?: (context: {
+    value: string;
+    onOpen: () => void;
+    open: boolean;
+    dialogId: string;
+    disabled?: boolean;
+  }) => ReactNode;
 }
 
 export type AppTimePickerProps = CommonTimePickerProps & (
@@ -28,7 +36,7 @@ export type AppTimePickerProps = CommonTimePickerProps & (
 );
 
 const AppTimePicker = (props: AppTimePickerProps) => {
-  const { label, disabled, required = false, error, helperText } = props;
+  const { label, disabled, required = false, error, helperText, renderTrigger } = props;
   const t = useTranslations('timePicker');
   const locale = useLocale();
   const dialogId = useId();
@@ -55,19 +63,27 @@ const AppTimePicker = (props: AppTimePickerProps) => {
 
   return (
     <>
-      <AppPickerField
-        label={label}
-        value={props.mode === 'range' ? formatPickerTimeRange(props.value) : props.value}
-        placeholder={range ? t('rangePlaceholder') : t('placeholder')}
-        disabled={disabled}
-        required={required}
-        error={error}
-        helperText={helperText}
-        open={open}
-        dialogId={dialogId}
-        onOpen={openPicker}
-        icon={<AccessTimeRoundedIcon color="action" />}
-      />
+      {renderTrigger ? renderTrigger({
+        value: props.mode === 'range' ? formatPickerTimeRange(props.value) : props.value,
+        onOpen: openPicker,
+        open,
+        dialogId,
+        disabled,
+      }) : (
+        <AppPickerField
+          label={label}
+          value={props.mode === 'range' ? formatPickerTimeRange(props.value) : props.value}
+          placeholder={range ? t('rangePlaceholder') : t('placeholder')}
+          disabled={disabled}
+          required={required}
+          error={error}
+          helperText={helperText}
+          open={open}
+          dialogId={dialogId}
+          onOpen={openPicker}
+          icon={<AccessTimeRoundedIcon color="action" />}
+        />
+      )}
       <AppDialog
         open={open}
         onClose={() => setOpen(false)}
@@ -76,7 +92,7 @@ const AppTimePicker = (props: AppTimePickerProps) => {
         actions={<AppButton onClick={apply} disabled={!valid || disabled}>{t('apply')}</AppButton>}
       >
         {open && (
-          <Stack id={dialogId} spacing={1.5} sx={{ minWidth: 0 }}>
+          <Stack id={dialogId} spacing={2} sx={{ minWidth: 0 }}>
             {range && (
               <ToggleButtonGroup
                 exclusive
@@ -96,6 +112,7 @@ const AppTimePicker = (props: AppTimePickerProps) => {
                 ))}
               </ToggleButtonGroup>
             )}
+            <Stack spacing={0.5} sx={{ minWidth: 0 }}>
             <Box sx={{ display: 'flex' }} aria-hidden="true">
               <Typography sx={{ flex: 1, textAlign: 'center', fontSize: '13px', color: 'text.secondary' }}>{t('hours')}</Typography>
               <Typography sx={{ flex: 1, textAlign: 'center', fontSize: '13px', color: 'text.secondary' }}>{t('minutes')}</Typography>
@@ -123,11 +140,13 @@ const AppTimePicker = (props: AppTimePickerProps) => {
                 }}
                 sx={{
                   width: '100%', minWidth: 0,
-                  '& .MuiMultiSectionDigitalClockSection-root': { flex: 1, width: 'auto', minWidth: 0, px: 1, py: 0.5 },
+                  // 5 dòng x 40px + đệm trên dưới 4px: không còn dòng bị cắt dở ở mép cột.
+                  '& .MuiMultiSectionDigitalClockSection-root': { flex: 1, width: 'auto', minWidth: 0, px: 1, py: '4px', maxHeight: '208px' },
                   '& .MuiMultiSectionDigitalClockSection-item': { width: '100%', m: 0, borderRadius: '10px', minHeight: 40 },
                 }}
               />
             </LocalizationProvider>
+            </Stack>
             {invalidOrder && <FormHelperText error role="alert">{t('invalidOrder')}</FormHelperText>}
             {!required && (
               <AppButton

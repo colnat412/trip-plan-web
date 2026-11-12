@@ -858,7 +858,14 @@
       "description": "Chọn một điểm dừng để xem vị trí trên bản đồ.",
       "noStops": "Thêm địa điểm vào hoạt động để xem các điểm dừng tại đây.",
       "loadMore": "Tải thêm hoạt động",
-      "chooseStop": "Địa điểm"
+      "chooseStop": "Địa điểm",
+      "fitAll": "Toàn tuyến",
+      "lineNote": "Đường nối thể hiện thứ tự ghé thăm, không phải đường đi thực tế.",
+      "openLocation": "Mở Google Maps",
+      "openRoute": "Google Maps",
+      "missingStops": "Chưa xác định được vị trí của {count} điểm.",
+      "retry": "Thử lại",
+      "loadMoreStops": "Tải thêm điểm trên bản đồ"
     },
     "loadError": "Chưa thể tải lịch trình. Vui lòng thử lại.",
     "retry": "Thử lại",
@@ -1089,6 +1096,8 @@
     "tip2": "Sau khi AI tạo lịch trình xong, bạn vẫn có thể tự do kéo thả đổi thứ tự, chỉnh sửa từng địa điểm hoặc xóa các hoạt động tùy thích tại trang Kế hoạch!"
   },
   "imageUpload": {
+    "change": "Đổi ảnh",
+    "saving": "Đang lưu ảnh…",
     "choose": "Chọn ảnh",
     "remove": "Bỏ ảnh",
     "hint": "JPEG, PNG hoặc WebP, tối đa 5 MB.",
@@ -1327,5 +1336,9 @@
       "SNOW": "Tuyết",
       "THUNDERSTORM": "Giông"
     }
+  },
+  "interactiveMap": {
+    "unavailable": "Chưa thể hiển thị bản đồ tương tác.",
+    "retry": "Tải lại bản đồ"
   }
 }

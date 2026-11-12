@@ -74,6 +74,8 @@ export type { AppAvatarStackProps, AppAvatarStackItem } from './AppAvatarStack';
 
 export { default as AppCategoryIcon } from './AppCategoryIcon';
 export type { AppCategoryIconProps } from './AppCategoryIcon';
+export { default as AppNumberBadge } from './AppNumberBadge';
+export type { AppNumberBadgeProps } from './AppNumberBadge';
 export { default as AppTimelineRow } from './AppTimelineRow';
 export type { AppTimelineRowProps } from './AppTimelineRow';
 
@@ -122,3 +124,6 @@ export type { AppIconTextProps } from './AppIconText';
 
 export { default as AppFloatingActionButton } from './AppFloatingActionButton';
 export type { AppFloatingActionButtonProps } from './AppFloatingActionButton';
+
+export { default as AppInteractiveMap } from './AppInteractiveMap';
+export type { AppInteractiveMapProps } from './AppInteractiveMap';

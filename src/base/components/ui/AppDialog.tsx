@@ -303,7 +303,9 @@ const AppDialog = ({
           disableSpacing
           sx={{
             px: { xs: 2, sm: 2.5 },
-            py: 2,
+            // Đệm dưới của nội dung đã tạo khoảng cách; không cộng thêm đệm trên.
+            pt: 0,
+            pb: 2,
             gap: 1.5,
             flexWrap: 'wrap',
             flexShrink: 0,

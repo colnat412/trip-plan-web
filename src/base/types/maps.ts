@@ -5,6 +5,16 @@ export interface MapCoordinates {
   longitude: number;
 }
 
+export interface MapStop {
+  id: string;
+  label: string;
+  order: number;
+  coordinates: MapCoordinates;
+  completed?: boolean;
+  // Điểm của ngày không được chọn: vẫn hiện trên bản đồ nhưng mờ và không nối đường.
+  dimmed?: boolean;
+}
+
 export interface MapPlacePrediction {
   placeId: string;
   mainText: string;

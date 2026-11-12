@@ -34,6 +34,7 @@ export interface LocationAutocompleteInputProps {
   error?: boolean;
   helperText?: string;
   required?: boolean;
+  disabled?: boolean;
   fullWidth?: boolean;
 }
 
@@ -45,6 +46,7 @@ const LocationAutocompleteInput = ({
   error,
   helperText,
   required,
+  disabled = false,
   fullWidth = true,
 }: LocationAutocompleteInputProps) => {
   const theme = useTheme();
@@ -71,6 +73,7 @@ const LocationAutocompleteInput = ({
     <AppMapSearchSourcesContext.Provider value={displayOptions.map(option => option.source)}>
     <Autocomplete<PlacePrediction | string, false, false, true>
       slots={{ paper: AppMapSearchPaper }}
+      disabled={disabled}
       freeSolo
       value={selectedValue}
       inputValue={inputValue}

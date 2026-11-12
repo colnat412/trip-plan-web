@@ -858,7 +858,14 @@
       "description": "Choose a stop to see its location on the map.",
       "noStops": "Add locations to your activities to see your stops here.",
       "loadMore": "Load more activities",
-      "chooseStop": "Location"
+      "chooseStop": "Location",
+      "fitAll": "Fit all stops",
+      "lineNote": "Lines show visit order, not road directions.",
+      "openLocation": "Open Google Maps",
+      "openRoute": "Google Maps",
+      "missingStops": "Could not locate {count} stops.",
+      "retry": "Retry",
+      "loadMoreStops": "Load more map stops"
     },
     "loadError": "Could not load the itinerary. Please try again.",
     "retry": "Try again",
@@ -1089,6 +1096,8 @@
     "tip2": "After AI generates the plan, you can still drag to reorder, edit spots, or remove activities in the Plan page!"
   },
   "imageUpload": {
+    "change": "Change photo",
+    "saving": "Saving photo…",
     "choose": "Choose image",
     "remove": "Remove image",
     "hint": "JPEG, PNG or WebP, up to 5 MB.",
@@ -1327,5 +1336,9 @@
       "SNOW": "Snow",
       "THUNDERSTORM": "Thunderstorms"
     }
+  },
+  "interactiveMap": {
+    "unavailable": "The interactive map is unavailable.",
+    "retry": "Reload map"
   }
 }

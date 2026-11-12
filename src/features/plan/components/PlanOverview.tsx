@@ -4,7 +4,6 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import {
   AppLoadingState,
-  AppButton,
   AppFloatingActionButton,
   AppPageContainer,
   AppToast,
@@ -32,6 +31,7 @@ import useTripPlan from '../hooks/useTripPlan';
 import useDayActivities from '../hooks/useDayActivities';
 import {
   useUpdateActivityStatus,
+  useUpdateActivityTime,
   useToggleChecklist,
   useDeleteChecklist,
   useReorderDayActivities,
@@ -93,7 +93,6 @@ const PlanOverview = ({
   const { members, role, canWrite, canManage, canManageRecord } =
     useTripPermissions(tripId);
 
-  const [mobileView, setMobileView] = useState<'timeline' | 'map'>('timeline');
   const [selectedDayId, setSelectedDayId] = useState<string>(initialDayId);
   const [addActivityOpen, setAddActivityOpen] = useState(false);
   const [aiPlannerOpen, setAiPlannerOpen] = useState(initialAiOpen);
@@ -200,9 +199,6 @@ const PlanOverview = ({
           setEditingActivity(null);
           refreshPlan();
         },
-        onError: () => {
-          showToast(t('toasts.error'), 'error');
-        },
       },
     });
 
@@ -263,6 +259,34 @@ const PlanOverview = ({
       onError: mutationError,
     },
   });
+  const { updateTime } = useUpdateActivityTime({
+    tripId: tripId ?? '',
+    options: {
+      onSuccess: () => {
+        showToast(t('toasts.updateActivitySuccess'));
+        void refreshPlan();
+      },
+      onError: mutationError,
+    },
+  });
+  // Máy chủ ghi đè tiêu đề, giờ, địa chỉ, ghi chú nên gửi lại đủ các trường hiện có.
+  const handleChangeActivityTime = (
+    activity: PlanActivity,
+    time: { startTime: string; endTime: string },
+  ) =>
+    updateTime({
+      activityId: activity.id,
+      payload: {
+        title: activity.title,
+        category: activity.category,
+        status: activity.status,
+        location: activity.location ?? undefined,
+        estimatedCost: activity.estimatedCost,
+        note: activity.note ?? undefined,
+        startTime: time.startTime || undefined,
+        endTime: time.endTime || undefined,
+      },
+    });
   const { toggleChecklist, isPending: isTogglingChecklist } = useToggleChecklist({
     tripId: tripId ?? '',
     options: {
@@ -418,6 +442,16 @@ const PlanOverview = ({
         />
       ) : null}
 
+      {!isLoading && !isStale && !planError && !activitiesError &&
+        selectedDay && (
+          <PlanMapPanel
+            key={`plan-map:${tripId}`}
+            activities={dayActivities}
+            loadingActivities={isLoadingActivities}
+            destination={activeTrip.destination}
+          />
+        )}
+
       {isLoading || (isStale && !planError) ? null : !planError &&
         days.length > 0 ? (
         <PlanDayTabs
@@ -428,36 +462,6 @@ const PlanOverview = ({
         />
       ) : null}
 
-      <Box sx={{ width: '100%', display: 'flex', gap: 1 }}>
-        <AppButton
-          intent="secondary"
-          aria-pressed={mobileView === 'timeline'}
-          onClick={() => setMobileView('timeline')}
-          sx={{
-            flex: 1,
-            bgcolor:
-              mobileView === 'timeline'
-                ? 'action.selected'
-                : 'background.paper',
-            borderRadius: '12px',
-          }}
-        >
-          {t('timelineView')}
-        </AppButton>
-        <AppButton
-          intent="secondary"
-          aria-pressed={mobileView === 'map'}
-          onClick={() => setMobileView('map')}
-          sx={{
-            flex: 1,
-            bgcolor:
-              mobileView === 'map' ? 'action.selected' : 'background.paper',
-            borderRadius: '12px',
-          }}
-        >
-          {t('mapView')}
-        </AppButton>
-      </Box>
       {!isLoading && !isStale && !planError && selectedDay && (
         <PlanDayToolbar
           day={selectedDay}
@@ -486,7 +490,6 @@ const PlanOverview = ({
         >
           <Box
             sx={{
-              display: mobileView === 'timeline' ? 'block' : 'none',
               width: '100%',
               minWidth: 0,
             }}
@@ -510,6 +513,8 @@ const PlanOverview = ({
                     updateStatus({ activityId: activity.id, status })
                 }
                 onConvertToExpense={setConvertExpenseActivity}
+                onChangeActivityTime={handleChangeActivityTime}
+                onImageSaved={() => void refreshPlan()}
                 readOnly={!canWrite || Boolean(planError)}
               />
             )}
@@ -518,29 +523,6 @@ const PlanOverview = ({
               <AppInfiniteScrollTrigger
                 hasMore={hasMoreActivities && !activitiesError}
                 loading={isFetchingMoreActivities}
-                onLoadMore={() => void fetchMoreActivities()}
-              />
-            )}
-          </Box>
-          <Box
-            sx={{
-              display: mobileView === 'map' ? 'block' : 'none',
-              width: '100%',
-              minWidth: 0,
-            }}
-          >
-            {isLoading || (isStale && !planError) || isLoadingActivities ? (
-              <AppLoadingState />
-            ) : (
-              <PlanMapPanel
-                key={`${tripId}:${activeDayId}`}
-                activities={dayActivities}
-                currency={
-                  overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
-                }
-                destination={activeTrip?.destination}
-                hasMore={hasMoreActivities}
-                loadingMore={isFetchingMoreActivities}
                 onLoadMore={() => void fetchMoreActivities()}
               />
             )}
