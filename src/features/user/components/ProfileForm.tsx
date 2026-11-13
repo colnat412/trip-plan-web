@@ -99,6 +99,7 @@ const ProfileForm = ({
     <Box component="form" onSubmit={handleSubmit} aria-busy={isSaving}>
       <Stack spacing={2.5}>
         <AppImageUploader
+          variant="avatar"
           src={profile?.avatarUrl}
           alt={profile?.name || t('title')}
           fallback={getUserInitials(profile?.name || '')}

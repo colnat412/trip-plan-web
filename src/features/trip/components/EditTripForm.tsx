@@ -152,7 +152,6 @@ const EditTripForm = ({
           <AppImageUploader
             src={trip.coverUrl}
             alt={t('coverImage')}
-            fallback={trip.name.slice(0, 1)}
             variant="cover"
             disabled={isPending}
             onChange={setCoverFile}

@@ -35,7 +35,7 @@ const AppImageUploader = ({
   disabled = false,
   loading = false,
   onChange,
-  variant = 'avatar',
+  variant = 'cover',
   showHint = true,
   compact = false,
   layout = 'field',
@@ -217,9 +217,9 @@ const AppImageUploader = ({
                 : variant === 'cover'
                   ? 160
                   : 80,
-            bgcolor: variant === 'receipt' ? 'action.hover' : 'primary.light',
+            bgcolor: variant === 'avatar' ? 'primary.light' : 'action.hover',
             color:
-              variant === 'receipt' ? 'text.secondary' : 'primary.contrastText',
+              variant === 'avatar' ? 'primary.contrastText' : 'text.secondary',
             ...(variant === 'receipt'
               ? {
                   border: 1,
@@ -230,7 +230,7 @@ const AppImageUploader = ({
             fontSize: 24,
           }}
         >
-          {fallback}
+          {fallback ?? <ImageOutlinedIcon sx={{ fontSize: 40 }} />}
         </Avatar>
       )}
       {fileInput}
