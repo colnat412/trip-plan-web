@@ -38,7 +38,7 @@ const PolicyAcceptanceCard = ({
       variant="outlined"
       sx={{
         p: '8px',
-        borderRadius: '12px',
+        borderRadius: 'var(--app-radius-control)',
         borderColor: checked ? 'primary.main' : 'divider',
         bgcolor: checked ? 'action.selected' : 'background.paper',
         transition: 'border-color 150ms, background-color 150ms',

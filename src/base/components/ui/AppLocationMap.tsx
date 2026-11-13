@@ -33,7 +33,7 @@ const AppLocationMap = ({ location, expanded = false }: AppLocationMapProps) => 
               height: expanded ? { xs: '60dvh', lg: '65dvh' } : { xs: 320, lg: 400 },
               minHeight: expanded ? 360 : undefined,
               border: 0,
-              borderRadius: '16px',
+              borderRadius: 'var(--app-radius-card)',
               bgcolor: 'action.hover',
               colorScheme: 'light',
             }}
@@ -64,7 +64,7 @@ const AppLocationMap = ({ location, expanded = false }: AppLocationMapProps) => 
           sx={{
             p: 4,
             bgcolor: 'action.hover',
-            borderRadius: '16px',
+            borderRadius: 'var(--app-radius-card)',
             textAlign: 'center',
           }}
         >

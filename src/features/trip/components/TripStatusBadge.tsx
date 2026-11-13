@@ -98,7 +98,7 @@ const TripStatusBadge = ({
           gap: '5px',
           px: isSmall ? '8px' : '10px',
           py: isSmall ? '3px' : '4px',
-          borderRadius: '999px',
+          borderRadius: 'var(--app-radius-pill)',
           bgcolor: colors.bg,
           border: `1px solid ${colors.border}`,
           color: colors.text,

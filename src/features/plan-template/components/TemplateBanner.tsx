@@ -16,7 +16,7 @@ export default function TemplateBanner({ src, title, compact = false, featured =
     <Box sx={{
       width: '100%', minWidth: 0, height: featured ? { xs: 140, sm: '100%' } : compact ? 120 : { xs: 180, sm: 220 },
       minHeight: featured ? 140 : undefined,
-      bgcolor: 'action.hover', borderRadius: '12px', overflow: 'hidden',
+      bgcolor: 'action.hover', borderRadius: 'var(--app-radius-control)', overflow: 'hidden',
       display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'primary.main',
     }}>
       {visibleSrc ? (

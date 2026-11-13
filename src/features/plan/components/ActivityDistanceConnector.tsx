@@ -32,7 +32,7 @@ const ActivityDistanceConnector = ({
         width: '100%',
         display: 'flex',
         alignItems: 'stretch',
-        gap: 1,
+        gap: 'var(--app-timeline-gap, 8px)',
         minWidth: 0,
       }}
     >
@@ -58,7 +58,7 @@ const ActivityDistanceConnector = ({
           justifyContent: 'space-between',
           alignItems: 'center',
           color: 'text.secondary',
-          borderRadius: '8px',
+          borderRadius: 'var(--app-radius-small)',
           '&:hover': { color: 'primary.main', bgcolor: 'action.hover' },
           '&.Mui-focusVisible': { outlineOffset: -2 },
         }}

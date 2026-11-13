@@ -37,7 +37,7 @@ const TemplateItinerary = ({
           />
           <AppCard
             component="section"
-            sx={{ minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: '20px' }}
+            sx={{ minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: 'var(--app-radius-card)' }}
           >
             <Stack spacing={2}>
               <Typography

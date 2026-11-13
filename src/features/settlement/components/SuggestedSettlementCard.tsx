@@ -24,7 +24,7 @@ const SuggestedSettlementCard = ({
 
   return (
     <>
-    <Box sx={{ display: { xs: 'block', sm: 'none' }, minWidth: 0, border: 1, borderColor: 'divider', borderRadius: '12px', bgcolor: 'background.paper' }}>
+    <Box sx={{ display: { xs: 'block', sm: 'none' }, minWidth: 0, border: 1, borderColor: 'divider', borderRadius: 'var(--app-radius-control)', bgcolor: 'background.paper' }}>
       <AppFinanceRow icon={<Avatar sx={{ width: 40, height: 40 }}>{getUserInitials(settlement.fromUserName)}</Avatar>}
         title={settlement.fromUserName}
         subtitle={t('transferTo', { name: settlement.toUserName })}
@@ -37,7 +37,7 @@ const SuggestedSettlementCard = ({
       sx={{
         display: { xs: 'none', sm: 'flex' },
         p: 2,
-        borderRadius: '16px',
+        borderRadius: 'var(--app-radius-card)',
         border: '1px solid',
         borderColor: 'divider',
         bgcolor: 'background.paper',
@@ -68,7 +68,7 @@ const SuggestedSettlementCard = ({
           sx={{
             px: 1.5,
             py: 0.75,
-            borderRadius: '10px',
+            borderRadius: 'var(--app-radius-control)',
             bgcolor: 'action.hover',
             fontWeight: 700,
             fontSize: '13px',
@@ -88,7 +88,7 @@ const SuggestedSettlementCard = ({
           sx={{
             px: 1.5,
             py: 0.75,
-            borderRadius: '10px',
+            borderRadius: 'var(--app-radius-control)',
             bgcolor: 'action.hover',
             fontWeight: 700,
             fontSize: '13px',

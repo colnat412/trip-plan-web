@@ -73,7 +73,7 @@ const AppPreferences = ({ sx, menuLayout = false }: AppPreferencesProps) => {
           px: 0.75,
           border: menuLayout ? 0 : undefined,
           borderColor: menuLayout ? 'transparent' : 'divider',
-          borderRadius: menuLayout ? '10px !important' : undefined,
+          borderRadius: menuLayout ? 'var(--app-radius-control) !important' : undefined,
           color: 'text.secondary',
           fontSize: menuLayout ? '18px' : '20px',
           fontWeight: 800,
@@ -155,7 +155,7 @@ const AppPreferences = ({ sx, menuLayout = false }: AppPreferencesProps) => {
                 height: 44,
                 border: 1,
                 borderColor: selected ? 'divider' : 'transparent',
-                borderRadius: '10px',
+                borderRadius: 'var(--app-radius-control)',
                 bgcolor: selected ? 'action.selected' : 'transparent',
                 color: selected ? 'text.primary' : 'text.secondary',
                 '&:hover': {

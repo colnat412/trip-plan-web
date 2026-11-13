@@ -38,7 +38,7 @@ const OverviewDetails = ({ trip, now }: { trip: Trip; now: Date | null }) => {
             flex: { xs: '0 0 auto', md: '1 1 0%' },
             minWidth: 0,
             p: { xs: 2, md: 3 },
-            borderRadius: '20px',
+            borderRadius: 'var(--app-radius-card)',
           }}
         >
           <Stack spacing={1} sx={{ minWidth: 0 }}>

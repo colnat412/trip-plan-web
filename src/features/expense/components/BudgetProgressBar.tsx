@@ -34,7 +34,7 @@ const BudgetProgressBar = ({
     <AppCard
       sx={{
         p: 2.5,
-        borderRadius: '16px',
+        borderRadius: 'var(--app-radius-card)',
         border: 1,
         borderColor: 'divider',
       }}
@@ -96,7 +96,7 @@ const BudgetProgressBar = ({
                 : '#16A34A'
           }
           trackColor="action.hover"
-          sx={{ borderRadius: '5px' }}
+          sx={{ borderRadius: 'var(--app-radius-badge)' }}
         />
 
         {percentage >= 100 && (
@@ -106,7 +106,7 @@ const BudgetProgressBar = ({
             sx={{
               p: 1.5,
               bgcolor: 'error.light',
-              borderRadius: '8px',
+              borderRadius: 'var(--app-radius-small)',
               alignItems: 'center',
             }}
           >

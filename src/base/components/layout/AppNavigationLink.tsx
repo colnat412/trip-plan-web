@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ButtonBase, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import type { AppNavigationItem } from './navigation/config';
+import { interactionTransition } from '@/base/theme/interactions';
 
 interface AppNavigationLinkProps {
   item: AppNavigationItem;
@@ -25,28 +26,32 @@ const AppNavigationLink = ({
       href={item.href}
       onClick={onNavigate}
       aria-current={active ? 'page' : undefined}
-      sx={{
+      sx={(theme) => ({
+        ...interactionTransition(theme, ['background-color', 'color']),
         display: 'flex',
         alignItems: 'center',
         justifyContent: expanded ? 'flex-start' : 'center',
         gap: 1,
         minHeight: 44,
         px: 1.5,
-        borderRadius: expanded ? '12px' : '999px',
+        borderRadius: expanded ? 'var(--app-radius-control)' : 'var(--app-radius-pill)',
         width: expanded ? '100%' : 'auto',
         color: active ? 'primary.main' : 'text.secondary',
         bgcolor: active ? 'action.selected' : 'transparent',
-        '&:hover': {
-          bgcolor: active ? 'action.selected' : 'action.hover',
-          color: active ? 'primary.main' : 'text.primary',
+        '@media (hover: hover) and (pointer: fine)': {
+          '&:hover': {
+            bgcolor: active ? 'action.selected' : 'action.hover',
+            color: active ? 'primary.main' : 'text.primary',
+          },
         },
+        '&:active': { bgcolor: 'action.selected' },
         '&.Mui-focusVisible': {
           outline: '2px solid',
           outlineColor: 'primary.main',
           outlineOffset: 2,
         },
         '& .MuiSvgIcon-root': { fontSize: '20px', flexShrink: 0 },
-      }}
+      })}
     >
       {expanded && item.icon}
       <Typography

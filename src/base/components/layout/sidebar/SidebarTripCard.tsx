@@ -73,7 +73,7 @@ const SidebarTripCard = () => {
     return (
       <Box
         sx={{
-          borderRadius: '14px',
+          borderRadius: 'var(--app-radius-card)',
           bgcolor: 'action.hover',
           p: '14px',
           display: 'flex',
@@ -115,7 +115,7 @@ const SidebarTripCard = () => {
     <Box
       sx={{
         overflow: 'hidden',
-        borderRadius: '14px',
+        borderRadius: 'var(--app-radius-card)',
         bgcolor: 'action.hover',
       }}
     >
@@ -149,7 +149,7 @@ const SidebarTripCard = () => {
               sx={{
                 color: 'common.white',
                 p: '4px',
-                borderRadius: '8px',
+                borderRadius: 'var(--app-radius-small)',
                 bgcolor: 'rgba(255, 255, 255, 0.15)',
                 '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.25)' },
               }}
@@ -200,7 +200,7 @@ const SidebarTripCard = () => {
             sx: {
               minWidth: 260,
               maxHeight: 340,
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-control)',
               p: '4px',
             },
           },
@@ -231,7 +231,7 @@ const SidebarTripCard = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                borderRadius: '8px',
+                borderRadius: 'var(--app-radius-small)',
                 py: '8px',
                 px: '12px',
                 gap: 1.5,

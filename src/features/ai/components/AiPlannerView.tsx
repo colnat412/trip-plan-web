@@ -153,7 +153,7 @@ const AiPlannerView = () => {
           <AppCard
             sx={{
               p: { xs: 2.5, sm: 3.5 },
-              borderRadius: '16px',
+              borderRadius: 'var(--app-radius-card)',
               border: '1px solid',
               borderColor: 'divider',
             }}
@@ -258,7 +258,7 @@ const AiPlannerView = () => {
                       disabled={isPending}
                       sx={{
                         cursor: 'pointer',
-                        borderRadius: '12px',
+                        borderRadius: 'var(--app-radius-control)',
                         fontWeight: 600,
                         fontSize: '13px',
                         bgcolor: 'action.hover',
@@ -289,7 +289,7 @@ const AiPlannerView = () => {
                 <Box
                   sx={{
                     p: 2.5,
-                    borderRadius: '16px',
+                    borderRadius: 'var(--app-radius-card)',
                     bgcolor: 'action.selected',
                     border: '1.5px dashed',
                     borderColor: 'primary.main',
@@ -356,7 +356,7 @@ const AiPlannerView = () => {
                     py: 1.5,
                     fontSize: '15px',
                     fontWeight: 700,
-                    borderRadius: '14px',
+                    borderRadius: 'var(--app-radius-card)',
                   }}
                 >
                   {isPending ? t('generatingCta') : t('generateCta')}
@@ -367,7 +367,7 @@ const AiPlannerView = () => {
         </Box>
 
         <Box sx={{ flex: { xs: '1 1 auto', lg: 1 }, width: '100%', minWidth: 0 }}>
-          <AppCard variant="outlined" sx={{ p: 3, borderRadius: '16px' }}>
+          <AppCard variant="outlined" sx={{ p: 3, borderRadius: 'var(--app-radius-card)' }}>
             <Stack spacing={2}>
               <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
                 <LightbulbOutlinedIcon sx={{ color: 'warning.main' }} />

@@ -25,7 +25,7 @@ export default function TemplateNavigation({ active }: {
         gap: 0.5,
         p: 0.5,
         bgcolor: 'action.hover',
-        borderRadius: '12px',
+        borderRadius: 'var(--app-radius-control)',
       }}
     >
       {destinations.map((item) => (
@@ -41,7 +41,7 @@ export default function TemplateNavigation({ active }: {
             minHeight: 44,
             px: 0.75,
             fontSize: { xs: '13px', sm: '14px' },
-            borderRadius: '8px',
+            borderRadius: 'var(--app-radius-small)',
             ...(active === item.id ? {
               bgcolor: 'background.paper',
               boxShadow: 1,

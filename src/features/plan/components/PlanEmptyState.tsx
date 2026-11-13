@@ -19,7 +19,7 @@ const PlanEmptyState = ({
   const t = useTranslations('plan');
 
   return (
-    <AppCard component="section" sx={{ p: { xs: 2, md: 3 }, borderRadius: '20px' }}>
+    <AppCard component="section" sx={{ p: { xs: 2, md: 3 }, borderRadius: 'var(--app-radius-card)' }}>
       <AppEmptyState
         icon={<EventAvailableRoundedIcon />}
         title={t('emptyActivities')}

@@ -102,7 +102,7 @@ const CategoryList = ({
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexShrink: 0,
-                borderRadius: '10px',
+                borderRadius: 'var(--app-radius-control)',
                 color: config.color,
                 bgcolor: config.bg,
                 '& svg': { fontSize: '22px' },

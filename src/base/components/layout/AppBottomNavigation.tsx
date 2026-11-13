@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { alpha } from '@mui/material/styles';
 import Link from 'next/link';
 import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
@@ -14,6 +13,8 @@ import {
   MORE_NAVIGATION_ITEMS,
 } from './navigation/config';
 import AppMoreNavigationDialog from './AppMoreNavigationDialog';
+import { glassSurface } from '@/base/theme/surfaces';
+import { interactionTransition } from '@/base/theme/interactions';
 
 const AppBottomNavigation = () => {
   const pathname = usePathname();
@@ -53,37 +54,27 @@ const AppBottomNavigation = () => {
           showLabels
           value={value}
           sx={(theme) => {
-            const palette = theme.vars?.palette ?? theme.palette;
             return {
+              ...glassSurface(theme, 'navigation'),
               height: 'var(--app-bottom-navigation-height, 80px)',
               pointerEvents: 'auto',
-              bgcolor: 'background.paper',
-              '@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)))': {
-                bgcolor: `color-mix(in srgb, ${palette.background.paper} 76%, transparent)`,
-                backdropFilter: 'blur(24px) saturate(180%)',
-                WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-              },
-              backgroundImage: `linear-gradient(160deg, ${alpha(theme.palette.common.white, 0.16)}, ${alpha(theme.palette.primary.light, 0.06)})`,
               width: '100%',
               maxWidth: 560,
               minWidth: 0,
               p: 0.5,
               gap: 0.25,
-              border: '1px solid',
-              borderColor: `color-mix(in srgb, ${palette.text.primary} 12%, transparent)`,
-              borderRadius: '999px',
-              boxShadow: `inset 0 1px 0 ${alpha(theme.palette.common.white, 0.35)}, inset 0 -1px 0 ${alpha(theme.palette.common.white, 0.08)}, 0 8px 32px ${alpha(theme.palette.common.black, 0.14)}`,
+              borderRadius: 'var(--app-radius-pill)',
               '& .MuiBottomNavigationAction-root': {
                 minWidth: 0,
                 maxWidth: 'none',
                 minHeight: 48,
-                borderRadius: '999px',
+                borderRadius: 'var(--app-radius-pill)',
                 overflow: 'hidden',
                 px: 0.5,
                 py: 0.5,
                 gap: 0.25,
                 color: 'text.secondary',
-                transition: 'background-color 0.15s ease, color 0.15s ease',
+                ...interactionTransition(theme, ['background-color', 'color']),
                 '@media (hover: hover) and (pointer: fine)': {
                   '&:hover': { bgcolor: 'action.hover' },
                 },
@@ -97,7 +88,7 @@ const AppBottomNavigation = () => {
                 },
                 '& .MuiSvgIcon-root': {
                   color: 'inherit',
-                  transition: 'color 0.15s ease',
+                  ...interactionTransition(theme, ['color']),
                 },
                 '&.Mui-selected .MuiSvgIcon-root': {
                   color: 'primary.main',

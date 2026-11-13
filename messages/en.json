@@ -576,7 +576,7 @@
       "OTHER": "Other"
     },
     "dialog": {
-      "detailTitle": "Expense Details",
+      "detailTitle": "Expense details",
       "paidBy": "Paid by",
       "paidFullAmount": "Paid {amount}",
       "splitBreakdown": "Split Breakdown ({count})",
@@ -797,6 +797,13 @@
     "suggestedEmpty": "No payments left to make.",
     "settleBtn": "Record a payment",
     "memberBalancesTitle": "Everyone’s share",
+    "balanceFilters": {
+      "label": "Filter member balances",
+      "all": "All",
+      "owes": "Owes money",
+      "owed": "Awaiting repayment",
+      "empty": "No matching members"
+    },
     "member": "Member",
     "defaultMember": "Member",
     "paid": "Paid",
@@ -895,6 +902,15 @@
     "completedActivities": "Completed",
     "totalEstimatedCost": "Estimated Cost",
     "dayTab": "Day {day}",
+    "shortWeekdays": {
+      "0": "Sun",
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat"
+    },
     "emptyActivities": "No activities planned for this day yet",
     "emptyActivitiesDesc": "Plan your sightseeing, meals, or travel to make the most of your trip!",
     "addFirstActivity": "Add First Activity",
@@ -1240,7 +1256,7 @@
     "openTrip": "Open trip",
     "unavailable": "This template does not exist or has been withdrawn.",
     "publish": "Publish template",
-    "confirmPublish": "Confirm publication",
+    "confirmPublish": "Post",
     "preview": "Preview public content",
     "edit": "Edit",
     "published": "Template published. Find it in the library or manage it under My templates.",

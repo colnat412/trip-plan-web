@@ -93,7 +93,7 @@ const TripItineraryPreview = ({ trip, now }: TripItineraryPreviewProps) => {
           p: { xs: 2, md: 3 },
           minWidth: 0,
           width: '100%',
-          borderRadius: '20px',
+          borderRadius: 'var(--app-radius-card)',
         }}
       >
         <Stack spacing={2} sx={{ minWidth: 0 }}>
@@ -162,7 +162,7 @@ const TripItineraryPreview = ({ trip, now }: TripItineraryPreviewProps) => {
                 p: 2,
                 border: '1px dashed',
                 borderColor: 'divider',
-                borderRadius: '12px',
+                borderRadius: 'var(--app-radius-control)',
               }}
               action={
                 <Box

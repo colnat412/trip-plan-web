@@ -115,7 +115,7 @@ const SidebarUser = ({
             justifyContent: 'space-between',
             px: 1,
             py: 0.75,
-            borderRadius: '12px',
+            borderRadius: 'var(--app-radius-control)',
             cursor: 'pointer',
             transition: 'background-color 0.15s ease',
             '&:hover': {

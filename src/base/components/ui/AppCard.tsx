@@ -5,6 +5,8 @@ import { Box, Card, CardProps } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import type { SxProps } from '@mui/system';
 import type { ReactNode } from 'react';
+import { glassSurface } from '@/base/theme/surfaces';
+import { interactionTransition } from '@/base/theme/interactions';
 
 export type AppCardVariant =
   | 'elevated'
@@ -33,10 +35,8 @@ function getCardStyles(
     const palette = theme.vars?.palette ?? theme.palette;
     const variantStyles = {
       elevated: {
-        backgroundColor: palette.background.paper,
+        ...glassSurface(theme),
         color: palette.text.primary,
-        border: `1px solid ${palette.divider}`,
-        boxShadow: 'none',
       },
 
       primary: {
@@ -51,6 +51,7 @@ function getCardStyles(
         backgroundColor: `color-mix(in srgb, ${palette.error.main} 8%, ${palette.background.paper})`,
         border: `1px solid color-mix(in srgb, ${palette.error.main} 22%, ${palette.divider})`,
         boxShadow: 'none',
+        ...theme.applyStyles('dark', { color: palette.error.light }),
       },
 
       transparent: {
@@ -61,8 +62,7 @@ function getCardStyles(
       },
 
       outlined: {
-        backgroundColor: palette.background.paper,
-        border: `1px solid ${palette.divider}`,
+        ...glassSurface(theme),
         boxShadow: 'none',
       },
 
@@ -96,26 +96,29 @@ function getCardStyles(
         xs: '12px 16px',
         sm: '14px 20px',
       },
-      borderRadius: '14px',
+      borderRadius: 'var(--app-radius-card)',
       overflow: 'hidden',
       cursor: 'default',
-      transition: 'background-color 0.15s, border-color 0.15s',
+      ...interactionTransition(theme, ['background-color', 'border-color', 'box-shadow']),
 
       ...variantStyles[variant],
 
       ...(interactive && {
         cursor: 'pointer',
-        transition: theme.transitions.create(['background-color', 'border-color'], {
-          duration: 150,
-        }),
-
-        '&:hover': {
+        '@media (hover: hover) and (pointer: fine)': {
+          '&:hover': {
+            borderColor: palette.primary.main,
+            backgroundColor: `color-mix(in srgb, ${palette.primary.main} 3%, ${palette.background.paper})`,
+            boxShadow: `0 4px 16px color-mix(in srgb, ${palette.common.black} 6%, transparent)`,
+          },
+        },
+        '&:active': {
           borderColor: palette.primary.main,
-          backgroundColor: `color-mix(in srgb, ${palette.primary.main} 3%, ${palette.background.paper})`,
+          boxShadow: 'none',
         },
 
         '&:focus-visible': {
-          outline: `3px solid color-mix(in srgb, ${palette.primary.light} 35%, transparent)`,
+          outline: `2px solid ${palette.primary.main}`,
           outlineOffset: 2,
         },
       }),

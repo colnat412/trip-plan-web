@@ -26,7 +26,7 @@ export default function FinanceNavigation({ active }: {
         gap: 0.5,
         p: 0.5,
         bgcolor: 'action.hover',
-        borderRadius: '12px',
+        borderRadius: 'var(--app-radius-control)',
       }}
     >
       {destinations.map((item) => (
@@ -40,7 +40,7 @@ export default function FinanceNavigation({ active }: {
           sx={{
             minWidth: 0,
             minHeight: 44,
-            borderRadius: '8px',
+            borderRadius: 'var(--app-radius-small)',
             ...(active === item.id ? {
               bgcolor: 'background.paper',
               boxShadow: 1,

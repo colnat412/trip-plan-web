@@ -28,10 +28,10 @@ const AppLinearProgress = ({
       sx={[
         {
           height,
-          borderRadius: 999,
+          borderRadius: 'var(--app-radius-pill)',
           bgcolor: trackColor,
           "& .MuiLinearProgress-bar": {
-            borderRadius: 999,
+            borderRadius: 'var(--app-radius-pill)',
             bgcolor: barColor,
           },
         },

@@ -19,7 +19,7 @@ const AppTextField = ({
     variantType === 'search'
       ? {
           '& .MuiOutlinedInput-root': {
-            borderRadius: '10px',
+            borderRadius: 'var(--app-radius-control)',
             bgcolor: 'background.paper',
             height: 38,
             minHeight: '38px !important',

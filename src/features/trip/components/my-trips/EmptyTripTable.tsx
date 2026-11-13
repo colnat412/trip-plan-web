@@ -33,7 +33,7 @@ const EmptyTripTable = ({ onCreateTrip }: EmptyTripTableProps) => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              borderRadius: '16px',
+              borderRadius: 'var(--app-radius-card)',
               bgcolor: 'action.hover',
               color: 'text.secondary',
             }}

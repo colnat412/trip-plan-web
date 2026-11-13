@@ -80,7 +80,7 @@ const AppSectionHeader = ({
               flexShrink: 0,
               px: 1,
               py: 0.25,
-              borderRadius: '999px',
+              borderRadius: 'var(--app-radius-pill)',
               bgcolor: 'action.selected',
               color: 'text.secondary',
               fontSize: '12px',

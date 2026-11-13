@@ -22,7 +22,7 @@ const RoleBadge = ({ role }: RoleBadgeProps) => {
         const palette = theme.vars?.palette ?? theme.palette;
         return {
           height: 20,
-          borderRadius: '6px',
+          borderRadius: 'var(--app-radius-badge)',
           fontWeight: 600,
           fontSize: '11px',
           flexShrink: 0,

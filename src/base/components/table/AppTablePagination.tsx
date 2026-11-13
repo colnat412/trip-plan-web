@@ -110,7 +110,7 @@ const AppTablePagination = ({
           '& .MuiPaginationItem-root': {
             fontWeight: 600,
             fontSize: '12.5px',
-            borderRadius: '8px',
+            borderRadius: 'var(--app-radius-small)',
             '&.Mui-selected': {
               bgcolor: 'primary.main',
               color: 'primary.contrastText',

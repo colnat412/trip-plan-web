@@ -26,7 +26,7 @@ const TemplateCheckboxOption = ({
       p: 0.75,
       border: 1,
       borderColor: checked ? 'primary.main' : 'divider',
-      borderRadius: '10px',
+      borderRadius: 'var(--app-radius-control)',
       bgcolor: checked ? 'action.selected' : 'background.paper',
       color: disabled ? 'text.disabled' : 'text.primary',
       cursor: disabled ? 'default' : 'pointer',

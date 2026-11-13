@@ -26,7 +26,7 @@ const AppStatusChip = ({
           minHeight: 24,
           fontSize: '11px',
           fontWeight: 600,
-          borderRadius: '6px',
+          borderRadius: 'var(--app-radius-badge)',
           bgcolor: colors
             ? `color-mix(in srgb, ${colors.main} 10%, ${palette.background.paper})`
             : palette.action.hover,

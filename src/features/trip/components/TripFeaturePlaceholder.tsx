@@ -31,7 +31,7 @@ const TripFeaturePlaceholder = async ({
           p: { xs: 3, md: 5 },
           border: 1,
           borderColor: 'divider',
-          borderRadius: '20px',
+          borderRadius: 'var(--app-radius-card)',
           bgcolor: 'background.paper',
           textAlign: 'center',
         }}
@@ -43,7 +43,7 @@ const TripFeaturePlaceholder = async ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: '16px',
+            borderRadius: 'var(--app-radius-card)',
             bgcolor: 'action.selected',
             color: 'primary.main',
           }}

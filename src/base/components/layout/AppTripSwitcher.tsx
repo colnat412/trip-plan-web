@@ -111,7 +111,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
             outlineOffset: 2,
           },
           justifyContent: 'flex-start',
-          borderRadius: '12px',
+          borderRadius: 'var(--app-radius-control)',
         }}
       >
         <Stack
@@ -218,7 +218,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
               '& .MuiOutlinedInput-root': {
                 height: 44,
                 minHeight: 44,
-                borderRadius: '10px',
+                borderRadius: 'var(--app-radius-control)',
                 bgcolor: 'action.hover',
                 fontSize: '13px',
               },
@@ -239,7 +239,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
                 startIcon={<AddRoundedIcon />}
                 onClick={handleCreate}
                 wrapLabel
-                sx={{ flex: '1 1 0', minWidth: 0, minHeight: 48, borderRadius: '12px', px: 1 }}
+                sx={{ flex: '1 1 0', minWidth: 0, minHeight: 48, borderRadius: 'var(--app-radius-control)', px: 1 }}
               >
                 {t('createTrip')}
               </AppButton>
@@ -254,7 +254,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
                 wrapLabel
                 onClick={handleClose}
                 endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: '18px' }} />}
-                sx={{ minHeight: 44, borderRadius: '12px', px: 1.5, justifyContent: 'space-between', textAlign: 'left' }}
+                sx={{ minHeight: 44, borderRadius: 'var(--app-radius-control)', px: 1.5, justifyContent: 'space-between', textAlign: 'left' }}
               >
                 {t('allTrips')}
               </AppButton>

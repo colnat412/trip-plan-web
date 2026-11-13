@@ -18,7 +18,7 @@ const ExpenseReceiptPreview = ({ src }: { src: string }) => {
     {failedUrl !== url ? <Box component="img" src={url} alt={t('imageAlt')} loading="lazy"
       referrerPolicy="no-referrer" onError={() => setFailedUrl(url)}
       sx={{ display: 'block', width: '100%', height: 'auto', maxHeight: 420, objectFit: 'contain',
-        border: 1, borderColor: 'divider', borderRadius: '12px', bgcolor: 'action.hover' }} /> :
+        border: 1, borderColor: 'divider', borderRadius: 'var(--app-radius-control)', bgcolor: 'action.hover' }} /> :
       <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>{t('previewError')}</Typography>}
     <Link href={url} target="_blank" rel="noopener noreferrer"
       sx={{ alignSelf: 'flex-start', display: 'inline-flex', alignItems: 'center', gap: 1 }}>

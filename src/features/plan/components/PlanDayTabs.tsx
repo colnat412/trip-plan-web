@@ -2,7 +2,7 @@
 
 import { Box, ButtonBase, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { formatDate } from '@/base/utils';
+import { formatDate, parseDate } from '@/base/utils';
 import type { PlanDay } from '../types';
 
 export interface PlanDayTabsProps {
@@ -37,6 +37,10 @@ const PlanDayTabs = ({
     >
       {days.map((day) => {
         const isSelected = String(day.id) === String(selectedDayId);
+        const date = parseDate(day.planDate);
+        const label = date
+          ? `${t(`shortWeekdays.${date.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6}`)}, ${formatDate(date, 'DD/MM')}`
+          : t('dayTab', { day: day.dayNumber });
         return (
           <ButtonBase
             key={day.id}
@@ -50,7 +54,7 @@ const PlanDayTabs = ({
               gap: 0.5,
               py: 1.25,
               px: 1,
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-control)',
               border: 1,
               borderColor: isSelected ? 'primary.main' : 'divider',
               bgcolor: isSelected ? 'primary.main' : 'background.paper',
@@ -76,10 +80,10 @@ const PlanDayTabs = ({
                 fontWeight: 700,
                 color: 'inherit',
                 maxWidth: '100%',
-                overflowWrap: 'anywhere',
+                whiteSpace: 'nowrap',
               }}
             >
-              {day.planDate ? formatDate(day.planDate, 'DD/MM') : t('dayTab', { day: day.dayNumber })}
+              {label}
             </Typography>
           </ButtonBase>
         );

@@ -176,7 +176,7 @@ const ShareTripDialog = ({
               <Box
                 sx={{
                   p: 1.5,
-                  borderRadius: '14px',
+                  borderRadius: 'var(--app-radius-card)',
                   border: '1px solid',
                   borderColor:
                     visibility === 'PRIVATE'
@@ -243,7 +243,7 @@ const ShareTripDialog = ({
               <Box
                 sx={{
                   p: 1.5,
-                  borderRadius: '14px',
+                  borderRadius: 'var(--app-radius-card)',
                   border: '1px solid',
                   borderColor:
                     visibility === 'PUBLIC'
@@ -380,7 +380,7 @@ const ShareTripDialog = ({
                     fontWeight: 600,
                     py: 0.5,
                     px: 1,
-                    borderRadius: '8px',
+                    borderRadius: 'var(--app-radius-small)',
                     transition: 'all 0.2s',
                     '&:hover': {
                       bgcolor: 'action.hover',
@@ -416,7 +416,7 @@ const ShareTripDialog = ({
                     : '#F8FAFC',
                 border: 1,
                 borderColor: (theme) => alpha(theme.palette.divider, 0.8),
-                borderRadius: '12px',
+                borderRadius: 'var(--app-radius-control)',
                 boxShadow: 'none',
                 p: 0.6,
                 pl: 1.5,
@@ -470,7 +470,7 @@ const ShareTripDialog = ({
                   px: 1.5,
                   fontSize: '12px',
                   fontWeight: 700,
-                  borderRadius: '8px',
+                  borderRadius: 'var(--app-radius-small)',
                 }}
               >
                 {copied ? t('copiedBtn') : t('copyBtn')}

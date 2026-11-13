@@ -34,7 +34,7 @@ const TripStatusChip = ({ status }: TripStatusChipProps) => {
       sx={(theme) => ({
         fontWeight: 700,
         fontSize: '12px',
-        borderRadius: '6px',
+        borderRadius: 'var(--app-radius-badge)',
         border: 'none',
         height: 24,
         bgcolor: (theme) => {

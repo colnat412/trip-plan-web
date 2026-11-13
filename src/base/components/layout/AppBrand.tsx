@@ -26,7 +26,7 @@ const AppBrand = ({
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
-          borderRadius: '12px',
+          borderRadius: 'var(--app-radius-control)',
           color: 'common.white',
           background: (theme) => {
             const palette = theme.vars?.palette ?? theme.palette;

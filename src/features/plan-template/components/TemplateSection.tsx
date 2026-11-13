@@ -19,7 +19,7 @@ export default function TemplateSection({
           zIndex: 2,
           flexShrink: 0,
           bgcolor: 'background.paper',
-          borderRadius: '12px',
+          borderRadius: 'var(--app-radius-control)',
           pb: 1,
         }}
       >

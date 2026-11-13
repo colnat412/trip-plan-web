@@ -213,7 +213,7 @@ const AiPlannerDialog = ({
           <Box
             sx={{
               p: 2,
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-control)',
               bgcolor: 'action.selected',
               border: '1px dashed',
               borderColor: 'primary.300',

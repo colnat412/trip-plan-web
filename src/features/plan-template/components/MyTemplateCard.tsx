@@ -37,7 +37,7 @@ const MyTemplateCard = ({
       component="article"
       sx={{
         p: { xs: 2, sm: 2.5 },
-        borderRadius: '16px',
+        borderRadius: 'var(--app-radius-card)',
         minWidth: 0,
         overflowWrap: 'anywhere',
       }}

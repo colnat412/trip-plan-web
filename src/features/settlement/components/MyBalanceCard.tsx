@@ -73,7 +73,7 @@ const MyBalanceCard = ({
     <AppCard
       sx={{
         p: { xs: 2, sm: 3 },
-        borderRadius: '20px',
+        borderRadius: 'var(--app-radius-card)',
         border: '1px solid',
         borderColor: 'divider',
         borderLeft: '4px solid',
@@ -135,7 +135,7 @@ const MyBalanceCard = ({
                   gap: 0.5,
                   px: 1.5,
                   py: 0.5,
-                  borderRadius: '999px',
+                  borderRadius: 'var(--app-radius-pill)',
                   bgcolor: badgeBg,
                   color: badgeColor,
                   fontSize: '12px',

@@ -21,7 +21,7 @@ const AppCalendarDay = (props: PickerDayProps) => {
         flex: 1,
         maxWidth: 44,
         height: 40,
-        borderRadius: '10px',
+        borderRadius: 'var(--app-radius-control)',
         ...(withinRange && !endpoint && {
           borderRadius: 0,
           bgcolor: 'action.selected',

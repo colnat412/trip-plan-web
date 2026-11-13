@@ -94,7 +94,7 @@ const TripTableRow = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              borderRadius: '10px',
+              borderRadius: 'var(--app-radius-control)',
               bgcolor: isSelected ? 'primary.main' : 'action.hover',
               color: isSelected ? 'primary.contrastText' : 'primary.main',
               flexShrink: 0,

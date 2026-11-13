@@ -173,7 +173,7 @@ const CameraCaptureDialog = ({
             width: '100%',
             aspectRatio: '4 / 3',
             bgcolor: 'common.black',
-            borderRadius: 2,
+            borderRadius: 'var(--app-radius-control)',
             overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
@@ -214,7 +214,7 @@ const CameraCaptureDialog = ({
                   position: 'absolute',
                   inset: 20,
                   border: '2px dashed rgba(255, 255, 255, 0.7)',
-                  borderRadius: 2,
+                  borderRadius: 'var(--app-radius-control)',
                   pointerEvents: 'none',
                   boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.35)',
                 }}

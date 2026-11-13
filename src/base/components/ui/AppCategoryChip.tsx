@@ -38,21 +38,27 @@ const AppCategoryChip = ({
       size={size}
       icon={config.icon}
       label={label}
-      sx={{
-        backgroundColor: config.bg,
-        color: config.color,
-        fontWeight: 600,
-        fontSize: '12px',
-        borderRadius: '6px',
-        maxWidth: '100%',
-        height: 'auto',
-        minHeight: 24,
-        '& .MuiChip-label': { whiteSpace: 'normal', overflowWrap: 'anywhere', py: 0.25 },
-        '& .MuiChip-icon': {
+      sx={[
+        (theme) => ({
+          backgroundColor: config.bg,
           color: config.color,
-        },
-        ...sx,
-      }}
+          fontWeight: 600,
+          fontSize: '12px',
+          borderRadius: 'var(--app-radius-badge)',
+          maxWidth: '100%',
+          height: 'auto',
+          minHeight: 24,
+          '& .MuiChip-label': { whiteSpace: 'normal', overflowWrap: 'anywhere', py: 0.25 },
+          '& .MuiChip-icon': {
+            color: 'inherit',
+          },
+          ...theme.applyStyles('dark', {
+            backgroundColor: `color-mix(in srgb, ${config.color} 18%, ${(theme.vars?.palette ?? theme.palette).background.paper})`,
+            color: `color-mix(in srgb, ${config.color} 35%, ${(theme.vars?.palette ?? theme.palette).text.primary})`,
+          }),
+        }),
+        ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
+      ]}
     />
   );
 };

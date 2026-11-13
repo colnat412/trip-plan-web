@@ -44,7 +44,7 @@ const SettlementHistoryTable = ({
       <AppCard
         sx={{
           p: 3,
-          borderRadius: '20px',
+          borderRadius: 'var(--app-radius-card)',
           border: '1px solid',
           borderColor: 'divider',
           bgcolor: 'background.paper',
@@ -67,21 +67,14 @@ const SettlementHistoryTable = ({
     <>
       <AppCard
         sx={{
-          borderRadius: '20px',
+          borderRadius: 'var(--app-radius-card)',
           border: '1px solid',
           borderColor: 'divider',
           bgcolor: 'background.paper',
           overflow: 'hidden',
+          p: 0,
         }}
       >
-        <Box sx={{ p: 2.5, borderBottom: '1px solid', borderColor: 'divider' }}>
-          <Typography
-            sx={{ fontSize: '16px', fontWeight: 700, color: 'text.primary' }}
-          >
-            {t('historyTitle')} ({settlements.length})
-          </Typography>
-        </Box>
-
         <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
           {settlements.map((settlement) => (
             <AppFinanceRow key={settlement.id}

@@ -114,7 +114,7 @@ const PublishTemplateDialog = ({
       actions={
         <>
           {preview && (
-            <AppButton disabled={busy} onClick={() => setPreview(null)}>
+            <AppButton intent="secondary" disabled={busy} onClick={() => setPreview(null)}>
               {t('edit')}
             </AppButton>
           )}

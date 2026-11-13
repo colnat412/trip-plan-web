@@ -155,7 +155,7 @@ const LocationAutocompleteInput = ({
               sx={{
                 width: 32,
                 height: 32,
-                borderRadius: '8px',
+                borderRadius: 'var(--app-radius-small)',
                 bgcolor: isCustom
                   ? 'action.hover'
                   : alpha(theme.palette.primary.main, 0.12),

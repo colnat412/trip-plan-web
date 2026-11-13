@@ -142,7 +142,7 @@ const AppTimePicker = (props: AppTimePickerProps) => {
                   width: '100%', minWidth: 0,
                   // 5 dòng x 40px + đệm trên dưới 4px: không còn dòng bị cắt dở ở mép cột.
                   '& .MuiMultiSectionDigitalClockSection-root': { flex: 1, width: 'auto', minWidth: 0, px: 1, py: '4px', maxHeight: '208px' },
-                  '& .MuiMultiSectionDigitalClockSection-item': { width: '100%', m: 0, borderRadius: '10px', minHeight: 40 },
+                  '& .MuiMultiSectionDigitalClockSection-item': { width: '100%', m: 0, borderRadius: 'var(--app-radius-control)', minHeight: 40 },
                 }}
               />
             </LocalizationProvider>

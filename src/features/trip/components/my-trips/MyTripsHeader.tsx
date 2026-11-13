@@ -18,7 +18,6 @@ const MyTripsHeader = ({ totalTrips }: MyTripsHeaderProps) => {
       icon={<FlightTakeoffRoundedIcon />}
       title={t('title')}
       badge={totalTrips > 0 ? totalTrips : undefined}
-      subtitle={t('description')}
     />
   );
 };

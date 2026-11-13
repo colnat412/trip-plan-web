@@ -48,7 +48,7 @@ const AppToast = ({
           onClose={onClose}
           sx={{
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.16)',
-            borderRadius: '10px',
+            borderRadius: 'var(--app-radius-control)',
             fontWeight: 600,
             fontSize: '13px',
           }}

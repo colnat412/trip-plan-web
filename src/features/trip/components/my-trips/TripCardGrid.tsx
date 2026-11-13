@@ -48,7 +48,7 @@ const TripCardGrid = ({
           gap: 1.75,
           py: 7,
           px: 2,
-          borderRadius: '14px',
+          borderRadius: 'var(--app-radius-card)',
           bgcolor: 'background.paper',
           border: '1px dashed',
           borderColor: 'divider',
@@ -61,7 +61,7 @@ const TripCardGrid = ({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            borderRadius: '14px',
+            borderRadius: 'var(--app-radius-card)',
             bgcolor: 'action.hover',
             color: 'primary.main',
           }}

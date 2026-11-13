@@ -46,7 +46,7 @@ const TripGridPagination = ({
         gap: { xs: 1.5, sm: 2 },
         p: { xs: 1.5, sm: 2 },
         bgcolor: 'background.paper',
-        borderRadius: '14px',
+        borderRadius: 'var(--app-radius-card)',
         border: '1px solid',
         borderColor: 'divider',
       }}
@@ -113,7 +113,7 @@ const TripGridPagination = ({
           '& .MuiPaginationItem-root': {
             fontWeight: 600,
             fontSize: '13px',
-            borderRadius: '8px',
+            borderRadius: 'var(--app-radius-small)',
             '&.Mui-selected': {
               bgcolor: 'primary.main',
               color: 'primary.contrastText',

@@ -155,7 +155,7 @@ const AppImageUploader = ({
           {!displayed && !loading && (
             <>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: 40, height: 40, border: '1px dashed', borderColor: 'divider', borderRadius: '12px' }}>
+                width: 40, height: 40, border: '1px dashed', borderColor: 'divider', borderRadius: 'var(--app-radius-control)' }}>
                 <AddPhotoAlternateOutlinedIcon sx={{ fontSize: 22 }} />
               </Box>
               <Typography component="span" sx={{ fontSize: '11px', fontWeight: 500 }}>

@@ -114,7 +114,7 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
     </Stack>
   );
   return compact ? (
-    <AppCard component="section" sx={{ minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: '20px' }}>
+    <AppCard component="section" sx={{ minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: 'var(--app-radius-card)' }}>
       {content}
     </AppCard>
   ) : <TemplateSection active={savedOnly ? 'saved' : 'explore'}>{content}</TemplateSection>;

@@ -1,4 +1,12 @@
 :root {
+  --app-radius-detail: 4px;
+  --app-radius-badge: 6px;
+  --app-radius-small: 8px;
+  --app-radius-control: 12px;
+  --app-radius-card: 20px;
+  --app-radius-panel: 24px;
+  --app-radius-dialog: 28px;
+  --app-radius-pill: 999px;
   --background: #ffffff;
   --foreground: #171717;
 
@@ -14,6 +22,17 @@
   --default-mono-font-family: var(--font-mono);
   --default-transition-duration: 0.15s;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhance large surfaces without changing circular avatars or pill controls. */
+@supports (corner-shape: squircle) {
+  .MuiCard-root,
+  .MuiDialog-paper,
+  .MuiPopover-paper,
+  .MuiAutocomplete-paper,
+  [data-app-surface='card'] {
+    corner-shape: squircle;
+  }
 }
 
 html {

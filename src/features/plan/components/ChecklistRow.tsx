@@ -34,7 +34,7 @@ const ChecklistRow = ({
         justifyContent: 'space-between',
         py: 1,
         px: 1.5,
-        borderRadius: '12px',
+        borderRadius: 'var(--app-radius-control)',
         bgcolor: item.isCompleted ? 'action.hover' : 'background.paper',
         border: 1,
         borderColor: item.isCompleted ? 'transparent' : 'divider',
@@ -86,7 +86,7 @@ const ChecklistRow = ({
             height: 20,
             fontSize: '10px',
             fontWeight: 600,
-            borderRadius: '6px',
+            borderRadius: 'var(--app-radius-badge)',
             bgcolor: 'action.selected',
             color: 'text.secondary',
             flexShrink: 0,
@@ -101,7 +101,7 @@ const ChecklistRow = ({
               bgcolor: 'action.hover',
               px: 1,
               py: 0.25,
-              borderRadius: '6px',
+              borderRadius: 'var(--app-radius-badge)',
               flexShrink: 0,
             }}
           >

@@ -19,7 +19,8 @@ import {
   AppToast,
   AppAmountRatio,
   AppButton,
-  AppCategoryIcon,
+  AppCategoryChip,
+  AppStatusChip,
   AppNumberBadge,
   AppTimePicker,
   AppTimelineRow,
@@ -89,7 +90,6 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
   const t = useTranslations('plan');
   const tStatus = useTranslations('plan.statuses');
   const tDialog = useTranslations('plan.dialog');
-  const tCategory = useTranslations('expense.categories');
   const tImage = useTranslations('imageUpload');
   const imageInput = useRef<HTMLInputElement>(null);
   const photo = useActivityImage({ id: activity.id, tripId: activity.tripId,
@@ -240,7 +240,7 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
                   border: 0,
                   boxShadow: (theme) =>
                     `inset 0 0 0 1px ${(theme.vars ?? theme).palette.divider}`,
-                  borderRadius: '8px',
+                  borderRadius: 'var(--app-radius-small)',
                   fontVariantNumeric: 'tabular-nums',
                   // Hover chỉ cho thiết bị có chuột để không bị "dính" sau khi chạm.
                   '@media (hover: hover)': {
@@ -317,57 +317,15 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
         ) : undefined
       }
     >
-      <Stack
-        direction="row"
-        spacing={0.75}
-        useFlexGap
-        sx={{ alignItems: 'center', flexWrap: 'wrap' }}
-      >
-        <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}>
-          <AppCategoryIcon category={activity.category} size={20} />
-          <Typography
-            component="span"
-            sx={{ color: 'text.secondary', fontSize: '12px' }}
-          >
-            {tCategory(activity.category)}
-          </Typography>
-        </Box>
+      <Stack spacing={0.5} sx={{ alignItems: 'flex-start', minWidth: 0 }}>
+        <AppCategoryChip category={activity.category} />
         {activity.status !== 'PLANNED' && (
-          <Typography
-            component="span"
-            sx={(theme) => {
-              const palette = theme.vars?.palette ?? theme.palette;
-              const tone = isCompleted
-                ? palette.success
-                : activity.status === 'IN_PROGRESS'
-                  ? palette.primary
-                  : undefined;
-              return {
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 0.5,
-                px: 0.75,
-                py: 0.25,
-                borderRadius: '6px',
-                color: tone ? tone.dark : palette.text.secondary,
-                bgcolor: tone
-                  ? `color-mix(in srgb, ${tone.main} 10%, ${palette.background.paper})`
-                  : palette.action.selected,
-                fontSize: '12px',
-                fontWeight: 600,
-                lineHeight: 1.5,
-                letterSpacing: 'normal',
-                ...theme.applyStyles('dark', {
-                  color: tone ? tone.light : palette.text.secondary,
-                }),
-              };
-            }}
-          >
-            {isCompleted && (
-              <CheckCircleRoundedIcon sx={{ fontSize: '14px' }} />
-            )}
-            {tStatus(activity.status)}
-          </Typography>
+          <AppStatusChip
+            label={tStatus(activity.status)}
+            tone={isCompleted ? 'success' : activity.status === 'IN_PROGRESS' ? 'primary' : 'neutral'}
+            icon={isCompleted ? <CheckCircleRoundedIcon /> : undefined}
+            sx={{ fontSize: '12px' }}
+          />
         )}
       </Stack>
       {activity.location && (

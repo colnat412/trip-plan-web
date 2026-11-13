@@ -141,7 +141,7 @@ const AppTable = <T,>({
       spacing={0}
       sx={{
         bgcolor: 'background.paper',
-        borderRadius: '16px',
+        borderRadius: 'var(--app-radius-card)',
         border: 1,
         borderColor: 'divider',
         overflow: 'hidden',

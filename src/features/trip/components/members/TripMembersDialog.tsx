@@ -237,7 +237,7 @@ const TripMembersDialog = ({
             fullWidth
             startIcon={<PersonAddRoundedIcon />}
             onClick={() => setShowInviteForm(true)}
-            sx={{ borderRadius: '999px', minHeight: 44 }}
+            sx={{ borderRadius: 'var(--app-radius-pill)', minHeight: 44 }}
           >
             {t('inviteBtn')}
           </AppButton>

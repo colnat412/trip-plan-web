@@ -4,7 +4,6 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import {
   AppLoadingState,
-  AppButton,
   AppCard,
   AppLinearProgress,
   AppMetricValue,
@@ -13,7 +12,7 @@ import {
 
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import { useLocale, useTranslations } from 'next-intl';
 
 import { formatCurrency, getBudgetBalanceTone } from '@/base/utils';
@@ -74,7 +73,7 @@ const MobileBudgetSummaryCard = ({
       sx={{
         display: { xs: 'block', sm: 'none' },
         minWidth: 0,
-        borderRadius: '16px',
+        borderRadius: 'var(--app-radius-card)',
         p: 2,
         overflowWrap: 'anywhere',
       }}
@@ -106,33 +105,22 @@ const MobileBudgetSummaryCard = ({
             >
               {t('mobileTitle')}
             </Typography>
-            {onOpenSetBudget &&
-              (hasBudget ? (
-                <Tooltip title={t('editBudgetLabel')}>
-                  <IconButton
-                    aria-label={t('editBudgetLabel')}
-                    onClick={onOpenSetBudget}
-                    sx={{
-                      width: 44,
-                      height: 44,
-                      flexShrink: 0,
-                      color: 'primary.main',
-                    }}
-                  >
-                    <SettingsRoundedIcon />
-                  </IconButton>
-                </Tooltip>
-              ) : (
-                <AppButton
-                  intent="text"
-                  size="small"
-                  wrapLabel
+            {onOpenSetBudget && (
+              <Tooltip title={t(hasBudget ? 'editBudgetLabel' : 'setupBudget')}>
+                <IconButton
+                  aria-label={t(hasBudget ? 'editBudgetLabel' : 'setupBudget')}
                   onClick={onOpenSetBudget}
-                  sx={{ minHeight: 44, fontSize: '12px' }}
+                  sx={{
+                    width: 44,
+                    height: 44,
+                    flexShrink: 0,
+                    color: 'primary.main',
+                  }}
                 >
-                  {t('setupBudget')}
-                </AppButton>
-              ))}
+                  <TuneRoundedIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </Stack>
           <Stack spacing={0.5}>
             <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>

@@ -98,7 +98,7 @@ const ChecklistDialog = ({
               p: 2,
               border: '1px dashed',
               borderColor: 'divider',
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-control)',
             }}
           />
         ) : (

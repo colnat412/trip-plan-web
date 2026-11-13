@@ -361,7 +361,7 @@ const PlanOverview = ({
         <Card
           sx={{
             p: { xs: 4, md: 6 },
-            borderRadius: '20px',
+            borderRadius: 'var(--app-radius-card)',
             border: 1,
             borderColor: 'divider',
             textAlign: 'center',
@@ -375,7 +375,7 @@ const PlanOverview = ({
             sx={{
               width: 64,
               height: 64,
-              borderRadius: '20px',
+              borderRadius: 'var(--app-radius-card)',
               bgcolor: 'action.hover',
               display: 'flex',
               alignItems: 'center',

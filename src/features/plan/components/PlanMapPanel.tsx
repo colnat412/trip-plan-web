@@ -41,7 +41,7 @@ const PlanMapPanel = ({
   }));
 
   return (
-    <AppCard component="section" sx={{ p: 0, borderRadius: '20px', minWidth: 0, overflow: 'hidden' }}>
+    <AppCard component="section" sx={{ p: 0, borderRadius: 'var(--app-radius-card)', minWidth: 0, overflow: 'hidden' }}>
       <Box aria-busy={busy} sx={{
         position: 'relative', width: '100%',
         height: { xs: 'clamp(280px, 40dvh, 420px)', md: 440 },

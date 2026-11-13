@@ -44,7 +44,7 @@ const AppAvatarStack = ({
         minHeight: 44,
         minWidth: 44,
         px: 0.5,
-        borderRadius: '999px',
+        borderRadius: 'var(--app-radius-pill)',
         flexShrink: 0,
         '&.Mui-focusVisible': {
           outline: '2px solid',

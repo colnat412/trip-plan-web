@@ -68,7 +68,7 @@ const AppErrorState = ({
             bgcolor: 'background.paper',
             border: 1,
             borderColor: 'divider',
-            borderRadius: '24px',
+            borderRadius: 'var(--app-radius-panel)',
           }),
         },
         ...(Array.isArray(sx) ? sx : [sx]),

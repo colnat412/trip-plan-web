@@ -101,9 +101,8 @@ const AppActionMenu = ({
           paper: {
             sx: {
               minWidth: 160,
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-card)',
               p: 0.5,
-              boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
               border: 1,
               borderColor: 'divider',
             },
@@ -116,7 +115,7 @@ const AppActionMenu = ({
             disabled={item.disabled}
             onClick={(e) => handleItemClick(item, e)}
             sx={{
-              borderRadius: '8px',
+              borderRadius: 'var(--app-radius-small)',
               py: 0.85,
               px: 1.5,
               gap: 1.25,

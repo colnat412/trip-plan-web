@@ -50,7 +50,7 @@ const AppTripBar = () => {
                       minWidth: 0,
                       minHeight: 48,
                       px: 1,
-                      borderRadius: '12px',
+                      borderRadius: 'var(--app-radius-control)',
                     },
                   }}
                 >

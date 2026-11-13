@@ -35,7 +35,7 @@ const SidebarMenu = ({
               justifyContent: "flex-start",
               gap: 2,
               px: 2,
-              borderRadius: "12px",
+              borderRadius: "var(--app-radius-control)",
               color: selected ? "primary.main" : "text.secondary",
               bgcolor: selected ? "action.selected" : "transparent",
               transition:

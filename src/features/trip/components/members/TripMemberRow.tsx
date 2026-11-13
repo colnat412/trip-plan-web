@@ -128,7 +128,7 @@ const TripMemberRow = ({
                 size="small"
                 label={t(`statuses.${member.status}`)}
                 color={member.status === 'INVITED' ? 'warning' : 'default'}
-                sx={{ height: 20, fontSize: '11px', fontWeight: 600, borderRadius: '6px' }}
+                sx={{ height: 20, fontSize: '11px', fontWeight: 600, borderRadius: 'var(--app-radius-badge)' }}
               />
             )}
           </Stack>

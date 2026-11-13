@@ -1,6 +1,8 @@
 'use client';
 
 import { createTheme } from '@mui/material/styles';
+import { glassSurface } from './surfaces';
+import { interactionTransition } from './interactions';
 
 const brandPalette = {
   primary: {
@@ -82,7 +84,7 @@ const appTheme = createTheme({
       },
     },
   },
-  shape: { borderRadius: 14 },
+  shape: { borderRadius: 12 },
   typography: {
     fontFamily: 'var(--font-body)',
     h1: {
@@ -129,7 +131,7 @@ const appTheme = createTheme({
         root: {
           minHeight: 44,
           paddingInline: 16,
-          borderRadius: 12,
+          borderRadius: 'var(--app-radius-control)',
           textTransform: 'none',
           fontWeight: 600,
         },
@@ -145,9 +147,19 @@ const appTheme = createTheme({
             minHeight: 44,
             // Khuyết viền theo label vẫn cập nhật ngay, không animate kích thước.
             '& .MuiOutlinedInput-notchedOutline legend': { transition: 'none' },
-            borderRadius: 12,
+            borderRadius: 'var(--app-radius-control)',
             backgroundColor: palette.background.paper,
-            '&:hover .MuiOutlinedInput-notchedOutline': {
+            '& .MuiOutlinedInput-notchedOutline': {
+              ...interactionTransition(theme, ['border-color']),
+            },
+            ...interactionTransition(theme, ['box-shadow', 'background-color']),
+            '&.Mui-focused:not(.Mui-error):not(.Mui-disabled)': {
+              boxShadow: `0 0 0 3px color-mix(in srgb, ${palette.primary.main} 12%, transparent)`,
+            },
+            '&.Mui-error.Mui-focused:not(.Mui-disabled)': {
+              boxShadow: `0 0 0 3px color-mix(in srgb, ${palette.error.main} 12%, transparent)`,
+            },
+            '&:not(.Mui-error):not(.Mui-disabled):hover .MuiOutlinedInput-notchedOutline': {
               borderColor: palette.primary.main,
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
@@ -177,16 +189,22 @@ const appTheme = createTheme({
       },
     },
     MuiFormHelperText: {
-      styleOverrides: { root: { marginLeft: 4, marginTop: 6 } },
+      styleOverrides: {
+        root: {
+          marginLeft: 4,
+          marginTop: 6,
+          fontSize: '12px',
+          lineHeight: 1.5,
+          overflowWrap: 'anywhere',
+        },
+      },
     },
     MuiCard: {
       styleOverrides: {
         root: ({ theme }) => {
-          const palette = theme.vars?.palette ?? theme.palette;
-
           return {
-            borderRadius: 16,
-            border: `1px solid ${palette.divider}`,
+            borderRadius: 'var(--app-radius-card)',
+            border: `1px solid ${(theme.vars?.palette ?? theme.palette).divider}`,
             boxShadow: 'none',
           };
         },
@@ -194,7 +212,40 @@ const appTheme = createTheme({
     },
     MuiPaper: {
       styleOverrides: {
-        rounded: { borderRadius: 16 },
+        rounded: { borderRadius: 'var(--app-radius-card)' },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: ({ theme }) => ({
+          ...glassSurface(theme, 'overlay'),
+          borderRadius: 'var(--app-radius-dialog)',
+        }),
+        paperFullScreen: ({ theme }) => ({
+          borderRadius: 0,
+          border: 0,
+          '@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)))': {
+            backgroundColor: (theme.vars?.palette ?? theme.palette).background.paper,
+            backdropFilter: 'none',
+            WebkitBackdropFilter: 'none',
+          },
+        }),
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: ({ theme }) => ({
+          ...glassSurface(theme, 'overlay'),
+          borderRadius: 'var(--app-radius-card)',
+        }),
+      },
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        paper: ({ theme }) => ({
+          ...glassSurface(theme, 'overlay'),
+          borderRadius: 'var(--app-radius-card)',
+        }),
       },
     },
     MuiTableCell: {
@@ -209,7 +260,7 @@ const appTheme = createTheme({
     },
     MuiChip: {
       styleOverrides: {
-        root: { borderRadius: 10, fontWeight: 600 },
+        root: { borderRadius: 'var(--app-radius-badge)', fontWeight: 600 },
       },
     },
   },

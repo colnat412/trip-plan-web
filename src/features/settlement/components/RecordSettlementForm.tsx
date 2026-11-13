@@ -124,7 +124,7 @@ const RecordSettlementForm = ({
           <Box
             sx={{
               p: 1.5,
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-control)',
               bgcolor: 'error.light',
               color: 'error.dark',
               fontSize: '13px',

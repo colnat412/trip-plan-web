@@ -85,7 +85,7 @@ const ReceiptScanBanner = ({
         sx={{
           minWidth: 0,
           p: 2,
-          borderRadius: '16px',
+          borderRadius: 'var(--app-radius-card)',
           border: '1px solid',
           borderColor: isScanning ? 'primary.main' : 'divider',
           bgcolor: isScanning ? 'action.selected' : 'action.hover',
@@ -108,7 +108,7 @@ const ReceiptScanBanner = ({
             sx={{
               width: 32,
               height: 32,
-              borderRadius: 1.5,
+              borderRadius: 'var(--app-radius-control)',
               bgcolor: 'action.selected',
               display: 'flex',
               alignItems: 'center',

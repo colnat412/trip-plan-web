@@ -1,15 +1,96 @@
-# TripBudget — Codex Project Context and Working Instructions
+# Vi Vu — Codex Project Context and Working Instructions
 
-> Copy the entire contents of this file into Codex when starting or continuing work on the TripBudget project.
+> Copy the entire contents of this file into Codex when starting or continuing work on the Trip Plan project.
 
 ## Important
 
 Call me is "Ăm chã húi",
 Skip smoke test
 
+## Quy tắc UI hiện hành — tổng hợp yêu cầu người dùng (13/11/2026)
+
+Đọc mục này trước mọi thay đổi UI. Đây là bản tổng hợp lựa chọn mới nhất; nếu ghi chú tiến độ cũ bên dưới mâu thuẫn thì dùng mục này. Chỉ dẫn mới hơn của người dùng luôn được ưu tiên. Ảnh tham khảo là đề xuất để đánh giá, không phải yêu cầu sao chép 100%. Phân biệt quy tắc toàn ứng dụng với bố cục người dùng chỉ đồng ý **thử** trong một phạm vi.
+
+### 1. Tinh chỉnh cùng sản phẩm, giữ nền tảng
+
+- Hướng thiết kế: tinh tế, tối giản, thân thiện, hiện đại; lấy cảm hứng từ Apple HIG/Liquid Glass, không mô phỏng nguyên giao diện Apple hay tái thiết kế/đổi thương hiệu.
+- Giữ khoảng 90% nhận diện và cấu trúc hiện tại: palette/primary, font, light/dark mode, icon, spacing token, breakpoint, điều hướng và workflow. Chỉ chỉnh điểm có lợi ích cụ thể; component đã phù hợp thì giữ nguyên.
+- Refactor UI không được đổi backend, API, phép tính, quyền, routing hoặc state nghiệp vụ. Không bỏ thông tin/thao tác cần thiết, thêm hero/section trang trí hay cài thư viện không cần thiết.
+- Đọc code/theme/component thực tế trước khi sửa; nêu vấn đề, lựa chọn và đánh đổi ngắn gọn bằng tiếng Việt. Không tự mở rộng một mẫu đã thử sang toàn sản phẩm.
+
+### 2. Bo góc và hình dạng phải theo project
+
+- Dùng token `--app-radius-*` trong `src/app/globals.css`, không tự đặt hệ góc khác hay rải số radius tùy ý ở feature.
+
+| Token | Giá trị hiện tại | Mục đích |
+| --- | --- | --- |
+| detail | 4px | Chi tiết biểu đồ nhỏ |
+| badge | 6px | Nhãn/trạng thái nhỏ |
+| small | 8px | Item/vùng tương tác nhỏ |
+| control | 12px | Nút, input, select |
+| card | 20px | Card, bảng, popover |
+| panel | 24px | Banner/khối lớn |
+| dialog | 28px | Modal, góc trên bottom sheet |
+| pill | 999px | Capsule được thiết kế có chủ đích, dock/progress |
+
+- Góc mềm, nhất quán theo kích thước và vai trò; khối con dùng tỷ lệ phù hợp với khối ngoài. Không bo quá mức hoặc ép mọi nút/bộ lọc thành viên thuốc. Filter kế thừa hình dạng component chung.
+- Avatar/marker tròn dùng 50%; fullscreen và mép sheet sát đáy dùng 0. Giữ ngoại lệ có lý do thay vì thay hàng loạt.
+- Squircle/continuous corners chỉ là progressive enhancement ở bề mặt phù hợp qua `@supports`; có border-radius dự phòng. Không dùng mask/clip làm mất focus, ảnh hay nội dung; không coi CSS là bản render native chính xác của Apple.
+
+### 3. Kính nhẹ, nội dung rõ
+
+- Mức đã chọn: **kính nhẹ, tinh tế**. Dùng helper `src/base/theme/surfaces.ts` cho navigation, menu/dropdown, popover, dialog và lớp nổi phù hợp.
+- Card nội dung/timeline mặc định nền đặc từ theme. Quy tắc này thay thế thử nghiệm card nền trong ở lượt trước. Không áp blur/kính lên mọi card hoặc mỗi item của danh sách dài.
+- Dùng nền/viền/highlight/bóng nhẹ từ palette hiện có. Không thêm màu neon, accent ngẫu nhiên hoặc gradient trang trí tràn lan. Nút primary giữ gradient đã chọn: `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})` ở normal/hover/active; disabled có màu theme riêng.
+- Có fallback nền đặc khi không hỗ trợ blur, giảm trong suốt hoặc tăng tương phản. Dialog fullscreen nền đặc. Đánh giá chữ/số tiền trên ảnh và ở cả sáng/tối; độ đọc luôn ưu tiên hơn hiệu ứng.
+- Ảnh bìa làm nền chỉ dùng tại nơi đã được người dùng yêu cầu thử; phải có lớp phủ đủ rõ, màu dự phòng và tên/thông tin đọc được. Không biến mọi card thành ảnh nền.
+
+### 4. Component, spacing và tương tác
+
+- Ưu tiên sửa/reuse component trong `src/base/`, không dựng bản sao ở từng màn. Dùng `AppCard`, `AppButton`, `AppSectionHeader`, `AppActionMenu`, `AppFilterChipGroup`, `AppEmptyState` và theme hiện có; giữ API component.
+- Container sở hữu gap/padding. Ưu tiên Flexbox; không thêm margin/negative margin, position absolute/relative hoặc Grid để vá căn lề. Không cộng padding card và header nhiều lớp gây thụt lề.
+- Header và bộ lọc cùng cấp căn cùng lề trang. Mỗi khu vực phải có title rõ, kể cả khi rỗng; dùng `AppSectionHeader`, không để chỉ còn khung mà người dùng không biết đó là phần gì.
+- Không thêm description/subtitle mặc định. Đã bỏ description dưới “Chuyến đi của tôi”; chỉ thêm giải thích khi người dùng yêu cầu hoặc cần cho thao tác.
+- Phân cấp hành động rõ: xác nhận/lưu/xuất bản là primary; chỉnh sửa/quay lại là secondary hoặc text theo vai trò. Không để hành động phụ vô tình nhận primary mặc định như nút Chỉnh sửa ở preview xuất bản.
+- Icon phải hợp nghĩa, dùng thư viện hiện tại; nút chỉ có icon cần accessible label và tooltip khi phù hợp. Icon chỉnh ngân sách dùng Tune, cả trước/sau đặt ngân sách.
+- Vùng chạm thao tác icon tối thiểu 44px. Kích thước nền nhìn thấy có thể nhỏ hơn vùng chạm: menu ba chấm trên card trip hiện nền 28px nhưng hit target 44px. Giữ focus bàn phím rõ; không lồng nút trong nút, không để mở menu kích hoạt mở card.
+- Hover/focus/active/disabled/loading phải phân biệt, không đổi validation hoặc callback. Input error/disabled không nhận viền hover primary; helper/error text dễ đọc và wrap.
+- Motion nhẹ, thường 150–250ms; helper `interactionTransition` hiện 180ms, tôn trọng prefers-reduced-motion. Không animate kích thước gây layout shift; hover trang trí chỉ dành thiết bị có chuột khi phù hợp.
+- Giữ responsive và mật độ dữ liệu hợp lý. Chữ dài phải được xử lý, tránh tràn. Nội dung UI mới có VI/EN; ngày dùng helper calendar-safe, tiền dùng formatter chung. Không tạo số liệu minh họa thay dữ liệu thật.
+
+### 5. Lựa chọn cụ thể cần giữ
+
+- **Activity:** giữ phần ảnh; placeholder upload thông thường là thumbnail/icon ảnh trung tính, không phải chân dung. Avatar tài khoản vẫn là avatar. Giữ cách chọn ảnh, pending và quyền hiện có.
+- Không khôi phục bố cục activity gom giờ/danh mục lên đầu đã bị người dùng yêu cầu revert. Danh mục ở dòng trên, trạng thái ở dòng dưới; dùng chip chung, chữ 12px, min-height 24px, gap 4px, không để mỗi card wrap khác nhau theo độ dài nhãn.
+- **Ngày:** tab một dòng `T7, 07/11`, `CN, 08/11` (EN `Sat, 07/11`); giữ fallback Ngày N. Nền xanh nhạt cho tab chọn mới là đề xuất đã bàn, chưa phải yêu cầu triển khai toàn bộ tab; không tự đổi màu theo ghi nhớ đề xuất.
+- **Chia tiền:** bộ lọc Tất cả / Đang có nợ / Chờ nhận tiền nằm ngoài card dữ liệu, căn cùng lề Ai trả cho ai; chỉ lọc chi tiết thành viên. Giữ header Ai trả cho ai, Chi tiết từng người, Các khoản đã trả, gồm trạng thái rỗng. Giữ thông tin từng hàng và hành động trả/xóa theo quyền.
+- **Chi tiết khoản chi:** dùng AppFinanceRow compact riêng cho payer/danh sách chia: tên và email cùng cột trái, số tiền cùng tỷ lệ/trạng thái bên phải; email không nằm dưới toàn bộ cụm tiền. Giữ đủ thông tin, wrap dữ liệu dài, dùng card nền đặc và token radius project. Không suy ra settled từ payer hoặc thay phép chia.
+- **Ngân sách:** tạm ẩn disclosure “Xem ngân sách từng nhóm chi” và nội dung của nó bằng cờ hiện có; giữ code để bật lại. Không ẩn chart hay sửa dữ liệu ngân sách ngoài yêu cầu.
+- **Thử nghiệm timeline mobile:** trục số dịch trái 6px, card rộng thêm 8px qua biến rail/gap 16px/10px; từ sm giữ 28px/8px. Số vẫn 28px, ảnh/lề phải/bo góc giữ nguyên; connector phải cùng trục. Không suy rộng thành giảm lề mọi trang.
+- **Thử nghiệm trip mobile hiện tại:** dùng ảnh bìa làm nền với lớp phủ tối, chữ trắng và fallback primary.dark, chiều cao tối thiểu 120px có thể giãn theo chữ. Card bấm mở; bỏ nút “>” riêng; menu “⋮” góc trên phải, nền 28px/hit target 44px. Giữ metadata, active state và quyền chủ chuyến; desktop giữ hiện tại. Lựa chọn này thay bản thumbnail trái và cột chevron đã thử trước đó. Không cam kết 3 trip luôn vừa một màn hình khi chưa đo viewport thực.
+
+### 6. Kiểm chứng và báo cáo
+
+- Sửa hẹp, giữ thay đổi sẵn có của người dùng; không dùng broad global CSS override hoặc `!important` để ép style. Không đổi dependency hay abstract thêm nhiều lớp cho chỉnh sửa nhỏ.
+- Chạy lint/type-check và kiểm tra phù hợp thay đổi; báo rõ file sửa, những gì đã kiểm chứng và phần chưa kiểm chứng. Không nhận đã xác minh chức năng end-to-end, responsive, độ tương phản hay thị giác nếu chỉ chạy kiểm tra code.
+- Tiếp tục bỏ smoke/browser test theo yêu cầu hiện tại. Nếu chưa có kiểm tra ảnh trước/sau/thiết bị thì nói rõ; chỉ thực hiện kiểm tra trực quan khi người dùng yêu cầu thay đổi phạm vi kiểm chứng đó.
+- Chi tiết triển khai/lịch sử: `docs/ui-materials.vi.md`, `docs/ui-refinement.vi.md`. Các bố cục đang thử không tự trở thành quy tắc áp dụng toàn app.
+
+## Required reasoning and review — read every session
+
+Read this AGENTS.md at the start of every session working in this repository. Before each coding task, re-read the sections relevant to that task rather than relying only on previous summaries. For each implementation/design decision, explicitly cover these user requirements in Vietnamese:
+
+1. Explain the core problem.
+2. Explain advantages and disadvantages.
+3. Explain why the approach is selected and why relevant alternatives are not.
+4. Describe viable alternative approaches.
+5. Critically evaluate the request and reference images; do not automatically agree or implement every suggestion. Explain tradeoffs, then implement the authorized scoped improvement using judgment. Ask only when a material ambiguity cannot be resolved.
+
+For mobile homepages, prioritize the current task and concise summaries. Avoid duplicating whole itinerary/expense screens, decorative introductions or large hero sections that bury useful content. Keep secondary details reachable via links or disclosures. Community templates belong on Home/library; the planner prioritizes the user's itinerary (confirmed 2026-10-27).
+
 ## 1. Your role
 
-You are the engineering partner for **TripBudget**, a travel planning and shared-budget application. Work incrementally, inspect the repository before changing code, preserve existing user work, and explain every implementation clearly for a developer who is new to some of the technologies involved.
+You are the engineering partner for **Vi Vu**, a travel planning and shared-budget application. Work incrementally, inspect the repository before changing code, preserve existing user work, and explain every implementation clearly for a developer who is new to some of the technologies involved.
 
 Do not assume that code discussed in a previous conversation has already been created. Always inspect the actual repository first and distinguish between:
 
@@ -23,7 +104,14 @@ When asked to implement something, complete the requested scope, verify it safel
 
 Respond in **Vietnamese**, unless the user explicitly requests another language.
 
-Every technical answer must explain:
+# <<<<<<< Updated upstream
+
+UI copy preference (2026-10-30): avoid adding descriptions/subtitles by default. Use concise titles and existing shared components; add explanatory text only when the user asks or it is essential to complete an action. Notification empty states use AppEmptyState with a title/icon and no description. Do not show explanatory connection-status paragraphs in the notification inbox; retain actionable error/retry feedback.
+
+Treat the user's UI opinions and reference images as proposals to evaluate, not final design decisions. Explain suitability and tradeoffs before expanding a visual pattern across the product. An explicit implementation request authorizes that scoped implementation, not an automatic project-wide rollout. Fix concrete color/layout defects within the requested review; report remaining design recommendations separately. Do not present a suggested style as approved.
+
+> > > > > > > Stashed changes
+> > > > > > > Every technical answer must explain:
 
 1. The concept or component is what.
 2. Why it is needed.
@@ -545,6 +633,8 @@ The generic hook should not know:
 - where to redirect after Login;
 - business-specific success messages;
 - JWT or Redis details.
+
+Feature-specific endpoints, query/mutation keys, request parameter mapping and request orchestration belong in `src/features/<feature>/hooks/`, composed from the existing base hooks. Components call those feature hooks and own UI state/presentation/navigation; do not configure `useQueryGet`/`useMutationPost`/`useMutationRequest` or call Axios directly in feature components. Generic UI hooks remain allowed. Even a request currently used by one component should follow this established project boundary. Existing legacy violations are audit findings, not examples to copy.
 
 Feature hooks compose the generic hook and own feature behavior. For example, `useLogin` may call `authApi.login`, then refresh navigation or redirect after success.
 
@@ -2150,7 +2240,7 @@ If the user has already supplied a specific task, do not block on a broad questi
         - Tạo `filterValues` được `useMemo` an toàn từ state `filters`.
         - Xóa bỏ hoàn toàn 4 hàm `useCallback` riêng lẻ (~50 dòng code boilerplate), thay thế bằng duy nhất 1 hàm `handleFilterUpdate` xử lý cập nhật state linh hoạt theo từng key.
         - Gọi `<TripFilterBar filters={filterValues} onFilterChange={handleFilterUpdate} ... />` sạch sẽ, rõ ràng.
-54. **Đồng Bộ Phân Trang Đánh Số 1, 2, 3... Cho Cả Grid Và List/Table (`TripGridPagination.tsx` & `AppTablePagination.tsx`)**:
+53. **Đồng Bộ Phân Trang Đánh Số 1, 2, 3... Cho Cả Grid Và List/Table (`TripGridPagination.tsx` & `AppTablePagination.tsx`)**:
     - **Yêu cầu & Mục tiêu**:
       - Bám sát tôn chỉ kiến trúc của `AGENTS.md`: Chuyển đổi toàn diện cơ chế phân trang ở **cả 2 chế độ Grid (Lưới thẻ) và List/Table (Bảng)** từ cơ chế điều hướng 2 mũi tên `< >` sang **dãy nút số trang trực quan `1, 2, 3...`**.
       - Tích hợp bộ chọn số lượng dòng/thẻ mỗi trang bằng `AppSelect variantType="compact"` (`6, 12, 24 / trang` cho Grid và `5, 10, 20, 50 / trang` cho Table).
@@ -2165,7 +2255,7 @@ If the user has already supplied a specific task, do not block on a broad questi
     - **Kiểm thử chất lượng**:
       - `export PATH="/home/hanbiro/.nvm/versions/node/v20.20.2/bin:$PATH" && npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
 
-55. **Tính Năng Tải Ảnh Bìa Chuyến Đi & Hiển Thị Đồ Họa Dạng Thẻ Grid (Trip Cover Image Upload & Grid Display)**:
+54. **Tính Năng Tải Ảnh Bìa Chuyến Đi & Hiển Thị Đồ Họa Dạng Thẻ Grid (Trip Cover Image Upload & Grid Display)**:
     - **Yêu cầu & Mục tiêu**:
       - Cho phép người dùng tải ảnh từ máy tính (JPG, PNG, WebP) làm ảnh bìa cho chuyến đi (`coverUrl`).
       - Hiển thị ảnh bìa trên thẻ Grid (`TripCardItem.tsx`) theo tỉ lệ chuẩn 16:9 với hiệu ứng hover zoom mượt mà.
@@ -2195,7 +2285,7 @@ If the user has already supplied a specific task, do not block on a broad questi
         - Cung cấp script migration sẵn sàng cho backend core: `ALTER TABLE trip_core.trips ADD COLUMN IF NOT EXISTS cover_url TEXT;`.
     - **Kiểm thử chất lượng**:
       - `npx tsc --noEmit && npm run lint` -> **0 errors, 0 warnings**.
-56. **Lazy Load (Infinite Scroll) Cho Nhật Ký Hoạt Động & Timeline Hoạt Động Theo Ngày**:
+55. **Lazy Load (Infinite Scroll) Cho Nhật Ký Hoạt Động & Timeline Hoạt Động Theo Ngày**:
     - **Backend (`tripbudget-core`)**:
       - `GET /trip/{tripId}/plan/activities/logs?page=&size=` (mặc định `size=20`, tối đa 100) trả `PageResponse<PlanActivityLogResponse>` (sort `createdAt DESC, id DESC`).
       - `GET /trip/{tripId}/plan/days/{dayId}/activities?page=&size=` (mặc định `size=10`, tối đa 100) trả `PageResponse<PlanActivityResponse>` kèm `actualSpent`; repository `findPageByDayIdSorted` giữ thứ tự `startTime NULLS LAST, orderIndex, createdAt` + `id` làm tie-breaker.
@@ -2212,11 +2302,9 @@ If the user has already supplied a specific task, do not block on a broad questi
 1. **Xuất Báo Cáo Kế Hoạch & Chi Tiêu Chuyến Đi (Export PDF / Excel)**: Xuất file lịch trình du lịch và bảng kê quyết toán chia tiền.
 2. **Offline-first & Service Worker Caching**: Hỗ trợ xem lại lịch trình và hóa đơn khi mất kết nối mạng.
 
-
-
 ### Profile avatar upload integration (2026-10-12)
 
-- Profile now uses `AppDialog`, `AppImageUploader`, `AppButton`, `AppTextField`, and `AppToast`. Only avatar editing is enabled; other profile data is read-only until its backend API exists.
+- Profile uses `AppDialog`, `AppImageUploader`, `AppButton`, `AppTextField`, and `AppToast`. Avatar editing remains enabled; the later full-name editing milestone below supersedes the original avatar-only limitation. Email remains read-only.
 - `AppImageUploader` and `useUploadFile` live in base and support future trip-cover integration. JPG/PNG/WebP, max 5 MiB, local preview with object URL cleanup. Selection is local until Save; closing before Save sends no upload.
 - Browser calls same-origin BFF through shared Axios/mutation hooks. POST `/api/uploads` forwards multipart; PATCH/DELETE `/api/users/me/avatar` forward to Identity with Bearer token read from HttpOnly cookie. Configure server-only `IDENTITY_SERVICE_URL` (base URL without `/api`); legacy environment name is a compatibility fallback.
 - BFF bounds multipart buffering to 5 MiB + 64 KiB, checks file and purpose, and forwards upstream statuses including 401 for existing refresh flow. Identity remains responsible for actual file-content validation, ownership and transaction rules.
@@ -2231,7 +2319,6 @@ If the user has already supplied a specific task, do not block on a broad questi
 - Refresh transport/5xx errors now remain API errors without navigation or cookie deletion. Only definitive 401/403 rejection redirects once to login. Queued requests are marked retried before waiting, limiting each request to one replay.
 - Middleware recognizes only access_token and refresh_token, the two cookies actually managed by auth BFF. Refresh BFF prefers server-only IDENTITY_SERVICE_URL and rejects successful responses missing an access token with 502.
 - Regression tests: `node tests/auth-refresh.test.mjs` (transport errors, rejected sessions, concurrent 401 requests).
-
 
 ### Trip cover upload integration (2026-10-13)
 
@@ -2255,7 +2342,6 @@ If the user has already supplied a specific task, do not block on a broad questi
 - UploadAttachmentService requires the calling resource transaction (MANDATORY); resource authorization remains in TripService. This preserves one database transaction, while providing a single boundary for future attachment users or a future Identity API adapter.
 - Identity remains responsible for file upload/Cloudinary. No new HTTP endpoint or schema migration is introduced by this refactor. Shared database coupling still exists; replacing it with remote claims needs idempotency and failure reconciliation.
 - Validation: `mvn test` passes 18 unit tests (6 trip cover, 5 upload module, 7 existing Hashids). Upload repository assertions check ownership/purpose SQL, enum casts and lowercase bound values. No live PostgreSQL integration or smoke test was run.
-
 
 ### Customer navigation layout (2026-10-13)
 
@@ -2305,14 +2391,12 @@ Backend switcher search validation: TypeScript and production build pass; full E
 
 Shared debounce audit validation: 7 unit cases, TypeScript and production build pass; full ESLint has no errors and 3 unrelated MyBalanceCard.tsx unused-symbol warnings. Browser/smoke tests were skipped.
 
-
 ### Shared toast duration (2026-10-13)
 
 - AppToast defaults to autoHideDuration=3000ms for all severities. Existing consumers use this shared default; no feature overrides exist. Keep future toasts on the shared default unless a specific requirement calls for a different duration.
 - Snackbar timeout calls the consumer onClose to clear its open/message state. MUI hover/focus/window-blur timer behavior remains unchanged.
 
 Toast duration validation: TypeScript and targeted AppToast ESLint pass. Smoke/browser tests skipped per project instruction.
-
 
 ### First-use policy acceptance (2026-10-15)
 
@@ -2326,14 +2410,12 @@ Toast duration validation: TypeScript and targeted AppToast ESLint pass. Smoke/b
 - UI refinement: local paper/action.hover surfaces replace the global blue background.default on the acceptance/loading/error/legal pages. Shared AppCard/Button/Dialog/Checkbox, per-policy icons, selected borders, 0/3 counter, locale/theme preferences, safe-area spacing and mobile document dialogs. The global theme remains unchanged.
 - Validation: frontend TypeScript and targeted ESLint; 3 policy gate/BFF unit regressions and 3 auth refresh regressions; Identity build, 5 policy unit tests and targeted ESLint. Full frontend lint has 0 errors and 5 unrelated unused-symbol warnings. Core tests use JDK interface stubs instead of Mockito agent attachment. Browser/smoke and live database verification are not performed.
 
-
 ### Compact policy acknowledgement screen (2026-10-15)
 
 - Replaced tall policy cards with three compact checkbox rows and a separate 44px Read button per row. Checkbox labels retain explicit agreement/acknowledgement and the exact policy name; no preselection, bulk acceptance or scroll-to-end requirement was added. Icons hide on small viewports to preserve text width.
 - Removed repeated card titles/summaries and the extra welcome row from the acknowledgement screen. The complete documents and summaries remain in the translations; full document text is unchanged and opens in AppDialog.
 - Reduced page/panel gaps and padding, centered the natural-height panel, shortened supporting VI/EN copy and placed actions on one row from sm. Keyboard order matches visual order. Mobile actions stack, content wraps, and short/zoomed viewports can still scroll naturally. No fixed height, hidden overflow or clipped content is used to claim a universal no-scroll layout.
 - This is a presentation-only change. API payload, database columns, first-acceptance idempotency, version, backend enforcement and public document routes remain unchanged. Desktop layout is intended to fit common laptop viewports; actual device/browser visual acceptance remains manual (smoke tests skipped).
-
 
 ### Mandatory policy popup supersedes standalone screen (2026-10-15)
 
@@ -2345,7 +2427,6 @@ Toast duration validation: TypeScript and targeted AppToast ESLint pass. Smoke/b
 - Backend endpoints, migration, version and first-acceptance storage are unchanged. This supersedes the page-centered presentation described above. Frontend regressions cover pending/accepted/error gates, AI/maps access and mandatory versus ordinary dialog dismissal.
 
 Mandatory policy popup validation: TypeScript, targeted ESLint and all 4 policy regressions pass, including mandatory/ordinary modal dismissal and protected-content gating. Backend behavior is unchanged. No live browser/device visual check or smoke test was performed.
-
 
 ### Delete trip request validation fix (2026-10-15)
 
@@ -2387,6 +2468,8 @@ Mandatory policy popup validation: TypeScript, targeted ESLint and all 4 policy 
 
 ### Customer travel UI/UX refresh (2026-10-22)
 
+- Profile full-name editing: Identity PATCH `/api/users/me/profile` accepts only a trimmed, nonblank name of at most 100 characters and derives ownership from the authenticated JWT subject. The BFF `/api/users/me/profile` forwards the request using the HttpOnly access cookie; `useProfileMutation` publishes the safe returned profile through UserContext. The form saves changed names before any selected avatar, updates context after each successful request, retains unsaved avatar choices on failure, and uses the general profile success toast. Email remains disabled. Avatar uploader hints are hidden only in this form via `showHint={false}`; image validation errors remain visible, and the old avatar-only notice is no longer rendered. This requires deploying the Identity endpoint alongside the frontend. Nine DTO/service regression tests, the Identity build and frontend TypeScript/targeted lint pass; smoke tests are skipped.
+
 - Applied the installed `.agents/skills/ui-ux` direction to the existing MUI system without adding a second component library or changing business/API behavior. The approved direction is a calmer, customer-facing travel companion rather than an admin dashboard or AI marketing surface.
 - Shared cards are now flat, bordered surfaces without page-level elevation; primary and danger cards use restrained semantic tints. Secondary buttons use a neutral outline while the established primary-button gradient remains unchanged. Global inputs, buttons, page headers, page spacing, chips, table headings, navigation states and scrollbars use a lighter common rhythm.
 - Overview now follows the approved travel reference with a 72px desktop top bar, compact brand lockup, larger trip switcher, full-width cover hero, themed readability overlay, destination/dates, member access and a translucent budget summary strip. Desktop hero and summary proportions track the supplied reference; mobile stacks the same information without horizontal overflow. It keeps the familiar category and recent-expense cards below instead of using the awkward side-image composition. The former multi-color gradient/donut treatment was removed. Trip cards and plan-day tabs no longer lift or cast page shadows on hover.
@@ -2399,3 +2482,788 @@ Mandatory policy popup validation: TypeScript, targeted ESLint and all 4 policy 
 - Plan keeps Add activity as the main action; print, history and share are grouped under the existing action menu. Checklist and AI suggestions remain directly reachable. AI Planner now uses the shared page header and one working form plus a compact guidance panel; promotional capability cards and the decorative multi-color hero were removed.
 - VI/EN customer copy uses sentence case and frames AI as an editable itinerary draft. The brand subtitle is now travel-oriented instead of an AI badge. Existing light/dark palettes, permissions, dialogs, hooks and request flow remain intact.
 - Validation: regenerated Next route types, TypeScript passes, full ESLint has 0 errors and 7 pre-existing unused-symbol warnings, and production build passes. The build still reports Next.js's existing middleware-to-proxy deprecation. Smoke/browser tests were skipped per project instruction.
+
+### Journey-first travel interface (2026-10-26)
+
+- User authorized implementation of the Tripsy + Stippl direction, using the supplied screenshots as design references. This supersedes the October 22 fixed-height Overview composition: Overview now scrolls naturally and prioritizes the trip and itinerary, followed by a compact budget and recent expenses.
+- Existing `ActiveTripBanner` is shared between Overview and Plan. It now presents the real uploaded cover, trip name, destination, dates, member access/avatars and description. A theme gradient is the no-cover fallback; no stock photos, fabricated trips, expenses, members or itinerary activities were introduced. Overview additionally links to `/plan`.
+- `TripItineraryPreview` reuses `useTripPlan` with `includeActivities: false`, `useDayActivities`, `PlanDayTabs`, `ActivityTimelineCard` and `PlanEmptyState`. It previews at most three activities for the selected day, with access to the full itinerary. `TripBudgetCard` reuses the existing expense summary endpoint and shared progress/button/card components; detailed category reporting remains in Expenses.
+- Plan keeps its existing activity/checklist/share/history/print dialogs, handlers, pagination and permission checks. It adds the shared trip cover, compact day selectors, a timeline and map beside each other at `lg`, and an Itinerary/Map switch below `lg`. PlanHeader now composes AppPageHeader with an h2 under the trip's h1.
+- `PlanMapPanel` lists located activities from the currently loaded day pages. Selecting one displays its address in the reusable base `AppLocationMap`; the map includes an external Google Maps link. It is a selected-place map, not a multi-stop route renderer. Load more remains available in map view when day pagination has more results. Activities without locations remain visible in the timeline, and the trip destination is the map fallback.
+- Map rendering uses a lazy public Google Maps iframe and depends on network/provider availability. There are no new API credentials or dependencies. Shared `base/utils/maps.ts` encodes addresses with URLSearchParams; AppButton's type now permits anchor `target`/`rel` attributes for the external link.
+- Navigation order is now Home, Itinerary, Trips, Expenses, Split costs, AI assistant, derived from one ordered config for desktop and mobile. Existing maximum-five mobile navigation and More behavior remain. Existing brand palette, primary-button gradient, keyboard focus styling and light/dark theme tokens are retained.
+- New components follow one component per file, const-arrow/default-export conventions, Flexbox with parent-owned gaps/padding, shared wrappers, theme colors and VI/EN localization. Keyed trip previews/budget/member/recent-expense views and stale-plan guards prevent prior-trip content from appearing during selection changes; itinerary and budget errors have retry actions.
+- Validation: TypeScript passes; full ESLint has 0 errors and the same 7 existing unused-symbol warnings; production build passes after allowing Google Fonts downloads outside the network-restricted sandbox. Map URL encoding/locale fallback and new VI/EN keys were checked. The existing Next middleware-to-proxy warning remains. Smoke/browser tests were skipped per project instructions, so visual/device and live embedded-map verification remain manual.
+
+### Mobile action proposal, color regression and layout audit (2026-10-26)
+
+- Treat design feedback as proposals to assess, not final product decisions. A scoped implementation does not authorize a global visual rollout. The review/recommendation matrix is in `MOBILE_UI_REVIEW.md`.
+- Root cause of dark text on gradient link buttons: globals.css had an unlayered `a { color: inherit }` that outranked MUI's layered styles (`enableCssLayer: true`). Remove the duplicate global reset; MuiCssBaseline already owns link defaults. Keep enabled primary normal/hover/active foreground explicit and theme-derived. Do not add unlayered global link/button colors over the component system.
+- AppButton exposes opt-in `mobileIconLabel`: below sm, the startIcon becomes a 56px circle with the label below. It retains the existing handlers, focus, loading/disabled behavior and primary gradient. Only PlanHeader's quick-action group currently opts in. Forms, financial confirmation/delete, navigation and filters are not automatically converted.
+- Shared page header now wraps its title/action groups and long badge/subtitle content. Page containers permit flex shrinking. Split-allocation member rows stack on mobile; long amounts can wrap. Suggested settlement amounts/actions may wrap. Trip pagination reduces siblings and removes first/last shortcuts on mobile while increasing tap height. AI columns allow shrinking, and undefined primary.50/error.50 backgrounds use existing theme tokens/tints.
+- Regression command: `node scripts/check-button-styles.mjs` renders the real shared button/theme without starting the app or backend. It checks the CSS layer regression, primary link foreground through normal/hover/active with both theme definitions, and mobile circular-icon/visible-label styles. Smoke/browser tests remain skipped; the audit is source/SSR-style review, not full live/device visual validation.
+
+### Header/button wrapping and duplicate-action regression (2026-10-26)
+
+- The user's actual mobile screenshots exposed failures missed by the previous source-only pass: a table title/count and add button squeezing each other, View all dropping below the journey description, and metadata labels separated from their values. Audit scanned all 163 TSX files and 127 AppButton uses; remaining intentional fixed rows in horizontally scrollable tables are not treated as page overflow.
+- Standard AppButton labels use nowrap and do not shrink; wrap whole action groups instead. `wrapLabel` is explicit for exceptional long labels, while mobileIconLabel continues to allow multi-line labels beneath its circle. Form/footer groups now use Flexbox wrapping/gaps; confirm/camera paired fullWidth actions stack on phones. DialogActions no longer forces buttons to shrink their labels.
+- Reuse AppSectionHeader for card/table headers: title/action row independent of subtitle, optional count badge, optional stacked mobile actions. ExpenseTable and TripItineraryPreview use it. Expense page metadata puts each label/value in the same inline text block.
+- Overview now has exactly one contextual itinerary link, in TripItineraryPreview, labeled Mở lịch trình in VI. ActiveTripBanner no longer offers the duplicate CTA, and preview empty state does not add a second link. Expense page owns Add expense in the page header; ExpenseTable callback is optional for independent consumers. Plan's empty state does not duplicate its header's Add activity.
+- AppPagination centralizes responsive pagination for trip grids and shared tables. Card footers/member controls allow wrapping instead of compressing names or button labels.
+- `node scripts/check-button-styles.mjs`: 4 regression checks pass, including one itinerary link for banner + preview in loading/empty/populated states. `node scripts/check-responsive-layout.mjs [outputDir]`: Chrome headless component fixtures pass 28 combinations (7 widths 320–1440 × VI/EN × light/dark); screenshots reviewed. This is focused component layout validation, not app smoke/E2E or authenticated-page coverage. It uses isolated fixtures without backend calls/mutations, respects Skip smoke test, and does not claim every live page/device has been visually validated.
+- TypeScript and production build pass; full ESLint has 0 errors and the same 7 prior warnings. Updated recommendations/scope and limitations are in MOBILE_UI_REVIEW.md. Keep treating design ideas as proposals; fixing these concrete layout/duplication defects does not approve a global round-button rollout.
+
+### Stacked member avatars and member-dialog layout (2026-10-26)
+
+- User explicitly approved implementing the stacked-avatar proposal and fixing the member dialog shown in their screenshot. New shared AppAvatarStack composes MUI AvatarGroup + ButtonBase, with 8px overlap owned by MUI: 3 visible avatars below sm, 4 at sm+, plus the exact remaining count. Children are explicitly sliced before passing total so MUI's max/total special case cannot accidentally show a fourth mobile face. Real avatar URLs and shared getUserInitials fallback; no sample data in production.
+- ActiveTripBanner replaces its standalone member button and second avatar strip with one accessible stack action. It shows active members only, guards loading/error/stale responses and still opens the existing TripContext member dialog. Disabling the banner query while that dialog is open makes the query refresh on close, updating changed membership without introducing new API behavior.
+- TripMemberRow now keeps avatar left, name/email and RoleBadge in a single column, and the existing action menu at right. Invitation accept/reject controls occupy their own wrapping row. Permission conditions for owner/vice/member/self/target owner are unchanged. Menu accessible labels identify the target member.
+- TripMembersDialog places its description in full-width content instead of squeezing it into the icon/title/close row. Count/invite toolbar can wrap. Loading/stale hides old rows, errors expose a retry action; TripMemberList relies on DialogContent scrolling rather than a nested 420px scroller. Existing membership mutations and dialogs remain.
+- New VI/EN labels cover stack accessibility, per-member menu and loading errors. Title uses Vietnamese sentence case. The shared component's overlap uses MUI AvatarGroup rather than manually adding negative margins or positioned layout.
+- Validation: 6 CSS/component regression tests pass (including exact surplus counts and member-action permissions); 28 Chrome component-layout combinations pass, including missing avatars, multiple member counts, long names/emails and invitations. Light/dark screenshots at 375px reviewed. TypeScript/build pass; lint has 0 errors and the same 7 existing warnings. No authenticated end-to-end/smoke flow was run.
+
+### Itinerary list rows, highlights and time ranges (2026-10-26)
+
+- Implemented the user's scoped itinerary redesign proposal with shared AppTimelineRow and AppCategoryIcon: category circle on the left, readable activity title, time metadata, secondary location/category/note details, and thin connectors/dividers in a shared card. DayTimelineList, overview preview and the public read-only itinerary reuse the same activity renderer; PlanMapPanel uses its compact selectable variant and preserves selected-location and pagination behavior.
+- Important information uses a clear hierarchy: bold titles, scheduled times and actual amounts; theme-based status backgrounds with dark-mode foregrounds; selected map stops receive a primary outline. Completed titles remain readable with a completion indicator. Notes and estimated amounts stay secondary. Existing edit/delete/status/expense-conversion callbacks, read-only behavior and delete authorization remain intact.
+- User requested HH:mm - HH:mm rather than wording between times. Shared formatTimeRange in base/utils/date.ts removes seconds and joins available times; one start time remains HH:mm, records without either time omit the time metadata entirely (per the latest user preference), and end-only records retain an explicit end-time label. The whole time group may wrap below the title when space is limited.
+- ActivityDistanceConnector uses the same icon gutter, a wrapping directions link, and existing route data/source information. It does not invent missing distances or durations. New interface copy has VI/EN translations; no code comments were added.
+- Validation: TypeScript and scoped ESLint pass; full ESLint has 0 errors and the same 7 existing warnings. Temporary tests outside the repository verify time ranges, action availability/callbacks and 28 Chrome component-layout combinations (320–1440px, VI/EN, light/dark) with project fonts; mobile screenshots reviewed. These are isolated component fixtures with a map placeholder, not authenticated-page, live-map interaction, smoke or E2E coverage. Production build checked separately. Existing user edits to this document and .gitignore were preserved.
+
+### Itinerary route-link hover correction (2026-10-26)
+
+- Corrected ActivityDistanceConnector's zero-padding link combined with MUI start/end icon negative margins. Icons now participate directly in the Flexbox with gap and internal horizontal padding, so the hover background contains the icons and label. Hover/active use theme action backgrounds; keyboard focus stays inset to avoid clipping. Directions URL, route data and global button styling remain unchanged.
+- Verified 28 isolated Chrome component combinations with actual pointer hover (320–1440px, VI/EN, light/dark): icons stay within the padded link, hover does not move or resize it, and content does not overflow. Reviewed light/dark hover crops. TypeScript, scoped ESLint and diff whitespace checks pass; no smoke tests or authenticated backend flows run.
+
+### Consistent itinerary status typography (2026-10-26)
+
+- Both the itinerary and map already reuse ActivityTimelineCard, but its status Box inherited Arial and a normal line height inside ButtonBase, versus Comfortaa and 18px in the non-interactive itinerary. Replaced that shared status wrapper with Typography and explicit line height/letter spacing to preserve the itinerary's appearance everywhere. Status colors, size, weight, padding and icons remain shared and unchanged.
+- Browser computed-style checks now confirm identical status font family, size, weight, line height, letter spacing, padding and icon size in itinerary, preview and interactive map fixtures across 28 width/locale/color combinations. TypeScript, scoped ESLint and diff whitespace checks pass. No smoke test run.
+
+### One application font for text and numbers (2026-10-26)
+
+- Latest user preference supersedes the earlier decision to retain a separate financial monospace font: use Comfortaa for application text, numbers, money, dates, time ranges and percentages. RootLayout now loads only Comfortaa; DM Mono was removed.
+- globals.css defines one font chain through --font-sans, with --font-body, --font-display and compatibility aliases (including --font-mono) resolving to it. Existing financial components automatically use Comfortaa without scattered overrides. Native controls/code-like elements and MuiButtonBase use the same font to prevent Arial/browser-default fallbacks. Old starter stylesheet references to unloaded Geist variables now use --font-body. Keep intentional size/weight hierarchy and existing numeric formatting.
+- Validation: TypeScript and production build pass; full ESLint has 0 errors and the same 7 existing warnings. No DM Mono/Geist loading references remain in src or generated CSS. Isolated Chrome fixtures compare computed font families for an actual TripSummaryMetric, numeric font aliases, ButtonBase, native controls and code-like elements across 28 width/locale/color combinations; they match the body Comfortaa font. Existing itinerary layout/hover/status checks still pass. This does not claim visual coverage of every authenticated page; no smoke tests run.
+
+### Mobile dock and restrained monetary emphasis (2026-10-26)
+
+- Current user preference: monetary highlights should be subtle and use color, without increasing existing font sizes or adding colored amount backgrounds. Mobile navigation should feel detached through spacing and a rounded surface, without a surrounding border or shadow.
+- AppBottomNavigation now has a centered rounded surface (maximum 560px), safe-area-aware side/bottom gaps and a soft active-item tint. It remains in AppShell's Flexbox flow below the scrolling main content, preserving routes, active-state accessibility and the existing desktop breakpoint. No fixed/absolute positioning, shadow or outer border was introduced in the final version.
+- New shared AppMetricValue standardizes monetary emphasis with Comfortaa, theme-based primary/success/error foregrounds, numeric styling and wrapping. Applied to budget totals/spending/remainder, personal balance/settlement totals, and itinerary overall/day estimates. Existing font sizes and financial calculations are preserved; important amounts can wrap rather than be replaced by an ellipsis. Balance status labels retain their existing meaning. User edits to .gitignore and prior AGENTS.md progress were preserved.
+- Validation: TypeScript and production build pass; full ESLint has 0 errors and the same 7 existing warnings. Temporary Chrome fixtures pass 28 width/locale/color combinations (320–1440px, VI/EN, light/dark), including zero budgets, over-budget values, long amounts and all personal balance statuses. Checks cover dock spacing/no shadow, active route, 44px minimum action targets, absence of content overlap/overflow, shared fonts and transparent monetary backgrounds. Mobile light/dark screenshots reviewed. Isolated fixtures use local data and a budget-hook stub; no live authenticated flow, smoke test or physical-device safe-area validation was run.
+
+### Desktop selection and mobile footer surface correction (2026-10-26)
+
+- AppNavigationLink's hover rule previously replaced the active foreground/background, making a clicked desktop item appear selected only after the pointer left it. Hover now preserves the active colors; inactive hover and keyboard focus remain distinct. The route still determines the active item.
+- The apparent strip above the mobile dock was caused by translucent action.hover backgrounds stacking in main/AppPageContainer while the footer had only one layer. AppShell now defines an opaque theme-derived --app-page-surface only below the existing desktop navigation breakpoint; main, AppPageContainer and the dock surround reuse it. At desktop widths the variable is absent and the existing action.hover backgrounds remain. No shadow or border was added to hide the strip.
+- Validation: TypeScript and scoped ESLint pass. Isolated Chrome tests render the actual AppShell and AppPageContainer with local provider/host stubs across 28 width/locale/color combinations, including 1439/1440/1920px. Mobile main/page/footer computed colors match; the custom surface is absent on desktop. Real pointer hover/click checks confirm the active desktop link retains its colors before the pointer leaves. Layout, route accessibility and monetary emphasis checks pass. Light/dark mobile screenshots reviewed; no authenticated navigation or smoke test run.
+
+### True floating mobile navigation following the supplied reference (2026-10-26)
+
+- The user's latest clarification and Facebook screenshot request a true overlay: page content continues behind the gaps surrounding the navigation pill. This supersedes the earlier normal-flow footer/dock approach. Mobile AppBottomNavigation uses a fixed transparent wrapper with pointer-events:none and an interactive pill with pointer-events:auto, so there is no full-width opaque footer or interception of scrolling/clicks in the surrounding gaps. The pill retains no shadow/outer border. No relative/absolute positioning, Grid or child margins were added.
+- AppShell's mobile-only CSS variables share the navigation height and safe-area-aware bottom clearance. Main extends to the viewport bottom; AppPageContainer adds that clearance to its existing bottom padding, and main has matching scroll padding. The last card/row can therefore scroll above the pill instead of being permanently hidden. Desktop has no overlay/clearance variables; the existing menu selection fix remains.
+- Validation: TypeScript, scoped ESLint and whitespace checks pass. Temporary browser fixtures render the actual shell, page container, navigation and RecentExpenseList with five local expense rows. All 28 width/locale/color combinations pass, including desktop breakpoint boundaries; checks confirm transparent gap hit-testing and wheel scrolling, reachable/clickable final row, keyboard focus visibility, and desktop active-hover-click behavior. Light/dark final-row screenshots reviewed. API/providers/topbar hosts are locally stubbed; no authenticated navigation, smoke test or physical-device safe-area check was run.
+
+### Responsive itinerary day selector (2026-10-26)
+
+- PlanDayTabs no longer forces every button to be at least 112px wide. Up to three days share the available width evenly, capped at the prior desktop size; longer itineraries use compact container-based widths and horizontal scrolling with proximity snapping. Reduced internal horizontal padding and allowed long labels/counts to wrap, preserving existing font sizes, dates, selected-day callbacks and pressed-state accessibility. Selected colors remain visible during hover.
+- This shared component updates the overview itinerary preview, planner and public trip view together. No other menu/layout styles changed in this task.
+- Validation: TypeScript, scoped ESLint and whitespace checks pass. Temporary Chrome component fixtures pass 28 width/locale/color combinations with 1/2/3/4/30 days, missing dates, large day/activity counts and keyboard focus on the last day. Up to three buttons remain fully visible with equal widths; long itineraries scroll to the final button. Light/dark mobile screenshots reviewed. No smoke test or live authenticated flow was run.
+
+### Category spending long-text layout fix (2026-10-27)
+
+- CategorySpendingList allows headings, status badges, category names and monetary footers to wrap within the card. Shrinkable flex children and zero-minimum existing grid tracks prevent long content from widening the page; header icons retain their size. Data and budget calculations are unchanged.
+- Validation: TypeScript and scoped ESLint pass with the existing unused TuneRoundedIcon warning; whitespace check passes. No smoke test or browser visual verification was run.
+
+### Responsive category over-budget alert (2026-10-27)
+
+- CategorySpendingList stacks the alert content and full-width budget action on mobile. At sm and above the action sits beside the content, wrapping below when the content cannot retain 240px. The warning icon aligns with the first text line. Existing budget callback and calculations are preserved.
+- Validation: scoped ESLint and TypeScript checks pass (existing unused TuneRoundedIcon warning); whitespace check passes. No smoke test or browser visual verification performed.
+
+### Mandatory UI review requested by user (2026-10-27)
+
+- Before completing UI changes, review narrow mobile and desktop layouts, long text, control labels, wrapped actions, empty/loading/error states, and light/dark contrast. Use a focused browser check when available; static TypeScript/ESLint checks alone do not establish visual correctness. Report any visual checks that could not be performed. Continue to skip smoke tests.
+- Public pages bypass AppShell and must provide an opaque theme surface and readable foreground. Transparent action.hover over the theme's blue body background is unsuitable for content pages.
+- Template library filters use visible external labels and shared AppSelect filter controls, avoiding floating labels crossing adjacent fields on mobile. Parent flex containers own spacing and wrapping.
+
+### Community plan templates implementation (2026-10-27)
+
+- Added Core snapshot/metadata persistence, explicit public DTO allowlist, preview fingerprint, owner authorization, publication/update/unpublish, metadata-only searchable/paginated library, private author list and transactional copy with PostgreSQL advisory locks/idempotency receipts. Keeps rest days, shifts LocalDate values and resets execution/assignment/expense links. Source soft deletion unpublishes via migration trigger.
+- Added public SSR template library/detail with BFF routes, preview/publish/copy forms, My templates and homepage discovery including empty-trip state. Quick-create AI passes the newly created trip ID to the planner; password/Google login supports a restricted template return URL. Old query results are hidden during debounce/filter changes.
+- Public template layout owns an opaque theme background; filters use separate visible labels and AppSelect. Added the user's required ongoing UI review rules above. Focused Chrome review covers 48 library width/locale/theme/state combinations; mobile light/dark screenshots reviewed. No smoke test or authenticated full flow performed.
+- Apply Core V4\_\_plan_templates.sql manually before starting the updated backend; it has only been applied in a disposable integration-test database. Templates currently use default artwork; independent template cover uploads, moderation and feature-specific rate limiting are not implemented. Detailed rationale, alternatives and validation instructions: docs/plan-templates.vi.md.
+
+### Mobile information hierarchy and critical design review (2026-10-27)
+
+- User confirmed community templates stay on Home/library, while the planner prioritizes the current trip's activities. A reference image is evaluated for hierarchy and space; it is not copied wholesale. The five mandatory reasoning requirements are recorded near the top of this document and must be read each session.
+- Home/planner use the compact ActiveTripBanner, retaining title, destination, dates, status and member access while removing the introductory footer. Home mobile keeps spent/remaining-or-over-budget totals visible and offers direct planner/expense links; itinerary/recent expense details mount only when expanded. Desktop keeps full details. Template previews are short cards in a keyboard-accessible, contained horizontal list; full metadata remains in the library/detail.
+- Library navigation is separate from the heading so translated/long labels do not compete for one row. Money in touched SSR-capable components receives useLocale explicitly, fixing server/browser formatting differences found during browser review.
+- Validation for this refinement: TypeScript, scoped ESLint and whitespace checks pass. Focused temporary Chrome fixtures cover 64 Home/planner width-locale-theme-long-text combinations, disclosure interaction, contained carousel and absence of console/hydration errors; 48 library width-locale-theme-empty/long/error combinations pass. Mobile light/dark screenshots reviewed. Temporary routes removed. Authenticated real-data flow, physical-device safe areas and smoke tests were not run.
+
+### Template publication dialog UI correction (2026-10-27)
+
+- Publish/copy checkbox labels now use one feature-level option component with contained spacing, readable wrapping, keyboard focus and a minimum 44px target. Publish styles form a wrapping flex group with an explicit five-selection limit; the checklist has a real empty state. Scoped textarea padding avoids doubled padding. Kept the existing two-step review flow and primary gradient.
+- Publish content does not shrink inside the scroll region. Optional AppDialog contentRef lets the form reset content scroll when entering preview/success without changing other dialogs. Busy inputs are disabled; successful publication offers an enabled Done action. Editing clears prior errors. TemplateItinerary uses explicit locale for currency.
+- Validation: 64 focused publish/copy Chrome fixture combinations (320/390/768/1280px, VI/EN, light/dark, empty/long checklist) pass for bounds, checkbox limit, preview scroll reset, success and runtime errors. Eight additional API-conflict fixtures pass retry, stale-error clearing and final-checklist reachability. Mobile light/dark screenshots reviewed. TypeScript/scoped ESLint pass; temporary fixture pages removed. No smoke or authenticated live publish test.
+- Existing development log also contains a duplicate React key warning and a Next DevTools releasePointerCapture exception. Neither reproduced in these form fixtures; do not claim that the screenshot's DevTools Issue badge or all application runtime problems have been resolved.
+
+### Explicit mobile creation actions and template back link (2026-10-27)
+
+- User approved both proposals: Home mobile (<600px, matching shared mobileIconLabel styling) displays three existing circular icon-and-label actions directly below the active-trip banner, explicitly grouped as Create a new trip. Manual uses the existing create host, AI opens the existing new-trip AI form, and templates opens the library. Larger screens retain the Quick create menu below the banner. One shared AI dialog instance handles both presentations.
+- Template detail uses a left-aligned arrow plus the localized Itinerary library label with a minimum 44px touch target. Its destination is always /templates rather than history.back(), so direct links have a predictable exit. Filter restoration is not added. Detail currency uses the explicit locale for SSR consistency.
+- Validation: 32 focused Home/detail browser fixture cases at 320/390/768/1280px in VI/EN and light/dark pass. Checks cover mobile circular actions below the banner, manual/AI dialogs, templates navigation, desktop menu items, back-link bounds/alignment/direct destination and no runtime errors or horizontal overflow. Mobile screenshots reviewed. Temporary route removed. No smoke test or real trip creation performed.
+
+### Mobile budget overview and contextual icon preference (2026-10-27)
+
+- User requested trying a merged budget overview because category-level limits already appear below. On mobile (<600px), BudgetMetricsCards now uses one MobileBudgetSummaryCard with spent amount, aggregate progress, total budget and remaining/exceeded amount. It uses the existing summary API and shared progress/metric primitives, not the paginated expense rows; category details remain below. Desktop retains three metrics.
+- A positive trip budget shows the real usage percentage (including >100%) while the bar is capped at 100%. No trip budget means no percentage/progress or misleading remaining value. Mobile loading/error states use skeleton/retry rather than zero amounts. Stale data from another trip is hidden. Currency locale is explicit in metrics and category output, correcting a hydration mismatch found in English browser fixtures.
+- The existing mobile budget adjustment action moves from the page header into this card to avoid duplicate controls. For an existing budget it is a 44px settings icon with localized tooltip/aria-label, visible only when the callback is authorized. Without a budget it remains an explicit Set budget text action.
+- User prefers mobile icons when they communicate the action clearly in context. Apply selectively: retain text for unfamiliar/ambiguous actions and initial setup, and always give icon-only controls an accessible name and sufficient touch target. Do not automatically replace all labels with icons across the application.
+- Validation: 128 Chrome fixture cases at 320/390/768/1280px, VI/EN and light/dark cover healthy/near/over/exact/unset/large/loading/error budgets, card count, overflow, progress semantics, callbacks and runtime errors; all pass after the locale correction. Additional 32 mobile cases verify the settings icon's 44px target, accessible name, action callback, text setup fallback and read-only visibility. Screenshots reviewed, temporary pages removed. TypeScript/scoped ESLint pass; CategorySpendingList retains its existing unused TuneRoundedIcon warning. No smoke test or real budget mutation performed.
+- Visual review also identified that small exceeded-budget text needs a lighter error token in dark mode; the new mobile card now applies error.light for those labels while retaining error.main on the progress indicator. This is scoped to the new overview card, not a theme-wide redesign.
+
+### My templates visual hierarchy (2026-10-27)
+
+- MyTemplates now uses the shared page header: one primary Publish template CTA and one page-level explanation of updating from the source trip. Repeated per-card instructional paragraphs were removed.
+- New feature-level MyTemplateCard presents a wrapping title, compact published/unpublished status chip, destination and day/activity/use counts. Edit is the single visible secondary action (Republish for withdrawn templates); a 44px, accessible ellipsis menu holds View and Unpublish for published templates. Existing source-trip editing and mutation endpoints are preserved. This intentionally keeps the edit label instead of blindly turning all actions into icons; the tradeoff is an extra tap for secondary actions.
+- Query failures and unpublish failures use separate localized messages. Loading uses card skeletons. Validation: 96 temporary Chrome fixtures at 320/390/768/1280px, VI/EN and light/dark cover published, withdrawn, long text, empty, loading and error states. Checks pass overflow, one visible card action, menu target, mocked unpublish-to-withdrawn transition, correct source edit link and retry. Mobile light/dark/long-name screenshots reviewed; temporary route removed. No smoke test or real unpublish performed.
+- Final visual refinement: preview title/destination are limited to two lines to keep long-name lists scannable; full text remains in the accessible DOM/title and source/detail screens. Published status uses a lighter success token in dark mode. Sixteen additional long-name browser cases pass after these refinements; final light/dark screenshots reviewed.
+
+### Plan-template request hook boundary correction (2026-10-27)
+
+- Reviewed Shared hooks/Axios/debounce/component organization rules after the user flagged inline query configuration. Fixed four plan-template components: TemplateLibrary, MyTemplates, PublishTemplateDialog and CopyTemplateDialog now call feature hooks; request endpoints/parameters/keys and copy retry attempts live in hooks/constants. Base request hooks and SSR fetch modules are unchanged. Search uses the shared default 300ms debounce, replacing the unjustified 350ms override.
+- Added scoped ESLint no-restricted-imports rules for plan-template components to prevent direct transport/generic-request-hook imports from recurring. This is not a claim that every legacy feature is compliant.
+- Wider read-only search found existing inline requests in PlanOverview, TripMembersDialog and PolicyAcceptanceDialog. Their separate workflows are recorded in docs/frontend-hook-audit.vi.md; they were not silently refactored alongside this feature.
+- Added tests/plan-template-hooks.test.mjs: nine regression tests pass for debounce/stale/SSR fallback/page mapping, copy retry identity and payload, definite errors, BFF POST contracts and ESLint enforcement. Tests isolate base transport/query behavior; they do not claim to simulate React scheduling or prove server concurrency. No smoke test.
+- Browser regression: eight real-library fixture cases across VI/EN, light/dark and 390/1280px pass rapid-input debounce, hiding prior results, single settled request, out-of-order Slow/Fast responses, immediate numeric filter, error completion and recovery. APIs are intercepted; no authenticated writes or smoke test. TypeScript and scoped ESLint pass. Review report: docs/frontend-hook-audit.vi.md.
+
+### Core readability review (2026-10-27)
+
+- Backend-specific instructions now live in `../trip-budget/tripbudget-core/AGENTS.md`; read them when working on Core. They retain the user's five reasoning requirements and skip-smoke preference, and define SQL/repository, typed projection, transaction and behavior-preservation rules.
+- Plan-template SQL moved into repositories with named parameters and typed metadata mapping. Services split by query/publication/copy, with focused snapshot, fingerprint, access and validation helpers. Expense aggregates use projections; split/settlement calculations and AI HTTP have dedicated helpers/clients. Several long repository queries were expanded for readability; existing query approaches are retained where suitable.
+- Final clean Maven run passes 28 tests including 11 disposable-PostgreSQL integration tests, with zero skips. No smoke test or live AI/authentication end-to-end test. Reading guide, tradeoffs and remaining observations: `../trip-budget/tripbudget-core/docs/core-readability-review.vi.md`. This is a readability/behavior-preservation review, not a complete security audit of every API.
+
+### Quy tắc tham khảo cấu trúc trước khi triển khai (2026-10-29)
+
+- Trước khi thêm tính năng, đọc phần tương tự đang có và làm theo cấu trúc của dự án; không tự chọn cách triển khai khác khi chưa có lý do rõ ràng. Backend thêm dữ liệu nghiệp vụ phải có Entity và JPA Repository, ưu tiên derived query/JPQL thay vì tự thêm JDBC/SQL trực tiếp.
+
+### Trạng thái danh sách trống dùng chung (2026-10-29)
+
+- Dùng `AppEmptyState` từ `@/base/components/ui` cho danh sách không có dữ liệu, truyền title/icon/action phù hợp; mặc định không thêm description theo yêu cầu người dùng. Không dùng Alert thông tin hoặc viết lại bố cục empty state riêng cho từng danh sách. Loading và lỗi tiếp tục dùng trạng thái riêng; AppTable đã tích hợp AppEmptyState và giữ action xóa bộ lọc.
+
+### Bảo toàn desktop khi chỉnh responsive (2026-10-29)
+
+- Mọi thay đổi UI phải xem cả mobile và desktop; không tối ưu mobile bằng cách làm lệch hàng nút, tiêu đề hoặc bố cục desktop.
+- Header Lịch trình: Dùng mẫu nằm cạnh tiêu đề trên mobile và trong nhóm thao tác trên desktop; mỗi breakpoint chỉ hiển thị một nút. Kiểm tra trạng thái có/không dữ liệu và không tràn ngang.
+
+### Thông báo sau khi hoàn tất (2026-10-29)
+
+- Sau thao tác thành công, đóng form/popup và báo bằng `AppToast`; không thay nội dung popup thành màn thành công với nút Xong/Đóng. Các bước xem trước/xác nhận trước khi ghi dữ liệu vẫn giữ nguyên.
+- Khi thông báo phải tồn tại sau khi đóng popup hoặc chuyển trang, dùng `useAppToast` từ `AppToastProvider` ở cấp ứng dụng. Áp dụng chung cho mobile và desktop.
+
+### All dialogs on mobile (2026-10-30)
+
+- Following the user's expanded scope, AppDialog defaults to full screen below sm (600px), with a top-left localized Exit action. mobileCloseLabel overrides its label for Cancel or another contextual action. Mobile omits the header icon/right close button; the title stays visible above scrollable content. Dynamic viewport height and safe-area padding support phone browser chrome and screen insets.
+- AppConfirmDialog and OptimizeRouteDialog also use AppDialog on mobile, sharing their existing content/actions with their preserved desktop presentation. All other dialog consumers inherit the default, including creation/editing, details, camera, members, templates, legal content, install help and More navigation. Dropdown menus and table filter popovers keep their anchored presentation.
+- Existing hideCloseButton and closeDisabled behavior remains enforced, including mandatory policy acceptance. Expense editing and budget updates disable closing while saving. Form validation, payloads and submit handlers remain unchanged.
+- Mobile header refinement: equal 64px side regions keep the 16px title centered independently of the Exit/Cancel label. The left action keeps a 44px touch height; long titles/labels wrap. Optional descriptions occupy their own full-width row. A theme divider separates the header from the form; desktop header styles remain unchanged.
+- Mobile footer actions: mark dialog dismissal buttons with data-dialog-action="cancel" and the main Save/Create/Confirm action with data-dialog-action="primary". AppDialog hides marked cancellation buttons only when its header close action is available and makes marked primary actions full width in full-screen mode. Desktop and non-full-screen layouts retain their buttons. Do not mark embedded controls such as canceling an inline invitation form, back-to-preview or camera retake as dialog dismissal actions. Keep the primary gradient, validation, loading and submit handlers unchanged.
+- TypeScript, scoped ESLint and diff whitespace checks pass. No browser visual check or smoke test was performed. Review narrow mobile/desktop, long titles, loading/error/empty content, light/dark themes, scrolling, nested-dialog closing and safe areas in a browser before treating visual behavior as verified.
+
+### Six shared categories (2026-10-30)
+
+- Use exactly this order: Ăn uống (FOOD_BEVERAGE), Di chuyển (TRANSPORTATION), Mua sắm (SHOPPING), Chỗ ở (ACCOMMODATION), Vé (SIGHTSEEING), Khác (OTHER). TRIP_CATEGORIES drives form, budget and expense filter choices; VI/EN labels match. Retired ENTERTAINMENT is merged into OTHER as explicitly chosen by the user. Normalize older receipt/edit values rather than exposing an invalid select option.
+- Core enums and AI prompts use the same six codes. Core migration V3 merges persisted expense/activity categories and active budget limits; run it before deploying the new backend. Legacy template JSON remains readable via enum aliases. The application database has not been migrated in this session. See ../trip-budget/tripbudget-core/docs/category-update.vi.md for rollout and checks.
+
+### Bottom navigation selection (2026-10-30)
+
+- User preference supersedes the earlier active-item tint: selected bottom navigation actions highlight only the icon with primary.main. Labels retain text.secondary; the selected action background stays transparent, including on hover. Keep the pill surface, route-derived selection, aria-current and keyboard focus outline.
+- This gives a quieter selection indicator than a filled tile; desktop navigation styles are unchanged. Verify with TypeScript/scoped ESLint; visual light/dark and hover checks have not been performed in a browser. Skip smoke tests.
+
+### Notification inbox and WebSocket (2026-10-30)
+
+- NotificationProvider is mounted within authenticated TripProvider frames and keyed by user; notification feature hooks own HTTP orchestration. AppTopBar uses NotificationBell, AppDialog remains full-screen on mobile.
+- Transport lives in base/realtime/connect-realtime.ts: same-origin /realtime, masked CSRF bootstrap via BFF, heartbeat, bounded backoff, cleanup and bounded event-ID dedupe. No JWT in JavaScript or URL. REST BFF routes retain HttpOnly token forwarding and no-store; bootstrap relays separate Set-Cookie headers.
+- Core runs one instance until a cross-instance bridge exists. Apply its V5 migration manually before running; not applied to application DB in this session. Local setup uses the optional realtime-proxy Compose profile in ../trip-budget and localhost:8080.
+- Feature uses a coalesced snapshot refetch, not blind badge increments. Resync on reconnect/focus/online/inbox open; hide stale page results and clear all user state by provider remount on account change.
+- Implementation and setup: ../trip-budget/tripbudget-core/docs/notifications-implementation.vi.md. TypeScript, scoped ESLint and notification/auth Node regression tests are the frontend checks; no smoke test, browser visual validation or load benchmark is claimed.
+
+### Itinerary image export (2026-11-02)
+
+- Replace Print / Save PDF with Export itinerary images. One day produces one PNG, including rest days: a three-day itinerary must produce three images. Use the actual trip cover as the darkened background, with white text and yellow highlights; preserve the existing application layout/primary gradients.
+- `/export/plan/{tripId}` uses existing protected plan/trip BFF hooks. Legacy `/print/plan/{tripId}` redirects there. Export all activities from includeActivities=true, retaining backend ordering and notes; do not use paginated activity previews as the export source.
+- Native Canvas yields 1080px-wide PNGs with content-driven height; allow individual download and a ZIP containing one PNG per day. No generated imagery or uploads of exports. Keep cancellation, stale-result hiding and resource cleanup. Cover errors must be surfaced rather than silently substituting an unrelated image.
+- Tests, architecture, dimensions and known CORS/device limits: docs/plan-image-export.vi.md. Skip smoke tests.
+
+
+### Login, liquid glass navigation and page loading (2026-11-03)
+
+- Login uses the existing local journey artwork above a rounded form on mobile; desktop retains two columns. AppPreferencesMenu groups language/theme/PWA installation into one accessible popover. Existing auth validation, redirect and primary gradient remain.
+- AppBottomNavigation uses a translucent, blurred pill with a highlight border/shadow and an opaque fallback. Preserve selected-icon-only coloring, localized labels, keyboard focus, safe areas and the existing 1440px desktop breakpoint.
+- User clarification: initial page loading is ONE shared page overlay, never one visible loader per API or data section. AppPageLoadingProvider wraps AppShell and combines mounted AppLoadingState registrations for the current route. Cleanup removes each registration on completion/error/unmount; old-route entries do not hold the current page. Keep sections mounted so queries can finish concurrently. Do not implement loading by hiding/unmounting the page children.
+- AppLoadingIndicator reuses the brand plane with a dotted orbit and reduced-motion support. AppLoadingState registers page loading; AppLoadingOverlay presents the shared blurred overlay. Initial skeletons/account-check text are replaced. Button submissions, autocomplete and incremental pagination retain compact feedback using the same indicator. Determinate budget bars remain data visualizations.
+- Focused Chrome QA covers Login and a temporary fixture of the real shared components at 320/390/768/1280/1440px × VI/EN × light/dark: 40 cases without horizontal overflow or runtime exceptions. Theme controls were exercised; blur and the desktop navigation breakpoint were checked. Real provider fixture: three concurrent loading states yield one overlay throughout staggered completion, then zero; reduced motion disables animation. Temporary fixture removed. No smoke test or real sign-in/backend mutation. See docs/ui-refresh-loading.vi.md.
+
+
+### Floating mobile dialogs supersede full screen (2026-11-03)
+
+- User now prefers inset floating popups for create/edit and other dialogs. AppDialog defaults mobileFullScreen to false; explicit true flags removed from create/edit trip, edit expense, budget settings, profile and template publication. This supersedes the 2026-10-30 default.
+- Mobile paper has 24px corners, at least 16px safe-area-aware surrounding space, and a maximum height of 90dvh bounded by safe-area insets. Container owns padding; the paper resets MUI default margins. Content scrolls inside, header/footer remain outside the scrolling content, and the header uses the existing right close button. Footer cancel actions are visible in floating mode. Existing mandatory/close-disabled protections remain.
+- Focused Chrome component fixture: 320×568, 390×844, 390×400 and 1440×900 in light/dark; all eight cases have no horizontal overflow, remain inset, scroll long content and keep footer inside. Close button works; no runtime exceptions. Short viewport is a layout simulation, not a real-device keyboard test. Temporary fixture removed; no smoke test.
+
+
+### Mobile page sheets replace floating form dialogs (2026-11-03, clarified)
+
+- User clarified the reference means a page-like bottom sheet sliding upward, not a centered floating form. This supersedes the earlier floating-dialog interpretation. AppDialog now defaults mobilePresentation to sheet below 600px: full width, bottom aligned, 24px top corners, and 48px (or larger top safe inset) of the previous page visible above. Desktop keeps its dialog layout.
+- AppDialogSlide supplies the upward MUI Slide transition; reduced-motion disables duration. Content scrolls inside; header and supplied action footer remain outside that scroll area. Existing closeDisabled/hideCloseButton, focus trap and backdrop/Escape behavior remain. Explicitly marked cancel buttons hide when header dismissal exists; primary action fills the mobile sheet width.
+- Forms and long content inherit sheets: create/edit trips, expenses and activities, budget, settlements, profile, templates, member lists, sharing, itinerary tools, detail/history, camera and policy content. Short confirmations, member-role selection, More navigation and installation instructions opt into mobilePresentation=dialog. No swipe-to-dismiss gesture is implemented.
+- Focused Chrome fixture: 320×568, 390×844, 390×400 and 1440×900 in light/dark. Mobile sheets start at y=48 and end at viewport bottom, long content scrolls, footer fits, no horizontal overflow. Close works; confirmation stays centered/content-sized. No runtime exceptions. TypeScript/scoped ESLint pass. Fixture removed; no smoke test or real-device keyboard test.
+
+
+### Content-sized bottom sheets (2026-11-03)
+
+- User reported wasted whitespace below the Add Activity submit button. Cause: shared sheet paper forced height to viewport minus 48px. AppDialog now uses height:auto with the same maximum height, and sheet DialogContent uses flex:0 1 auto. Short forms fit their content at the bottom; long forms scroll and still leave at least 48px/top safe inset above. This supersedes the fixed-height page-sheet sizing above.
+- Audited form/dialog height rules: the legal gate's 100dvh belongs to its background page, camera sizing belongs to media, and field-row flex rules do not force sheet height. They remain intact.
+- Focused Chrome fixture uses actual AddActivityForm, AddExpenseForm, SetBudgetForm and RecordSettlementForm, plus short, footer-action and long shared-dialog cases. Across 390×844, 320×568, 390×400 and 1440×900 (28 cases), mobile end-of-content spacing is 16px (within subpixel rounding), sheets remain bottom-aligned, long content scrolls, and no horizontal overflow/runtime exception was detected. Fixture removed. TypeScript/scoped ESLint checked; no smoke test, backend mutation or real-device keyboard test.
+
+
+### Trip view switcher visibility (2026-11-03)
+
+- TripFilterBar hides the grid/table toggle below sm (600px) with responsive display, matching its mobile layout. The control remains available from sm upward. Replaces the temporary commented-out toggle that hid it at every width. View selection/data behavior is unchanged.
+
+
+### Initial-route loading only (2026-11-03)
+
+- AppPageLoadingProvider only aggregates AppLoadingState during the initial loading session for each pathname visit. Seal after no pending registrations for 150ms; later searches/dialog content/refetches use local indicators. A visit ID isolates A → B → A and stale cleanup. This supersedes unconditional overlay registration described above.
+- GlobalLoadingHost uses pageOnly to avoid placing a local spinner outside page content; Login submission uses its button loading. AppAvatarStack uses a compact local indicator.
+- Chrome fixture passed eight aggregation/navigation/refetch checkpoints with no runtime exceptions. Fixture removed; skip smoke tests. See docs/ui-refresh-loading.vi.md for the grace-period tradeoff.
+
+
+### Day tabs and itinerary actions (2026-11-03)
+
+- PlanDayTabs distributes all day cells equally across available width with CSS Grid; minimum cell widths are 88px below sm and 104px from sm. When days exceed available space, scroll horizontally instead of compressing text. Shared planner, public trip, overview preview and template itinerary consumers inherit this layout.
+- PlanHeader exposes Add Activity, AI suggestions and Publish template according to existing permissions. Checklist, Activity log, Share and Export live in its More menu. User clarification: Use template stays in its original position (beside the title on mobile, in the action group on desktop); Reset day stays beside day metadata in PlanDayToolbar. Reset remains conditional on management rights, a current non-stale day and activities; the existing confirmation remains. Add Activity is not duplicated in PlanDayToolbar.
+- TemplateDetail places Use this template and Save/Unsave on one compact row, retaining primary gradient and save/login behavior. Mobile uses available row width; desktop uses content width.
+- Focused Chrome fixture: 320/390/768/1440px × VI/EN × light/dark; 1/2/3/12 days, equal widths, selection, overflow, owner/read-only menus and checklist callback checked. Template save API was intercepted for layout/save-state checks; no backend writes or smoke test. Temporary fixture removed. TypeScript and scoped ESLint are the code checks.
+
+
+### Home spending cards and actions (2026-11-03)
+
+- Below md, replace the three create-trip shortcuts with three compact budget/spent/remaining cards for the active trip directly beneath its banner. Reuse TripBudgetCard and useTripBudgetSummary; remove the lower duplicate mobile budget summary. Desktop retains its detailed budget card.
+- Both presentations put Quick create and View expenses in a two-column row below the budget content. QuickCreate uses the existing menu for manual/AI/template choices at every width, with fullWidth only for the budget action row. No-trip state retains creation controls and does not invent financial data.
+- Use shared formatCompactCurrency with visible currency codes, full amounts in tooltips/accessibility labels, theme-based metric colors, and one shared initial-page loading registration. Missing budget shows dashes for budget/remaining, not a false over-budget warning. Error states preserve retry.
+- User clarification: remove the separate lower Open itinerary button; retain the existing action inside the journey section. View expenses is likewise not duplicated below the journey.
+- Focused Chrome with intercepted APIs checks mobile/desktop VI/EN, three metrics/no duplicate budget, no overflow, no-budget/over-budget/large-value/error/no-trip states, and Quick create menu/AI dialog. Light/dark mobile screenshots inspected. Fixture removed; no smoke test or real backend writes. TypeScript/scoped ESLint/diff checks are validation.
+
+
+### Confirmation sheets (2026-11-03, user clarification)
+
+- AppConfirmDialog now inherits AppDialog's content-sized bottom sheet on mobile instead of forcing mobilePresentation=dialog. Applies to Delete trip and all shared confirmation consumers, superseding the earlier short-confirmation exception. Header close replaces the marked footer cancel button on sheets; confirmation spans the available width. Existing loading/disabled/confirmation callbacks remain.
+- Warning/success/default icon styles are passed as an sx callback, fixing the previous object spread of a function that silently dropped semantic icon colors. Desktop retains its centered confirmation layout.
+- TypeScript, scoped ESLint and diff checks are verification; no new browser run or smoke test for this adjustment. Shared sheet geometry was checked in the earlier dialog work.
+
+- Confirmation text alignment clarification (2026-11-03): center only the description/body of AppConfirmDialog, including its mobile sheet content wrapper. Keep the header title alignment unchanged. TypeScript/scoped ESLint checks; no browser run for this small style adjustment.
+
+### Explore destination cards (2026-11-04)
+
+- Shared TemplateCard now uses a photo background, readable bottom scrim, two-line title, destination and activity count, with a day-count badge and separate 44px save control. Clicking the image or native content link opens template detail; save and guest-login controls retain their own actions. The eye icon is removed. Missing or failed background images leave the themed gradient visible; no invented ratings are shown.
+- Home compact library uses “Cảm hứng cho chuyến đi” / “Inspiration for your next trip” and 200px horizontally scrollable mobile cards. Explore and Saved inherit the shared card; filters, pagination and save API behavior remain. Detailed cost/author information stays in template detail.
+- Validation: TypeScript and scoped ESLint pass; diff whitespace checked. No browser validation or smoke test performed.
+
+- Home library action clarification (2026-11-04): “Xem tất cả” now includes the same trailing ArrowForwardRounded icon as “Mở lịch trình”, reusing the existing text AppButton and 44px minimum height. Reference red/green rectangles are annotations, not button borders. Scoped ESLint/diff checks; no smoke test.
+
+- Explore tap feedback correction (2026-11-04): Home “Xem tất cả” disables ripple and uses transparent hover/active backgrounds with a text-color response. TemplateCard and its content link suppress the mobile browser tap highlight. Keyboard focus outlines and save interactions remain. Scoped ESLint and diff checks pass; mobile visual verification remains pending, no smoke test.
+
+### Branded initial startup screen (2026-11-04)
+
+- Base AppStartupScreen centers the existing /icon.svg (88px, priority load) on primary.main with a localized status label. It is server-rendered through AppPageLoadingProvider on the first visit and remains until the existing loading session settles. Child queries continue mounting underneath; no extra minimum delay is added.
+- Later pathname visits retain AppLoadingOverlay and local refetch indicators. This is the website startup screen, not the OS-controlled PWA splash. See docs/ui-refresh-loading.vi.md.
+- TypeScript/scoped ESLint/diff checks pass. No browser/mobile visual verification or smoke test.
+
+### Simplified trip status UI (2026-11-04)
+
+- The user-facing trip status choices are now Sắp đi / Đang đi / Đã đi / Đã hủy (Upcoming / In Progress / Finished / Cancelled). Shared feature constants in trip-status.ts drive edit choices, both status presentations and grid/table filters.
+- DRAFT/PLANNING/CONFIRMED display as Upcoming and filter together; COMPLETED/ARCHIVED display as Finished and filter together. New explicit selections use PLANNING, IN_PROGRESS, COMPLETED or CANCELLED. Edit state retains the original API status until the user changes the choice, so changing other fields does not rewrite legacy statuses. DELETED remains internal and absent from options/filters.
+- This simplifies the UI only: backend enum, database records, default DRAFT on creation and permissions are unchanged. Group filters use the existing comma-separated API contract. The more detailed planning/archive distinction is intentionally hidden in the UI.
+- TypeScript/scoped ESLint/diff checks pass. An in-memory execution of the TypeScript constants checks four choices, complete/disjoint legacy filter coverage, selectable mappings, VI/EN labels and DELETED exclusion. No browser test, smoke test or application DB migration.
+
+- Trip status naming correction (2026-11-04, user clarification): the four UI choices are exactly “Nháp”, “Đang Đi”, “Hoàn Thành”, “Đã Hủy” (Draft / In Progress / Completed / Cancelled). First explicit choice now writes DRAFT, not PLANNING. Legacy DRAFT/PLANNING/CONFIRMED still group under Nháp; COMPLETED/ARCHIVED under Hoàn Thành. Unchanged edit selections preserve original stored values. Reuses draft/completed translation keys; removes the superseded upcoming/finished keys. TypeScript/scoped ESLint/diff checks; no smoke test.
+
+- Backend trip status simplification (2026-11-04): supersedes the legacy grouping described above. Core TripStatus now has DRAFT/IN_PROGRESS/COMPLETED/CANCELLED plus internal DELETED. Frontend types and filter constants use canonical values only. V8 migration must run before starting the new Core to convert PLANNING/CONFIRMED -> DRAFT and ARCHIVED -> COMPLETED. Tested only on disposable PostgreSQL; not applied to application DB. Rollout and checks: ../trip-budget/tripbudget-core/docs/trip-statuses.vi.md.
+
+### Bottom navigation hover shape (2026-11-04)
+
+- Bottom navigation actions now use 999px pill corners and clip their contents, matching the dock's rounded shape. Disabled MUI ripple for links and More to avoid a second dark overlay during touch. Inactive hover uses action.hover only on fine pointers supporting hover; pressed feedback remains subtle. Selected backgrounds stay transparent and only the icon indicates selection, preserving the existing preference. Keyboard focus outline remains.
+- Scoped to AppBottomNavigation. TypeScript/scoped ESLint/diff checks pass. No browser/mobile visual verification or smoke test.
+
+### Shared MUI calendar and trip date ranges (2026-11-04)
+
+- New base AppDatePicker supports default single-date mode (string) and mode=range ([start,end]) with a single MUI X Community DateCalendar. AppCalendarDay highlights endpoints/in-range days; base/utils/calendar.ts owns strict parsing/range selection. Dependencies: @mui/x-date-pickers and dayjs; no Pro package/license.
+- Create/edit trips use one Trip dates field. Add/edit expense, settlement date and template-copy start date use the same base in single mode. Values remain YYYY-MM-DD; display DD/MM/YYYY, VI/EN localization, readable Vietnamese weekdays. Shared AppDialog handles mobile sheet/desktop dialog.
+- Draft changes apply only after confirmation; close cancels. Same-day trips work; earlier second selection restarts the range. Year/month view changes do not commit range endpoints. Props include minDate/maxDate, error/helperText, disabled and required. Four-state trip status work remains intact.
+- Five date/range/timezone tests pass; TypeScript/scoped ESLint/diff checks pass. Independent Chrome fixture checks 320/390/768/1440px, range/draft/cancel/apply, single dates, minDate, keyboard and disabled, with no runtime exceptions; mobile screenshot inspected. Temporary src fixture removed. Existing dev-server fixture did not hydrate, so authenticated integrated forms remain visually unverified. No smoke test/backend writes. Details: docs/calendar.vi.md.
+
+### Shared time picker and body-only loading (2026-11-04)
+
+- Add/EditActivityForm replace native start/end time inputs with one AppTimePicker mode=range. Base also supports single times. MUI Community MultiSectionDigitalClock uses 24h/one-minute steps, draft/apply/cancel, endpoint selection and optional clearing. Preserve HH:mm payloads, optional partial times and the existing same-day end>=start rule. AppPickerField shares the date/time input scaffold. Four time tests and the five calendar tests pass; Chrome fixture checks 320×568/390×844/390×400/768×844/1440×900, interaction, clearing, invalid order, midnight, keyboard/disabled and date-field reuse. No runtime exception. See docs/calendar.vi.md.
+- User clarified page loading must not cover ready navigation. AppPageLoadingProvider now lives inside AppShell main; GlobalLoadingHost registers there. Top/bottom bars and form/dialog hosts are outside the scope. Content stays mounted under hidden/inert while a Flexbox content-scope indicator shows; no global backdrop. Initial-pathname aggregation/150ms sealing/local refetch/visit IDs remain.
+- Startup is now separate: root AppStartupHost renders AppStartupScreen only through initial hydration, not while API data loads. This supersedes the earlier startup-until-page-settles behavior. Account/policy gates and protected-query timing remain unchanged.
+- Loading Chrome fixture uses actual shell/navigation/provider with a stub router and simulated pending sections, not backend: one body indicator; usable header/dock; ready body; local refetch; fresh route and A→B→A checks pass at 320/390/768/1440px. SSR startup icon test, TypeScript/scoped ESLint/diff checks pass. No smoke test, real backend writes, live authenticated-flow or physical-device verification. See docs/ui-refresh-loading.vi.md.
+
+### Flat member sheet and footer invitation (2026-11-04)
+
+- TripMembersDialog follows the user's reference: count in header, short description, flat avatar/name/role/email rows with dividers and right-side action menus. Theme-aware compact RoleBadge uses applyStyles for readable dark colors. AppActionMenu's opt-in minTouchTarget gives member menus 44px targets.
+- Full-width neutral pill Invite member lives in AppDialog actions outside the scrolling list. Invitation form opens in a separate shared dialog/sheet; removes duplicate form card/header, retains email/role validation/payload, gradient Send action, pending state and initialShowInvite behavior. Existing member-role/approval/remove/leave permissions and callbacks remain.
+- Shared AppDialog adds opt-in showSheetHandle (decorative, mobile sheet only; no swipe dismissal). Other consumers/defaults unchanged. Empty member list uses shared AppEmptyState. VI/EN count label and compact header copy updated.
+- TypeScript/scoped ESLint/diff checks pass. Independent Chrome fixture uses actual member components with stubbed hooks/mutations: 320×568/390×844/390×400/768×844/1440×900 in light/dark, long list/email, sticky-outside-scroll footer, invite open/close/empty validation/success payload, Owner/Vice/Member actions, loading/error/empty and EN labels all pass; no runtime exceptions. Mobile dark screenshot inspected. No smoke test/backend writes/live invitations. See docs/member-sheet.vi.md.
+
+- Member invitation button theme correction (2026-11-04): user clarified the reference supplies layout, not custom CTA colors. Footer Invite member now uses AppButton intent=primary with the shared primary.main -> primary.light gradient and shared hover/active/disabled styles. Removed inverse neutral color overrides; retained full width, pill shape and 44px target. Scoped ESLint/diff checks pass; no smoke test.
+
+### Quick-create AI entry uses itinerary planner (2026-11-04)
+
+- AI currently generates an itinerary for a selected trip. QuickCreate now opens `/ai` directly instead of opening CreateTripDialog in AI mode.
+- VI/EN menu labels describe itinerary generation. Manual trip creation stays on the existing shared create-trip action; users without a trip can create one from the AI page.
+
+### Direct home trip creation replaces quick-create menu (2026-11-04)
+
+- User approved replacing QuickCreate dropdown with a primary “Tạo chuyến đi” / “Create a trip” button and Add icon. Both overview placements open the existing shared trip dialog directly; retain full-width mobile placement and theme gradient.
+- This supersedes the previous QuickCreate AI menu entry. Templates remain accessible through home/explore links; AI remains in the trip itinerary actions and existing AI page.
+
+### Itinerary PNG export replaces browser printing (2026-11-04, latest clarification)
+
+- Implemented `/export/plan/{tripId}` and redirect from legacy `/print/plan/{tripId}`. Plan menu uses image icon and localized Export itinerary images label; removed unused window.print component.
+- One day produces one 1080px-wide PNG including rest days, with content-driven height, actual trip cover/dark overlay, theme colors and the project's computed Comfortaa font. Activity thumbnails are unavailable in the current data model. No separate cover page.
+- User explicitly requires separate image downloads, no ZIP: Download all images initiates one PNG download per day; retain individual download buttons for browsers restricting multiple downloads. This supersedes the ZIP requirement above.
+- Full includeActivities=true plan data preserves all activity order and notes. Generation is local, cancellable between days, cleans up object URLs, reports cover/CORS errors and refuses oversized canvases without truncation.
+- Implementation/limits/checks: docs/plan-image-export.vi.md. Skip smoke tests.
+
+### Product name correction (2026-11-04)
+
+- The product is named Trip Plan, not TripBudget. Use Trip Plan in all new product copy, explanations and documentation. Existing tripbudget service/module/directory identifiers are technical names and must not be renamed as part of a UI branding correction.
+
+### Export font-loading failure fixed (2026-11-04)
+
+- Reproduced generic export failure in Chrome with real project font/theme/component: FontFaceSet.load on the full computed font-family rejects when the next/font local Arial fallback cannot load.
+- Shared loadCanvasFont loads only the primary project family (400/700), waits for fonts.ready and returns the full stack for Canvas. Actual primary-font failure uses localized fontError.
+- Verified mocked three-day trip in Chrome: three 1080×1350 PNG previews, three individual PNG downloads from Download all, no runtime exceptions. Three font regression checks and four rendering checks pass. See docs/plan-image-export.vi.md; do not claim this verifies production trip covers/CORS.
+
+### Export TypeScript readability (2026-11-04)
+
+- User asks for easier-to-read export .ts files. Prefer meaningful variable names, named option objects over positional booleans, explicit interfaces, named limits and short Vietnamese comments explaining non-obvious behavior.
+- Rendering now reads as prepare text → determine height → draw background → draw text → create PNG, with small helpers in the same module. Base font/download helpers use descriptive names and are exported through utils/index.ts.
+- Keep observable behavior and avoid new libraries/classes. Verified identical layout commands for 0/1/15 activities and identical first-day PNG bytes, plus three separate PNG downloads in a real Chrome fixture.
+
+### Expense split allocation UI (2026-11-04)
+
+- User prefers plain, explicit actions instead of wand/pencil imagery for allocation. Replaced AutoFixHigh icon button with the localized “Điền phần còn lại” / “Fill Remaining” text action below the exact-amount input, minimum 44px height.
+- Shared SplitAllocationSection now uses flat member rows with dividers, full-width mobile amount fields and a 190px desktop field. Removed nested card borders/background; retained allocation status feedback and existing calculation/selection behavior for add/edit expense forms.
+- Added accessible member checkbox and exact-amount field names. Verified TypeScript, targeted ESLint and diff whitespace; no new tests for this presentation-only change, per task scope and skip-smoke instruction.
+
+### Spending category chart (2026-11-04)
+
+- Added CategorySpendingChart after budget metrics and before the expense table. Reuses AppCard/AppLinearProgress and theme colors, with descending positive category totals, exact amounts and localized shares of all category spending.
+- Uses the existing budget summary across the whole trip; expense-table pagination/filters do not change this chart. Shows an empty state for no spending and suppresses chart content on summary errors/stale trip data.
+- Existing category limits and budget actions remain in an expandable “Budget details by category” section to avoid repeating the category list on initial view. No backend or settlement-page changes.
+
+### Spending donut replaces category bars (2026-11-04)
+
+- User approved donut with total spending at center and selectable legend. Select a category to show its amount/highlight its segment; click again or Show total spending to reset. Each legend action has aria-pressed, full monetary value and percentage; SVG has a readable accessible name.
+- Use CATEGORY_CONFIG shared with CategorySpendingList for matching category colors across donut, legend and budget cards, as explicitly requested. Keep sorted whole-trip category totals; reset selection when trip changes.
+- Removed duplicate total amount and stacked multicolor share bar from the expandable budget section. Renamed its heading to Category budget limits; preserve limit controls/warnings and individual category details.
+- Verified targeted ESLint/TypeScript and Chrome fixture with matching five-category data: total/selection/reset, matching segment/legend colors and no horizontal overflow at 320/390/768px. No new chart dependency.
+
+### Donut total action remains enabled (2026-11-04)
+
+- Removed disabled={!selectedItem} from Show total spending after user feedback. The action always resets category selection to null, including when the total is already shown; keep the control visually available.
+
+### Donut legend toggles total without a separate button (2026-11-04)
+
+- User prefers removing Show total spending. Clicking the selected legend category again clears selection and restores the center total; choosing another category switches directly. Removed the redundant button and its VI/EN strings. This supersedes the previous always-enabled total action.
+
+### Donut legend clears visual selection on toggle (2026-11-04)
+
+- Legend buttons disable ripple and override hover/active fill to match the actual selected state. Deselecting returns to transparent even while the pointer stays over the button or mobile retains :hover; preserve keyboard focus-visible outline.
+- Scoped to category chart legend; shared AppButton behavior stays available elsewhere.
+
+### Friendly expense section copy (2026-11-04)
+
+- Simplified expense page section titles and visible budget labels in VI/EN: Where did your money go?, Budgets by spending group, Your expenses, Planned budget, Spent so far and Budget remaining.
+- Prefer everyday wording over consumption/deficit/under-control jargon; keep planned budgets distinct from actual spending and preserve interpolation placeholders. Scoped to expense copy without changing calculations or layout.
+
+### Friendly settlement copy (2026-11-04)
+
+- Shortened settlement VI/EN headings, statuses, descriptions, form labels, validation and deletion/toast messages. Use Split costs, Who pays whom?, Everyone’s share, Payments recorded; avoid debt/settlement/accounting jargon in user-facing Vietnamese.
+- Record a payment / Save payment explicitly records money already paid rather than suggesting the app transfers money. Deletion removes the record and recalculates balances; it does not reverse a bank transfer.
+- Member totalOwed is the assigned expense share, labeled “Phần cần góp” rather than suggesting it is the outstanding balance. Net balance/status remain distinct. No calculation or permission changes.
+
+### Map providers: Vietmap with OSM fallback (2026-11-05)
+
+- User requests Vietmap as primary after Google Maps Platform billing region rejection; fallback to OSM when missing configuration, errors or no results. This supersedes the Google-only API direction.
+- Server-only VIETMAP_API_KEY uses Autocomplete/Search/Place/Matrix v4. NEXT_PUBLIC_VIETMAP_TILE_KEY is a separate domain-restricted tile key. Keep the single .env workflow.
+- OSM autocomplete uses Photon, not public Nominatim; routes use OSRM. Preserve authentication/policy gates, cancellation, provider attribution, real distances only and optimization failure on incomplete routes. Public fallback is rate limited per process; use managed/self-hosted endpoints with shared limits for production scale.
+- MapLibre renders Vietmap with OSM raster/iframe fallback. Existing external Google Maps links, Google login and Gemini remain independent. Setup, limitations and validation: docs/maps.vi.md. Skip smoke tests.
+
+### Vietmap backend integration review (2026-11-05)
+
+- All dynamic map endpoints use requireMapsAccess (existing Identity/policy verification plus production HTTPS enforcement), validate input and consume shared per-session/per-process budgets before provider calls. Rate limiting covers Vietmap and OSM; matrix budgets count origin×destination elements. Return 429/Retry-After instead of switching provider to bypass the BFF limit.
+- Vietmap server calls explicitly use GET with apikey query, HTTPS and redirect:error. Service keys stay server-only; tile key remains the documented browser exception. Matrix POST is the internal BFF contract; upstream Matrix requests remain GET.
+- Stream-limit matrix bodies to 96 KiB. HTTPS terminated by a trusted proxy requires explicit MAPS_TRUST_PROXY=true and a proxy that overwrites forwarded headers; production TLS configuration remains a deployment responsibility. Rate counters are per process, not Redis/distributed. Details and tests: docs/maps.vi.md.
+
+### Separate backend owns maps (2026-11-05, latest clarification)
+
+- User explicitly means Spring Boot Core as Your Backend Server. This supersedes the earlier Next.js-provider implementation. Current flow: Web → Next.js transport BFF → Core MapsController/MapsService → Vietmap or OSM. Do not put provider orchestration/key/rate counters back in Next.js.
+- VIETMAP_API_KEY moved to Core .env and removed from web. Web uses private CORE_SERVICE_URL and optional domain-restricted NEXT_PUBLIC_VIETMAP_TILE_KEY. Existing service key values were not printed.
+- Map BFF forwards HttpOnly cookie access token as Bearer, unwraps Core ApiResponse success and preserves policy/provider/rate errors. Core owns JWT/session/policy, verified user IDs, request budgets, input validation, provider clients and OSM fallback.
+- BFF keeps transport HTTPS/body bounds only. Map display/tile exception and external Google Maps links remain. Restart Core and web after configuration migration. Details: docs/maps.vi.md and ../trip-budget/tripbudget-core/docs/maps.vi.md. Skip smoke tests.
+
+### Place search provider labels (2026-11-05)
+
+- User asks to remove OSM/VIETMAP tags from location suggestions because they clutter forms. Remove per-option provider labels in activity and trip destination inputs. Shared AppMapSearchPaper shows copyright once at dropdown footer via AppMapSearchSourcesContext; API source metadata remains. Keep map/route attribution separate.
+
+### Maps code readability (2026-11-05)
+
+- User asks to refactor actual maps code for beginners/Junior following existing project conventions. Prefer descriptive business names, props interfaces and named async steps; keep provider logic at Core and existing API/UI behavior.
+- Core map DTOs now follow dtos/request and dtos/response with Request/Response suffixes, replacing MapsData. Web BFF still receives the same JSON contract. Reading guide: docs/maps.vi.md and the linked Core guide.
+
+### Google Maps preview restored (2026-11-05, latest)
+
+- User requests Google Maps preview in the Map tab. AppLocationMap uses the existing project Google iframe URL via getGoogleMapsEmbedUrl; no geocode hook, MapLibre load, service key or tile key in this active preview path.
+- This supersedes Vietmap/OSM rendering for the current preview only. Core search/geocoding/matrix still use Vietmap with Photon/OSRM fallback. Keep AppInteractiveMap available; do not move backend API logic into browser or introduce Google Platform keys for this scoped change.
+- Beginner file/flow walkthrough: docs/maps.vi.md. Tests verify address/locale encoding, blank state, no geocode import and no service-key exposure. Skip smoke tests/browser checks per project instructions.
+
+### Duplicate distance requests on load (2026-11-05)
+
+- DayTimelineList follows useQueryGet conventions: ref updated in an effect, route-content key instead of array-reference dependency, zero-delay scheduled fetch canceled by cleanup. Preserve refresh for trip/day, ordered activity IDs/locations, language and destination context.
+- mapService shares only identical in-flight matrix promises; remove entries on success/failure. Do not cache completed results/localStorage or disable React Strict Mode to hide duplicate effects. Keep consumers' stale-result guards; closing one consumer must not abort a request another is awaiting.
+- Regression tests cover effect replay, metadata-only rerenders, changed route inputs, unmount, request coalescing and retry after rejection. docs/maps.vi.md explains flow/limits.
+
+### One .env workflow restored (2026-11-05)
+
+- User wants local and production to use .env. Restored missing scripts/next.mjs already referenced by package scripts, with scripts/env-files.mjs guarding against .env variants except .env.example. Keep Next's own parsing/expansion and normal OS-env precedence; do not invent a custom dotenv parser or silently clear inherited process environment.
+- Each service/machine has its own .env values. Do not commit, print, overwrite actual secrets or bake them into Docker images. Git/docker ignores allow .env.example only. Production public variables require build-time configuration and rebuild after changes.
+- Core already imports local .env relative to working directory. Docker runtime should mount /app/.env read-only; image no longer forces PORT=8081 over the file. Core default remains 8081 in application.yml.
+- docs/environment.vi.md explains local, production, Docker, precedence and Junior reading flow. tests/env-files.test.mjs uses fixtures and mocked CLI, no smoke tests.
+
+### Native Next.js commands, no env wrappers (2026-11-05, latest)
+
+- User explicitly asks to remove scripts/next.mjs and scripts/env-files.mjs after Vercel build failed due to missing ignored .env. package scripts now use next dev/build/start directly. Removed wrapper-only tests; do not restore mandatory-file guards.
+- Local/self-host can keep a single .env by convention. Vercel uses platform Environment Variables and does not need the physical file. Standard Next env-file/OS precedence remains; do not commit secrets or generate .env from secrets during build.
+- docs/environment.vi.md contains the current Vercel/local setup and supersedes the earlier wrapper workflow. This change does not claim an actual Vercel deployment has passed.
+
+### One Spring Boot backend (2026-11-06)
+
+- User authorized migration of both NestJS Identity and Python AI into Spring Boot while preserving business behavior. Next.js remains the BFF.
+- All server routes/helpers use src/base/api/server/backend.ts and server-only CORE_SERVICE_URL (no /api suffix). Do not restore runtime Identity/Python URLs or internal AI keys, including NEXT_PUBLIC variants.
+- Browser-facing routes, response envelopes, refresh handling and cookie paths remain. Scanner forwards the caller's Bearer token to Spring; Spring now performs AI processing and policy/session validation.
+- Migration/configuration, retained legacy semantics and limitations: ../trip-budget/tripbudget-core/docs/single-backend-migration.vi.md. BFF regression tests: tests/single-backend-bff.test.mjs alongside tests/auth-refresh.test.mjs. Skip smoke tests.
+
+## Shared error state (2026-11-06)
+
+- User requires one common error message, centered horizontally and vertically on mobile AND desktop. Use AppErrorState; do not add resource-specific error titles/descriptions. Full account gate centers the card and logout as one group across the viewport. Page errors center within the available main content; compact errors stay inside their popup/section.
+- Preserve query retry callbacks, pending protection, 403/404 recovery navigation, and inline form validation/mutation errors. Keep primary button gradient. Implementation and checks: docs/error-states.vi.md. Skip smoke tests.
+
+### Plan status, expense linking and route saves (2026-11-09)
+
+- User requires activity.status to remain authoritative; never derive/reset completion from expenses on reads or expense writes/deletes.
+- Expense create/update links through ExpenseService → PlanService in the existing expense API transaction. PlanOverview uses feature hooks; status/checklist toggle use PATCH. Preserve receipt-upload hook behavior.
+- Route order uses one batch API with complete unique day IDs; orderIndex precedes startTime. Route optimization minimizes distance heuristically, keeps chosen start, does not change hours; never claim globally shortest. Details and checks: docs/plan-consistency.vi.md.
+
+### Trip dates and finance UI (2026-11-10)
+
+- TripService synchronizes PlanDay dates via PlanService.synchronizeTripDates within its update transaction. Preserve day/activity IDs and order; soft-hide empty trailing days; reject occupied removed days with 409 TRIP_DATES_HAVE_ACTIVITIES. Restore hidden days on extension to preserve unique trip/day numbering. Keep the existing 30-day generation cap. No live migration.
+- useTripPlan includes context tripsVersion to refetch after trip edits. Display dates consistently as DD/MM/YYYY, including day tabs (date only); API/form ISO dates remain. Parse date-only strings as local calendar dates.
+- Remaining budget: neutral without a budget, warning at <=15% remaining, error at <=0. Shared getBudgetBalanceTone and AppMetricValue warning tone. Activity and finance summary money uses spent / estimate-or-budget.
+- Temporarily hide route optimization/reset controls. Map tab now spans content width at all sizes; retain existing Google iframe single-location preview with a stop selector, not a multi-marker map.
+- Mobile expenses/settlements reuse AppFinanceRow; AppTable renderMobileRow preserves controls, sorting/filtering/pagination and permissions. Desktop financial tables remain. Details, tradeoffs and validation: docs/trip-date-finance-ui.vi.md. Skip smoke/browser tests.
+
+### Shared finance rows and itinerary readability (2026-11-10, feedback)
+
+- User explicitly requires reusable responsibilities in base, with one shared implementation across features. AppFinanceRow now serves recent expenses, Finance, payer/split rows and settlement views; amountCaption handles percentage/status below money. Long names/emails wrap, subtitles use full content width, avatars do not shrink. Read-only rows use div, not disabled buttons.
+- AppAmountRatio centralizes spent / budget-or-estimate at activity and mobile/desktop finance summaries; highlighted activity money uses palette background and larger spent value. AppStatusChip centralizes readable wrapping status labels; category chips and AppSectionHeader also handle long labels.
+- AppTimelineRow leading/railWidth exposes a 64px time rail in ActivityTimelineCard. Time is left of activity title, route distance is a full-width intervening row; remove Fix map link, retain directions and honest unavailable/estimated states. Reuse these components in Home/planner/public/template consumers; do not duplicate itinerary UI in each screen.
+- AppSectionLink is the shared lightweight heading navigation for itinerary/expenses; replace the large footer navigation action. Show the short recent-expense section directly instead of the Home show/hide trip-details button.
+- Remove repeated trip name/destination from ExpenseOverview and trip badge/subtitle from SettlementOverview. Header/context remains authoritative for selection and permissions.
+- Currency utility formats missing/invalid values through numeric-zero formatting to avoid mixed 0 VND vs 0 ₫. Detail dialog uses shared rows, one scroll region and existing marked mobile footer actions. Flow/tradeoffs/verification: docs/trip-date-finance-ui.vi.md. Skip smoke/browser tests.
+
+### Itinerary reference layout (2026-11-10, latest)
+
+- User asks to reference only the supplied left-track + distance/duration layout, not copy place images/ratings/prices. This supersedes the 64px time rail above.
+- AppTimelineRail is the shared base for marker rows and route connectors: default 28px, dashed continuous track, hasPrevious/hasNext. AppTimelineRow puts bordered activity content beside it; time precedes the title inside the content. AppCategoryIcon size=24 here, default 40 elsewhere.
+- Distance left and duration right between activity cards; wrap groups at narrow widths. Use neutral route/clock icons, preserve actual directions link, estimated/unavailable states. No invented walking mode or distances. Planner/Home/template cards share ActivityTimelineCard; no per-page layout clones. See docs/trip-date-finance-ui.vi.md. Skip smoke/browser tests.
+
+### Logout button color (2026-11-10)
+
+- Shared SidebarUserMenu uses AppButton intent="danger" for logout: red theme text/icon, subtle red background and existing hover/disabled behavior in both menu placements. No custom duplicated styles or logout-flow changes.
+
+### Activity spending highlight (2026-11-10)
+
+- ActivityTimelineCard passes success to shared AppAmountRatio when actualSpent equals a positive estimatedCost, making the amount/background green. Under estimate remains primary; over estimate remains error; missing/zero estimate never implies paid in full. This visual rule does not change activity.status.
+
+### Route duration and alignment (2026-11-10, latest)
+
+- Shared base formatDuration converts seconds into localized hours/minutes with Intl.NumberFormat unit formatting (60 min -> 1 hour). mapService normalizes each matrix duration.text from numeric seconds; raw provider minute text must not bypass the formatter. Keep numeric values, sources and isEstimated untouched; legacy service formatter export delegates to base.
+- Distance and duration share AppIconText (13px text/20px line height, 16px icon, center alignment); place the estimated label on its own full-width line below both metrics.
+- AppTimelineRail marker now starts at the activity card top edge; remove the former 12px top spacer and obsolete hasPrevious props. Dashed continuation still uses hasNext and marker-free connector rails. Supersedes previous top-spacer/hasPrevious notes.
+- Validation: TypeScript, scoped ESLint and tests/route-duration.test.mjs (minute/hour boundaries and raw-provider normalization). Skip smoke/browser tests.
+
+### Timeline rail contrast (2026-11-10)
+
+- Latest user request reverts the contrast adjustment: shared AppTimelineRail uses the previous 1px dashed divider border. Keep the current timeline layout and other changes; do not restore the rejected 2px text.secondary style.
+
+### Home upcoming action and countdown (2026-11-10, applied)
+
+- User approved trying the proposed Home hierarchy: banner with countdown → one next activity/empty-plan action → budget + three recent expenses → community templates last. Replace the multi-day/three-activity Home preview rather than add more sections. Remove the unrelated create-trip footer in the selected trip budget; keep existing creation entry points elsewhere.
+- Shared base useCurrentTime updates at minute boundaries/focus, with no server-time hydration assumption. Base date helpers use Asia/Ho_Chi_Minh and calendar-day differences; trip currently has no destination timezone. TripCountdown/feature trip-timing decide before/today/active/last-day/completed/cancelled copy; never mutate status.
+- Home uses existing full plan API includeActivities=true and a Plan feature selector across all days, excluding completed/skipped/past records. Explicit in-progress today first, then current scheduled window, then future timed/untimed records. Planned current windows say On the schedule now, not an inferred status. Do not reorder stored routes or derive status from expense totals.
+- Reuse ActivityTimelineCard compact, AppEmptyState/Card/SectionLink and AddActivityDialog/useCreateActivity; Home must not duplicate activity cards/forms. Empty-plan actions respect canWrite/canManage. Freeze target day when opening Add; shared dialog planDate displays dd/mm/yyyy in Home and planner. Completed/cancelled trips do not get planning CTAs.
+- /plan supports dayId so the Home link opens the selected activity's day via PlanPage → TemplatePlanEntry → PlanOverview initialDayId. Invalid IDs retain fallback and existing server authorization.
+- Details, tradeoffs and verification: docs/home-priorities.vi.md. tests/home-priorities.test.mjs covers calendar and next-activity behavior. Skip smoke/browser tests; no backend/schema changes.
+
+### Section link tap highlight (2026-11-10)
+
+- User reports a blue rectangular highlight on View itinerary and asks to prevent it on similar actions. AppSectionLink now composes NextLink with MUI ButtonBase (disableRipple), inheriting the shared transparent native tap highlight and userSelect:none resets already used by app navigation/buttons. Preserve anchor navigation, 44px touch area, hover underline and visible keyboard-focus outline. Apply through base rather than per-feature CSS; do not disable text selection globally.
+
+### Consistent section-heading navigation (2026-11-10)
+
+- User points out differing View all typography/arrows between Recent expenses and Popular destinations. TemplateLibrary compact heading now uses AppSectionLink, matching the other Home section links for 13px type, chevron, spacing, 44px touch area and hover/focus/tap behavior. Do not hand-style another AppButton for this same heading-navigation responsibility. Keep primary form actions as AppButton.
+
+### Section links without underline (2026-11-10, latest)
+
+- User requires no underline on section links. AppSectionLink keeps textDecoration:none in normal, hover, active and focus states; retain the visible keyboard-focus outline and shared chevron/touch styling. This supersedes the earlier hover-underline preference.
+
+### Planner floating add and compact library filters (2026-11-10, latest)
+
+- User requests floating Add activity bottom right and fewer competing planner actions. AppFloatingActionButton is base over AppButton (preserve primary gradient); above mobile dock via existing spacing/safe-area variables, below modal z-index. AppPageContainer floatingAction slot reserves 72px extra bottom clearance only when used. PlanOverview owns permission/day/loading/error guards and opens the existing AddActivityDialog. Remove duplicate header Add.
+- PlanHeader now has small AI action and More menu for templates/checklist/logs/export/share/publish; preserve rights/callbacks. This supersedes previous standalone Publish/Use template placement and mobile icon-label actions. Do not recreate floating scaffolding per feature.
+- Library filters show search + Filters button, then shared day chips 1/2/3/4+. Clicking selected chip clears duration; no selection means all. Style/sort in shared AppDialog; query debounce/page reset preserved. Base chips expose aria-pressed/group labeling and minimum 44px touch dimensions.
+- 4+ sends minDuration=4 to Core, not duration=4 or client-side page filtering. Core controller/service/criteria/repository apply >= before count/pagination. Exact duration remains supported; conflicting/nonpositive filters rejected. Deploy/restart Core before web uses the new bound.
+- Details/tests/limitations: docs/planner-actions-library-filters.vi.md. Skip smoke/browser tests; no live migration/DB changes.
+
+### Home empty itinerary compact layout (2026-11-10)
+
+- AppEmptyState has opt-in compact: small icon beside left-aligned title, reduced padding; default centered states stay available. Home TripItineraryPreview reuses it for empty/no-next states.
+- Mobile Add activity fills the row; AI is a text action below. From sm use a wrapping row. Preserve 44px tap height, primary gradient, existing permissions and creation/AI flows. See docs/home-priorities.vi.md. Skip smoke/browser tests.
+
+### My trips create floating action (2026-11-10)
+
+- MyTrips uses the shared AppFloatingActionButton in AppPageContainer.floatingAction, matching the planner bottom-right placement, safe area and bottom-navigation clearance. Remove the duplicate header creation action; reuse openCreateTrip and existing translated createNew label. Page container reserves bottom space. Empty-state creation remains available.
+
+### Home empty itinerary list treatment (2026-11-10, latest)
+
+- Supersedes Home compact layout above: TripItineraryPreview uses centered shared AppEmptyState in a dashed bounded area with 16px padding. Add activity has content width below the message; AI stays a secondary text action below. Preserve 44px tap targets and existing flows. AppEmptyState compact remains available; do not duplicate empty-state markup.
+
+### Mobile table filter sheet and section header height (2026-11-10)
+
+- AppSectionHeader must use auto flex-basis for its title in mobile column layout: 160px basis becomes vertical height when stackActionsOnMobile is true. Retain 160px wrapping basis for row layouts.
+- AppTable mobile finance rows use a 44px filter icon next to the header; replace inline horizontal column controls with shared AppTableControlsDialog composed from AppDialog/AppSelect/AppTextField. AppDialog supplies bottom-sheet motion on mobile. Draft sort/filters apply together only on Apply; close discards, Reset clears drafts. Existing desktop headers, server filtering/pagination and permissions remain. Details: docs/mobile-table-filters.vi.md. Skip smoke/browser tests.
+
+### Finance filter density and divider (2026-11-10, latest)
+
+- User rejects placing the whole filter form directly in the expense list. Keep header filter icon; AppTableControlsDialog hosts shared AppTableFilterBar, using search and compact filter dropdown styles like TripFilterBar. Mobile sheet / desktop dialog from existing AppDialog. Draft Apply/Reset behavior remains; no per-keystroke requests. AppSelect filter variant supports multi-select labels.
+- AppTable owns the divider around the full header row including its filter icon. Remove ExpenseTable's shorter internal border. Preserve the previous flex-basis height fix.
+
+### Preparation checklist sheet layout (2026-11-10)
+
+- ChecklistDialog title is concise Trip preparation (VI/EN), maxWidth sm, existing AppDialog sheet handle. Hide generic subtitle and 0/0 progress when empty. When populated show prepared count and percentage with shared AppLinearProgress; success only for a nonempty completed list.
+- AddChecklistForm uses a labeled full-width item field, short example placeholder, then category + 44px Add action in one flex row. Reuse AppTextField/AppSelect/AppButton; preserve readOnly and payload. Guard submits while loading.
+- Empty checklist uses shared AppEmptyState compact with dashed boundary. Remove inner fixed-height scroll: AppDialog owns the scrolling region so form/list scroll together. Details: docs/checklist-sheet.vi.md. Skip smoke/browser tests.
+
+### Optional searchable selects (2026-11-10)
+
+- AppSelect supports searchable=false by default and optional searchPlaceholder. Enable per consumer, currently checklist category only. Preserve form/filter/compact styles, SelectChangeEvent values and multiple selection; no automatic app-wide enablement.
+- Search is local against option labels, accent/case-insensitive via base matchesSearch (including Vietnamese đ). Keep all option values mounted, hide/disable unmatched rows to retain selected values and avoid out-of-range warnings. Search header is nonselectable; Enter while typing must not submit surrounding forms, arrow keys focus visible options, Escape/Tab keep menu dismissal. Reset query on normal open/close. No search UI for native Select.
+- Search copy lives in select namespace VI/EN; no server requests. Details: docs/searchable-select.vi.md. Unit tests tests/select-search.test.mjs cover normalization; skip smoke/browser tests.
+
+### Search directly in select field (2026-11-10, supersedes menu search)
+
+- User clarifies searchable means an editable select field, not a search input inside an opened menu. AppSelect routes searchable=true to internal AppSelectInput (MUI Autocomplete); leave normal/native Select path unchanged. Checklist category remains opted in.
+- Type directly to filter local option labels via matchesSearch, including accentless Vietnamese; do not enable freeSolo or commit typed queries. Preserve numeric/string/multiple values, SelectChangeEvent target.value/name, disabled/readOnly/helper/error and controlled selection/open props. Memoize resolved option arrays. Input label is display text; hidden named field retains raw stored values for native form submission.
+- Use installed MUI 9 slotProps.input/htmlInput/inputLabel from renderInput params; keep Autocomplete refs/handlers. No more ListSubheader/menu search. tests/select-input.test.mjs verifies selection/event/form adapters without browser tests. Details docs/searchable-select.vi.md.
+
+### Anchored select menus in short forms (2026-11-10, latest)
+
+- User prefers the referenced anchored dropdown that opens above the field when needed, and asks why select variants differ. Supersedes the proposed extra mobile picker: do not add another selection sheet. AppSelect remains the shared facade; plain Select and searchable Autocomplete use their respective underlying controls.
+- Plain form/filter/compact menus compose shared useSelectMenu: choose above/below from anchor + visual viewport space, cap at 280px, keep 16px viewport clearance, scroll options. Use Menu variant=menu so selected-item alignment does not shift the popup across the field. Preserve callbacks and caller slot props; recompute on viewport resize/scroll.
+- AppSelectInput keeps direct editing and Popper flip/preventOverflow with shared limits; cap list height at min(280px,40dvh). Existing selection/search semantics and filter draft/apply stay intact. tests/select-menu.test.mjs covers constrained sides/viewport offsets. Details docs/searchable-select.vi.md. Skip smoke/browser tests.
+
+### Planner actions beside title (2026-11-10, latest)
+
+- PlanHeader uses shared AppPageHeader.titleActions so AI + icon-only horizontal ellipsis align with the Lịch trình title, with summary/cost below. Existing actions slot remains available to other pages. AppActionMenu triggerIcon configures the icon, minTouchTarget ensures 44px, ariaLabel is translated Itinerary actions. Default icon triggers now expose menu/expanded/controls semantics.
+- Below 360px viewport width, move AI into the same menu; otherwise keep it beside the title. Preserve readOnly and existing handler guards for AI/share/publish/logs/export/checklist/templates. Add activity stays in its floating button. No duplicated planner actions component. See docs/planner-header.vi.md. Skip smoke/browser tests.
+
+### Product name Vi Vu (2026-11-10)
+
+- User renamed the product Vi Vu. Use that spelling in both VI/EN UI, app/PWA titles, install/startup copy, public share metadata, policy branding and OTP mail. Web metadata/manifest use base APP_NAME; translated UI keeps existing message keys.
+- Internal repository/package/artifact identifiers, API routes, database/schema, cookie/storage keys and PWA id/scope stay compatible. This is a product-name change, not an infrastructure or logo migration. Details docs/vi-vu-brand.vi.md.
+
+### Home budget mobile height correction (2026-11-11)
+
+- Reported on iPhone XS Max: budget cards extend behind recent expenses. OverviewDetails uses content-sized, nonshrinking sections on mobile and equal flex columns from md. Compact TripBudgetCard uses a stretched flex row with flexible content instead of nested percentage heights in an auto-sized grid. Preserve three equal-width metrics and existing data/formatting.
+- Verify ESLint and TypeScript; skip smoke/browser tests as requested. Actual Safari/device rendering remains to be confirmed: all three values must be visible above recent expenses, including with larger text and wrapped labels.
+
+### Finance floating creation actions (2026-11-11)
+
+- ExpenseOverview and SettlementOverview use AppPageContainer.floatingAction with shared AppFloatingActionButton for Add expense and Record payment. Remove the header duplicates; retain existing canWrite guards, form callbacks and manager budget action. Shared component owns safe-area/dock clearance and responsive labels; page container reserves bottom space. Details: docs/finance-floating-actions.vi.md. Skip smoke/browser tests.
+
+### Member role save label (2026-11-11)
+
+- EditMemberRoleDialog uses members.saveChanges (VI: Lưu thay đổi; EN: Save changes). InviteMemberForm retains members.sendInvite. This is a label correction only; preserve role permissions and submit flow. Skip smoke/browser tests.
+
+### Budget sheet readability (2026-11-11)
+
+- SetBudgetDialog uses existing AppDialog actions outside scrollable content, with useId/native form association for Save and mobile sheet handle. SetBudgetForm owns values/validation; guard duplicate submits during loading and disable edits. Preserve calculation/payload behavior.
+- Short VI/EN title and allocation labels; allocation amount gets its own wrapping row and shared AppLinearProgress. Mobile inputs use 16px text, persistent category labels and no automatic keyboard focus. Existing AppDialog owns safe areas and scrolling.
+- Scoped ESLint and TypeScript pass. Skip smoke/browser tests; actual iOS keyboard/viewport behavior remains to be checked on device.
+
+### Receipt scan section (2026-11-11)
+
+- ReceiptScanBanner uses a short translated title, no subtitle and two equal shared buttons: Take photo / Choose file. Use 44px targets, wrapping labels, minWidth 0 and flex wrapping for narrow screens/large text. A single live status announces scanning; actions are disabled while pending. File selection uses a keyboard-accessible native button with a hidden input ref; retain camera, image/PDF scanning, attachment and error behavior.
+- Scoped ESLint and TypeScript pass; skip smoke/browser tests. Device rendering and real camera/provider calls remain unverified.
+
+- Receipt scan surface preference: user chose to keep the original gray theme surface (action.hover; action.selected while scanning and behind the icon). Preserve the compact layout, divider border, primary icon and text wrapping.
+
+### Illustrated iPhone installation guide (2026-11-11)
+
+- AppInstallButton opens an AppDialog sheet containing IOSInstallGuide for iOS: three inline SVG schematic illustrations, actual Vi Vu icon, highlighted Share/Add to Home Screen/Add controls, translated labels and image descriptions. Respect theme colors and wrapping; explain iOS/version differences and Safari fallback. Reuse existing footer and scrolling. No image-generation dependency or external image requests.
+- Android native prompt and install-store lifecycle are unchanged; installation still requires browser support and user confirmation. Details: docs/pwa-guide.vi.md. Scoped ESLint, TypeScript and diff checks pass; skip smoke/browser tests. Real OS installation remains unverified.
+
+
+
+- Safari guide refinement: SafariInstallIllustration reconstructs iOS 18 light-mode Safari toolbar, Share actions and Add to Home Screen confirmation. Use fixed OS colors inside illustrations, theme-aware surrounding guide, VI/EN labels, red target outlines and actual Vi Vu logo. Explicitly label reconstructions, not real screenshots or universal iOS layout. Demo has been removed at user request; only iOS opens the guide, supported browsers open the native install prompt. Scoped lint/TypeScript pass; no browser/device validation.
+
+### Inline itinerary map (2026-11-12, user clarification)
+
+- User only wants the existing map visible without switching tabs. PlanOverview now shows PlanMapPanel above day tabs and timeline in one column at all sizes; remove timeline/map toggle state and buttons. Preserve single-stop Google iframe, selector, pagination, day reset and existing permissions/actions.
+- PlanMapPanel uses standard AppLocationMap height (320px mobile / 400px desktop). No two-column rollout or multi-marker/provider change. Details: docs/trip-date-finance-ui.vi.md. Skip smoke/browser tests.
+
+### Multi-stop itinerary map (2026-11-12, latest clarification)
+
+- User explicitly wants numbered stops and connecting lines like the reference plus a similar map UI. This supersedes the single-stop constraint for PlanMapPanel only. Keep the inline one-column layout; no map/timeline toggle.
+- Extend shared AppInteractiveMap with MapStop[], selection and fit-all support, retaining its single-coordinate consumers. Use installed MapLibre, configured Vietmap tiles and existing OSM fallback. Route mode must report unavailable/retry rather than silently falling back to a single-marker iframe.
+- Feature hook usePlanMapStops resolves loaded activities via existing /maps/location BFF/Core sequentially, shares identical in-flight requests, guards stale results and stops on request failure. No provider orchestration moves out of Core. Keep original activity numbering and explicit load-more/missing-location feedback.
+- Draw straight visit-order segments only between adjacent resolved activities; disclose that they are not road directions. Selected stop details retain an external Google Maps link. Keep other AppLocationMap previews unchanged. Docs: docs/maps.vi.md. Unit tests: tests/map-route.test.mjs. Skip smoke/browser tests.
+
+### Activity images (2026-11-12)
+
+- AppImageUploader adds optional tile layout; AppTimelineRow.media slots the shared uploader into ActivityTimelineCard. Planner and Home select/replace/remove photos according to existing permissions; public cards display only. Keep form-style avatar/cover/receipt defaults.
+- ACTIVITY_IMAGE uploads use Core Cloudinary, then claim owned pending uploads transactionally. Activity stores image_upload_id/image_url. Card PATCH updates only the image; edit PUT includes optional imageUploadId/removeImage and preserves existing photo when omitted.
+- Apply Core db/manual/V10__activity_images.sql before deploying/restarting Core; not applied to application DB. Template snapshots do not publish/copy activity photos. Old uploads become delete_pending; provider cleanup job remains absent. Flow/tradeoffs/checks: docs/activity-images.vi.md. Skip smoke/browser tests.
+
+### Activity photo tile and pending UI (2026-11-12)
+
+- Shared AppImageUploader tile uses 28px corner controls inside 44px touch targets; remove centered choose text over existing photos. Empty tile retains icon/choose label. Pending shows themed overlay/spinner and Saving photo text, disables selection/removal through disabled || loading.
+- ActivityCardImage passes pendingFile for temporary preview across upload + attach; restores saved photo on failure and releases Blob URL after completion. Other field-style uploaders retain their UI. Details: docs/activity-images.vi.md. TypeScript/scoped ESLint; skip smoke/browser tests.
+
+### Unobstructed activity photos (2026-11-12, latest feedback)
+
+- Supersedes corner controls: remove visible change/remove overlays from shared uploader tiles. Click the photo to replace; ActivityTimelineCard includes choose/change/remove in its existing action menu. Keep empty choose placeholder and pending overlay.
+- useActivityImage owns feature persistence/preview/error state; base AppImageUploader exposes optional inputRef for the same picker. Disable image menu actions while saving; preserve readOnly and form upload controls. TypeScript/scoped ESLint; skip smoke/browser tests.
+
+### Activity image removal synchronization (2026-11-12)
+
+- useActivityImage must retire its saved local result once server image URL or activity identity changes. Never let an acknowledged upload reappear when a later form edit removes the image and props return to a previous URL/null/undefined. Preserve immediate card preview until server acknowledgment.
+- Regression: node --test tests/activity-image-state.test.mjs runs the real hook with mocked state/API for upload → acknowledgment → form removal/replacement and failed save. TypeScript/scoped ESLint; skip smoke/browser tests.
+
+### Remove activity photos through edit form (2026-11-12, latest)
+
+- User reverted hover removal and chose removal through the edit form only. Shared tiles have no remove overlay and activity action menus have no remove-photo item. Click the image or choose/change menu action to upload; edit form retains remove + Save. Preserve pending UI and removal synchronization fix.
+
+
+### LAN development origin (2026-11-13)
+
+- next.config.ts allows hostname 192.168.68.99 through allowedDevOrigins for phone access to Next.js development assets. Restart the dev server after configuration changes; use npm run dev -- --hostname 0.0.0.0 when LAN binding is needed. This is a Next.js development origin rule, separate from backend API CORS. Update the explicit hostname if the LAN IP changes.
+
+
+### Shared upload thumbnail placeholder (2026-11-13)
+
+- AppImageUploader defaults to cover and provides an ImageOutlined icon when no custom fallback is supplied, including missing/broken image states. Non-avatar fields use theme action.hover/text.secondary instead of the bright avatar background. ProfileForm explicitly opts into avatar and retains initials; EditTripForm uses the shared image placeholder instead of a trip-name initial. Existing file selection, validation, previews, tile layout and persistence stay unchanged.
+- Verify scoped ESLint and TypeScript; skip smoke/browser tests per repository instructions.
+
+
+### Mobile budget action icon (2026-11-13)
+
+- MobileBudgetSummaryCard uses a 44px TuneRounded icon action for both unset and configured budgets, matching the desktop budget adjustment icon. Tooltip/aria-label retain localized setup/edit labels. Preserve existing manager callback guard, budget sheet and amounts; the empty-budget action no longer uses a text button. Scoped ESLint/TypeScript; skip smoke/browser tests.
+
+
+### Light glass materials and corner hierarchy (2026-11-13)
+
+- User chose subtle glassmorphism and Apple-inspired consistent corner geometry across the UI. Radius tokens in globals.css: detail 4, badge 6, small 8, control 12, card 20, panel 24, dialog 28px; pills/circles/fullscreen remain intentional exceptions. Base wrappers and feature sx now reference tokens rather than arbitrary local radii. Exported itinerary image geometry remains standalone.
+- glassSurface(theme, kind) centralizes light/dark surfaces: content cards are translucent without per-item blur, floating overlays/navigation use restrained blur, solid fallback when unsupported or reduced transparency/high contrast. Fullscreen dialogs stay opaque. Native corner-shape squircle is progressive enhancement on large surfaces only.
+- Preserve brand palette, font, primary-button gradient and all existing layout/actions/permissions. No new hero/decorations. Details and verification limits: docs/ui-materials.vi.md. TypeScript and full ESLint run; lint has no errors but pre-existing generated MapLibre/unused-code warnings. Skip smoke/browser tests.
+
+
+### Consistent activity metadata rows (2026-11-13)
+
+- ActivityTimelineCard renders category then non-PLANNED status in a fixed vertical Stack (4px gap, left aligned) instead of flex-wrap deciding per label length. Reuse AppCategoryChip/AppStatusChip with 24px minimum height, 12px text and badge radius token. Preserve existing status visibility, actions, photo, order and spending behavior. Shared consumers inherit the same layout. Scoped ESLint/TypeScript; skip smoke/browser tests.
+
+
+### Template LAN origin validation (2026-11-13)
+
+- User reported preview 403 with message Invalid origin. proxyTemplate compared browser Origin with Next's internal nextUrl.origin (can be localhost while browsing a LAN IP). Shared server hasSameRequestOrigin compares parsed Origin with incoming Host and nextUrl.protocol, including port; reject missing/null/malformed origins and hosts. Do not accept arbitrary x-forwarded-host or allow all origins. Reverse proxies must preserve the external Host/protocol.
+- Keep token requirement, owner authorization and GET behavior. tests/template-origin.test.mjs runs the real proxy with mocked Core transport: LAN/internal URL mismatch, localhost/HTTPS, foreign/missing/invalid/wrong-port/wrong-scheme origins, spoofed forwarded host and malformed Host. Scoped ESLint/TypeScript, no smoke/browser/provider calls. Backend also normalizes optional removeCover for the same submitted payload; restart Core after that fix.
+
+
+### Template preview action hierarchy (2026-11-13)
+
+- PublishTemplateDialog explicitly marks Edit as secondary instead of inheriting AppButton primary default. Confirm publication retains the primary gradient and mobile primary action layout; editing remains available during preview and disabled while busy. Scoped ESLint/TypeScript; skip smoke/browser tests.
+
+
+### Incremental UI refinement rule (2026-11-13, latest user attachment)
+
+- New user rule requests safe visual polish preserving approximately 90% identity/layout and all behavior. Supersedes translucent default cards: glassSurface card now stays opaque; floating overlays/navigation retain subtle glass. Preserve all radius tokens, palette, typography, gradient, breakpoints and workflows.
+- Shared interactionTransition uses 180ms paint-only transitions and reduced-motion none. AppButton, AppCard, inputs and navigation consume it; interactive cards have pointer-only hover, pressed and visible focus. Error/disabled inputs do not get primary hover borders; helper text wraps. Category chip light colors stay configured; dark colors derive from existing category and theme values.
+- Source edits limited to 8 shared style files; no backend/API/messages/dependency edits. Audit, exact file list and verification limits: docs/ui-refinement.vi.md. Scoped ESLint/TypeScript and evaluated theme/helper checks pass; source comparison confirms palette/typography/primary-gradient preservation. Skip smoke/browser tests; no screenshot, device or end-to-end verification claims.
+
+
+### One-line weekday day tabs (2026-11-13)
+
+- PlanDayTabs shows localized short weekday plus DD/MM on one line (VI T7, 07/11; EN Sat, 07/11). Use existing calendar-safe parseDate and shortWeekdays translations; missing/invalid dates fall back to Day N. Preserve widths, selected colors, callbacks and scroll behavior. Scoped lint/TypeScript and date/translation check; skip smoke/browser tests.
+
+
+### Member balance filters (2026-11-13)
+
+- User clarified the reference requests All / owes / awaiting repayment filter chips, not a redesign of member rows. MemberBalancesTable reuses AppFilterChipGroup above existing responsive rows/table: ALL includes settled members, OWES filters debtors, OWED filters receivers. Use backend status as supplied; no new balance calculations or API changes. Filters affect member details only, with shared empty state and VI/EN labels.
+- Keep existing avatar/amount/details, total member count, overview and payment suggestions. Chips scroll horizontally with existing shared touch/keyboard behavior. Scoped ESLint/TypeScript and evaluation of the real component with isolated state/primitive mocks cover each filter, settled members, empty results and unmodified inputs. Skip smoke/browser tests.
+
+
+### Settlement section alignment and project shapes (2026-11-13)
+
+- User wants member balance filters aligned with the page-level Who pays whom header, not inset inside a padded card. MemberBalancesTable now puts shared AppSectionHeader and AppFilterChipGroup outside the data card; rows own data padding, AppCard p=0. Remove the feature pill override and inherit existing filter-chip corner geometry.
+- SettlementOverview reuses AppSectionHeader for suggestions and payment history. History title/count remain visible even with no recorded payments; remove the duplicate inset history heading. Keep all row details, filter rules, authorization and payment/delete actions. Radius/corner styling comes from shared project components/tokens; no new radius scale or custom curves. Scoped ESLint/TypeScript; skip smoke/browser tests.
+
+
+### Temporarily hide category budget details (2026-11-13)
+
+- User requested hiding the View budget by category disclosure in Expenses/Budget. ExpenseOverview gates the disclosure and its CategorySpendingList behind local SHOW_CATEGORY_BUDGET_DETAILS=false. Keep category chart, budget controls, component and translations for later restoration; no data/API change. Scoped lint/TypeScript; skip smoke/browser tests.
+
+
+### Mobile timeline width trial (2026-11-13)
+
+- User approved trying a leftward rail shift to widen activity cards. DayTimelineList owns responsive rail/gap variables: mobile 16px/10px instead of 28px/6px, moving marker center left 6px and card left 8px; sm+ remains 28px/8px. Keep the 28px number badge and photo width. Transparent timeline wrapper allows the marker overhang inside the page inset.
+- AppTimelineRail reads the inherited width only when explicit width is absent; AppTimelineRow and ActivityDistanceConnector share the inherited gap so connectors stay aligned. Other consumers retain previous fallback geometry. No negative margins, transforms, page-padding changes or custom radii. Scoped ESLint/TypeScript; skip smoke/browser tests, visual review pending.
+
+
+### Compact mobile trip cards and header copy (2026-11-13)
+
+- User proposed compact trip rows because a few large cards fill the mobile viewport, then explicitly removed the subtitle under My trips. MyTripsHeader omits its description subtitle. Default grid cards use TripCompactCard below sm: 72px cover at left, solid readable text, dates/destination/description/status/duration/currency, active star, open control and owner-only edit/delete menu. Keep project AppCard/radius/touch targets.
+- TripCardItem retains the desktop card at sm+ and calculates owner access once for both responsive presentations; no navigation/API/filter/pagination changes. Do not invent total spending absent from Trip data. Three trips fitting without scrolling depends on viewport/filter height; no such guarantee.
+- Scoped lint/TypeScript and evaluation of actual compact component with isolated UI mocks verify selection, active state, owner actions, non-owner restrictions, responsive visibility and description preservation. Skip smoke/browser tests; device layout remains unverified.
+
+
+### Compact trip trailing actions (2026-11-13)
+
+- Move the compact-card chevron out of the title into a fixed 44px trailing action column alongside the owner action menu. Chevron is a labeled AppButton text action with tooltip and 44px touch target; stack centered as a group independent of title length. Preserve whole-content selection and owner-only edit/delete, with sibling controls rather than nested buttons. Inherit project control radius; no new shape tokens. Scoped lint/TypeScript; skip smoke/browser tests.
+
+
+### Trip photo-background mobile cards (2026-11-13, latest)
+
+- User chose trying the reference photo as full card background. TripCompactCard uses existing cover with a dark text scrim, white copy and primary.dark fallback; min-height 120px grows for content. Preserve all metadata/active state/owner actions and desktop presentation. Root click opens trip; labeled content ButtonBase supports keyboard and stops duplicate activation; menu remains a sibling and stops propagation through existing AppActionMenu. Remove separate chevron. No absolute/grid layout or new corner tokens.
+- Latest feedback reduces the three-dot visual background to 28px using the small radius token while retaining the 44px IconButton hit target. Keep the menu at upper right, subtle dark fill and visible focus. Scoped lint/TypeScript; skip smoke/browser tests, visual contrast and image crop on real devices remain unverified.
+
+
+### Compact expense detail UI (2026-11-13)
+
+- ExpenseDetailDialog uses an opt-in AppFinanceRow compact mode: name/email share the left group instead of placing email below the taller trailing group. Percent and split status share a wrapping caption row; payer/split avatars use 36px and row padding is slightly tighter. Default shared finance rows retain their previous structure.
+- Summary uses solid paper, 16px title, 24px amount, smaller internal spacing; section gap is 16px. Detail group corners use the existing card token; sentence-case title in VI/EN. Preserve emails, amounts, percentages, settled flags, note/receipt and close/edit/readOnly behavior. No business/API changes.
+- Scoped lint/TypeScript and actual-component evaluation with mocked primitives verify row data, percentages/statuses, edit/readOnly behavior and immutable expense input. Skip smoke/browser tests; exact row height, long-text rendering and device appearance remain unverified.

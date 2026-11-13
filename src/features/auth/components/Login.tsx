@@ -126,7 +126,7 @@ const Login = () => {
           alignItems: { xs: 'flex-start', md: 'center' },
           justifyContent: 'center',
           p: { xs: '24px 24px max(32px, env(safe-area-inset-bottom))', sm: 5 },
-          borderRadius: { xs: '32px 32px 0 0', md: 0 },
+          borderRadius: { xs: 'var(--app-radius-dialog) var(--app-radius-dialog) 0 0', md: 0 },
           bgcolor: 'background.paper',
           minHeight: { xs: 'calc(100svh - 240px)', sm: 'calc(100svh - 280px)', md: '100svh' },
         }}

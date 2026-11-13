@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { Box, ButtonBase, Typography } from '@mui/material';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import AppTimelineRail from './AppTimelineRail';
+import { glassSurface } from '@/base/theme/surfaces';
 
 export interface AppTimelineRowProps {
   // Bỏ trống thì không vẽ trục thời gian (thẻ đơn lẻ).
@@ -45,7 +46,10 @@ const AppTimelineRow = ({
       width: '100%',
       alignItems: 'stretch',
       minWidth: 0,
-      gap: { xs: 0.75, sm: 1 },
+      gap: {
+        xs: 'var(--app-timeline-gap, 6px)',
+        sm: 'var(--app-timeline-gap, 8px)',
+      },
     }}
   >
     {icon && (
@@ -53,16 +57,21 @@ const AppTimelineRow = ({
     )}
     <Box sx={{ flex: 1, minWidth: 0, pb: hasNext ? 1 : 0 }}>
       <Box
-        sx={{
+        data-app-surface="card"
+        sx={(theme) => ({
+          ...glassSurface(theme),
           display: 'flex',
           flex: 1,
           minWidth: 0,
           overflow: 'hidden',
           border: 1,
-          borderRadius: '14px',
+          borderRadius: 'var(--app-radius-card)',
           borderColor: selected ? 'primary.main' : 'divider',
-          bgcolor: selected ? 'action.selected' : 'background.paper',
-        }}
+          ...(selected && {
+            outline: `1px solid ${(theme.vars?.palette ?? theme.palette).primary.main}`,
+            outlineOffset: -1,
+          }),
+        })}
       >
         {showMedia && (
           <Box
@@ -112,7 +121,7 @@ const AppTimelineRow = ({
             gap: 0.75,
             p: { xs: 1.25, sm: 1.5 },
             textAlign: 'left',
-            borderRadius: '14px',
+            borderRadius: 'var(--app-radius-card)',
             color: 'text.primary',
             '&:hover': onSelect ? { bgcolor: 'action.hover' } : undefined,
             '&.Mui-focusVisible': {

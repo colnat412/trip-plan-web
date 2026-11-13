@@ -22,6 +22,7 @@ import { AppActionMenu, AppButton } from '@/base/components/ui';
 import { formatDateRange } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
 import TripStatusChip from './TripStatusChip';
+import TripCompactCard from './TripCompactCard';
 import type { Trip } from '../../types';
 import { calculateTripDays } from '../../utils/helper';
 
@@ -51,285 +52,295 @@ const TripCardItem = ({
   const durationDays = calculateTripDays(trip.startDate, trip.endDate);
 
   return (
-    <Box
-      onClick={() => onSelect(trip)}
-      sx={{
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRadius: '14px',
-        overflow: 'hidden',
-        border: '1.5px solid',
-        borderColor: isActive ? 'primary.main' : 'divider',
-        bgcolor: isActive ? 'action.selected' : 'background.paper',
-        transition: 'background-color 0.15s, border-color 0.15s',
-        cursor: 'pointer',
-        '&:hover': {
-          borderColor: 'primary.main',
-          bgcolor: 'action.hover',
-        },
-      }}
-    >
+    <>
+      <TripCompactCard
+        trip={trip}
+        isActive={isActive}
+        isOwner={isOwner}
+        onSelect={onSelect}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
       <Box
+        onClick={() => onSelect(trip)}
         sx={{
           position: 'relative',
-          width: '100%',
-          pt: '56.25%',
+          display: { xs: 'none', sm: 'flex' },
+          flexDirection: 'column',
+          borderRadius: 'var(--app-radius-card)',
           overflow: 'hidden',
-          bgcolor: 'action.hover',
+          border: '1.5px solid',
+          borderColor: isActive ? 'primary.main' : 'divider',
+          bgcolor: isActive ? 'action.selected' : 'background.paper',
+          transition: 'background-color 0.15s, border-color 0.15s',
+          cursor: 'pointer',
+          '&:hover': {
+            borderColor: 'primary.main',
+            bgcolor: 'action.hover',
+          },
         }}
       >
-        <Avatar
-          src={trip.coverUrl ?? undefined}
-          alt={trip.name}
-          variant="square"
+        <Box
           sx={{
-            position: 'absolute',
-            inset: 0,
+            position: 'relative',
             width: '100%',
-            height: '100%',
+            pt: '56.25%',
+            overflow: 'hidden',
             bgcolor: 'action.hover',
-            color: 'text.secondary',
           }}
         >
-          <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
-            <PhotoCameraOutlinedIcon sx={{ fontSize: 28, opacity: 0.45 }} />
-            <Typography variant="caption">{t('noPhoto')}</Typography>
-          </Stack>
-        </Avatar>
-
-        <Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 1 }}>
-          <TripStatusChip status={trip.status} />
-        </Box>
-
-        <Box
-          sx={{ position: 'absolute', top: 6, right: 6, zIndex: 1 }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelect(trip);
-          }}
-        >
-          <Tooltip title={isActive ? t('activeTripTip') : t('makeActiveTip')}>
-            <IconButton
-              size="small"
-              aria-label={isActive ? t('activeTripTip') : t('makeActiveTip')}
-              sx={{
-                bgcolor: 'background.paper',
-                color: isActive ? 'primary.main' : 'text.secondary',
-                boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
-                width: 44,
-                height: 44,
-                p: 1,
-                '&:hover': {
-                  bgcolor: 'background.paper',
-                  color: 'primary.main',
-                },
-              }}
-            >
-              {isActive ? (
-                <StarRoundedIcon sx={{ fontSize: 18 }} />
-              ) : (
-                <StarBorderRoundedIcon sx={{ fontSize: 18 }} />
-              )}
-            </IconButton>
-          </Tooltip>
-        </Box>
-
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 6,
-            right: 6,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 0.4,
-            px: 0.85,
-            py: 0.25,
-            borderRadius: '6px',
-            bgcolor: 'rgba(0, 0, 0, 0.65)',
-            backdropFilter: 'blur(4px)',
-            color: '#FFFFFF',
-            fontSize: '12px',
-            fontWeight: 700,
-          }}
-        >
-          <CalendarTodayOutlinedIcon sx={{ fontSize: 11 }} />
-          <span>
-            {durationDays} {t('daysLabel') || 'ngày'}
-          </span>
-        </Box>
-      </Box>
-
-      <Box
-        sx={{ p: 1.75, display: 'flex', flexDirection: 'column', gap: 0.75 }}
-      >
-        <Stack
-          direction="row"
-          sx={{
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 1,
-          }}
-        >
-          <Box
+          <Avatar
+            src={trip.coverUrl ?? undefined}
+            alt={trip.name}
+            variant="square"
             sx={{
-              px: 0.85,
-              py: 0.2,
-              borderRadius: '6px',
-              bgcolor: 'action.selected',
-              color: 'primary.main',
-              fontWeight: 800,
-              fontSize: '12px',
-              fontFamily: 'var(--font-mono)',
-              letterSpacing: '0.25px',
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              bgcolor: 'action.hover',
+              color: 'text.secondary',
             }}
           >
-            {trip.baseCurrency}
+            <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
+              <PhotoCameraOutlinedIcon sx={{ fontSize: 28, opacity: 0.45 }} />
+              <Typography variant="caption">{t('noPhoto')}</Typography>
+            </Stack>
+          </Avatar>
+
+          <Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 1 }}>
+            <TripStatusChip status={trip.status} />
           </Box>
 
-          <Typography
-            variant="caption"
-            noWrap
-            sx={{
-              color: 'text.secondary',
-              fontSize: '12px',
-              fontFamily: 'var(--font-mono)',
+          <Box
+            sx={{ position: 'absolute', top: 6, right: 6, zIndex: 1 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(trip);
             }}
           >
-            {formatDateRange(trip.startDate, trip.endDate)}
-          </Typography>
-        </Stack>
+            <Tooltip title={isActive ? t('activeTripTip') : t('makeActiveTip')}>
+              <IconButton
+                size="small"
+                aria-label={isActive ? t('activeTripTip') : t('makeActiveTip')}
+                sx={{
+                  bgcolor: 'background.paper',
+                  color: isActive ? 'primary.main' : 'text.secondary',
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
+                  width: 44,
+                  height: 44,
+                  p: 1,
+                  '&:hover': {
+                    bgcolor: 'background.paper',
+                    color: 'primary.main',
+                  },
+                }}
+              >
+                {isActive ? (
+                  <StarRoundedIcon sx={{ fontSize: 18 }} />
+                ) : (
+                  <StarBorderRoundedIcon sx={{ fontSize: 18 }} />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Box>
 
-        <Box sx={{ minWidth: 0 }}>
-          <Typography
-            noWrap
-            sx={{
-              fontSize: '14px',
-              fontWeight: 700,
-              color: 'text.primary',
-              lineHeight: 1.3,
-            }}
-          >
-            {trip.name}
-          </Typography>
-          <Typography
-            variant="caption"
-            noWrap
-            sx={{
-              color: 'text.secondary',
-              fontSize: '12px',
-              display: 'block',
-              mt: 0.2,
-            }}
-          >
-            {durationDays} {t('daysLabel')} {Math.max(1, durationDays - 1)}{' '}
-            {t('nightsLabel')}
-            {trip.description ? ` • ${trip.description}` : ''}
-          </Typography>
-        </Box>
-
-        <Stack
-          direction="row"
-          spacing={0.5}
-          sx={{ alignItems: 'center', minWidth: 0, color: 'text.secondary' }}
-        >
-          <LocationOnOutlinedIcon sx={{ fontSize: 14, flexShrink: 0 }} />
-          <Typography
-            noWrap
-            variant="caption"
-            sx={{ fontSize: '12px', fontWeight: 500 }}
-          >
-            {trip.destination || t('noDestination')}
-          </Typography>
-        </Stack>
-
-        <Stack
-          direction="row"
-          sx={{
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: 1,
-            pt: 1,
-            borderTop: 1,
-            borderColor: 'divider',
-          }}
-        >
           <Box
             sx={{
+              position: 'absolute',
+              bottom: 6,
+              right: 6,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 0.4,
               px: 0.85,
-              py: 0.2,
-              borderRadius: '5px',
+              py: 0.25,
+              borderRadius: 'var(--app-radius-badge)',
+              bgcolor: 'rgba(0, 0, 0, 0.65)',
+              backdropFilter: 'blur(4px)',
+              color: '#FFFFFF',
               fontSize: '12px',
               fontWeight: 700,
-              bgcolor: 'action.hover',
-              color: isActive ? 'primary.main' : 'text.secondary',
-              whiteSpace: 'nowrap',
             }}
           >
-            {isActive
-              ? t('selected')
-              : isOwner
-                ? t('roleOwner')
-                : t('roleMember')}
+            <CalendarTodayOutlinedIcon sx={{ fontSize: 11 }} />
+            <span>
+              {durationDays} {t('daysLabel') || 'ngày'}
+            </span>
+          </Box>
+        </Box>
+
+        <Box
+          sx={{ p: 1.75, display: 'flex', flexDirection: 'column', gap: 0.75 }}
+        >
+          <Stack
+            direction="row"
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 1,
+            }}
+          >
+            <Box
+              sx={{
+                px: 0.85,
+                py: 0.2,
+                borderRadius: 'var(--app-radius-badge)',
+                bgcolor: 'action.selected',
+                color: 'primary.main',
+                fontWeight: 800,
+                fontSize: '12px',
+                fontFamily: 'var(--font-mono)',
+                letterSpacing: '0.25px',
+              }}
+            >
+              {trip.baseCurrency}
+            </Box>
+
+            <Typography
+              variant="caption"
+              noWrap
+              sx={{
+                color: 'text.secondary',
+                fontSize: '12px',
+                fontFamily: 'var(--font-mono)',
+              }}
+            >
+              {formatDateRange(trip.startDate, trip.endDate)}
+            </Typography>
+          </Stack>
+
+          <Box sx={{ minWidth: 0 }}>
+            <Typography
+              noWrap
+              sx={{
+                fontSize: '14px',
+                fontWeight: 700,
+                color: 'text.primary',
+                lineHeight: 1.3,
+              }}
+            >
+              {trip.name}
+            </Typography>
+            <Typography
+              variant="caption"
+              noWrap
+              sx={{
+                color: 'text.secondary',
+                fontSize: '12px',
+                display: 'block',
+                mt: 0.2,
+              }}
+            >
+              {durationDays} {t('daysLabel')} {Math.max(1, durationDays - 1)}{' '}
+              {t('nightsLabel')}
+              {trip.description ? ` • ${trip.description}` : ''}
+            </Typography>
           </Box>
 
           <Stack
             direction="row"
             spacing={0.5}
-            sx={{ alignItems: 'center', flexShrink: 0 }}
+            sx={{ alignItems: 'center', minWidth: 0, color: 'text.secondary' }}
           >
-            <AppButton
-              size="small"
-              intent={isActive ? 'primary' : 'secondary'}
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(trip);
-              }}
-              startIcon={<FlightTakeoffRoundedIcon sx={{ fontSize: '13px' }} />}
+            <LocationOnOutlinedIcon sx={{ fontSize: 14, flexShrink: 0 }} />
+            <Typography
+              noWrap
+              variant="caption"
+              sx={{ fontSize: '12px', fontWeight: 500 }}
+            >
+              {trip.destination || t('noDestination')}
+            </Typography>
+          </Stack>
+
+          <Stack
+            direction="row"
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 1,
+              pt: 1,
+              borderTop: 1,
+              borderColor: 'divider',
+            }}
+          >
+            <Box
               sx={{
-                minHeight: 44,
-                px: 1.25,
+                px: 0.85,
+                py: 0.2,
+                borderRadius: 'var(--app-radius-badge)',
                 fontSize: '12px',
+                fontWeight: 700,
+                bgcolor: 'action.hover',
+                color: isActive ? 'primary.main' : 'text.secondary',
+                whiteSpace: 'nowrap',
               }}
             >
-              {t('viewTrip')}
-            </AppButton>
+              {isActive
+                ? t('selected')
+                : isOwner
+                  ? t('roleOwner')
+                  : t('roleMember')}
+            </Box>
 
-            {isOwner && (
-              <Box onClick={(e) => e.stopPropagation()}>
-                <AppActionMenu
-                  minTouchTarget
-                  items={[
-                    ...(onEdit
-                      ? [
-                          {
-                            id: 'edit',
-                            label: t('edit'),
-                            icon: <EditRoundedIcon fontSize="small" />,
-                            onClick: () => onEdit(trip),
-                          },
-                        ]
-                      : []),
-                    ...(onDelete
-                      ? [
-                          {
-                            id: 'delete',
-                            label: t('delete'),
-                            icon: <DeleteOutlineRoundedIcon fontSize="small" />,
-                            onClick: () => onDelete(trip),
-                            danger: true,
-                          },
-                        ]
-                      : []),
-                  ]}
-                />
-              </Box>
-            )}
+            <Stack
+              direction="row"
+              spacing={0.5}
+              sx={{ alignItems: 'center', flexShrink: 0 }}
+            >
+              <AppButton
+                size="small"
+                intent={isActive ? 'primary' : 'secondary'}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect(trip);
+                }}
+                startIcon={<FlightTakeoffRoundedIcon sx={{ fontSize: '13px' }} />}
+                sx={{
+                  minHeight: 44,
+                  px: 1.25,
+                  fontSize: '12px',
+                }}
+              >
+                {t('viewTrip')}
+              </AppButton>
+
+              {isOwner && (
+                <Box onClick={(e) => e.stopPropagation()}>
+                  <AppActionMenu
+                    minTouchTarget
+                    items={[
+                      ...(onEdit
+                        ? [
+                            {
+                              id: 'edit',
+                              label: t('edit'),
+                              icon: <EditRoundedIcon fontSize="small" />,
+                              onClick: () => onEdit(trip),
+                            },
+                          ]
+                        : []),
+                      ...(onDelete
+                        ? [
+                            {
+                              id: 'delete',
+                              label: t('delete'),
+                              icon: <DeleteOutlineRoundedIcon fontSize="small" />,
+                              onClick: () => onDelete(trip),
+                              danger: true,
+                            },
+                          ]
+                        : []),
+                    ]}
+                  />
+                </Box>
+              )}
+            </Stack>
           </Stack>
-        </Stack>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

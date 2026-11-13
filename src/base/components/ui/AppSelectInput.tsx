@@ -142,7 +142,7 @@ const AppSelectInput = ({
               {
                 '& .MuiOutlinedInput-root': {
                   minHeight: variantType === 'filter' ? 38 : 32,
-                  borderRadius: variantType === 'filter' ? '10px' : '8px',
+                  borderRadius: variantType === 'filter' ? 'var(--app-radius-control)' : 'var(--app-radius-small)',
                   bgcolor: 'background.paper',
                   fontSize: variantType === 'filter' ? '13px' : '12px',
                   py: 0,

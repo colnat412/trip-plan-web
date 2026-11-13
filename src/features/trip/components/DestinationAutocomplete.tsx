@@ -124,7 +124,7 @@ const DestinationAutocomplete = ({
                     justifyContent: 'center',
                     width: 32,
                     height: 32,
-                    borderRadius: '8px',
+                    borderRadius: 'var(--app-radius-small)',
                     bgcolor: option.isPopular
                       ? 'warning.light'
                       : 'action.hover',

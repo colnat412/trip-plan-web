@@ -12,7 +12,7 @@ export interface AppTimelineRailProps {
 const AppTimelineRail = ({
   marker,
   hasNext = false,
-  width = 28,
+  width,
 }: AppTimelineRailProps) => {
   const lineSx = {
     width: 0,
@@ -23,7 +23,8 @@ const AppTimelineRail = ({
     <Box
       aria-hidden="true"
       sx={{
-        width,
+        width: width ?? 'var(--app-timeline-rail-width, 28px)',
+        minWidth: 0,
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',

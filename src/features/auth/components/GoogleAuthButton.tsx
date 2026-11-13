@@ -152,7 +152,7 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
           minHeight: '54px',
           border: '1px dashed',
           borderColor: 'divider',
-          borderRadius: '12px',
+          borderRadius: 'var(--app-radius-control)',
         }}
       >
         <Typography variant="caption" color="text.secondary">
@@ -194,7 +194,7 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
           sx={{
             minHeight: '54px',
             height: '54px',
-            borderRadius: '12px',
+            borderRadius: 'var(--app-radius-control)',
             border: '1px solid',
             borderColor: 'divider',
             bgcolor: 'background.paper',

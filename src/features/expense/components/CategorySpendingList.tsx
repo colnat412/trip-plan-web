@@ -56,7 +56,7 @@ const CategorySpendingList = ({
       <AppCard
         sx={{
           p: { xs: 2, sm: 2.5 },
-          borderRadius: '16px',
+          borderRadius: 'var(--app-radius-card)',
           border: 1,
           borderColor: overLimitItems.length > 0 ? 'error.light' : 'divider',
           borderLeft: '4px solid',
@@ -99,7 +99,7 @@ const CategorySpendingList = ({
               sx={{
                 p: 0.75,
                 flexShrink: 0,
-                borderRadius: '10px',
+                borderRadius: 'var(--app-radius-control)',
                 bgcolor:
                   overLimitItems.length > 0 ? 'error.light' : 'action.hover',
                 color:
@@ -132,7 +132,7 @@ const CategorySpendingList = ({
                   sx={{
                     px: 0.8,
                     py: 0.2,
-                    borderRadius: '999px',
+                    borderRadius: 'var(--app-radius-pill)',
                     bgcolor: 'action.hover',
                     color: 'text.secondary',
                     fontSize: '11px',
@@ -197,7 +197,7 @@ const CategorySpendingList = ({
           <Box
             sx={{
               p: 1.5,
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-control)',
               bgcolor: (theme) => alpha(theme.palette.error.main, 0.08),
               border: 1,
               borderColor: (theme) => alpha(theme.palette.error.main, 0.25),
@@ -221,7 +221,7 @@ const CategorySpendingList = ({
               <Box
                 sx={{
                   p: 0.6,
-                  borderRadius: '8px',
+                  borderRadius: 'var(--app-radius-small)',
                   bgcolor: 'error.main',
                   color: '#ffffff',
                   display: 'inline-flex',
@@ -326,7 +326,7 @@ const CategorySpendingList = ({
                 key={item.category}
                 sx={{
                   p: 1.5,
-                  borderRadius: '12px',
+                  borderRadius: 'var(--app-radius-control)',
                   bgcolor: isOver
                     ? (theme) => alpha(theme.palette.error.main, 0.05)
                     : isWarning
@@ -526,7 +526,7 @@ const CategorySpendingList = ({
                       sx={{
                         width: '100%',
                         height: 5,
-                        borderRadius: '3px',
+                        borderRadius: 'var(--app-radius-detail)',
                         bgcolor: 'action.selected',
                         overflow: 'hidden',
                       }}
@@ -540,7 +540,7 @@ const CategorySpendingList = ({
                             : isWarning
                               ? 'warning.main'
                               : config.color,
-                          borderRadius: '3px',
+                          borderRadius: 'var(--app-radius-detail)',
                           transition: 'width 0.4s ease',
                         }}
                       />

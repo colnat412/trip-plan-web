@@ -184,7 +184,7 @@ const TripBudgetCard = ({
   return (
     <AppCard
       component="section"
-      sx={{ p: { xs: 2, md: 3 }, borderRadius: '20px' }}
+      sx={{ p: { xs: 2, md: 3 }, borderRadius: 'var(--app-radius-card)' }}
     >
       <Stack spacing={2.5}>
         {header}

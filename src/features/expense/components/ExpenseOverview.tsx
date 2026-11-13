@@ -47,6 +47,9 @@ import type {
   UpdateExpensePayload,
 } from '../types';
 
+// Tạm ẩn phần chi tiết ngân sách theo nhóm; bật lại khi cần.
+const SHOW_CATEGORY_BUDGET_DETAILS = false;
+
 const ExpenseOverview = () => {
   const router = useRouter();
   const t = useTranslations('expense');
@@ -353,7 +356,7 @@ const ExpenseOverview = () => {
             breakdown={summary.categoryBreakdown}
             currency={summary.currency || activeTrip.baseCurrency}
           />
-          {summary.categoryBreakdown.some(
+          {SHOW_CATEGORY_BUDGET_DETAILS && summary.categoryBreakdown.some(
             (item) => item.spentAmount > 0 || item.limitAmount > 0,
           ) && (
             <Box component="details">

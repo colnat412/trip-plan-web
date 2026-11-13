@@ -40,7 +40,7 @@ const ActiveTripBanner = ({
       aria-label={trip.name}
       sx={{
         width: '100%',
-        borderRadius: '24px',
+        borderRadius: 'var(--app-radius-panel)',
         overflow: 'hidden',
         flexShrink: 0,
       }}
@@ -178,7 +178,7 @@ const ActiveTripBanner = ({
             border: 1,
             borderTop: 0,
             borderColor: 'divider',
-            borderRadius: '0 0 24px 24px',
+            borderRadius: '0 0 var(--app-radius-panel) var(--app-radius-panel)',
           }}
         >
           <Typography

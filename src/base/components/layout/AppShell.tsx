@@ -52,8 +52,8 @@ const AppShell = ({
         height: '100dvh',
         overflow: 'hidden',
         minWidth: 0,
+        '--app-page-surface': `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).primary.main} 3%, ${(theme.vars?.palette ?? theme.palette).background.default})`,
         [theme.breakpoints.down(DESKTOP_NAV_BREAKPOINT)]: {
-          '--app-page-surface': `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).text.primary} calc(${(theme.vars?.palette ?? theme.palette).action.hoverOpacity} * 100%), ${(theme.vars?.palette ?? theme.palette).background.paper})`,
           '--app-bottom-navigation-height': '80px',
           '--app-bottom-navigation-space':
             'calc(var(--app-bottom-navigation-height) + 12px + env(safe-area-inset-bottom, 0px))',

@@ -2,12 +2,12 @@
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppLoadingState, AppButton, AppFloatingActionButton, AppCard, AppPageContainer, AppPageHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
+import { AppLoadingState, AppButton, AppFloatingActionButton, AppCard, AppPageContainer, AppPageHeader, AppSectionHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
 
 import FinanceNavigation from '@/features/expense/components/FinanceNavigation';
 
 import { useState } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
 import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useTranslations } from 'next-intl';
@@ -138,7 +138,7 @@ const SettlementOverview = () => {
     return (
       <AppPageContainer>
         <FinanceNavigation active="settlement" />
-        <AppCard sx={{ p: 5, textAlign: 'center', borderRadius: '20px' }}>
+        <AppCard sx={{ p: 5, textAlign: 'center', borderRadius: 'var(--app-radius-card)' }}>
           <Stack spacing={2} sx={{ alignItems: 'center' }}>
             <LuggageRoundedIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
             <Typography sx={{ fontSize: '18px', fontWeight: 700 }}>
@@ -183,16 +183,7 @@ const SettlementOverview = () => {
       />
 
       <Stack spacing={1.5}>
-        <Box>
-          <Typography
-            sx={{ fontSize: '16px', fontWeight: 700, color: 'text.primary' }}
-          >
-            {t('suggestedTitle')}
-          </Typography>
-          <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
-            {t('suggestedDesc')}
-          </Typography>
-        </Box>
+        <AppSectionHeader title={t('suggestedTitle')} subtitle={t('suggestedDesc')} />
 
         <SuggestedSettlementsList
           suggestedSettlements={summary?.suggestedSettlements ?? []}
@@ -208,13 +199,19 @@ const SettlementOverview = () => {
         currency={currency}
       />
 
-      <SettlementHistoryTable
-        settlements={summary?.settlementHistory ?? []}
-        canDelete={(item) =>
-          canManageRecord(item.createdBy) && (canManage || item.payerId === actorId)
-        }
-        onDelete={handleDeleteSettlement}
-      />
+      <Stack spacing={1.5} sx={{ width: '100%', minWidth: 0 }}>
+        <AppSectionHeader
+          title={t('historyTitle')}
+          count={summary?.settlementHistory.length ?? 0}
+        />
+        <SettlementHistoryTable
+          settlements={summary?.settlementHistory ?? []}
+          canDelete={(item) =>
+            canManageRecord(item.createdBy) && (canManage || item.payerId === actorId)
+          }
+          onDelete={handleDeleteSettlement}
+        />
+      </Stack>
 
       {dialogOpen && (
         <RecordSettlementDialog

@@ -25,7 +25,7 @@ const EmptyTripState = ({ onCreateTrip }: EmptyTripStateProps) => {
         textAlign: 'center',
         gap: 2.5,
         p: { xs: 4, md: 6 },
-        borderRadius: '20px',
+        borderRadius: 'var(--app-radius-card)',
         bgcolor: 'background.paper',
         border: 1,
         borderColor: 'divider',
@@ -38,7 +38,7 @@ const EmptyTripState = ({ onCreateTrip }: EmptyTripStateProps) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          borderRadius: '20px',
+          borderRadius: 'var(--app-radius-card)',
           bgcolor: 'primary.light',
           color: 'primary.contrastText',
         }}

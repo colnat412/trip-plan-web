@@ -86,7 +86,7 @@ const BudgetMetricsCards = ({
           sx={{
             p: { xs: 1.75, sm: 2 },
             height: '100%',
-            borderRadius: '16px',
+            borderRadius: 'var(--app-radius-card)',
             border: 1,
             borderColor: 'divider',
             ...cardBorderLeftStyle('primary.main'),
@@ -104,7 +104,7 @@ const BudgetMetricsCards = ({
               <Box
                 sx={{
                   p: 0.6,
-                  borderRadius: '8px',
+                  borderRadius: 'var(--app-radius-small)',
                   bgcolor: 'action.hover',
                   color: 'primary.main',
                   display: 'inline-flex',
@@ -182,7 +182,7 @@ const BudgetMetricsCards = ({
           sx={{
             p: { xs: 1.75, sm: 2 },
             height: '100%',
-            borderRadius: '16px',
+            borderRadius: 'var(--app-radius-card)',
             border: 1,
             borderColor: 'divider',
             ...cardBorderLeftStyle(
@@ -213,7 +213,7 @@ const BudgetMetricsCards = ({
                 <Box
                   sx={{
                     p: 0.6,
-                    borderRadius: '8px',
+                    borderRadius: 'var(--app-radius-small)',
                     bgcolor: 'action.hover',
                     color: isOverBudget
                       ? 'error.main'
@@ -245,7 +245,7 @@ const BudgetMetricsCards = ({
                   sx={{
                     px: 0.8,
                     py: 0.2,
-                    borderRadius: '999px',
+                    borderRadius: 'var(--app-radius-pill)',
                     bgcolor: isOverBudget
                       ? 'error.light'
                       : isWarning
@@ -329,7 +329,7 @@ const BudgetMetricsCards = ({
           sx={{
             p: { xs: 1.75, sm: 2 },
             height: '100%',
-            borderRadius: '16px',
+            borderRadius: 'var(--app-radius-card)',
             border: 1,
             borderColor: 'divider',
             ...cardBorderLeftStyle(`${remainingTone}.main`),
@@ -347,7 +347,7 @@ const BudgetMetricsCards = ({
               <Box
                 sx={{
                   p: 0.6,
-                  borderRadius: '8px',
+                  borderRadius: 'var(--app-radius-small)',
                   bgcolor: 'action.hover',
                   color: `${remainingTone}.main`,
                   display: 'inline-flex',

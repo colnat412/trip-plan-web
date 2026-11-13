@@ -77,14 +77,14 @@ const ExpenseDetailDialog = ({
         </>
       }
     >
-      <Stack spacing={2.5} sx={{ minWidth: 0 }}>
+      <Stack spacing={2} sx={{ minWidth: 0 }}>
         <Stack
-          spacing={1.5}
+          spacing={1}
           sx={{
-            p: 2,
+            p: 1.5,
             minWidth: 0,
-            borderRadius: '14px',
-            bgcolor: 'action.hover',
+            borderRadius: 'var(--app-radius-card)',
+            bgcolor: 'background.paper',
             border: 1,
             borderColor: 'divider',
           }}
@@ -102,7 +102,7 @@ const ExpenseDetailDialog = ({
             <Stack spacing={0.5} sx={{ flex: '1 1 160px', minWidth: 0 }}>
               <Typography
                 sx={{
-                  fontSize: '18px',
+                  fontSize: '16px',
                   fontWeight: 700,
                   overflowWrap: 'anywhere',
                 }}
@@ -122,7 +122,7 @@ const ExpenseDetailDialog = ({
               justifyContent: 'space-between',
               flexWrap: 'wrap',
               gap: 1,
-              pt: 1.5,
+              pt: 1,
               borderTop: 1,
               borderColor: 'divider',
               minWidth: 0,
@@ -131,7 +131,7 @@ const ExpenseDetailDialog = ({
             <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
               {t('table.colAmount')}
             </Typography>
-            <AppMetricValue sx={{ fontSize: '22px', whiteSpace: 'nowrap' }}>
+            <AppMetricValue sx={{ fontSize: '24px', textAlign: 'right' }}>
               {formatCurrency(expense.amount, expense.currency, locale)}
             </AppMetricValue>
           </Box>
@@ -143,11 +143,13 @@ const ExpenseDetailDialog = ({
             sx={{
               border: 1,
               borderColor: 'divider',
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-card)',
+              overflow: 'hidden',
               minWidth: 0,
             }}
           >
             <AppFinanceRow
+              compact
               icon={
                 <Avatar
                   src={expense.payerAvatarUrl || undefined}
@@ -186,7 +188,8 @@ const ExpenseDetailDialog = ({
             sx={{
               border: 1,
               borderColor: 'divider',
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-card)',
+              overflow: 'hidden',
               minWidth: 0,
             }}
           >
@@ -198,11 +201,12 @@ const ExpenseDetailDialog = ({
                     : 0;
                 return (
                   <AppFinanceRow
+                    compact
                     key={split.id}
                     icon={
                       <Avatar
                         src={split.userAvatarUrl || undefined}
-                        sx={{ width: 32, height: 32 }}
+                        sx={{ width: 36, height: 36 }}
                       >
                         {getUserInitials(split.userName || '')}
                       </Avatar>
@@ -219,9 +223,13 @@ const ExpenseDetailDialog = ({
                     )}
                     amountCaption={
                       <Stack
-                        spacing={0.5}
+                        direction="row"
+                        spacing={0.75}
+                        useFlexGap
                         sx={{
-                          alignItems: 'flex-end',
+                          alignItems: 'center',
+                          justifyContent: 'flex-end',
+                          flexWrap: 'wrap',
                           minWidth: 0,
                           maxWidth: '100%',
                         }}
@@ -265,7 +273,7 @@ const ExpenseDetailDialog = ({
             <Typography
               sx={{
                 p: 1.5,
-                borderRadius: '10px',
+                borderRadius: 'var(--app-radius-control)',
                 bgcolor: 'action.hover',
                 fontSize: '13px',
                 color: 'text.secondary',

@@ -159,8 +159,7 @@ const AppSelect = ({
               ...menu.MenuProps.slotProps.paper(ownerState),
               sx: [
                 {
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 28px rgba(0,0,0,0.12)',
+                  borderRadius: 'var(--app-radius-card)',
                   border: '1px solid',
                   borderColor: 'divider',
                   minWidth: 150,
@@ -173,7 +172,7 @@ const AppSelect = ({
         sx={{
           height: 38,
           minHeight: '38px !important',
-          borderRadius: '10px',
+          borderRadius: 'var(--app-radius-control)',
           bgcolor: isFiltered ? 'action.selected' : 'background.paper',
           border: '1px solid',
           borderColor: isFiltered ? 'primary.main' : 'divider',
@@ -285,8 +284,7 @@ const AppSelect = ({
               ...menu.MenuProps.slotProps.paper(ownerState),
               sx: [
                 {
-                  borderRadius: '10px',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                  borderRadius: 'var(--app-radius-card)',
                   border: '1px solid',
                   borderColor: 'divider',
                   minWidth: 120,
@@ -299,7 +297,7 @@ const AppSelect = ({
         sx={{
           height: 32,
           minHeight: '32px !important',
-          borderRadius: '8px',
+          borderRadius: 'var(--app-radius-small)',
           bgcolor: 'background.paper',
           fontSize: '12px',
           fontWeight: 600,

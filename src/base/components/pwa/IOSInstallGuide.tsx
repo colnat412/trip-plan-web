@@ -18,7 +18,7 @@ const IOSInstallGuide = () => {
             <Box aria-hidden="true" sx={{ width: 24, height: 24, flexShrink: 0, borderRadius: '50%', bgcolor: 'primary.main', color: 'primary.contrastText', textAlign: 'center', fontSize: 13, lineHeight: '24px', fontWeight: 700 }}>{index + 1}</Box>
             <Typography sx={{ fontSize: 14, fontWeight: 600, overflowWrap: 'anywhere' }}>{t(`guide.${step}.title`)}</Typography>
           </Stack>
-          <Box sx={{ border: 1, borderColor: 'divider', borderRadius: '16px', overflow: 'hidden', bgcolor: 'background.paper', color: 'primary.main' }}>
+          <Box sx={{ border: 1, borderColor: 'divider', borderRadius: 'var(--app-radius-card)', overflow: 'hidden', bgcolor: 'background.paper', color: 'primary.main' }}>
             <SafariInstallIllustration step={step} />
           </Box>
           <Typography sx={{ mt: 0.75, fontSize: 13, color: 'text.secondary', overflowWrap: 'anywhere' }}>{t(`guide.${step}.hint`)}</Typography>

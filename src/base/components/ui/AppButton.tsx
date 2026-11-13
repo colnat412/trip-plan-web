@@ -6,6 +6,7 @@ import AppLoadingIndicator from "./AppLoadingIndicator";
 
 import type { AnchorHTMLAttributes } from "react";
 import { alpha, type Theme } from "@mui/material/styles";
+import { interactionTransition } from '@/base/theme/interactions';
 import type { SxProps } from "@mui/system";
 
 export type AppButtonIntent =
@@ -68,10 +69,11 @@ function getButtonStyles(
     const palette = theme.vars?.palette ?? theme.palette;
     const primaryBackground = getPrimaryBackground(theme);
     const commonStyles = {
+      ...interactionTransition(theme, ['background-color', 'border-color', 'box-shadow', 'color', 'filter']),
       flexShrink: 0,
       whiteSpace: "nowrap",
       maxWidth: "100%",
-      ...(round && { borderRadius: "999px" }),
+      ...(round && { borderRadius: "var(--app-radius-pill)" }),
       "&.Mui-focusVisible": {
         outline: `2px solid ${palette.primary.main}`,
         outlineOffset: "3px",
@@ -223,7 +225,7 @@ function getMobileIconLabelStyles(intent: AppButtonIntent): SxProps<Theme> {
         justifyContent: "flex-start",
         gap: 1,
         border: 0,
-        borderRadius: "12px",
+        borderRadius: "var(--app-radius-control)",
         background: "transparent",
         color: palette.text.primary,
         fontSize: "12px",

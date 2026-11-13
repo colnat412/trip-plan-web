@@ -576,7 +576,7 @@
       "OTHER": "Khác"
     },
     "dialog": {
-      "detailTitle": "Chi Tiết Khoản Chi",
+      "detailTitle": "Chi tiết khoản chi",
       "paidBy": "Người thanh toán",
       "paidFullAmount": "Đã thanh toán {amount}",
       "splitBreakdown": "Danh sách chia tiền ({count})",
@@ -797,6 +797,13 @@
     "suggestedEmpty": "Không còn khoản nào cần trả.",
     "settleBtn": "Ghi nhận đã trả",
     "memberBalancesTitle": "Chi tiết từng người",
+    "balanceFilters": {
+      "label": "Lọc theo số dư thành viên",
+      "all": "Tất cả",
+      "owes": "Đang có nợ",
+      "owed": "Chờ nhận tiền",
+      "empty": "Không có thành viên phù hợp"
+    },
     "member": "Thành viên",
     "defaultMember": "Thành viên",
     "paid": "Đã chi",
@@ -895,6 +902,15 @@
     "completedActivities": "Đã hoàn thành",
     "totalEstimatedCost": "Chi phí dự kiến",
     "dayTab": "Ngày {day}",
+    "shortWeekdays": {
+      "0": "CN",
+      "1": "T2",
+      "2": "T3",
+      "3": "T4",
+      "4": "T5",
+      "5": "T6",
+      "6": "T7"
+    },
     "emptyActivities": "Chưa có hoạt động nào trong ngày này",
     "emptyActivitiesDesc": "Hãy lên lịch các điểm tham quan, ăn uống hoặc di chuyển để chuyến đi thật trọn vẹn!",
     "addFirstActivity": "Thêm hoạt động đầu tiên",
@@ -1240,7 +1256,7 @@
     "openTrip": "Mở chuyến đi",
     "unavailable": "Mẫu không tồn tại hoặc đã được gỡ.",
     "publish": "Đăng mẫu",
-    "confirmPublish": "Xác nhận xuất bản",
+    "confirmPublish": "Đăng",
     "preview": "Xem trước nội dung công khai",
     "edit": "Chỉnh sửa",
     "published": "Đã xuất bản mẫu. Bạn có thể tìm trong thư viện hoặc quản lý tại Mẫu của tôi.",

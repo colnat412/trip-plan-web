@@ -1,4 +1,5 @@
 import { CORE_SERVICE_URL } from '@/base/api/server/backend';
+import { hasSameRequestOrigin } from '@/base/api/server/request-origin';
 import 'server-only';
 import axios from 'axios';
 import { NextResponse, type NextRequest } from 'next/server';
@@ -16,7 +17,7 @@ export async function proxyTemplate(
     );
   if (
     request.method !== 'GET' &&
-    request.headers.get('origin') !== request.nextUrl.origin
+    !hasSameRequestOrigin(request)
   )
     return NextResponse.json(
       { status: 403, message: 'Invalid origin', data: null },

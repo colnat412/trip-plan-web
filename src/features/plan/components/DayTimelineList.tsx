@@ -67,7 +67,8 @@ const DayTimelineList = ({
         width: '100%',
         minWidth: 0,
         p: 0,
-        borderRadius: '20px',
+        borderRadius: 'var(--app-radius-card)',
+        overflow: 'visible',
       }}
       contentSx={{
         display: 'flex',
@@ -76,7 +77,14 @@ const DayTimelineList = ({
         minWidth: 0,
       }}
     >
-      <Stack spacing={0}>
+      <Stack
+        spacing={0}
+        sx={{
+          // Keep the 28px marker; its center moves 6px left on mobile.
+          '--app-timeline-rail-width': { xs: '16px', sm: '28px' },
+          '--app-timeline-gap': { xs: '10px', sm: '8px' },
+        }}
+      >
         {activities.map((activity, idx) => {
           const nextActivity = activities[idx + 1];
           const hasLocationCurrent = Boolean(

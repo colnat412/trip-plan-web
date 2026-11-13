@@ -25,7 +25,7 @@ const LoginBrandPanel = () => {
         minHeight: { xs: '240px', sm: '280px', md: '100svh' },
         gap: { xs: 3, md: 12 },
         p: { xs: 3, sm: 4, md: 5, lg: 7 },
-        borderRadius: { xs: 0, md: '0 32px 32px 0' },
+        borderRadius: { xs: 0, md: '0 var(--app-radius-dialog) var(--app-radius-dialog) 0' },
         overflow: 'hidden',
         color: 'common.white',
         bgcolor: 'primary.dark',

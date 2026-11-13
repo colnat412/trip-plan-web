@@ -90,7 +90,7 @@ const AppDialog = ({
         },
         paper: {
           sx: {
-            borderRadius: fullScreen ? 0 : '20px',
+            borderRadius: fullScreen ? 0 : 'var(--app-radius-dialog)',
             p: fullScreen || isSheet ? 0 : { xs: 1, sm: 2 },
             ...(!fullScreen && !isSheet && {
               [theme.breakpoints.down('sm')]: {
@@ -99,7 +99,7 @@ const AppDialog = ({
                 width: fullWidth ? '100%' : 'auto',
                 maxWidth: '100%',
                 maxHeight: 'min(90dvh, calc(100dvh - 32px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)))',
-                borderRadius: '24px',
+                borderRadius: 'var(--app-radius-dialog)',
                 minWidth: 0,
               },
             }),
@@ -110,7 +110,7 @@ const AppDialog = ({
               maxWidth: '100%',
               height: 'auto',
               maxHeight: 'calc(100dvh - max(48px, env(safe-area-inset-top, 0px)))',
-              borderRadius: '24px 24px 0 0',
+              borderRadius: 'var(--app-radius-dialog) var(--app-radius-dialog) 0 0',
               pb: 'env(safe-area-inset-bottom, 0px)',
               pl: 'env(safe-area-inset-left, 0px)',
               pr: 'env(safe-area-inset-right, 0px)',
@@ -149,7 +149,7 @@ const AppDialog = ({
     >
       {isSheet && showSheetHandle && (
         <Box aria-hidden="true" sx={{ display: 'flex', justifyContent: 'center', pt: 1.5, flexShrink: 0 }}>
-          <Box sx={{ width: 36, height: 4, borderRadius: '999px', bgcolor: 'text.disabled' }} />
+          <Box sx={{ width: 36, height: 4, borderRadius: 'var(--app-radius-pill)', bgcolor: 'text.disabled' }} />
         </Box>
       )}
       <DialogTitle
@@ -206,7 +206,7 @@ const AppDialog = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                borderRadius: '12px',
+                borderRadius: 'var(--app-radius-control)',
                 bgcolor: 'primary.main',
                 color: 'primary.contrastText',
                 flexShrink: 0,

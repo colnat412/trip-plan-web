@@ -41,7 +41,7 @@ const AppAmountRatio = ({
             alignSelf: 'flex-start',
             px: 1,
             py: 0.5,
-            borderRadius: '8px',
+            borderRadius: 'var(--app-radius-small)',
             borderLeft: '3px solid',
             borderColor: palette[tone].main,
             bgcolor: `color-mix(in srgb, ${palette[tone].main} 8%, ${palette.background.paper})`,

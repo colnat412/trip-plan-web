@@ -115,7 +115,7 @@ const AppPageHeader = ({
                   sx={{
                     px: 1,
                     py: 0.2,
-                    borderRadius: '999px',
+                    borderRadius: 'var(--app-radius-pill)',
                     bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
                     border: 0,
                     fontSize: '12px',

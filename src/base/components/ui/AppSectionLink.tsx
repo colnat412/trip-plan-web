@@ -29,7 +29,7 @@ const AppSectionLink = ({ href, children, label }: AppSectionLinkProps) => (
       fontSize: '13px',
       fontWeight: 600,
       overflowWrap: 'anywhere',
-      borderRadius: '8px',
+      borderRadius: 'var(--app-radius-small)',
       textDecoration: 'none',
       '&:hover, &:active, &:focus': { textDecoration: 'none' },
       '&:focus-visible, &.Mui-focusVisible': {

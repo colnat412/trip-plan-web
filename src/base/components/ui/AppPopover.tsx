@@ -41,10 +41,9 @@ const AppPopover = ({
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          borderRadius: '16px',
+          borderRadius: 'var(--app-radius-card)',
           border: 1,
           borderColor: 'divider',
-          boxShadow: 4,
         },
       },
     }}

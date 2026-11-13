@@ -27,7 +27,7 @@ const SuggestedSettlementsList = ({
       <AppCard
         sx={{
           p: 3,
-          borderRadius: '20px',
+          borderRadius: 'var(--app-radius-card)',
           border: '1px solid',
           borderColor: 'divider',
           bgcolor: 'background.paper',

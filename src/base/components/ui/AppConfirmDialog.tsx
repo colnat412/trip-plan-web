@@ -188,7 +188,7 @@ const AppConfirmDialog = ({
       slotProps={{
         paper: {
           sx: {
-            borderRadius: '20px',
+            borderRadius: 'var(--app-radius-dialog)',
             p: { xs: 1.5, sm: 2.5 },
             textAlign: 'center',
           },

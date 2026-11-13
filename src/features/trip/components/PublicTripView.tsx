@@ -164,7 +164,7 @@ const PublicTripView = ({
               <Alert
                 severity="info"
                 icon={<HourglassEmptyRoundedIcon />}
-                sx={{ borderRadius: '16px' }}
+                sx={{ borderRadius: 'var(--app-radius-card)' }}
               >
                 {t('joinPendingNotice')}
               </Alert>
@@ -174,7 +174,7 @@ const PublicTripView = ({
               variant="outlined"
               sx={{
                 p: { xs: 2.5, md: 3.5 },
-                borderRadius: '20px',
+                borderRadius: 'var(--app-radius-card)',
                 bgcolor: 'background.paper',
                 boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
               }}
@@ -353,7 +353,7 @@ const PublicTripView = ({
                 />
               </>
             ) : (
-              <Card sx={{ p: 4, textAlign: 'center', borderRadius: '16px' }}>
+              <Card sx={{ p: 4, textAlign: 'center', borderRadius: 'var(--app-radius-card)' }}>
                 <Typography sx={{ color: 'text.secondary' }}>
                   {t('noActivitiesNotice')}
                 </Typography>

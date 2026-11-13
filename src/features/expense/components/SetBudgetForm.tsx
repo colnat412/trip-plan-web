@@ -160,7 +160,7 @@ const SetBudgetForm = ({
         <Box
           sx={{
             p: 2,
-            borderRadius: '12px',
+            borderRadius: 'var(--app-radius-control)',
             bgcolor: (theme) => {
               return isOverAllocated
                 ? alpha(theme.palette.error.main, 0.08)

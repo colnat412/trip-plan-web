@@ -204,7 +204,7 @@ function FilterPopoverForm<T>({
               '&::-webkit-scrollbar': { width: '4px' },
               '&::-webkit-scrollbar-thumb': {
                 bgcolor: 'divider',
-                borderRadius: '4px',
+                borderRadius: 'var(--app-radius-detail)',
               },
             }}
           >
@@ -220,7 +220,7 @@ function FilterPopoverForm<T>({
                     gap: 1,
                     py: 0.5,
                     px: 0.75,
-                    borderRadius: '8px',
+                    borderRadius: 'var(--app-radius-small)',
                     cursor: 'pointer',
                     userSelect: 'none',
                     bgcolor: isChecked ? 'action.hover' : 'transparent',
@@ -335,12 +335,9 @@ const AppColumnFilterPopover = <T,>({
           sx: {
             p: 2,
             width: 280,
-            borderRadius: '14px',
+            borderRadius: 'var(--app-radius-card)',
             border: 1,
             borderColor: 'divider',
-            bgcolor: 'background.paper',
-            boxShadow:
-              '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
           },
         },
       }}

@@ -123,7 +123,7 @@ const OptimizeRouteDialog = ({
             flexDirection: { xs: 'column', sm: 'row' },
             gap: 2,
             p: 2,
-            borderRadius: '16px',
+            borderRadius: 'var(--app-radius-card)',
             bgcolor: 'action.hover',
           }}
         >
@@ -151,7 +151,7 @@ const OptimizeRouteDialog = ({
               value={startIndex}
               label={t('startPoint')}
               onChange={(e) => setStartIndex(Number(e.target.value))}
-              sx={{ borderRadius: '10px' }}
+              sx={{ borderRadius: 'var(--app-radius-control)' }}
             >
               {locActivities.map((act, idx) => (
                 <MenuItem key={act.id} value={idx}>
@@ -165,7 +165,7 @@ const OptimizeRouteDialog = ({
         <Card
           sx={{
             p: 2.5,
-            borderRadius: '18px',
+            borderRadius: 'var(--app-radius-card)',
             border: 1,
             borderColor: result.isImprovement
               ? alpha(theme.palette.success.main, 0.4)
@@ -251,7 +251,7 @@ const OptimizeRouteDialog = ({
               sx={{
                 px: 2,
                 py: 1,
-                borderRadius: '12px',
+                borderRadius: 'var(--app-radius-control)',
                 bgcolor: result.isImprovement
                   ? alpha(theme.palette.success.main, 0.15)
                   : alpha(theme.palette.info.main, 0.1),
@@ -327,7 +327,7 @@ const OptimizeRouteDialog = ({
                       alignItems: 'center',
                       gap: 1.5,
                       p: 1.5,
-                      borderRadius: '14px',
+                      borderRadius: 'var(--app-radius-card)',
                       border: 1,
                       borderColor: 'divider',
                       bgcolor: 'background.paper',
@@ -426,7 +426,7 @@ const OptimizeRouteDialog = ({
                           gap: 0.75,
                           px: 1.25,
                           py: 0.25,
-                          borderRadius: '20px',
+                          borderRadius: 'var(--app-radius-card)',
                           bgcolor: 'action.hover',
                           border: 1,
                           borderColor: 'divider',
@@ -504,7 +504,7 @@ const OptimizeRouteDialog = ({
         sx={{
           textTransform: 'none',
           fontWeight: 700,
-          borderRadius: '12px',
+          borderRadius: 'var(--app-radius-control)',
           px: 2.5,
         }}
       >
@@ -539,7 +539,7 @@ const OptimizeRouteDialog = ({
       slotProps={{
         paper: {
           sx: {
-            borderRadius: '24px',
+            borderRadius: 'var(--app-radius-panel)',
             bgcolor: 'background.paper',
             backgroundImage: 'none',
             overflow: 'hidden',
@@ -563,7 +563,7 @@ const OptimizeRouteDialog = ({
             sx={{
               width: 40,
               height: 40,
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-control)',
               bgcolor: alpha(theme.palette.primary.main, 0.12),
               color: 'primary.main',
               display: 'flex',

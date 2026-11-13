@@ -33,7 +33,7 @@ const TemplateCard = ({
         minWidth: 0,
         height: '100%',
         p: 0,
-        borderRadius: '18px',
+        borderRadius: 'var(--app-radius-card)',
         overflow: 'hidden',
         cursor: 'pointer',
         WebkitTapHighlightColor: 'transparent',
@@ -54,7 +54,7 @@ const TemplateCard = ({
     >
       <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', gap: 1, p: 1.25 }}>
         <Typography component="span" sx={(theme) => ({
-          px: 1.25, py: 0.5, borderRadius: '10px', fontSize: '12px', fontWeight: 700,
+          px: 1.25, py: 0.5, borderRadius: 'var(--app-radius-control)', fontSize: '12px', fontWeight: 700,
           color: theme.palette.common.white,
           bgcolor: alpha(theme.palette.common.black, 0.56),
         })}>

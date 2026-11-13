@@ -8,23 +8,26 @@ import { AppButton } from '@/base/components/ui';
 import AppTripBar from './AppTripBar';
 import AppDesktopNavigation from './AppDesktopNavigation';
 import SidebarUser from './sidebar/SidebarUser';
+import { glassSurface } from '@/base/theme/surfaces';
 
 const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
   const t = useTranslations('navigation');
   return (
     <Box
       component="header"
-      sx={{
+      sx={(theme) => ({
+        ...glassSurface(theme, 'navigation'),
         flexShrink: 0,
         display: 'flex',
         justifyContent: 'center',
-        bgcolor: 'background.paper',
+        border: 0,
+        boxShadow: 'none',
         borderBottom: 1,
         borderColor: 'divider',
         pt: 'env(safe-area-inset-top, 0px)',
         pl: 'env(safe-area-inset-left, 0px)',
         pr: 'env(safe-area-inset-right, 0px)',
-      }}
+      })}
     >
       <Box
         sx={{
@@ -57,7 +60,7 @@ const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
               minHeight: 44,
               alignItems: 'center',
               flexShrink: 0,
-              borderRadius: '12px',
+              borderRadius: 'var(--app-radius-control)',
               '&:focus-visible': {
                 outline: '2px solid',
                 outlineColor: 'primary.main',

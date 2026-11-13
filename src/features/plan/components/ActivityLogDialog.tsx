@@ -158,7 +158,7 @@ const ActivityLogDialog = ({
             sx={{
               width: 56,
               height: 56,
-              borderRadius: '16px',
+              borderRadius: 'var(--app-radius-card)',
               bgcolor: 'action.hover',
               display: 'flex',
               alignItems: 'center',
@@ -194,7 +194,7 @@ const ActivityLogDialog = ({
             '&::-webkit-scrollbar-track': { bgcolor: 'transparent' },
             '&::-webkit-scrollbar-thumb': {
               bgcolor: 'divider',
-              borderRadius: '3px',
+              borderRadius: 'var(--app-radius-detail)',
               '&:hover': { bgcolor: 'text.disabled' },
             },
           }}
@@ -209,7 +209,7 @@ const ActivityLogDialog = ({
                   width: '100%',
                   boxSizing: 'border-box',
                   p: 2,
-                  borderRadius: '16px',
+                  borderRadius: 'var(--app-radius-card)',
                   bgcolor: 'background.paper',
                   border: '1px solid',
                   borderColor: 'divider',
@@ -304,7 +304,7 @@ const ActivityLogDialog = ({
                           height: 24,
                           fontSize: '11px',
                           fontWeight: 700,
-                          borderRadius: '8px',
+                          borderRadius: 'var(--app-radius-small)',
                           bgcolor: actionCfg.bg,
                           color: actionCfg.color,
                           border: `1px solid ${actionCfg.borderColor}`,
