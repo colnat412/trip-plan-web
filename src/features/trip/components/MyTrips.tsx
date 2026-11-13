@@ -99,7 +99,7 @@ const MyTrips = () => {
   const handleSelectTrip = useCallback(
     (trip: Trip) => {
       selectTrip(trip.id);
-      router.push('/overview');
+      router.push(`/plan?tripId=${encodeURIComponent(String(trip.id))}`);
     },
     [selectTrip, router],
   );

@@ -2,7 +2,6 @@
 
 import React, { useMemo, useState } from 'react';
 import { Box, Stack, Typography, Divider } from '@mui/material';
-import { alpha } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppLinearProgress, AppNumberInput } from '@/base/components/ui';
 import { TRIP_CATEGORIES } from '@/base/constants';
@@ -142,70 +141,41 @@ const SetBudgetForm = ({
       noValidate
       sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, flexShrink: 0, '& .MuiInputBase-input': { fontSize: { xs: '16px', sm: '14px' } } }}
     >
-      <AppNumberInput
-        label={tDialog('totalBudgetLabel')}
-        placeholder={tDialog('totalBudgetPlaceholder')}
-        currencySuffix={tripCurrency}
-        value={totalBudget}
-        onChange={(e) => {
-          setTotalBudget(e.target.value);
-          if (error) setError(undefined);
-        }}
-        error={Boolean(error)}
-        helperText={error}
-        disabled={isLoading}
-      />
-
-      {numericTotalBudget > 0 && (
-        <Box
-          sx={{
-            p: 2,
-            borderRadius: 'var(--app-radius-control)',
-            bgcolor: (theme) => {
-              return isOverAllocated
-                ? alpha(theme.palette.error.main, 0.08)
-                : (theme.vars?.palette ?? theme.palette).action.hover;
-            },
-            border: 1,
-            borderColor: isOverAllocated ? 'error.main' : 'divider',
-            transition: 'all 0.2s ease',
+      <Stack spacing={1} sx={{ minWidth: 0 }}>
+        <AppNumberInput
+          label={tDialog('totalBudgetLabel')}
+          placeholder={tDialog('totalBudgetPlaceholder')}
+          currencySuffix={tripCurrency}
+          value={totalBudget}
+          onChange={(e) => {
+            setTotalBudget(e.target.value);
+            if (error) setError(undefined);
           }}
-        >
-          <Stack spacing={1}>
-            <Stack
-              spacing={0.5}
-              sx={{ minWidth: 0 }}
-            >
-              <Typography
-                sx={{
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  color: 'text.secondary',
-                }}
-              >
+          error={Boolean(error)}
+          helperText={error}
+          disabled={isLoading}
+        />
+
+        {numericTotalBudget > 0 && (
+          <Stack spacing={0.75} sx={{ minWidth: 0 }}>
+            <Box sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between',
+              flexWrap: 'wrap', columnGap: 1, rowGap: 0.25, minWidth: 0 }}>
+              <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
                 {tDialog('allocationStatus')}
               </Typography>
-              <Typography
-                sx={{
-                  fontSize: { xs: '15px', sm: '16px' },
-                  fontWeight: 800,
-                  overflowWrap: 'anywhere',
-                  fontVariantNumeric: 'tabular-nums',
-                  color: isOverAllocated ? 'error.main' : 'success.main',
-                }}
-              >
+              <Typography sx={{ fontSize: '12px', fontWeight: 600,
+                fontVariantNumeric: 'tabular-nums', overflowWrap: 'anywhere',
+                color: isOverAllocated ? 'error.main' : remainingToAllocate === 0 ? 'success.main' : 'primary.main' }}>
                 {formatCurrency(allocatedTotal, tripCurrency)} /{' '}
                 {formatCurrency(numericTotalBudget, tripCurrency)}
               </Typography>
-            </Stack>
-
+            </Box>
             <AppLinearProgress
               value={(allocatedTotal / numericTotalBudget) * 100}
-              height={6}
-              barColor={isOverAllocated ? 'error.main' : 'success.main'}
+              height={4}
+              barColor={isOverAllocated ? 'error.main' : remainingToAllocate === 0 ? 'success.main' : 'primary.main'}
               aria-label={tDialog('allocationStatus')}
             />
-
             {isOverAllocated ? (
               <Stack
                 direction={{ xs: 'column', sm: 'row' }}
@@ -264,8 +234,8 @@ const SetBudgetForm = ({
               </Typography>
             )}
           </Stack>
-        </Box>
-      )}
+        )}
+      </Stack>
 
       <Divider />
 
@@ -290,8 +260,9 @@ const SetBudgetForm = ({
           <Box
             key={cat.key}
             sx={{
-              flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)' },
-              minWidth: 0,
+              flex: '1 1 calc(50% - 8px)',
+              // Two columns when space permits; wrap on very narrow sheets.
+              minWidth: 'min(148px, 100%)',
             }}
           >
             <AppNumberInput
