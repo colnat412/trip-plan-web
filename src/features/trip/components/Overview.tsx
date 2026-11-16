@@ -8,7 +8,6 @@ import { useCurrentTime } from '@/base/hooks';
 
 import { useTripContext } from '../context/TripContext';
 import TemplateLibrary from '@/features/plan-template/components/TemplateLibrary';
-import QuickCreate from '@/features/plan-template/components/QuickCreate';
 import ActiveTripBanner from './overview/ActiveTripBanner';
 import OverviewDetails from './overview/OverviewDetails';
 import EmptyTripState from './overview/EmptyTripState';
@@ -36,7 +35,6 @@ const Overview = () => {
     return (
       <AppPageContainer>
         <TemplateLibrary compact />
-        <QuickCreate />
         <EmptyTripState onCreateTrip={openCreateTrip} />
       </AppPageContainer>
     );

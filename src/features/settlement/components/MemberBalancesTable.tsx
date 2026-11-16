@@ -35,7 +35,8 @@ const MemberBalancesTable = ({
     : memberBalances.filter((member) => member.status === balanceFilter);
 
   return (
-    <Stack spacing={1.5} sx={{ width: '100%', minWidth: 0 }}>
+    <AppCard component="section" sx={{ p: { xs: 2.5, sm: 3 }, minWidth: 0 }}>
+    <Stack spacing={2} sx={{ width: '100%', minWidth: 0 }}>
       <AppSectionHeader title={t('memberBalancesTitle')} count={memberBalances.length} />
       <Box role="group" aria-label={t('balanceFilters.label')} sx={{ minWidth: 0 }}>
         <AppFilterChipGroup<BalanceStatus | 'ALL'>
@@ -50,7 +51,7 @@ const MemberBalancesTable = ({
           ]}
         />
       </Box>
-      <AppCard sx={{ p: 0, width: '100%', minWidth: 0, overflow: 'hidden' }}>
+      <Box sx={{ width: '100%', minWidth: 0, overflow: 'hidden' }}>
         {visibleMembers.length === 0 ? (
           <Box sx={{ p: 2.5 }}>
             <AppEmptyState title={t('balanceFilters.empty')} compact />
@@ -298,8 +299,9 @@ const MemberBalancesTable = ({
             </TableContainer>
           </>
         )}
-      </AppCard>
+      </Box>
     </Stack>
+    </AppCard>
   );
 };
 

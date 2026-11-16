@@ -13,9 +13,10 @@ interface CategorySpendingChartProps {
   breakdown: CategoryBreakdown[];
   currency: string;
   totalBudget: number;
+  compact?: boolean;
 }
 
-const CategorySpendingChart = ({ breakdown, currency, totalBudget }: CategorySpendingChartProps) => {
+const CategorySpendingChart = ({ breakdown, currency, totalBudget, compact = false }: CategorySpendingChartProps) => {
   const locale = useLocale();
   const t = useTranslations('expense.spendingChart');
   const tCategories = useTranslations('expense.categories');
@@ -56,7 +57,7 @@ const CategorySpendingChart = ({ breakdown, currency, totalBudget }: CategorySpe
         {categories.length === 0 ? (
           <AppEmptyState title={t('empty')} icon={<DonutLargeRoundedIcon />} />
         ) : (
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: 'center' }}>
+          <Stack direction={compact ? 'column' : { xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: 'center' }}>
             <Box sx={{ width: { xs: 208, sm: 240 }, maxWidth: '100%', flexShrink: 0, color: 'text.primary' }}>
               <svg viewBox="0 0 240 240" width="100%" role="img"
                 aria-label={centerSummary} style={{ display: 'block', fontFamily: 'inherit' }}>

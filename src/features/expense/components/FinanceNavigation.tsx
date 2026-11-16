@@ -1,9 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppButton } from '@/base/components/ui';
+import AppRouteTabs from '@/base/components/ui/AppRouteTabs';
 
 const destinations = [
   { id: 'expenses', href: '/expenses' },
@@ -15,40 +13,11 @@ export default function FinanceNavigation({ active }: {
 }) {
   const t = useTranslations('finance');
   return (
-    <Box
-      component="nav"
-      aria-label={t('navigation')}
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-        width: '100%',
-        minWidth: 0,
-        gap: 0.5,
-        p: 0.5,
-        bgcolor: 'action.hover',
-        borderRadius: 'var(--app-radius-control)',
-      }}
-    >
-      {destinations.map((item) => (
-        <AppButton
-          key={item.id}
-          component={Link}
-          href={item.href}
-          scroll={false}
-          intent="text"
-          selected={active === item.id}
-          aria-current={active === item.id ? 'page' : undefined}
-          wrapLabel
-          sx={{
-            minWidth: 0,
-            minHeight: 44,
-            borderRadius: 'var(--app-radius-small)',
-            ...(active !== item.id && { color: 'text.secondary' }),
-          }}
-        >
-          {t(item.id)}
-        </AppButton>
-      ))}
-    </Box>
+    <AppRouteTabs
+      pill
+      label={t('navigation')}
+      active={active}
+      items={destinations.map((item) => ({ ...item, label: t(item.id) }))}
+    />
   );
 }

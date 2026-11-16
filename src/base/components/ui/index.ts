@@ -123,6 +123,8 @@ export { default as AppIconText } from './AppIconText';
 export type { AppIconTextProps } from './AppIconText';
 
 export { default as AppFloatingActionButton } from './AppFloatingActionButton';
+export { default as AppBackHeader } from './AppBackHeader';
+export type { AppBackHeaderProps } from './AppBackHeader';
 export type { AppFloatingActionButtonProps } from './AppFloatingActionButton';
 
 export { default as AppInteractiveMap } from './AppInteractiveMap';

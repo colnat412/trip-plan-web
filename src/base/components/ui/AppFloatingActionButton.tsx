@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { Box, Tooltip } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import AppButton from './AppButton';
+import { useFinanceStyle } from '@/base/providers/FinanceStyleProvider';
 
 export interface AppFloatingActionButtonProps {
   label: string;
@@ -15,7 +16,9 @@ const AppFloatingActionButton = ({
   label,
   onClick,
   icon = <AddRoundedIcon />,
-}: AppFloatingActionButtonProps) => (
+}: AppFloatingActionButtonProps) => {
+  const finance = useFinanceStyle();
+  return (
   <Box
     sx={(theme) => ({
       position: 'fixed',
@@ -34,19 +37,21 @@ const AppFloatingActionButton = ({
         sx={{
           minWidth: 56,
           minHeight: 56,
-          px: { xs: 0, sm: 2 },
-          gap: 1,
+          px: { xs: 0, sm: finance ? 0 : 2 },
+          width: finance ? 56 : undefined,
+          gap: finance ? 0 : 1,
           boxShadow: 3,
           '& .MuiSvgIcon-root': { fontSize: 26, flexShrink: 0 },
         }}
       >
         {icon}
-        <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+        {!finance && <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
           {label}
-        </Box>
+        </Box>}
       </AppButton>
     </Tooltip>
   </Box>
-);
+  );
+};
 
 export default AppFloatingActionButton;

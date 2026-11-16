@@ -15,12 +15,15 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import { visuallyHidden } from '@mui/utils';
 import useMobileOverlayBack from '@/base/hooks/use-mobile-overlay-back';
 import { DialogDraftContext } from '@/base/hooks/use-dialog-draft';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AppButton from './AppButton';
 import AppDialogSlide from './AppDialogSlide';
+import AppBackHeader from './AppBackHeader';
+import { useFinanceStyle } from '@/base/providers/FinanceStyleProvider';
+import { financeStyles } from '@/base/theme/finance';
 
 export interface AppDialogProps {
   open: boolean;
@@ -42,6 +45,7 @@ export interface AppDialogProps {
   mobileCloseLabel?: string;
   contentRef?: Ref<HTMLDivElement>;
   showSheetHandle?: boolean;
+  hideHeader?: boolean;
 }
 
 const AppDialog = ({
@@ -62,6 +66,7 @@ const AppDialog = ({
   mobileCloseLabel,
   contentRef,
   showSheetHandle = false,
+  hideHeader = false,
   protectChanges = false,
   hasUnsavedChanges = false,
 }: AppDialogProps) => {
@@ -69,6 +74,7 @@ const AppDialog = ({
   const titleId = useId();
   const descriptionId = useId();
   const theme = useTheme();
+  const finance = useFinanceStyle();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const fullScreen = isMobile && (mobileFullScreen || mobilePresentation === 'screen');
   const isSheet = isMobile && !fullScreen && mobilePresentation === 'sheet';
@@ -144,6 +150,22 @@ const AppDialog = ({
             sx: {
               borderRadius: fullScreen ? 0 : 'var(--app-radius-dialog)',
               p: 0,
+              ...(finance && {
+                ...financeStyles(theme),
+                backgroundImage: 'none',
+                backdropFilter: 'none',
+                WebkitBackdropFilter: 'none',
+                cornerShape: 'round',
+                '& .MuiDialogTitle-root': {
+                  border: 0, py: fullScreen ? 0 : 2, minHeight: 80,
+                  '& .MuiIconButton-root': { bgcolor: 'background.paper', borderRadius: '50%' },
+                },
+                '& .MuiDialogContent-root': { backgroundColor: 'var(--app-finance-background)' },
+                '& .MuiDialogActions-root': {
+                  pt: 1.5, pb: 2,
+                  backgroundColor: 'var(--app-finance-background)',
+                },
+              }),
               ...(!fullScreen && !isSheet && {
                 [theme.breakpoints.down('sm')]: {
                   // Container padding owns the inset; reset MUI's default margin.
@@ -203,118 +225,68 @@ const AppDialog = ({
             <Box sx={{ width: 36, height: 4, borderRadius: 'var(--app-radius-pill)', bgcolor: 'text.disabled' }} />
           </Box>
         )}
-        <DialogTitle
+        {hideHeader ? (
+          <Box sx={visuallyHidden}>
+            <Typography id={titleId} component="h2">{title}</Typography>
+            {description && <Typography id={descriptionId}>{description}</Typography>}
+          </Box>
+        ) : <DialogTitle
           component="div"
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 1,
-            px: 2,
-            py: 0.75,
-            minHeight: 'var(--app-dialog-header-height)',
-            flexShrink: 0,
-            ...(isSheet && {
-              minHeight: 'var(--app-dialog-header-height)',
-              py: 0.75,
-              borderBottom: 1,
-              borderColor: 'divider',
-            }),
-            ...(fullScreen && {
-              minHeight: 'var(--app-dialog-header-height)',
-              py: 0.75,
-              borderBottom: 1,
-              borderColor: 'divider',
-            }),
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            gap: 1, px: 2, py: fullScreen ? 0 : 0.75,
+            minHeight: 'var(--app-dialog-header-height)', flexShrink: 0,
+            ...(isSheet && { borderBottom: 1, borderColor: 'divider' }),
           }}
         >
-          {fullScreen && (
-            <Box sx={{ flex: '0 0 var(--app-dialog-control-size)', minWidth: 0 }}>
-              {!hideCloseButton && (
+          {fullScreen ? (
+            <AppBackHeader
+              title={title}
+              description={description}
+              titleId={titleId}
+              descriptionId={descriptionId}
+              headingComponent="h2"
+              onBack={requestClose}
+              backLabel={mobileCloseLabel ?? t('back')}
+              backDisabled={closeDisabled}
+              hideBack={hideCloseButton}
+            />
+          ) : (
+            <>
+              <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}>
+                {icon && !isSheet && (
+                  <Box sx={{
+                    width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    borderRadius: 'var(--app-radius-control)', bgcolor: 'primary.main',
+                    color: 'primary.contrastText', flexShrink: 0,
+                  }}>{icon}</Box>
+                )}
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography id={titleId} component="h2" sx={{
+                    fontFamily: 'var(--font-display)', fontSize: { xs: '18px', sm: '20px' },
+                    fontWeight: 700, color: 'text.primary', overflowWrap: 'anywhere',
+                  }}>{title}</Typography>
+                  {description && (
+                    <Typography id={descriptionId} variant="caption" sx={{ color: 'text.secondary', display: 'block', lineHeight: 1.4, overflowWrap: 'anywhere' }}>
+                      {description}
+                    </Typography>
+                  )}
+                </Box>
+              </Stack>
+              {!hideCloseButton && !isSheet && (
                 <IconButton
                   onClick={requestClose}
                   disabled={closeDisabled}
-                  aria-label={mobileCloseLabel ?? t('back')}
-                  sx={{ width: 'var(--app-dialog-control-size)', height: 'var(--app-dialog-control-size)' }}
+                  size="small"
+                  aria-label={closeLabel ?? t('close')}
+                  sx={{ width: 'var(--app-dialog-control-size)', height: 'var(--app-dialog-control-size)', flexShrink: 0 }}
                 >
-                  <ArrowBackRoundedIcon />
+                  <CloseRoundedIcon fontSize="small" />
                 </IconButton>
               )}
-            </Box>
+            </>
           )}
-          <Stack
-            direction="row"
-            spacing={1.5}
-            sx={{ alignItems: 'center', minWidth: 0, flex: 1 }}
-          >
-            {icon && !fullScreen && !isSheet && (
-              <Box
-                sx={{
-                  width: 40,
-                  height: 40,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 'var(--app-radius-control)',
-                  bgcolor: 'primary.main',
-                  color: 'primary.contrastText',
-                  flexShrink: 0,
-                }}
-              >
-                {icon}
-              </Box>
-            )}
-            <Box sx={{ minWidth: 0, ...(fullScreen && { width: '100%' }) }}>
-              <Typography
-                id={titleId}
-                component="h2"
-                sx={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: { xs: '18px', sm: '20px' },
-                  fontWeight: 700,
-                  color: 'text.primary',
-                  overflowWrap: 'anywhere',
-                  ...(fullScreen && {
-                    fontSize: '16px',
-                    lineHeight: 1.5,
-                    textAlign: 'center',
-                  }),
-                }}
-              >
-                {title}
-              </Typography>
-              {description && (
-                <Typography
-                  id={descriptionId}
-                  variant="caption"
-                  sx={{
-                    color: 'text.secondary',
-                    display: 'block',
-                    lineHeight: 1.4,
-                    ...(fullScreen && { textAlign: 'center' }),
-                    overflowWrap: 'anywhere',
-                  }}
-                >
-                  {description}
-                </Typography>
-              )}
-            </Box>
-          </Stack>
-
-          {fullScreen && <Box aria-hidden="true" sx={{ flex: '0 0 var(--app-dialog-control-size)' }} />}
-
-          {!hideCloseButton && !fullScreen && !isSheet && (
-            <IconButton
-              onClick={requestClose}
-              disabled={closeDisabled}
-              size="small"
-              aria-label={closeLabel ?? t('close')}
-              sx={{ width: 'var(--app-dialog-control-size)', height: 'var(--app-dialog-control-size)', flexShrink: 0 }}
-            >
-              <CloseRoundedIcon fontSize="small" />
-            </IconButton>
-          )}
-        </DialogTitle>
+        </DialogTitle>}
 
         <DialogContent
           ref={contentRef}

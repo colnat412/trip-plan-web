@@ -6,7 +6,6 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import { useTranslations } from 'next-intl';
 
 import {
@@ -80,6 +79,7 @@ const ExpenseTable = ({
           <Typography
             sx={{
               fontSize: '13px',
+              lineHeight: 1.5,
               color: 'text.secondary',
               fontFamily: 'var(--font-mono)',
               whiteSpace: 'nowrap',
@@ -101,8 +101,9 @@ const ExpenseTable = ({
           <Stack spacing={0.25}>
             <Typography
               sx={{
-                fontSize: '14px',
-                fontWeight: 600,
+                fontSize: '15px',
+                lineHeight: 1.5,
+                fontWeight: 700,
                 color: 'text.primary',
                 '&:hover': onViewDetail
                   ? { color: 'primary.main', textDecoration: 'underline' }
@@ -114,7 +115,7 @@ const ExpenseTable = ({
             {expense.note && (
               <Typography
                 sx={{
-                  fontSize: '12px',
+                  fontSize: '13px',
                   color: 'text.secondary',
                   display: '-webkit-box',
                   WebkitLineClamp: 1,
@@ -240,7 +241,8 @@ const ExpenseTable = ({
         renderCell: (expense) => (
           <Typography
             sx={{
-              fontSize: '14px',
+              fontSize: '16px',
+              lineHeight: 1.5,
               fontWeight: 700,
               color: 'text.primary',
               fontFamily: 'var(--font-mono)',
@@ -259,16 +261,6 @@ const ExpenseTable = ({
               width: 48,
               renderCell: (expense: Expense) => {
                 const menuItems = [
-                  ...(onViewDetail
-                    ? [
-                        {
-                          id: 'view',
-                          label: t('dialog.detailTitle'),
-                          icon: <VisibilityRoundedIcon fontSize="small" />,
-                          onClick: () => onViewDetail(expense),
-                        },
-                      ]
-                    : []),
                   ...(canManageExpense?.(expense) === false
                     ? []
                     : [
@@ -288,7 +280,7 @@ const ExpenseTable = ({
                       ]),
                 ];
 
-                return <AppActionMenu items={menuItems} />;
+                return menuItems.length ? <AppActionMenu items={menuItems} /> : null;
               },
             },
           ]
@@ -299,16 +291,18 @@ const ExpenseTable = ({
 
   return (
     <AppTable<Expense>
+      sx={{ border: 0 }}
       columns={columns}
       renderMobileRow={(expense, index, rows) => (
-        <Box>
+        <Box sx={{ px: { xs: 2.5, sm: 3 }, borderBottom: 1, borderColor: 'divider', '&:last-child': { borderBottom: 0 } }}>
           {(index === 0 ||
             rows[index - 1].expenseDate !== expense.expenseDate) && (
             <Typography
               sx={{
                 px: 1.5,
                 pt: 1.5,
-                fontSize: '12px',
+                fontSize: '13px',
+                lineHeight: 1.5,
                 color: 'text.secondary',
                 fontWeight: 600,
               }}

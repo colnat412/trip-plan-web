@@ -19,11 +19,10 @@ import {
   VisibilityOffOutlined,
   VisibilityOutlined,
   KeyOutlined,
-  ArrowBackOutlined,
 } from '@mui/icons-material';
 
 import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
-import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
+import { AppBackHeader, AppButton, AppTextField, AppToast } from '@/base/components/ui';
 import AppPreferences from '@/base/components/preferences/AppPreferences';
 import useRegister from '@/features/auth/hooks/useRegister';
 import useVerifyOtp from '@/features/auth/hooks/useVerifyOtp';
@@ -444,29 +443,14 @@ const Register = () => {
             </>
           ) : (
             <>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    setStep('REGISTER');
-                    clearAllErrors();
-                  }}
-                  aria-label={t('register.back')}
-                >
-                  <ArrowBackOutlined fontSize="small" />
-                </IconButton>
-                <Typography
-                  component="h1"
-                  sx={{
-                    color: 'text.primary',
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '28px',
-                    fontWeight: 600,
-                  }}
-                >
-                  {t('register.verifyTitle')}
-                </Typography>
-              </Box>
+              <AppBackHeader
+                title={t('register.verifyTitle')}
+                backLabel={t('register.back')}
+                onBack={() => {
+                  setStep('REGISTER');
+                  clearAllErrors();
+                }}
+              />
 
               <Typography color="text.secondary">
                 {t('register.verifyDescription')}{' '}

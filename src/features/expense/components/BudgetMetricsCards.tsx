@@ -48,11 +48,6 @@ const BudgetMetricsCards = ({
     (item) => item.limitAmount > 0 && item.spentAmount > item.limitAmount,
   ).length;
 
-  const cardBorderLeftStyle = (colorToken: string) => ({
-    borderLeft: '4px solid',
-    borderLeftColor: colorToken,
-  });
-
   if (hasError) {
     return (
       <AppErrorState
@@ -89,7 +84,6 @@ const BudgetMetricsCards = ({
             borderRadius: 'var(--app-radius-card)',
             border: 1,
             borderColor: 'divider',
-            ...cardBorderLeftStyle('primary.main'),
           }}
           contentSx={{
             height: '100%',
@@ -185,13 +179,6 @@ const BudgetMetricsCards = ({
             borderRadius: 'var(--app-radius-card)',
             border: 1,
             borderColor: 'divider',
-            ...cardBorderLeftStyle(
-              isOverBudget
-                ? 'error.main'
-                : isWarning
-                  ? 'secondary.main'
-                  : 'primary.main',
-            ),
           }}
           contentSx={{
             height: '100%',
@@ -332,7 +319,6 @@ const BudgetMetricsCards = ({
             borderRadius: 'var(--app-radius-card)',
             border: 1,
             borderColor: 'divider',
-            ...cardBorderLeftStyle(`${remainingTone}.main`),
           }}
           contentSx={{
             height: '100%',

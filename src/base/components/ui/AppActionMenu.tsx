@@ -154,7 +154,7 @@ const AppActionMenu = ({
       )}
 
       {isMobile ? (
-        <AppDialog open={open} onClose={handleClose} title={sheetTitle ?? menuLabel} showSheetHandle>
+        <AppDialog open={open} onClose={handleClose} title={sheetTitle ?? menuLabel} showSheetHandle hideHeader>
           <MenuList id={menuId} autoFocusItem sx={{ p: 0 }}>
             {menuItems}
           </MenuList>

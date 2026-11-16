@@ -4,7 +4,6 @@ import React from 'react';
 import { TableRow, TableCell, Typography, Stack, Avatar } from '@mui/material';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import { useTranslations } from 'next-intl';
 import { AppActionMenu, AppCategoryChip } from '@/base/components/ui';
 import { formatCurrency, formatDate } from '@/base/utils';
@@ -26,16 +25,6 @@ const ExpenseTableRow = ({
   const t = useTranslations('expense');
 
   const menuItems = [
-    ...(onViewDetail
-      ? [
-          {
-            id: 'view',
-            label: t('dialog.detailTitle'),
-            icon: <VisibilityRoundedIcon fontSize="small" />,
-            onClick: () => onViewDetail(expense),
-          },
-        ]
-      : []),
     {
       id: 'edit',
       label: t('row.edit'),

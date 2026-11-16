@@ -180,7 +180,8 @@ const SettlementOverview = () => {
         onOpenRecordPayment={() => handleOpenRecordPayment()}
       />
 
-      <Stack spacing={1.5}>
+      <AppCard component="section" sx={{ p: { xs: 2.5, sm: 3 } }}>
+      <Stack spacing={2}>
         <AppSectionHeader title={t('suggestedTitle')} subtitle={t('suggestedDesc')} />
 
         <SuggestedSettlementsList
@@ -191,6 +192,8 @@ const SettlementOverview = () => {
           onSettle={(settlement) => handleOpenRecordPayment(settlement)}
         />
       </Stack>
+
+      </AppCard>
 
       <MemberBalancesTable
         memberBalances={summary?.memberBalances ?? []}
