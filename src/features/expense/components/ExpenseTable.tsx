@@ -377,7 +377,6 @@ const ExpenseTable = ({
       emptyState={{
         icon: <ReceiptLongRoundedIcon sx={{ fontSize: 44 }} />,
         title: tTable('emptyTitle'),
-        description: tTable('emptyDesc'),
         actionLabel: !readOnly && onAddNew ? tTable('addFirst') : undefined,
         onAction: !readOnly ? onAddNew : undefined,
       }}

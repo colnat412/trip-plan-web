@@ -41,6 +41,8 @@ export interface TripFilterBarProps {
   totalTrips: number;
   viewMode: 'grid' | 'table';
   onViewModeChange: (mode: 'grid' | 'table') => void;
+  rowsPerPage: number;
+  onRowsPerPageChange: (size: number) => void;
 }
 
 const POPULAR_DESTINATIONS = [
@@ -70,6 +72,8 @@ const TripFilterBar = ({
   totalTrips,
   viewMode,
   onViewModeChange,
+  rowsPerPage,
+  onRowsPerPageChange,
 }: TripFilterBarProps) => {
   const t = useTranslations('myTrips');
   const tTrip = useTranslations('trip');
@@ -256,6 +260,14 @@ const TripFilterBar = ({
             justifyContent: { xs: 'space-between', sm: 'flex-end' },
           }}
         >
+          <AppSelect
+            variantType="compact"
+            label={t('pageSizeLabel')}
+            value={rowsPerPage}
+            options={[6, 12, 24].map((size) => ({ value: size, label: `${size} ${t('perPageLabel')}` }))}
+            onChange={(event) => onRowsPerPageChange(Number(event.target.value))}
+            sx={{ minWidth: { xs: 96, sm: 105 }, flexShrink: 0 }}
+          />
           <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
             <Typography
               variant="caption"
@@ -294,10 +306,6 @@ const TripFilterBar = ({
                 px: 1,
                 py: 0.25,
                 borderColor: 'divider',
-                '&.Mui-selected': {
-                  bgcolor: 'action.selected',
-                  color: 'primary.main',
-                },
               },
             }}
           >

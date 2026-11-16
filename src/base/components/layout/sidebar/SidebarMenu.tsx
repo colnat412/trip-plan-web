@@ -1,3 +1,4 @@
+import { selectedSurface } from '@/base/theme/surfaces';
 import { ButtonBase, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
@@ -29,23 +30,24 @@ const SidebarMenu = ({
             key={item.id}
             onClick={() => onChange?.(item.id)}
             aria-current={selected ? "page" : undefined}
-            sx={{
+            sx={(theme) => ({
               width: "100%",
               minHeight: 48,
               justifyContent: "flex-start",
               gap: 2,
               px: 2,
               borderRadius: "var(--app-radius-control)",
-              color: selected ? "primary.main" : "text.secondary",
-              bgcolor: selected ? "action.selected" : "transparent",
+              color: "text.secondary",
+              bgcolor: "transparent",
               transition:
                 "background-color 0.15s, color 0.15s, border-color 0.15s",
               "&:hover": {
                 color: "primary.main",
-                bgcolor: selected ? "action.selected" : "action.hover",
+                bgcolor: "action.hover",
               },
+              ...(selected && selectedSurface(theme)),
               "& svg": { fontSize: 16 },
-            }}
+            })}
           >
             {item.icon}
             <Typography

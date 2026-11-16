@@ -28,6 +28,8 @@ const EditTripDialog = ({
   return (
     <>
       <AppDialog
+        mobilePresentation="screen"
+        protectChanges
         open={open && Boolean(trip)}
         onClose={onClose}
         closeDisabled={busy}

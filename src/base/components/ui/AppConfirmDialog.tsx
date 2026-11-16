@@ -3,15 +3,9 @@
 import type { ReactNode } from 'react';
 import {
   Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Stack,
   Typography,
-  useMediaQuery,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import { useTranslations } from 'next-intl';
 import AppDialog from './AppDialog';
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
@@ -45,8 +39,6 @@ const AppConfirmDialog = ({
   loading = false,
   icon,
 }: AppConfirmDialogProps) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const t = useTranslations('dialog');
   const confirmLabel = confirmText ?? t('confirm');
   const cancelLabel = cancelText ?? t('cancel');
@@ -98,20 +90,19 @@ const AppConfirmDialog = ({
   };
 
   const descriptionContent = (
-    typeof description === 'string' ? (
-      <Typography
-        sx={{
-          color: 'text.secondary',
-          fontSize: '14px',
-          lineHeight: 1.6,
-          textAlign: 'center',
-        }}
-      >
-        {description}
-      </Typography>
-    ) : (
-      description
-    )
+    <Typography
+      component="div"
+      sx={{
+        color: 'text.secondary',
+        fontSize: '14px',
+        lineHeight: 1.6,
+        textAlign: 'center',
+        overflowWrap: 'anywhere',
+        '& strong': { fontWeight: 700, color: 'text.primary' },
+      }}
+    >
+      {description}
+    </Typography>
   );
 
   const actions = (
@@ -150,95 +141,26 @@ const AppConfirmDialog = ({
     </Stack>
   );
 
-  if (isMobile) {
-    return (
-      <AppDialog
-        open={open}
-        onClose={onClose}
-        closeDisabled={loading}
-        title={title}
-        mobileCloseLabel={cancelLabel}
-        actions={actions}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Box
-            sx={[{
-              width: 60,
-              height: 60,
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }, getIconContainerStyles()]}
-          >
-            {icon ?? getDefaultIcon()}
-          </Box>
-        </Box>
-        <Box sx={{ textAlign: 'center' }}>{descriptionContent}</Box>
-      </AppDialog>
-    );
-  }
-
   return (
-    <Dialog
+    <AppDialog
+      mobilePresentation="dialog"
       open={open}
-      onClose={loading ? undefined : onClose}
-      fullWidth
+      onClose={onClose}
+      closeDisabled={loading}
+      title={title}
       maxWidth="xs"
-      slotProps={{
-        paper: {
-          sx: {
-            borderRadius: 'var(--app-radius-dialog)',
-            p: { xs: 1.5, sm: 2.5 },
-            textAlign: 'center',
-          },
-        },
-      }}
+      actions={actions}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          pt: 1.5,
-          gap: 1.5,
-        }}
-      >
-        <Box
-          sx={[{
-            width: 60,
-            height: 60,
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }, getIconContainerStyles()]}
-        >
+      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={[{
+          width: 48, height: 48, borderRadius: '50%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }, getIconContainerStyles()]}>
           {icon ?? getDefaultIcon()}
         </Box>
-
-        <DialogTitle
-          sx={{
-            p: 0,
-            fontSize: '18px',
-            fontWeight: 800,
-            color: 'text.primary',
-            fontFamily: 'var(--font-display)',
-            textAlign: 'center',
-          }}
-        >
-          {title}
-        </DialogTitle>
-
-        <DialogContent sx={{ p: 0, textAlign: 'center' }}>
-          {descriptionContent}
-        </DialogContent>
-
-        <DialogActions sx={{ p: 0, width: '100%', gap: 1.5, pt: 1 }}>
-          {actions}
-        </DialogActions>
       </Box>
-    </Dialog>
+      <Box sx={{ textAlign: 'center' }}>{descriptionContent}</Box>
+    </AppDialog>
   );
 };
 

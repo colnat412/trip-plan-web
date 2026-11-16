@@ -10,7 +10,7 @@ export const AppPageLoadingContext = createContext<{
   initialPageLoad: boolean;
 } | null>(null);
 
-const AppPageLoadingProvider = ({ children }: { children: ReactNode }) => {
+const AppPageLoadingProvider = ({ children, scope = 'page' }: { children: ReactNode; scope?: 'page' | 'section' }) => {
   const pathname = usePathname();
   const [visit, setVisit] = useState({ pathname, id: 0, settled: false });
   const [pending, setPending] = useState<Map<symbol, number>>(() => new Map());
@@ -55,7 +55,7 @@ const AppPageLoadingProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AppPageLoadingContext.Provider value={context}>
-      <Box aria-busy={isPageLoading} sx={{ display: 'flex', flexDirection: 'column', minHeight: '100%', minWidth: 0 }}>
+      <Box aria-busy={isPageLoading} sx={{ display: 'flex', flexDirection: 'column', minHeight: scope === 'section' ? 0 : '100%', minWidth: 0, flex: 1 }}>
         {/* Keep queries mounted while their initial content is hidden. */}
         <Box hidden={isPageLoading} inert={isPageLoading} sx={{ flex: 1, minWidth: 0, display: isPageLoading ? 'none' : 'flex', flexDirection: 'column' }}>
           {children}

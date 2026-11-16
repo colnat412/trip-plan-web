@@ -10,10 +10,11 @@ import { useUserContext } from '@/features/user/context/UserContext';
 import useLogout from '@/features/auth/hooks/useLogout';
 import PolicyAcceptanceDialog from './PolicyAcceptanceDialog';
 
-const PolicyAcceptanceGate = ({ children }: { children: ReactNode }) => {
+const PolicyAcceptanceGate = ({ children, bypass = false }: { children: ReactNode; bypass?: boolean }) => {
   const t = useTranslations('legal');
   const { user, error, refetchUser } = useUserContext();
   const logout = useLogout();
+  if (bypass) return <>{children}</>;
   if (error) {
     return (
       <Stack

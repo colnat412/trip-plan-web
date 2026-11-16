@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import React, { useMemo, useState } from 'react';
 import {
   Box,
@@ -16,7 +18,6 @@ import {
   TableHead,
   TableRow,
   Typography,
-  alpha,
 } from '@mui/material';
 import AppTableControlsDialog from './AppTableControlsDialog';
 import FilterAltRoundedIcon from '@mui/icons-material/FilterAltRounded';
@@ -461,7 +462,8 @@ const AppTable = <T,>({
                 return (
                   <TableRow
                     key={rowKey}
-                    hover
+                    hover={!isSelected}
+                    aria-selected={Boolean(isSelected)}
                     onClick={
                       onRowClick
                         ? (e) => {
@@ -477,18 +479,16 @@ const AppTable = <T,>({
                           }
                         : undefined
                     }
-                    sx={{
+                    sx={(theme) => ({
                       cursor: onRowClick ? 'pointer' : 'default',
-                      bgcolor: isSelected
-                        ? (theme) => alpha(theme.palette.primary.main, 0.08)
-                        : 'inherit',
-                      '&:hover': {
-                        bgcolor: isSelected
-                          ? (theme) => alpha(theme.palette.primary.main, 0.12)
-                          : 'action.hover',
-                      },
+                      bgcolor: 'inherit',
+                      '&:hover': { bgcolor: 'action.hover' },
                       transition: 'background-color 0.15s ease',
-                    }}
+                      ...(isSelected && {
+                        ...selectedSurface(theme),
+                        '& .MuiTableCell-root, & .MuiTypography-root': { color: 'inherit' },
+                      }),
+                    })}
                   >
                     {columns.map((col) => (
                       <TableCell

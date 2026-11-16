@@ -1,5 +1,7 @@
 'use client';
 
+import useDialogDraft from '@/base/hooks/use-dialog-draft';
+
 import React, { useMemo, useRef, useState } from 'react';
 import { Box, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
@@ -16,7 +18,11 @@ import {
   type AppSelectOption,
 } from '@/base/components/ui';
 import { useUploadFile } from '@/base/hooks';
-import { getCategorySelectOptions, normalizeTripCategory } from '@/base/constants';
+import {
+  ACTIVITY_CATEGORIES,
+  getCategorySelectOptions,
+  normalizeActivityCategory,
+} from '@/base/constants';
 import type {
   ActivityCategory,
   ActivityStatus,
@@ -56,7 +62,7 @@ const EditActivityForm = ({
   const inFlight = useRef(false);
   const [title, setTitle] = useState(activity.title || '');
   const [category, setCategory] = useState<ActivityCategory>(
-    normalizeTripCategory(activity.category || 'FOOD_BEVERAGE'),
+    normalizeActivityCategory(activity.category || 'FOOD_BEVERAGE'),
   );
   const [status, setStatus] = useState<ActivityStatus>(
     activity.status || 'PLANNED',
@@ -75,8 +81,13 @@ const EditActivityForm = ({
   const [titleError, setTitleError] = useState('');
   const [timeError, setTimeError] = useState('');
 
+  useDialogDraft(() => ({
+    title, category, status, startTime, endTime, location, estimatedCost, note,
+    image: imageFile === undefined ? undefined : imageFile === null ? null : [imageFile.name, imageFile.size, imageFile.lastModified],
+  }));
+
   const categoryOptions: AppSelectOption[] = useMemo(
-    () => getCategorySelectOptions(tCat),
+    () => getCategorySelectOptions(tCat, ACTIVITY_CATEGORIES),
     [tCat],
   );
 

@@ -3,6 +3,7 @@
 import type { ReactNode } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import { tonalSurface } from '@/base/theme/surfaces';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import { useTranslations } from 'next-intl';
@@ -26,7 +27,6 @@ const ActiveTripBanner = ({
   compact = false,
   notice,
 }: ActiveTripBannerProps) => {
-  const t = useTranslations('overview');
   const tMembers = useTranslations('members');
   const { openMembers, isMembersOpen } = useTripContext();
   const { activeMembers, isLoading, isStale, error } = useTripMembers({
@@ -53,11 +53,13 @@ const ActiveTripBanner = ({
           minHeight: compact ? { xs: 160, md: 190 } : { xs: 300, md: 340 },
           gap: compact ? 2 : 5,
           p: compact ? { xs: 2, sm: 2.5 } : { xs: 2.5, sm: 4, md: 5 },
-          color: theme.palette.common.white,
-          bgcolor: 'primary.dark',
-          backgroundImage: trip.coverUrl
-            ? `linear-gradient(180deg, ${alpha(theme.palette.common.black, 0.18)}, ${alpha(theme.palette.common.black, 0.76)}), url(${JSON.stringify(trip.coverUrl)})`
-            : `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.primary.main})`,
+          ...tonalSurface(theme, 22),
+          color: trip.coverUrl ? theme.palette.common.white : tonalSurface(theme).color,
+          backgroundColor: trip.coverUrl
+            ? alpha(theme.palette.common.black, 0.64)
+            : tonalSurface(theme, 22).backgroundColor,
+          backgroundImage: trip.coverUrl ? `url(${JSON.stringify(trip.coverUrl)})` : 'none',
+          backgroundBlendMode: 'multiply',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         })}
@@ -166,7 +168,7 @@ const ActiveTripBanner = ({
           </Stack>
         </Stack>
       </Box>
-      {!compact && (
+      {!compact && Boolean(trip.description?.trim()) && (
         <Box
           sx={{
             display: 'flex',
@@ -192,7 +194,7 @@ const ActiveTripBanner = ({
               whiteSpace: 'pre-line',
             }}
           >
-            {trip.description || t('journeyIntro')}
+            {trip.description}
           </Typography>
         </Box>
       )}

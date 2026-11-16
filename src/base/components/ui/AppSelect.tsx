@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import React from 'react';
 import {
   FormControl,
@@ -10,7 +12,11 @@ import {
   type SelectProps,
   type SelectChangeEvent,
   Box,
+  useMediaQuery,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import AppSelectSheet from './AppSelectSheet';
+import AppSelectOptionCheckbox from './AppSelectOptionCheckbox';
 import AppSelectInput from './AppSelectInput';
 import useSelectMenu from '@/base/hooks/use-select-menu';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
@@ -36,7 +42,7 @@ export interface AppSelectProps extends Omit<SelectProps, 'onChange'> {
   ) => void;
 }
 
-const AppSelect = ({
+const AppSelectControl = ({
   label,
   options,
   helperText,
@@ -53,6 +59,7 @@ const AppSelect = ({
 }: AppSelectProps) => {
   const labelId = React.useId();
   const menu = useSelectMenu(selectProps);
+  const multiple = Boolean(selectProps.multiple);
   if (searchable && !selectProps.native) {
     return (
       <AppSelectInput
@@ -118,7 +125,7 @@ const AppSelect = ({
             <Box
               component="span"
               sx={{
-                color: 'primary.main',
+                color: 'inherit',
                 fontWeight: 700,
                 display: 'flex',
                 alignItems: 'center',
@@ -169,7 +176,7 @@ const AppSelect = ({
             }),
           },
         }}
-        sx={{
+        sx={[(theme) => ({
           height: 38,
           minHeight: '38px !important',
           borderRadius: 'var(--app-radius-control)',
@@ -201,8 +208,8 @@ const AppSelect = ({
             right: '8px',
             color: isFiltered ? 'primary.main' : 'text.secondary',
           },
-          ...sx,
-        }}
+          ...(isFiltered && selectedSurface(theme)),
+        }), ...(Array.isArray(sx) ? sx : sx ? [sx] : [])]}
       >
         {options.map((option) => {
           const isSelected = Array.isArray(value)
@@ -223,10 +230,11 @@ const AppSelect = ({
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {multiple && <AppSelectOptionCheckbox checked={isSelected} disabled={selectProps.disabled || selectProps.readOnly} />}
                 {option.icon}
                 <span>{option.label}</span>
               </Box>
-              {isSelected && (
+              {!multiple && isSelected && (
                 <CheckRoundedIcon
                   sx={{ fontSize: 16, color: 'primary.main' }}
                 />
@@ -345,10 +353,11 @@ const AppSelect = ({
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
+                {multiple && <AppSelectOptionCheckbox checked={isSelected} disabled={selectProps.disabled || selectProps.readOnly} />}
                 {option.icon}
                 <span>{option.label}</span>
               </Box>
-              {isSelected && (
+              {!multiple && isSelected && (
                 <CheckRoundedIcon
                   sx={{ fontSize: 15, color: 'primary.main' }}
                 />
@@ -373,18 +382,40 @@ const AppSelect = ({
         onChange={onChange}
         sx={sx}
       >
-        {options.map((option) => (
-          <MenuItem key={String(option.value)} value={option.value}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {option.icon}
-              <span>{option.label}</span>
-            </Box>
-          </MenuItem>
-        ))}
+        {options.map((option) => {
+          const checked = Array.isArray(value) && value.some((item) => String(item) === String(option.value));
+          return (
+            <MenuItem key={String(option.value)} value={option.value}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                {multiple && <AppSelectOptionCheckbox checked={checked} disabled={selectProps.disabled || selectProps.readOnly} />}
+                {option.icon}
+                <span>{option.label}</span>
+              </Box>
+            </MenuItem>
+          );
+        })}
       </Select>
       {helperText && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
   );
+};
+
+const AppSelect = (props: AppSelectProps) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [internalValue, setInternalValue] = React.useState<unknown>(props.defaultValue ?? (props.multiple ? [] : ''));
+  const controlProps: AppSelectProps = {
+    ...props,
+    value: props.value !== undefined ? props.value : internalValue,
+    onChange: (event, child) => {
+      if (props.value === undefined) setInternalValue(event.target.value);
+      props.onChange?.(event, child);
+    },
+  };
+  if (isMobile && !props.native) {
+    return <AppSelectSheet {...controlProps} renderTrigger={(overrides) => <AppSelectControl {...controlProps} {...overrides} />} />;
+  }
+  return <AppSelectControl {...controlProps} />;
 };
 
 export default AppSelect;

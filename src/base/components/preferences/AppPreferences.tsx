@@ -78,10 +78,10 @@ const AppPreferences = ({ sx, menuLayout = false }: AppPreferencesProps) => {
           fontSize: menuLayout ? '18px' : '20px',
           fontWeight: 800,
           '&.Mui-selected': {
-            bgcolor: menuLayout ? 'action.selected' : 'primary.main',
-            color: menuLayout ? 'text.primary' : 'primary.contrastText',
+            bgcolor: 'action.selected',
+            color: 'text.primary',
             '&:hover': {
-              bgcolor: menuLayout ? 'action.selected' : 'primary.main',
+              bgcolor: 'action.selected',
             },
           },
         },

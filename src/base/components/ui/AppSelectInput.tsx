@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import AppTextField from './AppTextField';
+import AppSelectOptionCheckbox from './AppSelectOptionCheckbox';
 import { matchesSearch } from '@/base/utils/search';
 import {
   SELECT_MENU_MAX_HEIGHT,
@@ -165,6 +166,7 @@ const AppSelectInput = ({
             {...optionProps}
             sx={{ display: 'flex', gap: 1, minWidth: 0 }}
           >
+            {multiple && <AppSelectOptionCheckbox checked={state.selected} disabled={disabled || readOnly} />}
             {option.icon}
             <Box
               component="span"
@@ -172,7 +174,7 @@ const AppSelectInput = ({
             >
               {option.label}
             </Box>
-            {state.selected && (
+            {!multiple && state.selected && (
               <CheckRoundedIcon
                 sx={{ fontSize: 18, color: 'primary.main', flexShrink: 0 }}
               />

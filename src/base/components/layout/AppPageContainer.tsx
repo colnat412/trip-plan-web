@@ -8,6 +8,7 @@ export interface AppPageContainerProps {
   sx?: SxProps<Theme>;
   spacing?: number;
   floatingAction?: React.ReactNode;
+  embedded?: boolean;
 }
 
 const AppPageContainer = ({
@@ -15,6 +16,7 @@ const AppPageContainer = ({
   sx,
   spacing = 3,
   floatingAction,
+  embedded = false,
 }: AppPageContainerProps) => {
   return (
     <Box
@@ -38,6 +40,13 @@ const AppPageContainer = ({
           alignItems: 'center',
           flex: 1,
         },
+        ...(embedded && {
+          p: 0,
+          pb: floatingAction ? '72px' : 0,
+          minHeight: 0,
+          flex: 1,
+          bgcolor: 'transparent',
+        }),
         ...sx,
       }}
     >

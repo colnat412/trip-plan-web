@@ -50,6 +50,7 @@ const PublishTemplateDialog = ({
     includeNotes: false,
     checklistIds: [],
   });
+  const [initialPayload] = useState(() => JSON.stringify(payload));
   const [preview, setPreview] = useState<TemplatePreview | null>(null);
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0 });
@@ -105,6 +106,9 @@ const PublishTemplateDialog = ({
   };
   return (
     <AppDialog
+      mobilePresentation="screen"
+      protectChanges
+      hasUnsavedChanges={JSON.stringify(payload) !== initialPayload || Boolean(coverFile)}
       open={open}
       onClose={close}
       closeDisabled={busy}

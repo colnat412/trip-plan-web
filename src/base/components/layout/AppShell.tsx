@@ -13,6 +13,7 @@ import { TripProvider } from '@/features/trip/context/TripContext';
 import { UserProvider } from '@/features/user/context/UserContext';
 import { PUBLIC_AUTH_PATHS, PUBLIC_PATHS } from '@/base/constants';
 import PolicyAcceptanceGate from '@/features/legal/components/PolicyAcceptanceGate';
+import { getTabSection, isSameTabSection } from '@/base/utils/tab-section';
 import { DESKTOP_NAV_BREAKPOINT } from './navigation/config';
 import AppPageLoadingProvider from '@/base/providers/AppPageLoadingProvider';
 
@@ -28,8 +29,13 @@ const AppShell = ({
   sidebarDisabledPaths = [],
 }: AppShellProps) => {
   const pathname = usePathname();
+  const tabSection = getTabSection(pathname);
   const mainRef = useRef<HTMLElement | null>(null);
+  const previousPath = useRef(pathname);
   useLayoutEffect(() => {
+    const keepScroll = isSameTabSection(previousPath.current, pathname);
+    previousPath.current = pathname;
+    if (keepScroll) return;
     if (mainRef.current) {
       mainRef.current.scrollTop = 0;
       mainRef.current.scrollLeft = 0;
@@ -82,7 +88,7 @@ const AppShell = ({
       >
         <AppPageLoadingProvider>
           {children}
-          {withAccount && <GlobalLoadingHost />}
+          {withAccount && !tabSection && <GlobalLoadingHost />}
         </AppPageLoadingProvider>
       </Box>
       <AppBottomNavigation />
@@ -99,17 +105,9 @@ const AppShell = ({
 
   return (
     <UserProvider>
-      {isLibrary ? (
-        <TripProvider>{renderFrame(true)}</TripProvider>
-      ) : (
-        <PolicyAcceptanceGate>
-          {!showNavigation ? (
-            children
-          ) : (
-            <TripProvider>{renderFrame(true)}</TripProvider>
-          )}
-        </PolicyAcceptanceGate>
-      )}
+      <PolicyAcceptanceGate bypass={isLibrary}>
+        {isLibrary || showNavigation ? <TripProvider>{renderFrame(true)}</TripProvider> : children}
+      </PolicyAcceptanceGate>
     </UserProvider>
   );
 };

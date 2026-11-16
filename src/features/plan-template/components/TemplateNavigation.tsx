@@ -33,7 +33,9 @@ export default function TemplateNavigation({ active }: {
           key={item.id}
           component={Link}
           href={item.href}
+          scroll={false}
           intent="text"
+          selected={active === item.id}
           aria-current={active === item.id ? 'page' : undefined}
           wrapLabel
           sx={{
@@ -42,12 +44,7 @@ export default function TemplateNavigation({ active }: {
             px: 0.75,
             fontSize: { xs: '13px', sm: '14px' },
             borderRadius: 'var(--app-radius-small)',
-            ...(active === item.id ? {
-              bgcolor: 'background.paper',
-              boxShadow: 1,
-              fontWeight: 700,
-              '&:hover': { bgcolor: 'background.paper' },
-            } : { color: 'text.secondary' }),
+            ...(active !== item.id && { color: 'text.secondary' }),
           }}
         >
           {t(item.label)}

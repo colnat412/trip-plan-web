@@ -2,18 +2,17 @@
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppLoadingState, AppButton, AppCard, AppEmptyState, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
+import { AppPagination, AppLoadingState, AppButton, AppCard, AppEmptyState, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Box, Pagination, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import useTemplateLibrary from '../hooks/useTemplateLibrary';
 import type { TemplateListing } from '../types';
 import TemplateFilters from './TemplateFilters';
 import TemplateCard from './TemplateCard';
-import TemplateSection from './TemplateSection';
 import { TemplateSaveProvider } from './TemplateSaveControls';
 
 const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
@@ -109,7 +108,7 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
         </Box>
       </TemplateSaveProvider>
       {!compact && data && data.totalPages > 1 && (
-        <Pagination page={page} count={data.totalPages} onChange={(_, value) => setPage(value)} />
+        <AppPagination page={page} count={data.totalPages} onChange={(_, value) => setPage(value)} />
       )}
     </Stack>
   );
@@ -117,6 +116,6 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
     <AppCard component="section" sx={{ minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: 'var(--app-radius-card)' }}>
       {content}
     </AppCard>
-  ) : <TemplateSection active={savedOnly ? 'saved' : 'explore'}>{content}</TemplateSection>;
+  ) : content;
 };
 export default TemplateLibrary;

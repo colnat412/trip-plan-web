@@ -85,10 +85,8 @@ const PolicyAcceptanceDialog = () => {
         component="main"
         sx={{
           minHeight: '100dvh',
-          bgcolor: 'background.paper',
+          bgcolor: 'background.default',
           color: 'text.primary',
-          backgroundImage: (theme) =>
-            `linear-gradient(${theme.vars?.palette.action.hover ?? theme.palette.action.hover}, ${theme.vars?.palette.action.hover ?? theme.palette.action.hover})`,
         }}
       >
         <Box

@@ -30,7 +30,6 @@ import {
   useDeleteExpense,
   useSetBudget,
 } from '../hooks/useExpenseMutation';
-import FinanceNavigation from './FinanceNavigation';
 import BudgetMetricsCards from './BudgetMetricsCards';
 import CategorySpendingList from './CategorySpendingList';
 import CategorySpendingChart from './CategorySpendingChart';
@@ -231,7 +230,7 @@ const ExpenseOverview = () => {
 
   if (tripError || summaryError || expensesError) {
     return (
-      <AppPageContainer>
+      <AppPageContainer embedded>
         <AppErrorState
           status={(tripError ?? summaryError ?? expensesError)?.status}
           onRetry={() =>
@@ -245,8 +244,7 @@ const ExpenseOverview = () => {
   }
   if (isTripLoading) {
     return (
-      <AppPageContainer>
-        <FinanceNavigation active="expenses" />
+      <AppPageContainer embedded>
         <AppLoadingState />
       </AppPageContainer>
     );
@@ -254,8 +252,7 @@ const ExpenseOverview = () => {
 
   if (!activeTrip) {
     return (
-      <AppPageContainer>
-        <FinanceNavigation active="expenses" />
+      <AppPageContainer embedded>
         <Stack
           spacing={2}
           sx={{ alignItems: 'center', textAlign: 'center', py: 8 }}
@@ -284,15 +281,6 @@ const ExpenseOverview = () => {
             >
               {t('noTripTitle')}
             </Typography>
-            <Typography
-              sx={{
-                fontSize: '14px',
-                color: 'text.secondary',
-                lineHeight: 1.6,
-              }}
-            >
-              {t('noTripDesc')}
-            </Typography>
           </Stack>
           <AppButton intent="primary" onClick={() => router.push('/trips')}>
             {t('viewTrips')}
@@ -304,6 +292,7 @@ const ExpenseOverview = () => {
 
   return (
     <AppPageContainer
+      embedded
       floatingAction={canWrite ? (
         <AppFloatingActionButton
           label={t('addExpense')}
@@ -311,7 +300,6 @@ const ExpenseOverview = () => {
         />
       ) : undefined}
     >
-      <FinanceNavigation active="expenses" />
       <AppPageHeader
         icon={<AccountBalanceWalletRoundedIcon sx={{ fontSize: '24px' }} />}
         title={t('pageTitle')}
@@ -355,6 +343,7 @@ const ExpenseOverview = () => {
             key={String(tripId)}
             breakdown={summary.categoryBreakdown}
             currency={summary.currency || activeTrip.baseCurrency}
+            totalBudget={summary.totalBudget}
           />
           {SHOW_CATEGORY_BUDGET_DETAILS && summary.categoryBreakdown.some(
             (item) => item.spentAmount > 0 || item.limitAmount > 0,

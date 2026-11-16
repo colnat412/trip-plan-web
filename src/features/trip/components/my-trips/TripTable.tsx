@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import React, { useMemo } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
@@ -82,7 +84,7 @@ const TripTable = ({
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: 'var(--app-radius-control)',
-                  bgcolor: isSelected ? 'primary.main' : 'action.hover',
+                  bgcolor: (theme) => isSelected ? selectedSurface(theme).backgroundColor : (theme.vars?.palette ?? theme.palette).action.hover,
                   color: isSelected ? 'primary.contrastText' : 'primary.main',
                   flexShrink: 0,
                 }}
@@ -256,6 +258,7 @@ const TripTable = ({
               </AppButton>
 
               <AppActionMenu
+                sheetTitle={trip.name}
                 items={actionMenuItems}
                 ariaLabel={`Actions for ${trip.name}`}
               />
@@ -283,7 +286,6 @@ const TripTable = ({
       emptyState={{
         icon: <FlightTakeoffRoundedIcon sx={{ fontSize: 40 }} />,
         title: t('emptyTitle'),
-        description: t('emptyDescription'),
         actionLabel: t('createNew'),
         onAction: onCreateTrip,
       }}

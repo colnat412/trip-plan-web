@@ -516,11 +516,11 @@ const OptimizeRouteDialog = ({
   if (isMobile) {
     return (
       <AppDialog
+        mobilePresentation="screen"
         open={open}
         onClose={handleClose}
         closeDisabled={isApplying}
         title={t('title', { day: dayNumber })}
-        description={t('subtitle')}
         mobileCloseLabel={t('cancel')}
         maxWidth="md"
         actions={actions}
@@ -552,8 +552,9 @@ const OptimizeRouteDialog = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          px: 3,
-          py: 2.5,
+          px: 2,
+          py: 0.75,
+          minHeight: 'var(--app-dialog-header-height)',
           borderBottom: 1,
           borderColor: 'divider',
         }}
@@ -584,19 +585,14 @@ const OptimizeRouteDialog = ({
             >
               {t('title', { day: dayNumber })}
             </Typography>
-            <Typography
-              variant="body2"
-              sx={{ color: 'text.secondary', fontSize: '13px' }}
-            >
-              {t('subtitle')}
-            </Typography>
           </Box>
         </Box>
         <IconButton
           onClick={handleClose}
           disabled={isApplying}
           size="small"
-          sx={{ color: 'text.secondary' }}
+          aria-label={t('cancel')}
+          sx={{ color: 'text.secondary', width: 'var(--app-dialog-control-size)', height: 'var(--app-dialog-control-size)' }}
         >
           <CloseRoundedIcon />
         </IconButton>

@@ -2,10 +2,10 @@
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppLoadingState, AppEmptyState, AppPageHeader, AppButton } from '@/base/components/ui';
+import { AppPagination, AppLoadingState, AppEmptyState, AppPageHeader, AppButton } from '@/base/components/ui';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Alert, Pagination, Stack } from '@mui/material';
+import { Alert, Stack } from '@mui/material';
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import { useTranslations } from 'next-intl';
 
@@ -60,7 +60,7 @@ const MyTemplates = () => {
           />
         ))}
         {(currentData?.totalPages ?? 0) > 1 && (
-          <Pagination
+          <AppPagination
             page={page}
             count={currentData!.totalPages}
             onChange={(_, value) => setPage(value)}

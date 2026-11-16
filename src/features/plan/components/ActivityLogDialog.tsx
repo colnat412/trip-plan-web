@@ -113,7 +113,6 @@ const ActivityLogDialog = ({
       open={open}
       onClose={onClose}
       title={t('activityLog.title')}
-      description={t('activityLog.subtitle')}
       icon={<HistoryRoundedIcon />}
       maxWidth="md"
       actions={
@@ -172,12 +171,6 @@ const ActivityLogDialog = ({
             sx={{ fontWeight: 700, fontSize: '15px', color: 'text.primary' }}
           >
             {t('activityLog.emptyTitle')}
-          </Typography>
-          <Typography
-            variant="caption"
-            sx={{ color: 'text.secondary', maxWidth: 360, lineHeight: 1.5 }}
-          >
-            {t('activityLog.emptyDesc')}
           </Typography>
         </Box>
       ) : (

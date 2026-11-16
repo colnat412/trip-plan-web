@@ -1,31 +1,16 @@
+'use client';
+
 import type { ReactNode } from 'react';
-import { Box } from '@mui/material';
-import { AppPageContainer } from '@/base/components/ui';
+import { usePathname } from 'next/navigation';
+import AppTabSection from '@/base/components/layout/AppTabSection';
 import TemplateNavigation from './TemplateNavigation';
 
-export default function TemplateSection({
-  active,
-  children,
-}: {
-  active: 'explore' | 'saved' | 'mine';
-  children: ReactNode;
-}) {
+export default function TemplateSection({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const active = pathname === '/my-templates' ? 'mine' : pathname === '/saved-templates' ? 'saved' : 'explore';
   return (
-    <AppPageContainer>
-      <Box
-        sx={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 2,
-          flexShrink: 0,
-          bgcolor: 'background.paper',
-          borderRadius: 'var(--app-radius-control)',
-          pb: 1,
-        }}
-      >
-        <TemplateNavigation active={active} />
-      </Box>
+    <AppTabSection navigation={<TemplateNavigation active={active} />}>
       {children}
-    </AppPageContainer>
+    </AppTabSection>
   );
 }

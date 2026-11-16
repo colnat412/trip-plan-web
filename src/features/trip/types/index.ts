@@ -75,6 +75,7 @@ export interface PageResponse<T> {
 }
 
 export interface CreateTripPayload {
+  coverUploadId?: string;
   name: string;
   destination: string;
   description?: string;

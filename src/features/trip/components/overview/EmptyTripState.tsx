@@ -59,9 +59,6 @@ const EmptyTripState = ({ onCreateTrip }: EmptyTripStateProps) => {
         >
           {tTrip('noTrips')}
         </Typography>
-        <Typography sx={{ color: 'text.secondary', fontSize: '14px' }}>
-          {tTrip('createDescription')}
-        </Typography>
       </Box>
 
       <AppButton

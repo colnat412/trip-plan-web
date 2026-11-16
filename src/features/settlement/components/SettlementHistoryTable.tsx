@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import { useTranslations } from 'next-intl';
 
@@ -83,9 +83,10 @@ const SettlementHistoryTable = ({
               subtitle={<>{formatDate(settlement.settledAt)} · {t(settlement.paymentMethod === 'BANK_TRANSFER' ? 'methodBank' : settlement.paymentMethod === 'CASH' ? 'methodCash' : 'methodOther')}
                 {settlement.note && <><br />{settlement.note}</>}</>}
               amount={formatCurrency(settlement.amount, settlement.currency)}
+              actionPlacement="amount"
               action={onDelete && (canDelete?.(settlement) ?? true) ? (
-                <IconButton aria-label={t('deleteConfirm.title')} onClick={() => setSelectedSettlement(settlement)} sx={{ width: 44, height: 44 }}>
-                  <DeleteOutlineRoundedIcon fontSize="small" />
+                <IconButton aria-label={t('deleteConfirm.title')} onClick={() => setSelectedSettlement(settlement)} sx={{ width: 44, height: 44, color: 'error.main', '&:hover': { bgcolor: 'action.hover' } }}>
+                  <CloseRoundedIcon fontSize="small" />
                 </IconButton>
               ) : undefined}
             />
@@ -185,6 +186,7 @@ const SettlementHistoryTable = ({
                   hover
                   sx={{
                     '&:last-child td, &:last-child th': { border: 0 },
+                    '& > .MuiTableCell-root': { verticalAlign: 'middle' },
                     transition: 'background-color 0.15s ease',
                   }}
                 >
@@ -295,16 +297,19 @@ const SettlementHistoryTable = ({
                     <TableCell align="right" sx={{ py: 1.75, px: 2.5 }}>
                       {(canDelete?.(s) ?? true) && (
                         <Tooltip title={t('deleteConfirm.title')}>
-                        <IconButton
-                          size="small"
-                          onClick={() => setSelectedSettlement(s)}
-                          sx={{
-                            color: 'text.secondary',
-                            '&:hover': { color: 'error.main' },
-                          }}
-                        >
-                          <DeleteOutlineRoundedIcon sx={{ fontSize: '18px' }} />
-                        </IconButton>
+                          <IconButton
+                            size="small"
+                            aria-label={t('deleteConfirm.title')}
+                            onClick={() => setSelectedSettlement(s)}
+                            sx={{
+                              width: 44,
+                              height: 44,
+                              color: 'error.main',
+                              '&:hover': { bgcolor: 'action.hover' },
+                            }}
+                          >
+                            <CloseRoundedIcon fontSize="small" />
+                          </IconButton>
                         </Tooltip>
                       )}
                     </TableCell>
@@ -320,7 +325,12 @@ const SettlementHistoryTable = ({
         <AppConfirmDialog
           open={Boolean(selectedSettlement)}
           title={t('deleteConfirm.title')}
-          description={t('deleteConfirm.desc')}
+          description={t.rich('deleteConfirm.desc', {
+            amount: formatCurrency(selectedSettlement.amount, selectedSettlement.currency),
+            payer: selectedSettlement.payerName || '—',
+            payee: selectedSettlement.payeeName || '—',
+            subject: (chunks) => <strong>{chunks}</strong>,
+          })}
           confirmText={t('deleteConfirm.confirmBtn')}
           cancelText={t('deleteConfirm.cancelBtn')}
           intent="danger"

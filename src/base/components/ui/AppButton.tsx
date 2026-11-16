@@ -5,7 +5,8 @@ import { Box, Button, ButtonProps } from "@mui/material";
 import AppLoadingIndicator from "./AppLoadingIndicator";
 
 import type { AnchorHTMLAttributes } from "react";
-import { alpha, type Theme } from "@mui/material/styles";
+import type { Theme } from "@mui/material/styles";
+import { brandSurface, selectedSurface } from '@/base/theme/surfaces';
 import { interactionTransition } from '@/base/theme/interactions';
 import type { SxProps } from "@mui/system";
 
@@ -20,13 +21,11 @@ export type AppButtonProps = Omit<ButtonProps, "color" | "variant"> &
     mobileIconLabel?: boolean;
     wrapLabel?: boolean;
     selected?: boolean;
+    scroll?: boolean;
   };
 
-function getPrimaryBackground(theme: Theme) {
-  const palette = theme.vars?.palette ?? theme.palette;
-  const primaryGradient = `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
-  const shade = 'var(--app-primary-button-shade, transparent)';
-  return `linear-gradient(${shade}, ${shade}), ${primaryGradient}`;
+function getPrimaryBackground(theme: Theme, strength = 28) {
+  return brandSurface(theme, strength).backgroundColor;
 }
 
 function getSelectedStyles(selected: boolean): SxProps<Theme> {
@@ -36,21 +35,7 @@ function getSelectedStyles(selected: boolean): SxProps<Theme> {
     const palette = theme.vars?.palette ?? theme.palette;
 
     return {
-      color: palette.primary.contrastText,
-      background: palette.primary.main,
-      borderColor: palette.primary.main,
-
-      "&:hover": {
-        color: palette.primary.contrastText,
-        background: palette.primary.main,
-        borderColor: palette.primary.main,
-        filter: "brightness(0.92)",
-      },
-
-      "&:active": {
-        background: palette.primary.main,
-        filter: "brightness(0.85)",
-      },
+      ...selectedSurface(theme),
       "&.Mui-disabled": {
         color: palette.action.disabled,
         background: palette.action.disabledBackground,
@@ -67,7 +52,6 @@ function getButtonStyles(
 ): SxProps<Theme> {
   return (theme) => {
     const palette = theme.vars?.palette ?? theme.palette;
-    const primaryBackground = getPrimaryBackground(theme);
     const commonStyles = {
       ...interactionTransition(theme, ['background-color', 'border-color', 'box-shadow', 'color', 'filter']),
       flexShrink: 0,
@@ -85,26 +69,15 @@ function getButtonStyles(
         return {
           ...commonStyles,
 
-          '--app-primary-button-shade': alpha(theme.palette.common.black, 0.3),
-          ...theme.applyStyles('dark', { '--app-primary-button-shade': 'transparent' }),
-          color: palette.primary.contrastText,
-          background: primaryBackground,
-
-          "&:hover": {
-            color: palette.primary.contrastText,
-            background: primaryBackground,
-            filter: "brightness(0.92)",
-          },
-
-          "&:active": {
-            color: palette.primary.contrastText,
-            background: primaryBackground,
-            filter: "brightness(0.85)",
-          },
+          ...brandSurface(theme),
+          border: '1px solid',
+          "&:hover": brandSurface(theme, 20),
+          "&:active": brandSurface(theme, 12),
 
           "&.Mui-disabled": {
             color: palette.action.disabled,
             background: palette.action.disabledBackground,
+            borderColor: palette.action.disabledBackground,
             filter: "none",
           },
         };
@@ -244,7 +217,7 @@ function getMobileIconLabelStyles(intent: AppButtonIntent): SxProps<Theme> {
           borderRadius: "50%",
           background: isPrimary ? primaryBackground : palette.action.selected,
           color: isPrimary
-            ? palette.primary.contrastText
+            ? brandSurface(theme).color
             : palette.text.primary,
           "& > *:nth-of-type(1)": { fontSize: "28px" },
         },
@@ -254,12 +227,12 @@ function getMobileIconLabelStyles(intent: AppButtonIntent): SxProps<Theme> {
           filter: "none",
         },
         "&:hover .MuiButton-startIcon": {
-          background: isPrimary ? primaryBackground : palette.action.hover,
-          filter: isPrimary ? "brightness(0.92)" : "none",
+          background: isPrimary ? getPrimaryBackground(theme, 20) : palette.action.hover,
+          filter: "none",
         },
         "&:active .MuiButton-startIcon": {
-          background: isPrimary ? primaryBackground : palette.action.selected,
-          filter: isPrimary ? "brightness(0.85)" : "none",
+          background: isPrimary ? getPrimaryBackground(theme, 12) : palette.action.selected,
+          filter: "none",
         },
         "&.Mui-disabled": {
           background: "transparent",

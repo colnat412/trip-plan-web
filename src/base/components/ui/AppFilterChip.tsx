@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { selectedSurface } from '@/base/theme/surfaces';
 import {
   Chip,
   type ChipProps,
@@ -51,8 +52,8 @@ export const AppFilterChip = ({
                 fontSize: '10.5px',
                 fontWeight: 700,
                 borderRadius: 'var(--app-radius-pill)',
-                bgcolor: selected ? 'rgba(255, 255, 255, 0.25)' : 'action.selected',
-                color: selected ? '#FFFFFF' : 'primary.main',
+                bgcolor: 'action.selected',
+                color: 'inherit',
                 lineHeight: 1.2,
               }}
             >
@@ -61,7 +62,7 @@ export const AppFilterChip = ({
           )}
         </Box>
       }
-      sx={{
+      sx={[ (theme) => ({
         height: 'auto',
         minHeight: onClick ? 44 : size === 'small' ? 28 : 34,
         minWidth: onClick ? 44 : undefined,
@@ -72,16 +73,16 @@ export const AppFilterChip = ({
         flexShrink: 0,
         transition: 'background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease',
         border: '1px solid',
-        borderColor: selected ? 'primary.main' : 'divider',
-        bgcolor: selected ? 'primary.main' : 'background.paper',
-        color: selected ? 'primary.contrastText' : 'text.primary',
+        borderColor: 'divider',
+        bgcolor: 'background.paper',
+        color: 'text.primary',
         '&:hover': {
-          bgcolor: selected ? 'primary.dark' : 'action.hover',
+          bgcolor: 'action.hover',
           borderColor: 'primary.main',
-          color: selected ? 'primary.contrastText' : 'primary.main',
+          color: 'text.primary',
         },
-        ...sx,
-      }}
+        ...(selected && selectedSurface(theme)),
+      }), ...(Array.isArray(sx) ? sx : sx ? [sx] : []) ]}
     />
   );
 };

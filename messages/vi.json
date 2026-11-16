@@ -412,7 +412,7 @@
     "saveChanges": "Lưu thay đổi",
     "updateSuccess": "Cập nhật chuyến đi thành công!",
     "deleteTitle": "Xác nhận xóa chuyến đi",
-    "deleteConfirm": "Bạn có chắc chắn muốn xóa chuyến đi \"{name}\"? Dữ liệu chi tiêu và thông tin liên quan sẽ bị xóa và không thể khôi phục.",
+    "deleteConfirm": "Bạn có muốn xóa chuyến đi \"<subject>{name}</subject>\" không? Dữ liệu chi tiêu và thông tin liên quan sẽ bị xóa và không thể khôi phục.",
     "deleteSuccess": "Xóa chuyến đi thành công!",
     "all": "Tất cả",
     "allDestinations": "Khu vực",
@@ -511,6 +511,18 @@
       "warningOverBudget": "Chuyến đi đã vượt ngân sách dự kiến."
     },
     "spendingChart": {
+      "allCategories": "Tất cả",
+      "spentVsBudget": "Chi tiêu / Ngân sách",
+      "notSet": "Chưa đặt",
+      "categorySummary": "{category}: đã chi {spent}, ngân sách {budget}",
+      "overBudget": "Vượt {amount}",
+      "spent": "Đã chi",
+      "budget": "Ngân sách",
+      "remaining": "Còn lại",
+      "over": "Vượt ngân sách",
+      "budgetUsed": "Đã dùng ngân sách",
+      "spendingShare": "Tỷ trọng tổng chi",
+      "editBudget": "Chỉnh ngân sách",
       "totalLabel": "Tổng đã chi",
       "title": "Bạn đã chi cho những gì?",
       "total": "Tổng chi: {amount}",
@@ -571,6 +583,7 @@
       "ACCOMMODATION": "Chỗ ở",
       "TRANSPORTATION": "Di chuyển",
       "FOOD_BEVERAGE": "Ăn uống",
+      "VISIT": "Tham quan",
       "SIGHTSEEING": "Vé",
       "SHOPPING": "Mua sắm",
       "OTHER": "Khác"
@@ -588,7 +601,7 @@
       "addTitle": "Thêm khoản chi",
       "editTitle": "Sửa khoản chi",
       "deleteTitle": "Xác nhận xóa khoản chi",
-      "deleteConfirm": "Bạn có chắc chắn muốn xóa khoản chi \"{title}\" trị giá {amount} không?",
+      "deleteConfirm": "Bạn có muốn xóa khoản chi \"<subject>{title}</subject>\" trị giá {amount} không?",
       "deleteDesc": "Khoản chi này sẽ được loại khỏi sổ cái chi tiêu và số dư ngân sách của chuyến đi sẽ được tính toán lại ngay lập tức.",
       "confirmDelete": "Xác nhận xóa",
       "setBudgetTitle": "Ngân sách chuyến đi",
@@ -735,9 +748,9 @@
       "removeMember": "Xóa khỏi nhóm",
       "leaveTrip": "Rời chuyến đi",
       "confirmRemoveTitle": "Xóa Thành Viên Khỏi Chuyến Đi",
-      "confirmRemoveDesc": "Bạn có chắc chắn muốn xóa {name} ({email}) khỏi chuyến đi này không? Người này sẽ không thể xem hoặc chỉnh sửa chi phí của chuyến đi nữa.",
+      "confirmRemoveDesc": "Bạn có muốn xóa <subject>{name}</subject> ({email}) khỏi chuyến đi này không? Người này sẽ không thể xem hoặc chỉnh sửa chi phí của chuyến đi nữa.",
       "confirmLeaveTitle": "Rời Khỏi Chuyến Đi",
-      "confirmLeaveDesc": "Bạn có chắc chắn muốn rời khỏi chuyến đi \"{tripName}\" không?",
+      "confirmLeaveDesc": "Bạn có muốn rời chuyến đi \"<subject>{tripName}</subject>\" không?",
       "confirmRemoveBtn": "Xác nhận xóa",
       "confirmLeaveBtn": "Rời chuyến đi"
     },
@@ -845,7 +858,7 @@
     },
     "deleteConfirm": {
       "title": "Xóa khoản đã trả?",
-      "desc": "Khoản ghi nhận này sẽ bị xóa. Số tiền cần trả và nhận sẽ được tính lại.",
+      "desc": "Bạn có muốn xóa khoản đã trả <subject>{amount} từ {payer} cho {payee}</subject> không? Số tiền cần trả và nhận sẽ được tính lại.",
       "confirmBtn": "Xóa khoản này",
       "cancelBtn": "Giữ lại"
     },
@@ -922,6 +935,7 @@
       "FOOD_BEVERAGE": "Ăn uống",
       "ACCOMMODATION": "Chỗ ở",
       "TRANSPORTATION": "Di chuyển",
+      "VISIT": "Tham quan",
       "SIGHTSEEING": "Vé",
       "SHOPPING": "Mua sắm",
       "OTHER": "Khác"
@@ -961,7 +975,8 @@
       "cancelBtn": "Hủy",
       "saveBtn": "Lưu hoạt động",
       "deleteTitle": "Xóa hoạt động",
-      "deleteDesc": "Bạn có chắc chắn muốn xóa hoạt động này khỏi lịch trình không?",
+      "deleteDesc": "Bạn có muốn xóa hoạt động này khỏi lịch trình không?",
+      "deleteNamedDesc": "Bạn có muốn xóa \"<subject>{title}</subject>\" khỏi lịch trình không?",
       "confirmDelete": "Xóa",
       "convertToExpense": "Ghi chi tiêu",
       "markCompleted": "Đánh dấu hoàn thành",
@@ -985,7 +1000,7 @@
       "aiDaysInvalid": "Số ngày chuyến đi phải từ 1 đến 30 ngày.",
       "aiDaysDisabledHelper": "Cố định theo thời gian bắt đầu và kết thúc của chuyến đi",
       "resetDayTitle": "Đặt lại lịch trình Ngày {day}?",
-      "resetDayDesc": "Toàn bộ các hoạt động đã lên lịch trong Ngày {day} sẽ bị xóa và đưa về trạng thái trống. Bạn có chắc chắn muốn tiếp tục?",
+      "resetDayDesc": "Bạn có muốn xóa toàn bộ hoạt động trong <subject>Ngày {day}</subject> khỏi lịch trình không?",
       "confirmResetDay": "Xóa toàn bộ hoạt động"
     },
     "checklist": {
@@ -1121,6 +1136,12 @@
     "invalidSize": "Ảnh phải có dữ liệu và không vượt quá 5 MB."
   },
   "dialog": {
+    "actions": "Thao tác",
+    "back": "Quay lại",
+    "discardTitle": "Bỏ thay đổi chưa lưu?",
+    "discardDescription": "Những thay đổi bạn vừa nhập sẽ không được lưu.",
+    "keepEditing": "Tiếp tục chỉnh sửa",
+    "discard": "Bỏ thay đổi",
     "close": "Đóng hộp thoại",
     "exit": "Thoát",
     "confirm": "Xác nhận",

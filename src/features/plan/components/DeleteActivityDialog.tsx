@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import { AppConfirmDialog } from '@/base/components/ui';
@@ -33,32 +32,12 @@ const DeleteActivityDialog = ({
       loading={loading}
       confirmText={t('confirmDelete')}
       cancelText={t('cancelBtn')}
-      description={
-        <Typography
-          sx={{
-            fontSize: '14px',
-            color: 'text.secondary',
-            lineHeight: 1.6,
-          }}
-        >
-          {activityTitle ? (
-            <>
-              {t('deleteDesc')}{' '}
-              <Typography
-                component="span"
-                sx={{
-                  fontWeight: 700,
-                  color: 'text.primary',
-                }}
-              >
-                &ldquo;{activityTitle}&rdquo;
-              </Typography>
-            </>
-          ) : (
-            t('deleteDesc')
-          )}
-        </Typography>
-      }
+      description={activityTitle?.trim()
+        ? t.rich('deleteNamedDesc', {
+            title: activityTitle,
+            subject: (chunks) => <strong>{chunks}</strong>,
+          })
+        : t('deleteDesc')}
     />
   );
 };

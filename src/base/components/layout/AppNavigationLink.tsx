@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import Link from 'next/link';
 import { ButtonBase, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
@@ -36,15 +38,16 @@ const AppNavigationLink = ({
         px: 1.5,
         borderRadius: expanded ? 'var(--app-radius-control)' : 'var(--app-radius-pill)',
         width: expanded ? '100%' : 'auto',
-        color: active ? 'primary.main' : 'text.secondary',
-        bgcolor: active ? 'action.selected' : 'transparent',
+        color: 'text.secondary',
+        bgcolor: 'transparent',
         '@media (hover: hover) and (pointer: fine)': {
           '&:hover': {
-            bgcolor: active ? 'action.selected' : 'action.hover',
-            color: active ? 'primary.main' : 'text.primary',
+            bgcolor: 'action.hover',
+            color: 'text.primary',
           },
         },
         '&:active': { bgcolor: 'action.selected' },
+        ...(active && selectedSurface(theme)),
         '&.Mui-focusVisible': {
           outline: '2px solid',
           outlineColor: 'primary.main',

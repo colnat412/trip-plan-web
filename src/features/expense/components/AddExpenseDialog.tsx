@@ -33,13 +33,14 @@ const AddExpenseDialog = ({
 
   return (
     <AppDialog
+      mobilePresentation="screen"
+      protectChanges
       open={open}
       onClose={onClose}
       closeDisabled={isLoading}
       title={t('dialog.addTitle')}
       icon={<ReceiptLongRoundedIcon />}
       maxWidth="sm"
-      showSheetHandle
       actions={
         <>
           <AppButton data-dialog-action="cancel" intent="secondary"

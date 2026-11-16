@@ -194,6 +194,11 @@ const MyTrips = () => {
         totalTrips={totalCount}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={(size) => {
+          setRowsPerPage(size);
+          setPage(0);
+        }}
       />
 
       {error && !isDebouncing ? (
@@ -216,10 +221,6 @@ const MyTrips = () => {
               page={page}
               rowsPerPage={rowsPerPage}
               onPageChange={setPage}
-              onRowsPerPageChange={(newSize) => {
-                setRowsPerPage(newSize);
-                setPage(0);
-              }}
             />
           )}
         </Box>
@@ -244,11 +245,6 @@ const MyTrips = () => {
                   pageSize: rowsPerPage,
                   totalCount,
                   onPageChange: setPage,
-                  onPageSizeChange: (newSize) => {
-                    setRowsPerPage(newSize);
-                    setPage(0);
-                  },
-                  pageSizeOptions: [5, 10, 20],
                 }
               : null
           }

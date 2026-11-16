@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Box, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import { tonalSurface } from '@/base/theme/surfaces';
 import { useTranslations } from 'next-intl';
 import { AppCard } from '@/base/components/ui';
 import { TemplateSaveButton } from './TemplateSaveControls';
@@ -37,11 +38,13 @@ const TemplateCard = ({
         overflow: 'hidden',
         cursor: 'pointer',
         WebkitTapHighlightColor: 'transparent',
-        color: theme.palette.common.white,
-        bgcolor: 'primary.dark',
-        backgroundImage: template.coverUrl
-          ? `linear-gradient(180deg, ${alpha(theme.palette.common.black, 0.12)} 0%, ${alpha(theme.palette.common.black, 0.12)} 30%, ${alpha(theme.palette.common.black, 0.88)} 100%), url(${JSON.stringify(template.coverUrl)})`
-          : `linear-gradient(145deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
+        ...tonalSurface(theme, 22),
+        color: template.coverUrl ? theme.palette.common.white : tonalSurface(theme).color,
+        backgroundColor: template.coverUrl
+          ? alpha(theme.palette.common.black, 0.64)
+          : tonalSurface(theme, 22).backgroundColor,
+        backgroundImage: template.coverUrl ? `url(${JSON.stringify(template.coverUrl)})` : 'none',
+        backgroundBlendMode: 'multiply',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         borderColor: 'divider',
@@ -63,7 +66,7 @@ const TemplateCard = ({
         <Box data-template-save sx={(theme) => ({
           borderRadius: '50%',
           bgcolor: alpha(theme.palette.common.black, 0.56),
-          '& .MuiIconButton-root': { color: theme.palette.common.white },
+          '& .MuiIconButton-root:not([aria-pressed="true"])': { color: theme.palette.common.white },
           '& .MuiIconButton-root.Mui-disabled': { color: alpha(theme.palette.common.white, 0.5) },
         })}>
           <TemplateSaveButton id={template.id} iconOnly />

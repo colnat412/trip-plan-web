@@ -48,6 +48,7 @@ const TripSwitcherResults = ({
             <AppButton
               key={trip.id}
               intent="text"
+              selected={selected}
               size="small"
               onClick={() => {
                 onSelect(trip);
@@ -60,9 +61,8 @@ const TripSwitcherResults = ({
                 minHeight: 76,
                 px: 1.5,
                 border: 1,
-                borderColor: selected ? 'primary.main' : 'transparent',
-                bgcolor: selected ? 'action.selected' : 'transparent',
-                color: 'text.primary',
+                borderColor: 'transparent',
+                ...(selected ? {} : { bgcolor: 'transparent', color: 'text.primary' }),
                 '&.Mui-focusVisible': {
                   outline: '2px solid',
                   outlineColor: 'primary.main',
@@ -100,13 +100,13 @@ const TripSwitcherResults = ({
                   <Typography
                     noWrap
                     title={trip.destination}
-                    sx={{ fontSize: '11px', color: 'text.secondary' }}
+                    sx={{ fontSize: '11px', color: selected ? 'inherit' : 'text.secondary' }}
                   >
                     {trip.destination}
                   </Typography>
                   <Typography
                     noWrap
-                    sx={{ fontSize: '11px', color: 'text.secondary' }}
+                    sx={{ fontSize: '11px', color: selected ? 'inherit' : 'text.secondary' }}
                   >
                     {formatDateRange(
                       trip.startDate,
@@ -117,7 +117,7 @@ const TripSwitcherResults = ({
                 </Box>
                 {selected && (
                   <CheckRoundedIcon
-                    sx={{ color: 'primary.main', flexShrink: 0 }}
+                    sx={{ color: 'inherit', flexShrink: 0 }}
                   />
                 )}
               </Stack>

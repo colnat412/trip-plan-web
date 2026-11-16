@@ -89,10 +89,13 @@ const AiPlannerDialog = ({
 
   return (
     <AppDialog
+      mobilePresentation="screen"
+      protectChanges
+      hasUnsavedChanges={destinationInput !== null || people !== (initialPeople || 2) || budget !== 5000000 || Boolean(preferences)}
       open={open}
+      closeDisabled={isPending}
       onClose={handleClose}
       title={tDialog('aiPlannerTitle')}
-      description={tDialog('aiPlannerDesc')}
       icon={<AutoAwesomeRoundedIcon />}
       maxWidth="sm"
       actions={

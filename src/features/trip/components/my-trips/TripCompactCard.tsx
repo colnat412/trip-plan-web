@@ -1,7 +1,10 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import { Box, ButtonBase, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import { tonalSurface } from '@/base/theme/surfaces';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
@@ -30,16 +33,19 @@ const TripCompactCard = ({ trip, isActive = false, isOwner, onSelect, onEdit, on
         p: 0,
         minWidth: 0,
         cursor: 'pointer',
-        borderColor: isActive ? 'primary.main' : 'divider',
-        bgcolor: 'primary.dark',
-        color: theme.palette.common.white,
-        backgroundImage: coverUrl
-          ? `linear-gradient(90deg, ${alpha(theme.palette.common.black, 0.78)}, ${alpha(theme.palette.common.black, 0.62)} 65%, ${alpha(theme.palette.common.black, 0.32)}), url(${JSON.stringify(coverUrl)})`
-          : 'none',
+        ...tonalSurface(theme, 22),
+        borderColor: 'divider',
+        color: coverUrl ? theme.palette.common.white : tonalSurface(theme).color,
+        backgroundColor: coverUrl
+          ? alpha(theme.palette.common.black, 0.64)
+          : tonalSurface(theme, 22).backgroundColor,
+        backgroundImage: coverUrl ? `url(${JSON.stringify(coverUrl)})` : 'none',
+        backgroundBlendMode: 'multiply',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
+        ...(isActive && !coverUrl && selectedSurface(theme)),
         '@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active)': {
-          backgroundColor: theme.palette.primary.dark,
+          backgroundColor: coverUrl ? theme.palette.common.black : isActive ? selectedSurface(theme).backgroundColor : theme.palette.background.paper,
         },
       })}
       contentSx={{ display: 'flex', alignItems: 'stretch', minWidth: 0 }}
@@ -62,7 +68,7 @@ const TripCompactCard = ({ trip, isActive = false, isOwner, onSelect, onEdit, on
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, minWidth: 0 }}>
-          {isActive && <StarRoundedIcon sx={{ fontSize: 16, flexShrink: 0 }} />}
+          {isActive && <Box component="span" sx={(theme) => ({ ...selectedSurface(theme), display: 'inline-flex', p: 0.25, borderRadius: 'var(--app-radius-badge)' })}><StarRoundedIcon sx={{ fontSize: 16, flexShrink: 0 }} /></Box>}
           <Typography noWrap title={trip.name} sx={{ fontSize: '14px', fontWeight: 700, minWidth: 0, flex: 1 }}>
             {trip.name}
           </Typography>
@@ -94,11 +100,11 @@ const TripCompactCard = ({ trip, isActive = false, isOwner, onSelect, onEdit, on
               width: 44, height: 44,
               borderRadius: 'var(--app-radius-control)',
               bgcolor: 'transparent',
-              color: theme.palette.common.white,
+              color: coverUrl ? theme.palette.common.white : isActive ? (theme.vars?.palette ?? theme.palette).primary.contrastText : theme.palette.text.primary,
               '&:hover': {
                 bgcolor: 'transparent',
-                color: theme.palette.common.white,
-                '& .trip-menu-glyph': { bgcolor: alpha(theme.palette.common.black, 0.55) },
+                color: coverUrl ? theme.palette.common.white : isActive ? (theme.vars?.palette ?? theme.palette).primary.contrastText : theme.palette.text.primary,
+                '& .trip-menu-glyph': { bgcolor: coverUrl ? alpha(theme.palette.common.black, 0.55) : 'action.selected' },
               },
               '&.Mui-focusVisible': {
                 outline: '2px solid currentColor', outlineOffset: -2,
@@ -107,6 +113,7 @@ const TripCompactCard = ({ trip, isActive = false, isOwner, onSelect, onEdit, on
           })}
         >
           <AppActionMenu
+            sheetTitle={trip.name}
             minTouchTarget
             triggerIcon={
               <Box
@@ -115,7 +122,7 @@ const TripCompactCard = ({ trip, isActive = false, isOwner, onSelect, onEdit, on
                 sx={(theme) => ({
                   display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                   width: 28, height: 28, borderRadius: 'var(--app-radius-small)',
-                  bgcolor: alpha(theme.palette.common.black, 0.35),
+                  bgcolor: coverUrl ? alpha(theme.palette.common.black, 0.35) : 'action.hover',
                 })}
               >
                 <MoreVertRoundedIcon sx={{ fontSize: 20 }} />

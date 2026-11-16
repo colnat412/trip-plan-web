@@ -46,7 +46,7 @@ const DeleteTripDialog = ({
       onClose={onClose}
       onConfirm={handleConfirm}
       title={t('deleteTitle')}
-      description={t('deleteConfirm', { name: trip?.name ?? '' })}
+      description={t.rich('deleteConfirm', { name: trip?.name ?? '', subject: (chunks) => <strong>{chunks}</strong> })}
       confirmText={t('delete')}
       cancelText={tTrip('cancelButton')}
       intent="danger"

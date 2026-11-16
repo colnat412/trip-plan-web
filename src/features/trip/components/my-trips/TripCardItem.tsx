@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import {
   Avatar,
   Box,
@@ -63,22 +65,23 @@ const TripCardItem = ({
       />
       <Box
         onClick={() => onSelect(trip)}
-        sx={{
+        sx={(theme) => ({
           position: 'relative',
           display: { xs: 'none', sm: 'flex' },
           flexDirection: 'column',
           borderRadius: 'var(--app-radius-card)',
           overflow: 'hidden',
           border: '1.5px solid',
-          borderColor: isActive ? 'primary.main' : 'divider',
-          bgcolor: isActive ? 'action.selected' : 'background.paper',
+          borderColor: 'divider',
+          bgcolor: 'background.paper',
           transition: 'background-color 0.15s, border-color 0.15s',
           cursor: 'pointer',
           '&:hover': {
             borderColor: 'primary.main',
             bgcolor: 'action.hover',
           },
-        }}
+          ...(isActive && selectedSurface(theme)),
+        })}
       >
         <Box
           sx={{
@@ -99,7 +102,7 @@ const TripCardItem = ({
               width: '100%',
               height: '100%',
               bgcolor: 'action.hover',
-              color: 'text.secondary',
+              color: isActive ? 'primary.contrastText' : 'text.secondary',
             }}
           >
             <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
@@ -125,14 +128,14 @@ const TripCardItem = ({
                 aria-label={isActive ? t('activeTripTip') : t('makeActiveTip')}
                 sx={{
                   bgcolor: 'background.paper',
-                  color: isActive ? 'primary.main' : 'text.secondary',
+                  color: isActive ? 'primary.contrastText' : 'text.secondary',
                   boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
                   width: 44,
                   height: 44,
                   p: 1,
                   '&:hover': {
                     bgcolor: 'background.paper',
-                    color: 'primary.main',
+                    color: isActive ? 'primary.contrastText' : 'primary.main',
                   },
                 }}
               >
@@ -187,7 +190,7 @@ const TripCardItem = ({
                 py: 0.2,
                 borderRadius: 'var(--app-radius-badge)',
                 bgcolor: 'action.selected',
-                color: 'primary.main',
+                color: isActive ? 'primary.contrastText' : 'primary.main',
                 fontWeight: 800,
                 fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
@@ -201,7 +204,7 @@ const TripCardItem = ({
               variant="caption"
               noWrap
               sx={{
-                color: 'text.secondary',
+                color: isActive ? 'primary.contrastText' : 'text.secondary',
                 fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
               }}
@@ -216,7 +219,7 @@ const TripCardItem = ({
               sx={{
                 fontSize: '14px',
                 fontWeight: 700,
-                color: 'text.primary',
+                color: isActive ? 'primary.contrastText' : 'text.primary',
                 lineHeight: 1.3,
               }}
             >
@@ -226,7 +229,7 @@ const TripCardItem = ({
               variant="caption"
               noWrap
               sx={{
-                color: 'text.secondary',
+                color: isActive ? 'primary.contrastText' : 'text.secondary',
                 fontSize: '12px',
                 display: 'block',
                 mt: 0.2,
@@ -241,7 +244,7 @@ const TripCardItem = ({
           <Stack
             direction="row"
             spacing={0.5}
-            sx={{ alignItems: 'center', minWidth: 0, color: 'text.secondary' }}
+            sx={{ alignItems: 'center', minWidth: 0, color: isActive ? 'primary.contrastText' : 'text.secondary' }}
           >
             <LocationOnOutlinedIcon sx={{ fontSize: 14, flexShrink: 0 }} />
             <Typography
@@ -273,7 +276,7 @@ const TripCardItem = ({
                 fontSize: '12px',
                 fontWeight: 700,
                 bgcolor: 'action.hover',
-                color: isActive ? 'primary.main' : 'text.secondary',
+                color: isActive ? 'primary.contrastText' : 'text.secondary',
                 whiteSpace: 'nowrap',
               }}
             >
@@ -309,6 +312,7 @@ const TripCardItem = ({
               {isOwner && (
                 <Box onClick={(e) => e.stopPropagation()}>
                   <AppActionMenu
+                  sheetTitle={trip.name}
                     minTouchTarget
                     items={[
                       ...(onEdit

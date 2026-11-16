@@ -33,7 +33,11 @@ const RecordSettlementDialog = ({
 
   return (
     <AppDialog
+      protectChanges
+      mobilePresentation="sheet"
+      showSheetHandle
       open={open}
+      closeDisabled={isLoading}
       onClose={onClose}
       title={t('dialog.title')}
       icon={<HandshakeRoundedIcon sx={{ fontSize: '22px' }} />}

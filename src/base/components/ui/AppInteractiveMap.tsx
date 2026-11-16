@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import { useEffect, useRef, useState } from 'react';
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useTranslations } from 'next-intl';
@@ -222,7 +224,7 @@ const AppInteractiveMap = ({
         '&[data-completed="true"]': { bgcolor: 'success.main', color: 'success.contrastText' },
         '&[data-dimmed="true"]': { opacity: 0.55, width: 14, height: 14, borderWidth: '2px' },
         '&[data-dimmed="false"]': { zIndex: 1 },
-        '&[aria-pressed="true"]': { bgcolor: 'text.primary', color: 'background.paper', zIndex: 1 },
+        '&[aria-pressed="true"]': { ...selectedSurface(theme), zIndex: 1 },
         '&:focus-visible': { outline: '3px solid', outlineColor: 'primary.main', outlineOffset: 3 },
       },
     }} />

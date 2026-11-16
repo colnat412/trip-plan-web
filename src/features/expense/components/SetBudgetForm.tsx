@@ -1,5 +1,7 @@
 'use client';
 
+import useDialogDraft from '@/base/hooks/use-dialog-draft';
+
 import React, { useMemo, useState } from 'react';
 import { Box, Stack, Typography, Divider } from '@mui/material';
 import { useTranslations } from 'next-intl';
@@ -60,6 +62,8 @@ const SetBudgetForm = ({
   const [categoryLimits, setCategoryLimits] = useState<
     Partial<Record<ExpenseCategory, string>>
   >(initialCategoryLimits);
+
+  useDialogDraft(() => ({ totalBudget, categoryLimits }));
 
   const [error, setError] = useState<string | undefined>();
 

@@ -79,9 +79,6 @@ const TripCardGrid = ({
           >
             {t('emptyTitle')}
           </Typography>
-          <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
-            {t('emptyDescription')}
-          </Typography>
         </Box>
         <AppButton
           size="small"

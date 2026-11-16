@@ -126,7 +126,6 @@ const AiPlannerView = () => {
         icon={<AutoAwesomeRoundedIcon />}
         title={t('title')}
         badge={currentTrip?.name}
-        subtitle={t('subtitle')}
         actions={
           currentTrip ? (
             <AppButton
@@ -163,9 +162,6 @@ const AiPlannerView = () => {
               sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}
             >
               {t('formTitle')}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
-              {t('formSubtitle')}
             </Typography>
 
             <Stack spacing={3}>

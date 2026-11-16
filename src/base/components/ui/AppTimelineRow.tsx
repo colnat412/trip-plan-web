@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import type { ReactNode } from 'react';
 import { Box, ButtonBase, Typography } from '@mui/material';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
@@ -66,10 +68,10 @@ const AppTimelineRow = ({
           overflow: 'hidden',
           border: 1,
           borderRadius: 'var(--app-radius-card)',
-          borderColor: selected ? 'primary.main' : 'divider',
+          borderColor: 'divider',
           ...(selected && {
-            outline: `1px solid ${(theme.vars?.palette ?? theme.palette).primary.main}`,
-            outlineOffset: -1,
+            ...selectedSurface(theme),
+            '& .MuiTypography-root': { color: 'inherit' },
           }),
         })}
       >

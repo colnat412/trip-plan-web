@@ -29,6 +29,7 @@ const SetBudgetDialog = ({
 
   return (
     <AppDialog
+      protectChanges
       open={open}
       onClose={onClose}
       closeDisabled={isLoading}

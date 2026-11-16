@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import { createContext, useContext } from 'react';
 import { PickerDay, type PickerDayProps } from '@mui/x-date-pickers/PickerDay';
 
@@ -24,14 +26,10 @@ const AppCalendarDay = (props: PickerDayProps) => {
         borderRadius: 'var(--app-radius-control)',
         ...(withinRange && !endpoint && {
           borderRadius: 0,
-          bgcolor: 'action.selected',
-          '&:hover': { bgcolor: 'action.hover' },
+          ...selectedSurface(theme),
         }),
         ...(endpoint && {
-          '&.Mui-selected, &.Mui-selected:hover, &.Mui-selected:focus': {
-            bgcolor: (theme.vars?.palette ?? theme.palette).primary.main,
-            color: (theme.vars?.palette ?? theme.palette).primary.contrastText,
-          },
+          '&.Mui-selected': selectedSurface(theme),
         }),
       })}
     />

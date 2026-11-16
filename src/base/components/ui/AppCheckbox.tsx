@@ -8,6 +8,7 @@ interface AppCheckboxProps {
   checked: boolean;
   disabled?: boolean;
   onChange: (checked: boolean) => void;
+  inheritColor?: boolean;
 }
 
 const AppCheckbox = ({
@@ -15,6 +16,7 @@ const AppCheckbox = ({
   checked,
   disabled,
   onChange,
+  inheritColor = false,
 }: AppCheckboxProps) => (
   <Box
     component="label"
@@ -23,7 +25,7 @@ const AppCheckbox = ({
       alignItems: 'flex-start',
       gap: 1,
       minHeight: '44px',
-      color: 'text.primary',
+      color: inheritColor ? 'inherit' : 'text.primary',
       cursor: disabled ? 'default' : 'pointer',
     }}
   >

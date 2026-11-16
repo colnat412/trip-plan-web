@@ -35,8 +35,9 @@ const DeleteExpenseDialog = ({
       description={
         <Stack spacing={1}>
           <Typography sx={{ fontSize: '14px', color: 'text.primary' }}>
-            {t('dialog.deleteConfirm', {
+            {t.rich('dialog.deleteConfirm', {
               title: expense.title,
+              subject: (chunks) => <strong>{chunks}</strong>,
               amount: formatCurrency(expense.amount, expense.currency),
             })}
           </Typography>

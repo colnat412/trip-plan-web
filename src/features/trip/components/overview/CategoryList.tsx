@@ -59,11 +59,6 @@ const CategoryList = ({
         <Typography sx={{ fontSize: '13px', fontWeight: 600 }}>
           {tExpense('table.emptyTitle')}
         </Typography>
-        <Typography
-          sx={{ fontSize: '12px', color: 'text.disabled', maxWidth: 260 }}
-        >
-          {tExpense('table.emptyDesc')}
-        </Typography>
       </Stack>
     );
   }

@@ -4,7 +4,6 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { AppLoadingState, AppButton, AppFloatingActionButton, AppCard, AppPageContainer, AppPageHeader, AppSectionHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
 
-import FinanceNavigation from '@/features/expense/components/FinanceNavigation';
 
 import { useState } from 'react';
 import { Stack, Typography } from '@mui/material';
@@ -120,12 +119,12 @@ const SettlementOverview = () => {
   };
 
   if (isTripLoading || (tripId && isSummaryLoading)) {
-    return <AppPageContainer><FinanceNavigation active="settlement" /><AppLoadingState sx={{ minHeight: 320 }} /></AppPageContainer>;
+    return <AppPageContainer embedded><AppLoadingState sx={{ minHeight: 320 }} /></AppPageContainer>;
   }
 
   if (tripError || summaryError) {
     return (
-      <AppPageContainer>
+      <AppPageContainer embedded>
         <AppErrorState
           status={(tripError ?? summaryError)?.status}
           onRetry={() => tripError ? refetchTrips() : refetch()}
@@ -136,8 +135,7 @@ const SettlementOverview = () => {
 
   if (!currentTrip) {
     return (
-      <AppPageContainer>
-        <FinanceNavigation active="settlement" />
+      <AppPageContainer embedded>
         <AppCard sx={{ p: 5, textAlign: 'center', borderRadius: 'var(--app-radius-card)' }}>
           <Stack spacing={2} sx={{ alignItems: 'center' }}>
             <LuggageRoundedIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
@@ -162,6 +160,7 @@ const SettlementOverview = () => {
 
   return (
     <AppPageContainer
+      embedded
       floatingAction={canWrite ? (
         <AppFloatingActionButton
           label={t('recordPayment')}
@@ -170,7 +169,6 @@ const SettlementOverview = () => {
         />
       ) : undefined}
     >
-      <FinanceNavigation active="settlement" />
       <AppPageHeader title={t('pageTitle')} />
 
       <MyBalanceCard

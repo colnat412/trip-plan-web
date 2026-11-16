@@ -10,6 +10,7 @@ import {
   AppButton,
   AppDatePicker,
   AppDialog,
+  AppImageUploader,
   AppTextArea,
   AppTextField,
   AppToast,
@@ -49,6 +50,7 @@ const CreateTripDialog = ({
   const { refetchTrips, selectTrip } = useTripContext();
   const { createMutation } = useCreateTrip();
 
+  const [coverFile, setCoverFile] = useState<File | null | undefined>();
   const [name, setName] = useState('');
   const [destination, setDestination] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -59,6 +61,7 @@ const CreateTripDialog = ({
   const [successToastOpen, setSuccessToastOpen] = useState(false);
 
   const resetForm = () => {
+    setCoverFile(undefined);
     setName('');
     setDestination('');
     setStartDate('');
@@ -77,6 +80,7 @@ const CreateTripDialog = ({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (createMutation.isPending) return;
 
     const nextErrors: TripFormErrors = {};
     const trimmedName = name.trim();
@@ -108,6 +112,7 @@ const CreateTripDialog = ({
 
     createMutation.mutate(
       {
+        coverFile,
         name: trimmedName,
         destination: trimmedDestination,
         startDate,
@@ -150,11 +155,13 @@ const CreateTripDialog = ({
       />
 
       <AppDialog
+        mobilePresentation="screen"
+        protectChanges
+        hasUnsavedChanges={Boolean(coverFile || name || destination || startDate || endDate || description || baseCurrency !== 'VND')}
         open={open}
         onClose={handleClose}
         closeDisabled={createMutation.isPending}
         title={t('createTitle')}
-        description={t('createDescription')}
         icon={<FlightTakeoffRoundedIcon />}
         maxWidth="sm"
         actions={
@@ -188,6 +195,13 @@ const CreateTripDialog = ({
           onSubmit={handleSubmit}
           sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}
         >
+          <AppImageUploader
+            file={coverFile}
+            alt={t('coverImage')}
+            variant="cover"
+            disabled={createMutation.isPending}
+            onChange={setCoverFile}
+          />
           <AppTextField
             label={t('name')}
             placeholder={t('namePlaceholder')}

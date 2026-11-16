@@ -14,7 +14,6 @@ export interface ExportColors {
   foreground: string;
   accent: string;
   overlay: string;
-  gradient: string;
 }
 
 interface TextStyle {
@@ -191,7 +190,7 @@ const prepareDayText = (
   return { lines, contentBottom: nextLineTop };
 };
 
-// Bước 2: phủ ảnh bìa kín khung, hoặc dùng gradient nếu chuyến chưa có bìa.
+// Bước 2: phủ ảnh bìa kín khung, hoặc giữ màu nền từ theme.
 const drawBackground = (
   context: CanvasRenderingContext2D,
   height: number,
@@ -211,12 +210,6 @@ const drawBackground = (
     const coverLeft = (IMAGE_WIDTH - coverWidth) / 2;
     const coverTop = (height - coverHeight) / 2;
     context.drawImage(cover, coverLeft, coverTop, coverWidth, coverHeight);
-  } else {
-    const gradient = context.createLinearGradient(0, 0, IMAGE_WIDTH, height);
-    gradient.addColorStop(0, colors.background);
-    gradient.addColorStop(1, colors.gradient);
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, IMAGE_WIDTH, height);
   }
 
   // Phủ tối để chữ luôn dễ đọc; trả lại độ trong suốt trước khi vẽ chữ.

@@ -106,21 +106,6 @@ const AppTablePagination = ({
         color="primary"
         shape="rounded"
         size="small"
-        sx={{
-          '& .MuiPaginationItem-root': {
-            fontWeight: 600,
-            fontSize: '12.5px',
-            borderRadius: 'var(--app-radius-small)',
-            '&.Mui-selected': {
-              bgcolor: 'primary.main',
-              color: 'primary.contrastText',
-              fontWeight: 700,
-              '&:hover': {
-                bgcolor: 'primary.dark',
-              },
-            },
-          },
-        }}
       />
     </Box>
   );

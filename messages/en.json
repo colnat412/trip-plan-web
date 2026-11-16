@@ -412,7 +412,7 @@
     "saveChanges": "Save Changes",
     "updateSuccess": "Trip updated successfully!",
     "deleteTitle": "Confirm Delete Trip",
-    "deleteConfirm": "Are you sure you want to delete trip \"{name}\"? All related expenses and data will be removed and cannot be undone.",
+    "deleteConfirm": "Do you want to delete trip \"<subject>{name}</subject>\"? All related expenses and data will be removed and cannot be undone.",
     "deleteSuccess": "Trip deleted successfully!",
     "all": "All",
     "allDestinations": "Location",
@@ -511,6 +511,18 @@
       "warningOverBudget": "Trip spending is above the planned budget."
     },
     "spendingChart": {
+      "allCategories": "All categories",
+      "spentVsBudget": "Spending / Budget",
+      "notSet": "Not set",
+      "categorySummary": "{category}: spent {spent}, budget {budget}",
+      "overBudget": "Over by {amount}",
+      "spent": "Spent",
+      "budget": "Budget",
+      "remaining": "Remaining",
+      "over": "Over budget",
+      "budgetUsed": "Budget used",
+      "spendingShare": "Share of total spending",
+      "editBudget": "Edit budget",
       "totalLabel": "Total spent",
       "title": "Where did your money go?",
       "total": "Total spent: {amount}",
@@ -571,6 +583,7 @@
       "ACCOMMODATION": "Accommodation",
       "TRANSPORTATION": "Transportation",
       "FOOD_BEVERAGE": "Food & drinks",
+      "VISIT": "Sightseeing",
       "SIGHTSEEING": "Tickets",
       "SHOPPING": "Shopping",
       "OTHER": "Other"
@@ -588,7 +601,7 @@
       "addTitle": "Add expense",
       "editTitle": "Edit expense",
       "deleteTitle": "Confirm Delete Expense",
-      "deleteConfirm": "Are you sure you want to delete expense \"{title}\" amounting to {amount}?",
+      "deleteConfirm": "Do you want to delete expense \"<subject>{title}</subject>\" amounting to {amount}?",
       "deleteDesc": "This expense will be removed from the expense ledger and trip budget balances will be recalculated immediately.",
       "confirmDelete": "Confirm Delete",
       "setBudgetTitle": "Trip budget",
@@ -735,9 +748,9 @@
       "removeMember": "Remove from trip",
       "leaveTrip": "Leave trip",
       "confirmRemoveTitle": "Remove Member From Trip",
-      "confirmRemoveDesc": "Are you sure you want to remove {name} ({email}) from this trip? They will no longer have access to this trip.",
+      "confirmRemoveDesc": "Do you want to remove <subject>{name}</subject> ({email}) from this trip? They will no longer have access to this trip.",
       "confirmLeaveTitle": "Leave Trip",
-      "confirmLeaveDesc": "Are you sure you want to leave the trip \"{tripName}\"?",
+      "confirmLeaveDesc": "Do you want to leave trip \"<subject>{tripName}</subject>\"?",
       "confirmRemoveBtn": "Confirm remove",
       "confirmLeaveBtn": "Leave trip"
     },
@@ -845,7 +858,7 @@
     },
     "deleteConfirm": {
       "title": "Delete this payment?",
-      "desc": "This record will be removed and balances recalculated.",
+      "desc": "Do you want to delete the payment of <subject>{amount} from {payer} to {payee}</subject>? Balances will be recalculated.",
       "confirmBtn": "Delete payment",
       "cancelBtn": "Keep it"
     },
@@ -922,6 +935,7 @@
       "FOOD_BEVERAGE": "Food & drinks",
       "ACCOMMODATION": "Accommodation",
       "TRANSPORTATION": "Transportation",
+      "VISIT": "Sightseeing",
       "SIGHTSEEING": "Tickets",
       "SHOPPING": "Shopping",
       "OTHER": "Other"
@@ -961,7 +975,8 @@
       "cancelBtn": "Cancel",
       "saveBtn": "Save Activity",
       "deleteTitle": "Delete",
-      "deleteDesc": "Are you sure you want to delete this activity from your itinerary?",
+      "deleteDesc": "Do you want to delete this activity from the itinerary?",
+      "deleteNamedDesc": "Do you want to delete \"<subject>{title}</subject>\" from the itinerary?",
       "confirmDelete": "Delete",
       "convertToExpense": "Record as Expense",
       "markCompleted": "Mark as Completed",
@@ -985,7 +1000,7 @@
       "aiDaysInvalid": "Trip duration must be between 1 and 30 days.",
       "aiDaysDisabledHelper": "Duration is fixed based on trip start and end dates",
       "resetDayTitle": "Reset Day {day} Itinerary?",
-      "resetDayDesc": "All scheduled activities for Day {day} will be removed and reset to empty state. Are you sure you want to proceed?",
+      "resetDayDesc": "Do you want to delete all activities from <subject>Day {day}</subject> in the itinerary?",
       "confirmResetDay": "Clear all activities"
     },
     "checklist": {
@@ -1121,6 +1136,12 @@
     "invalidSize": "Choose a non-empty image up to 5 MB."
   },
   "dialog": {
+    "actions": "Actions",
+    "back": "Go back",
+    "discardTitle": "Discard unsaved changes?",
+    "discardDescription": "The changes you entered will not be saved.",
+    "keepEditing": "Keep editing",
+    "discard": "Discard changes",
     "close": "Close dialog",
     "exit": "Exit",
     "confirm": "Confirm",

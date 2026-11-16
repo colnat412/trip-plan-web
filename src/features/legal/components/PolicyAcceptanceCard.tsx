@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import { Box, Typography } from '@mui/material';
 import GavelRoundedIcon from '@mui/icons-material/GavelRounded';
 import PolicyRoundedIcon from '@mui/icons-material/PolicyRounded';
@@ -36,17 +38,19 @@ const PolicyAcceptanceCard = ({
   return (
     <AppCard
       variant="outlined"
-      sx={{
+      sx={(theme) => ({
         p: '8px',
         borderRadius: 'var(--app-radius-control)',
-        borderColor: checked ? 'primary.main' : 'divider',
-        bgcolor: checked ? 'action.selected' : 'background.paper',
+        borderColor: 'divider',
+        bgcolor: 'background.paper',
         transition: 'border-color 150ms, background-color 150ms',
-      }}
+        ...(checked && !disabled && selectedSurface(theme)),
+      })}
       contentSx={{ display: 'flex', alignItems: 'center', gap: '8px' }}
     >
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <AppCheckbox
+          inheritColor={checked && !disabled}
           checked={checked}
           disabled={disabled}
           label={
@@ -58,7 +62,7 @@ const PolicyAcceptanceCard = ({
                 aria-hidden
                 sx={{
                   fontSize: '20px',
-                  color: 'primary.main',
+                  color: checked && !disabled ? 'inherit' : 'primary.main',
                   flexShrink: 0,
                   display: { xs: 'none', sm: 'block' },
                 }}
@@ -75,7 +79,7 @@ const PolicyAcceptanceCard = ({
         />
       </Box>
       <AppButton
-        intent="text"
+        intent={checked && !disabled ? "secondary" : "text"}
         size="small"
         endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: '16px' }} />}
         aria-label={t('read', { name: t(`documents.${policy}.title`) })}

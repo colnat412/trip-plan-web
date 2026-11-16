@@ -34,19 +34,16 @@ export default function FinanceNavigation({ active }: {
           key={item.id}
           component={Link}
           href={item.href}
+          scroll={false}
           intent="text"
+          selected={active === item.id}
           aria-current={active === item.id ? 'page' : undefined}
           wrapLabel
           sx={{
             minWidth: 0,
             minHeight: 44,
             borderRadius: 'var(--app-radius-small)',
-            ...(active === item.id ? {
-              bgcolor: 'background.paper',
-              boxShadow: 1,
-              fontWeight: 700,
-              '&:hover': { bgcolor: 'background.paper' },
-            } : { color: 'text.secondary' }),
+            ...(active !== item.id && { color: 'text.secondary' }),
           }}
         >
           {t(item.id)}

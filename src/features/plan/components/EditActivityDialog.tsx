@@ -32,6 +32,8 @@ const EditActivityDialog = ({
 
   return (
     <AppDialog
+      mobilePresentation="screen"
+      protectChanges
       open={open}
       closeDisabled={isLoading || saving}
       onClose={onClose}

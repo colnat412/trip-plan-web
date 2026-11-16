@@ -22,6 +22,7 @@ import { useCreateExpense } from '@/features/expense/hooks/useExpenseMutation';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import AddExpenseDialog from '@/features/expense/components/AddExpenseDialog';
+import { normalizeTripCategory } from '@/base/constants';
 import type { CreateExpensePayload } from '@/features/expense/types';
 import UseTemplateButton from '@/features/plan-template/components/UseTemplateButton';
 import PublishTemplateDialog from '@/features/plan-template/components/PublishTemplateDialog';
@@ -495,7 +496,7 @@ const PlanOverview = ({
             }}
           >
             {isLoading || (isStale && !planError) || isLoadingActivities ? (
-              <AppLoadingState />
+              <AppLoadingState local />
             ) : (
               <DayTimelineList
                 activities={dayActivities}
@@ -610,7 +611,7 @@ const PlanOverview = ({
               if (estimated > 0 && spent === 0) return estimated;
               return undefined;
             })(),
-            category: convertExpenseActivity.category,
+            category: normalizeTripCategory(convertExpenseActivity.category),
             expenseDate:
               overview?.days.find((d) => d.id === convertExpenseActivity.dayId)
                 ?.planDate || undefined,
@@ -680,8 +681,9 @@ const PlanOverview = ({
           await resetDayActivitiesAsync({});
         }}
         title={t('dialog.resetDayTitle', { day: selectedDay?.dayNumber ?? '' })}
-        description={t('dialog.resetDayDesc', {
+        description={t.rich('dialog.resetDayDesc', {
           day: selectedDay?.dayNumber ?? '',
+          subject: (chunks) => <strong>{chunks}</strong>,
         })}
         confirmText={t('dialog.confirmResetDay')}
         cancelText={t('dialog.cancelBtn')}

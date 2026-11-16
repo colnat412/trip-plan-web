@@ -1,5 +1,7 @@
 'use client';
 
+import useDialogDraft from '@/base/hooks/use-dialog-draft';
+
 import React, { useState } from 'react';
 import { Box, Stack } from '@mui/material';
 import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
@@ -53,6 +55,8 @@ const RecordSettlementForm = ({
   );
   const [note, setNote] = useState(initialData?.note || '');
   const [error, setError] = useState<string | null>(null);
+
+  useDialogDraft(() => ({ payerId, payeeId, amount, settledAt, paymentMethod, note }));
 
   const memberOptions = members.map((m) => ({
     value: m.userId,

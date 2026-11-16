@@ -11,6 +11,7 @@ export interface AppFinanceRowProps {
   amountCaption?: ReactNode;
   amountColor?: string;
   action?: ReactNode;
+  actionPlacement?: 'row' | 'amount';
   onClick?: () => void;
   // Keep identity details beside the amount for dense detail lists.
   compact?: boolean;
@@ -24,6 +25,7 @@ const AppFinanceRow = ({
   amountCaption,
   amountColor = 'text.primary',
   action,
+  actionPlacement = 'row',
   onClick,
   compact = false,
 }: AppFinanceRowProps) => {
@@ -118,35 +120,38 @@ const AppFinanceRow = ({
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-end',
+                flexDirection: actionPlacement === 'amount' ? 'row' : 'column',
+                alignItems: actionPlacement === 'amount' ? 'center' : 'flex-end',
                 gap: 0.5,
                 minWidth: 0,
                 maxWidth: '100%',
                 flex: '0 1 auto',
               }}
             >
-              <Typography
-                component="span"
-                sx={{
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  color: amountColor,
-                  whiteSpace: compact ? 'normal' : 'nowrap',
-                  textAlign: 'right',
-                  overflowWrap: 'anywhere',
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {amount}
-              </Typography>
-              {amountCaption}
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', minWidth: 0, gap: 0.5 }}>
+                <Typography
+                  component="span"
+                  sx={{
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: amountColor,
+                    whiteSpace: compact ? 'normal' : 'nowrap',
+                    textAlign: 'right',
+                    overflowWrap: 'anywhere',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {amount}
+                </Typography>
+                {amountCaption}
+              </Box>
+              {actionPlacement === 'amount' && action}
             </Box>
           </Box>
           {!compact && subtitleContent}
         </Box>
       </Box>
-      {action && <Box sx={{ flexShrink: 0, pt: 0.5 }}>{action}</Box>}
+      {actionPlacement === 'row' && action && <Box sx={{ flexShrink: 0, pt: 0.5 }}>{action}</Box>}
     </Box>
   );
 };

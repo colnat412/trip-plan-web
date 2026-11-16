@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import {
   Avatar,
   Box,
@@ -74,12 +76,14 @@ const TripTableRow = ({
 
   return (
     <TableRow
-      hover
-      sx={{
-        bgcolor: isSelected ? 'action.selected' : 'inherit',
+      hover={!isSelected}
+      aria-selected={isSelected}
+      sx={(theme) => ({
+        bgcolor: 'inherit',
+        ...(isSelected && { ...selectedSurface(theme), '& .MuiTableCell-root, & .MuiTypography-root': { color: 'inherit' } }),
         cursor: 'pointer',
         '&:last-child td, &:last-child th': { border: 0 },
-      }}
+      })}
       onClick={() => onSelectTrip(trip)}
     >
       <TableCell sx={{ py: 2 }}>
@@ -95,7 +99,7 @@ const TripTableRow = ({
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 'var(--app-radius-control)',
-              bgcolor: isSelected ? 'primary.main' : 'action.hover',
+              bgcolor: (theme) => isSelected ? selectedSurface(theme).backgroundColor : (theme.vars?.palette ?? theme.palette).action.hover,
               color: isSelected ? 'primary.contrastText' : 'primary.main',
               flexShrink: 0,
             }}
@@ -194,6 +198,7 @@ const TripTableRow = ({
           </AppButton>
 
           <AppActionMenu
+            sheetTitle={trip.name}
             items={actionMenuItems}
             ariaLabel={`Actions for ${trip.name}`}
           />

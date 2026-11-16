@@ -1,5 +1,7 @@
 'use client';
 
+import useDialogDraft from '@/base/hooks/use-dialog-draft';
+
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
@@ -93,8 +95,16 @@ const EditExpenseForm = ({
   const splitsRef = useRef<SplitItemPayload[]>(initialSplits);
   const isSplitValidRef = useRef<boolean>(true);
 
+  const baselineSplits = useRef<string | undefined>(undefined);
+  useDialogDraft(() => ({
+    title, amount, category, expenseDate, splitType, payerId, note,
+    receipt: receiptFile === undefined ? undefined : receiptFile === null ? null : [receiptFile.name, receiptFile.size, receiptFile.lastModified],
+    splitsChanged: baselineSplits.current !== undefined && JSON.stringify(splitsRef.current) !== baselineSplits.current,
+  }));
+
   const handleSplitChange = useCallback(
     (newSplits: SplitItemPayload[], valid: boolean) => {
+      baselineSplits.current ??= JSON.stringify(newSplits);
       splitsRef.current = newSplits;
       isSplitValidRef.current = valid;
     },

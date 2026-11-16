@@ -23,7 +23,6 @@ const PlanEmptyState = ({
       <AppEmptyState
         icon={<EventAvailableRoundedIcon />}
         title={t('emptyActivities')}
-        description={t('emptyActivitiesDesc')}
         action={!readOnly && onAddActivity ? (
         <AppButton
           intent="primary"

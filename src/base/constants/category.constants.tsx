@@ -4,6 +4,7 @@ import React from 'react';
 import HotelRoundedIcon from '@mui/icons-material/HotelRounded';
 import DirectionsSubwayRoundedIcon from '@mui/icons-material/DirectionsSubwayRounded';
 import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
+import AttractionsRoundedIcon from '@mui/icons-material/AttractionsRounded';
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
 import ShoppingBagRoundedIcon from '@mui/icons-material/ShoppingBagRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
@@ -25,6 +26,25 @@ export const TRIP_CATEGORIES: TripCategory[] = [
   'SIGHTSEEING',
   'OTHER',
 ];
+
+export type ActivityCategory = TripCategory | 'VISIT';
+
+export const ACTIVITY_CATEGORIES: ActivityCategory[] = [
+  'FOOD_BEVERAGE',
+  'VISIT',
+  'TRANSPORTATION',
+  'ACCOMMODATION',
+  'SIGHTSEEING',
+  'SHOPPING',
+  'OTHER',
+];
+
+export const normalizeActivityCategory = (
+  category?: string | null,
+): ActivityCategory =>
+  ACTIVITY_CATEGORIES.includes(category as ActivityCategory)
+    ? (category as ActivityCategory)
+    : 'OTHER';
 
 export const normalizeTripCategory = (
   category?: string | null,
@@ -52,6 +72,11 @@ export const CATEGORY_CONFIG: Record<
     bg: '#fff3e0',
     color: '#e65100',
   },
+  VISIT: {
+    icon: <AttractionsRoundedIcon sx={{ fontSize: 16 }} />,
+    bg: '#e8f5e9',
+    color: '#2e7d32',
+  },
   SIGHTSEEING: {
     icon: <ConfirmationNumberRoundedIcon sx={{ fontSize: 16 }} />,
     bg: '#e0f2f1',
@@ -70,9 +95,10 @@ export const CATEGORY_CONFIG: Record<
 };
 
 export const getCategorySelectOptions = (
-  tCat: (key: TripCategory) => string,
+  tCat: (key: ActivityCategory) => string,
+  categories: readonly ActivityCategory[] = TRIP_CATEGORIES,
 ): AppSelectOption[] => {
-  return TRIP_CATEGORIES.map((cat) => {
+  return categories.map((cat) => {
     const config = CATEGORY_CONFIG[cat] || CATEGORY_CONFIG.OTHER;
     return {
       value: cat,

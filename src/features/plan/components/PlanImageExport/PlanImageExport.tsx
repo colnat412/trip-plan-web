@@ -73,7 +73,6 @@ const PlanImageExport = ({ tripId }: { tripId: string }) => {
             fontFamily,
             colors: {
               background: primary.dark,
-              gradient: primary.main,
               foreground: common.white,
               overlay: common.black,
               accent: warning.light,

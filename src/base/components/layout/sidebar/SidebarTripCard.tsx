@@ -1,5 +1,7 @@
 'use client';
 
+import { tonalSurface } from '@/base/theme/surfaces';
+
 import { AppLoadingState } from '@/base/components/ui';
 
 import { useMemo, useState, type MouseEvent } from 'react';
@@ -91,9 +93,6 @@ const SidebarTripCard = () => {
         >
           {tTrip('noTrips')}
         </Typography>
-        <Typography sx={{ fontSize: '11px', color: 'text.secondary' }}>
-          {tTrip('createDescription')}
-        </Typography>
         <AppButton
           size="small"
           intent="primary"
@@ -123,11 +122,8 @@ const SidebarTripCard = () => {
         sx={{
           p: '12px',
           overflow: 'hidden',
-          color: 'common.white',
-          background: (theme) => {
-            const palette = theme.vars?.palette ?? theme.palette;
-            return `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
-          },
+          color: 'text.primary',
+          backgroundColor: (theme) => tonalSurface(theme, 26).backgroundColor,
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -147,11 +143,11 @@ const SidebarTripCard = () => {
               aria-label="Select trip"
               title={t('currentTrip')}
               sx={{
-                color: 'common.white',
+                color: 'text.primary',
                 p: '4px',
                 borderRadius: 'var(--app-radius-small)',
-                bgcolor: 'rgba(255, 255, 255, 0.15)',
-                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.25)' },
+                bgcolor: 'action.hover',
+                '&:hover': { bgcolor: 'action.selected' },
               }}
             >
               <UnfoldMoreRoundedIcon sx={{ fontSize: '16px' }} />
@@ -166,7 +162,7 @@ const SidebarTripCard = () => {
                 fontWeight: 700,
                 fontSize: '16px',
                 lineHeight: 1.25,
-                color: 'common.white',
+                color: 'text.primary',
               }}
             >
               {currentTrip.name}
@@ -243,7 +239,7 @@ const SidebarTripCard = () => {
                   sx={{
                     fontSize: '13px',
                     fontWeight: isSelected ? 700 : 500,
-                    color: isSelected ? 'primary.main' : 'text.primary',
+                    color: isSelected ? 'inherit' : 'text.primary',
                   }}
                 >
                   {item.name}
@@ -252,7 +248,7 @@ const SidebarTripCard = () => {
                   <Typography
                     noWrap
                     variant="caption"
-                    sx={{ fontSize: '11px', color: 'text.secondary' }}
+                    sx={{ fontSize: '11px', color: isSelected ? 'inherit' : 'text.secondary' }}
                   >
                     {item.destination}
                   </Typography>

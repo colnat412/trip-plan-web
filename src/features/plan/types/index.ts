@@ -1,7 +1,7 @@
 import type { MapsSource } from '@/base/types/maps';
-import type { TripCategory } from '@/base/constants';
+import type { ActivityCategory } from '@/base/constants';
 
-export type ActivityCategory = TripCategory;
+export type { ActivityCategory } from '@/base/constants';
 
 export type ActivityStatus =
   | 'PLANNED'
@@ -92,6 +92,7 @@ export interface UpdatePlanDayPayload {
 }
 
 export interface CreateActivityPayload {
+  imageUploadId?: string;
   title: string;
   startTime?: string;
   endTime?: string;

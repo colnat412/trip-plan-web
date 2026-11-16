@@ -1,3 +1,4 @@
+import { brandSurface } from '@/base/theme/surfaces';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { useTranslations } from 'next-intl';
 import { Box, Stack, Typography } from '@mui/material';
@@ -19,7 +20,8 @@ const AppBrand = ({
       sx={{ alignItems: 'center', minWidth: 0 }}
     >
       <Box
-        sx={{
+        sx={(theme) => ({
+          ...brandSurface(theme),
           width: showTag ? 38 : 42,
           height: showTag ? 38 : 42,
           display: 'flex',
@@ -27,12 +29,7 @@ const AppBrand = ({
           justifyContent: 'center',
           flexShrink: 0,
           borderRadius: 'var(--app-radius-control)',
-          color: 'common.white',
-          background: (theme) => {
-            const palette = theme.vars?.palette ?? theme.palette;
-            return `linear-gradient(135deg, ${palette.primary.main}, ${palette.primary.light})`;
-          },
-        }}
+        })}
       >
         <FlightTakeoffRoundedIcon
           sx={{ fontSize: 20, transform: 'rotate(-18deg)' }}
@@ -58,7 +55,7 @@ const AppBrand = ({
         {showTag ? (
           <Typography
             variant="caption"
-            sx={{ color: 'primary.light', lineHeight: 1 }}
+            sx={{ color: 'primary.main', lineHeight: 1 }}
           >
             {t('brandTag')}
           </Typography>

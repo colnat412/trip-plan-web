@@ -34,13 +34,14 @@ const EditExpenseDialog = ({
 
   return (
     <AppDialog
+      mobilePresentation="screen"
+      protectChanges
       open={open}
       onClose={onClose}
       closeDisabled={isLoading}
       title={t('dialog.editTitle')}
       icon={<EditRoundedIcon color="primary" />}
       maxWidth="sm"
-      showSheetHandle
       actions={
         <>
           <AppButton data-dialog-action="cancel" intent="secondary"

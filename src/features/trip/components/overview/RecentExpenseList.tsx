@@ -53,7 +53,6 @@ const RecentExpenseList = ({
       <AppEmptyState
         icon={<ReceiptLongRoundedIcon />}
         title={tExpense('table.emptyTitle')}
-        description={tExpense('table.emptyDesc')}
       />
     );
   }

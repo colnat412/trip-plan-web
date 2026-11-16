@@ -7,14 +7,15 @@ import AppLoadingIndicator from './AppLoadingIndicator';
 
 interface AppLoadingStateProps extends BoxProps {
   pageOnly?: boolean;
+  local?: boolean;
 }
 
-const AppLoadingState = ({ sx, pageOnly = false, ...props }: AppLoadingStateProps) => {
+const AppLoadingState = ({ sx, pageOnly = false, local = false, ...props }: AppLoadingStateProps) => {
   const context = useContext(AppPageLoadingContext);
   const registerLoading = context?.registerLoading;
-  useLayoutEffect(() => registerLoading?.(), [registerLoading]);
+  useLayoutEffect(() => local ? undefined : registerLoading?.(), [registerLoading, local]);
 
-  if (context?.initialPageLoad || pageOnly) return null;
+  if ((!local && context?.initialPageLoad) || pageOnly) return null;
   return (
     <Box
       {...props}

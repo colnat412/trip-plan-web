@@ -153,6 +153,7 @@ const CameraCaptureDialog = ({
 
   return (
     <AppDialog
+      mobilePresentation="screen"
       open={open}
       onClose={handleClose}
       title={t('dialogTitle')}

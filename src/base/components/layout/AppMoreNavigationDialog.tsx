@@ -26,7 +26,6 @@ const AppMoreNavigationDialog = ({
       open={open}
       onClose={onClose}
       title={t('more')}
-      description={t('moreDescription')}
       icon={<MoreHorizRoundedIcon />}
       maxWidth="xs"
     >

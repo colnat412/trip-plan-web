@@ -107,10 +107,12 @@ const ShareTripDialog = ({
 
   return (
     <AppDialog
+      mobilePresentation="sheet"
+      showSheetHandle
       open={open}
       onClose={handleClose}
       title={t('dialogTitle')}
-      description={t('dialogSubtitle', { name: tripName })}
+      description={tripName}
       icon={<Share />}
       maxWidth="sm"
       actions={

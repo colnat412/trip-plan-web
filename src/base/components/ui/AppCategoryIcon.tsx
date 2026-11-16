@@ -2,10 +2,10 @@
 
 import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { CATEGORY_CONFIG, type TripCategory } from '@/base/constants';
+import { CATEGORY_CONFIG, type ActivityCategory } from '@/base/constants';
 
 export interface AppCategoryIconProps {
-  category: TripCategory | string;
+  category: ActivityCategory | string;
   size?: number;
 }
 
@@ -13,7 +13,8 @@ const CATEGORY_TONES = {
   ACCOMMODATION: 'primary',
   TRANSPORTATION: 'info',
   FOOD_BEVERAGE: 'warning',
-  SIGHTSEEING: 'success',
+  VISIT: 'success',
+  SIGHTSEEING: 'info',
   SHOPPING: 'secondary',
 } as const;
 
@@ -22,7 +23,7 @@ const AppCategoryIcon = ({ category, size = 40 }: AppCategoryIconProps) => {
   const config = CATEGORY_CONFIG[category] ?? CATEGORY_CONFIG.OTHER;
   const tone = CATEGORY_TONES[category as keyof typeof CATEGORY_TONES];
   const label = t(
-    CATEGORY_CONFIG[category] ? (category as TripCategory) : 'OTHER',
+    CATEGORY_CONFIG[category] ? (category as ActivityCategory) : 'OTHER',
   );
 
   return (

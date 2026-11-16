@@ -5,7 +5,7 @@ import { Stack, Typography } from '@mui/material';
 import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded';
 import { useTranslations } from 'next-intl';
 import { AppCard, AppEmptyState } from '@/base/components/ui';
-import { normalizeTripCategory } from '@/base/constants';
+import { normalizeActivityCategory } from '@/base/constants';
 import PlanDayTabs from '@/features/plan/components/PlanDayTabs';
 import ActivityTimelineCard from '@/features/plan/components/ActivityTimelineCard';
 import type { TemplateSnapshot } from '../types';
@@ -25,6 +25,14 @@ const TemplateItinerary = ({
     totalActivities: day.activities.length,
   }));
   const selectedDay = days.find((day) => day.id === selectedDayId) ?? days[0];
+  const dayLabel = selectedDay ? t('day', { number: selectedDay.dayNumber }) : '';
+  const dayTitle = selectedDay?.title?.trim() ?? '';
+  const normalizedTitle = dayTitle.replace(/\s+/g, ' ').toLocaleLowerCase();
+  const isDefaultTitle = selectedDay && [
+    dayLabel,
+    `Ngày ${selectedDay.dayNumber}`,
+    `Day ${selectedDay.dayNumber}`,
+  ].some((label) => label.toLocaleLowerCase() === normalizedTitle);
 
   return (
     <Stack spacing={2} sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
@@ -44,8 +52,8 @@ const TemplateItinerary = ({
                 component="h2"
                 sx={{ fontSize: '18px', fontWeight: 700 }}
               >
-                {t('day', { number: selectedDay.dayNumber })}
-                {selectedDay.title ? ` · ${selectedDay.title}` : ''}
+                {dayLabel}
+                {dayTitle && !isDefaultTitle ? ` · ${dayTitle}` : ''}
               </Typography>
               {selectedDay.note && (
                 <Typography
@@ -62,7 +70,7 @@ const TemplateItinerary = ({
                       key={`${selectedDay.id}:${index}`}
                       activity={{
                         ...activity,
-                        category: normalizeTripCategory(activity.category),
+                        category: normalizeActivityCategory(activity.category),
                         status: 'PLANNED',
                       }}
                       currency={currency}

@@ -25,7 +25,6 @@ const ProfileDialog = ({ open, onClose, user }: ProfileDialogProps) => {
         closeDisabled={busy}
         closeLabel={t('close')}
         title={t('title')}
-        description={t('description')}
         icon={<PersonOutlineRoundedIcon />}
       >
         {open && (

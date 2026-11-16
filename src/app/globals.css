@@ -1,4 +1,13 @@
 :root {
+  --app-dialog-inset: 16px;
+  --app-dialog-width-compact: 440px;
+  --app-dialog-width: 600px;
+  --app-dialog-width-wide: 880px;
+  --app-dialog-width-large: 1040px;
+  --app-dialog-width-extra-large: 1200px;
+  --app-dialog-max-height: min(760px, calc(100dvh - 2 * var(--app-dialog-inset)));
+  --app-dialog-header-height: 56px;
+  --app-dialog-control-size: 44px;
   --app-radius-detail: 4px;
   --app-radius-badge: 6px;
   --app-radius-small: 8px;
@@ -7,8 +16,8 @@
   --app-radius-panel: 24px;
   --app-radius-dialog: 28px;
   --app-radius-pill: 999px;
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--mui-palette-background-default, #ffffff);
+  --foreground: var(--mui-palette-text-primary, #0f172a);
 
   --font-sans:
     var(--font-comfortaa), 'Comfortaa', ui-sans-serif, system-ui, sans-serif,

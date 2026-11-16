@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import { Box, Checkbox, Typography } from '@mui/material';
 
 interface TemplateCheckboxOptionProps {
@@ -17,7 +19,7 @@ const TemplateCheckboxOption = ({
 }: TemplateCheckboxOptionProps) => (
   <Box
     component="label"
-    sx={{
+    sx={(theme) => ({
       display: 'flex',
       alignItems: 'flex-start',
       gap: 0.75,
@@ -25,9 +27,9 @@ const TemplateCheckboxOption = ({
       minHeight: 44,
       p: 0.75,
       border: 1,
-      borderColor: checked ? 'primary.main' : 'divider',
+      borderColor: 'divider',
       borderRadius: 'var(--app-radius-control)',
-      bgcolor: checked ? 'action.selected' : 'background.paper',
+      bgcolor: 'background.paper',
       color: disabled ? 'text.disabled' : 'text.primary',
       cursor: disabled ? 'default' : 'pointer',
       '&:focus-within': {
@@ -35,7 +37,8 @@ const TemplateCheckboxOption = ({
         outlineColor: 'primary.main',
         outlineOffset: 2,
       },
-    }}
+      ...(checked && !disabled && selectedSurface(theme)),
+    })}
   >
     <Checkbox
       size="small"

@@ -1,40 +1,29 @@
 'use client';
 
 import React from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
-import { AppPagination, AppSelect } from '@/base/components/ui';
+import { AppPagination } from '@/base/components/ui';
 
 export interface TripGridPaginationProps {
   count: number;
   page: number;
   rowsPerPage: number;
   onPageChange: (newPage: number) => void;
-  onRowsPerPageChange: (newRowsPerPage: number) => void;
-  pageSizeOptions?: number[];
 }
-
-const DEFAULT_PAGE_SIZE_OPTIONS = [6, 12, 24];
 
 const TripGridPagination = ({
   count,
   page,
   rowsPerPage,
   onPageChange,
-  onRowsPerPageChange,
-  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
 }: TripGridPaginationProps) => {
   const t = useTranslations('myTrips');
 
   const totalPages = Math.max(1, Math.ceil(count / rowsPerPage));
   const from = count === 0 ? 0 : page * rowsPerPage + 1;
   const to = Math.min(count, (page + 1) * rowsPerPage);
-
-  const sizeOptions = pageSizeOptions.map((size) => ({
-    value: size,
-    label: `${size} ${t('perPageLabel') || '/ trang'}`,
-  }));
 
   return (
     <Box
@@ -43,64 +32,28 @@ const TripGridPagination = ({
         flexDirection: { xs: 'column', sm: 'row' },
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: { xs: 1.5, sm: 2 },
-        p: { xs: 1.5, sm: 2 },
+        gap: 1.5,
+        p: 1.5,
         bgcolor: 'background.paper',
         borderRadius: 'var(--app-radius-card)',
         border: '1px solid',
         borderColor: 'divider',
       }}
     >
-      <Stack
-        direction="row"
-        spacing={1.5}
+      <Typography
+        variant="body2"
         sx={{
-          alignItems: 'center',
-          justifyContent: { xs: 'space-between', sm: 'flex-start' },
-          width: { xs: '100%', sm: 'auto' },
+          color: 'text.secondary',
+          fontSize: '13px',
+          fontWeight: 500,
+          whiteSpace: 'nowrap',
         }}
       >
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
-            fontSize: '13px',
-            fontWeight: 500,
-            whiteSpace: 'nowrap',
-          }}
-        >
-          <Box component="span" sx={{ fontWeight: 700, color: 'text.primary' }}>
-            {from} – {to}
-          </Box>{' '}
-          / {count} {t('tripsUnit')}
-        </Typography>
-
-        <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
-          <Typography
-            variant="caption"
-            sx={{
-              color: 'text.secondary',
-              fontSize: '12px',
-              fontWeight: 600,
-              display: { xs: 'none', md: 'inline' },
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {t('pageSizeLabel')}
-          </Typography>
-          <AppSelect
-            variantType="compact"
-            label={t('pageSizeLabel')}
-            value={rowsPerPage}
-            options={sizeOptions}
-            onChange={(e) => {
-              onRowsPerPageChange(Number(e.target.value));
-              onPageChange(0);
-            }}
-            sx={{ minWidth: 105 }}
-          />
-        </Stack>
-      </Stack>
+        <Box component="span" sx={{ fontWeight: 700, color: 'text.primary' }}>
+          {from} – {to}
+        </Box>{' '}
+        / {count} {t('tripsUnit')}
+      </Typography>
 
       <AppPagination
         count={totalPages}
@@ -109,21 +62,6 @@ const TripGridPagination = ({
         color="primary"
         shape="rounded"
         size="medium"
-        sx={{
-          '& .MuiPaginationItem-root': {
-            fontWeight: 600,
-            fontSize: '13px',
-            borderRadius: 'var(--app-radius-small)',
-            '&.Mui-selected': {
-              bgcolor: 'primary.main',
-              color: 'primary.contrastText',
-              fontWeight: 700,
-              '&:hover': {
-                bgcolor: 'primary.dark',
-              },
-            },
-          },
-        }}
       />
     </Box>
   );

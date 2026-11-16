@@ -28,11 +28,9 @@ const LoginBrandPanel = () => {
         borderRadius: { xs: 0, md: '0 var(--app-radius-dialog) var(--app-radius-dialog) 0' },
         overflow: 'hidden',
         color: 'common.white',
-        bgcolor: 'primary.dark',
-        backgroundImage: (theme) => {
-          const dark = theme.palette.primary.dark;
-          return `linear-gradient(180deg, ${alpha(dark, 0.32)} 0%, ${alpha(dark, 0.02)} 36%, ${alpha(dark, 0.6)} 63%, ${dark} 100%), url("/login-journey.svg")`;
-        },
+        bgcolor: (theme) => alpha(theme.palette.common.black, 0.6),
+        backgroundImage: 'url("/login-journey.svg")',
+        backgroundBlendMode: 'multiply',
         backgroundSize: 'cover',
         backgroundPosition: { xs: 'center 42%', md: 'center' },
       }}

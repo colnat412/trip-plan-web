@@ -30,3 +30,53 @@ export const glassSurface = (theme: Theme, kind: SurfaceKind = 'card'): CSSObjec
     },
   };
 };
+
+/** Muted color fill and readable ink, both following the active color scheme. */
+export const tonalSurface = (theme: Theme, strength = 26): CSSObject => {
+  const palette = theme.vars?.palette ?? theme.palette;
+  return {
+    backgroundColor: `color-mix(in srgb, ${palette.primary.main} ${strength}%, ${palette.background.paper})`,
+    color: `color-mix(in srgb, ${palette.primary.main} 75%, ${palette.text.primary})`,
+    borderColor: `color-mix(in srgb, ${palette.primary.main} 48%, ${palette.divider})`,
+  };
+};
+
+/** Blend the two brand blues into one color without diluting them with paper. */
+export const brandSurface = (theme: Theme, lightShare = 28): CSSObject => {
+  const palette = theme.vars?.palette ?? theme.palette;
+  return {
+    backgroundColor: `color-mix(in srgb, ${palette.primary.main} ${100 - lightShare}%, ${palette.primary.light})`,
+    color: palette.primary.contrastText,
+    borderColor: 'transparent',
+  };
+};
+
+/** Shared selected treatment for navigation, choices and filters in both color schemes. */
+export const selectedSurface = (theme: Theme): CSSObject => {
+  const palette = theme.vars?.palette ?? theme.palette;
+  return {
+    ...brandSurface(theme),
+    backgroundImage: 'none',
+    boxShadow: 'none',
+    '& .MuiSvgIcon-root, & .MuiListItemIcon-root': { color: 'inherit' },
+    '&:hover': brandSurface(theme, 20),
+    '&:active': brandSurface(theme, 12),
+    '@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active)': {
+      ...brandSurface(theme),
+      backdropFilter: 'none',
+      WebkitBackdropFilter: 'none',
+      boxShadow: 'none',
+    },
+    '@media (forced-colors: active)': {
+      backgroundColor: 'Highlight',
+      color: 'HighlightText',
+      borderColor: 'Highlight',
+      '&:hover, &:active': { backgroundColor: 'Highlight', color: 'HighlightText' },
+    },
+    '&.Mui-disabled': {
+      backgroundColor: palette.action.disabledBackground,
+      color: palette.action.disabled,
+      borderColor: 'transparent',
+    },
+  };
+};

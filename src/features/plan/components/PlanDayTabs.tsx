@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import { Box, ButtonBase, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { formatDate, parseDate } from '@/base/utils';
@@ -46,7 +48,7 @@ const PlanDayTabs = ({
             key={day.id}
             onClick={() => onSelectDay(String(day.id))}
             aria-pressed={isSelected}
-            sx={{
+            sx={(theme) => ({
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -56,22 +58,23 @@ const PlanDayTabs = ({
               px: 1,
               borderRadius: 'var(--app-radius-control)',
               border: 1,
-              borderColor: isSelected ? 'primary.main' : 'divider',
-              bgcolor: isSelected ? 'primary.main' : 'background.paper',
-              color: isSelected ? 'primary.contrastText' : 'text.primary',
+              borderColor: 'divider',
+              bgcolor: 'background.paper',
+              color: 'text.primary',
               minWidth: 112,
               flex: '1 0 112px',
               minHeight: 48,
               scrollSnapAlign: 'start',
               '&:hover': {
-                bgcolor: isSelected ? 'primary.dark' : 'action.hover',
+                bgcolor: 'action.hover',
               },
+              ...(isSelected && selectedSurface(theme)),
               '&.Mui-focusVisible': {
                 outline: '2px solid',
                 outlineColor: 'primary.main',
                 outlineOffset: -3,
               },
-            }}
+            })}
           >
             <Typography
               component="span"

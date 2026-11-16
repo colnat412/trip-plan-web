@@ -46,6 +46,8 @@ const ExpenseDetailDialog = ({
 
   return (
     <AppDialog
+      mobilePresentation="sheet"
+      showSheetHandle
       open={open}
       onClose={onClose}
       title={t('dialog.detailTitle')}

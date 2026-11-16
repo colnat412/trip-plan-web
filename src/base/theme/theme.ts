@@ -1,7 +1,8 @@
 'use client';
 
 import { createTheme } from '@mui/material/styles';
-import { glassSurface } from './surfaces';
+import { dialogPaperLayout } from './dialog-layout';
+import { glassSurface, selectedSurface } from './surfaces';
 import { interactionTransition } from './interactions';
 
 const brandPalette = {
@@ -120,6 +121,21 @@ const appTheme = createTheme({
         a: { color: 'inherit', textDecoration: 'none' },
       },
     },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: ({ theme }) => ({ '&.Mui-selected': selectedSurface(theme) }),
+      },
+    },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: ({ theme }) => ({ '&.Mui-selected': selectedSurface(theme) }),
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: ({ theme }) => ({ '&.Mui-selected': selectedSurface(theme) }),
+      },
+    },
     MuiButtonBase: {
       styleOverrides: {
         root: { fontFamily: 'var(--font-body)' },
@@ -217,8 +233,9 @@ const appTheme = createTheme({
     },
     MuiDialog: {
       styleOverrides: {
-        paper: ({ theme }) => ({
+        paper: ({ theme, ownerState }) => ({
           ...glassSurface(theme, 'overlay'),
+          ...dialogPaperLayout(ownerState),
           borderRadius: 'var(--app-radius-dialog)',
         }),
         paperFullScreen: ({ theme }) => ({
@@ -232,6 +249,25 @@ const appTheme = createTheme({
         }),
       },
     },
+    MuiDialogTitle: {
+      styleOverrides: {
+        root: {
+          minHeight: 'var(--app-dialog-header-height)',
+          padding: '12px 16px',
+          overflowWrap: 'anywhere',
+        },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: { padding: 16, minHeight: 0, overflowWrap: 'anywhere' },
+      },
+    },
+    MuiDialogActions: {
+      styleOverrides: {
+        root: { padding: 16, gap: 8, flexShrink: 0 },
+      },
+    },
     MuiPopover: {
       styleOverrides: {
         paper: ({ theme }) => ({
@@ -242,6 +278,9 @@ const appTheme = createTheme({
     },
     MuiAutocomplete: {
       styleOverrides: {
+        listbox: ({ theme }) => ({
+          '& .MuiAutocomplete-option[aria-selected="true"], & .MuiAutocomplete-option[aria-selected="true"].Mui-focused, & .MuiAutocomplete-option[aria-selected="true"].Mui-focusVisible': selectedSurface(theme),
+        }),
         paper: ({ theme }) => ({
           ...glassSurface(theme, 'overlay'),
           borderRadius: 'var(--app-radius-card)',

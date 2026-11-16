@@ -1,5 +1,7 @@
 'use client';
 
+import { selectedSurface } from '@/base/theme/surfaces';
+
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { createContext, useContext, type ReactNode } from 'react';
@@ -85,7 +87,7 @@ export function TemplateSaveButton({
               aria-label={label}
               aria-pressed={saved}
               color="primary"
-              sx={{ width: 44, height: 44 }}
+              sx={(theme) => ({ width: 44, height: 44, ...(saved && selectedSurface(theme)) })}
               onClick={() => void state.toggle(id)}
             >
               {saved ? <BookmarkRoundedIcon /> : <BookmarkBorderRoundedIcon />}
@@ -111,6 +113,7 @@ export function TemplateSaveButton({
   return (
     <AppButton
       intent="text"
+      selected={saved}
       disabled={!state.ready || state.pending}
       aria-pressed={saved}
       sx={{ minHeight: 44 }}

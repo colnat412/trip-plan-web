@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 import Link from 'next/link';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import { Stack, Typography } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
 import { useLocale, useTranslations } from 'next-intl';
 import { AppPageContainer, AppButton } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
@@ -27,21 +27,19 @@ const TemplateDetail = ({
   return (
     <AppPageContainer>
       <Stack spacing={2} sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
-        <AppButton
-          component={Link}
-          href="/templates"
-          intent="text"
-          startIcon={<ArrowBackRoundedIcon />}
-          wrapLabel
-          sx={{
-            alignSelf: 'flex-start',
-            justifyContent: 'flex-start',
-            minHeight: 44,
-            maxWidth: '100%',
-          }}
-        >
-          {t('backToLibrary')}
-        </AppButton>
+        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', minWidth: 0, minHeight: 'var(--app-dialog-header-height)' }}>
+          <IconButton
+            component={Link}
+            href="/templates"
+            aria-label={t('backToLibrary')}
+            sx={{ width: 'var(--app-dialog-control-size)', height: 'var(--app-dialog-control-size)', flexShrink: 0 }}
+          >
+            <ArrowBackRoundedIcon />
+          </IconButton>
+          <Typography variant="subtitle1" sx={{ minWidth: 0, fontWeight: 600 }}>
+            {t('backToLibrary')}
+          </Typography>
+        </Stack>
         {!detail ? (
           <AppErrorState
             variant={status === 404 ? 'notFound' : status === 403 ? 'forbidden' : 'load'}
@@ -50,27 +48,35 @@ const TemplateDetail = ({
         ) : (
           <TemplateSaveProvider key={detail.template.id} ids={[detail.template.id]}>
             {detail.template.coverUrl && <TemplateBanner src={detail.template.coverUrl} title={detail.template.title} />}
-            <Typography component="h1" sx={{ fontSize: 26, fontWeight: 700 }}>
-              {detail.template.title}
-            </Typography>
-            <Typography>{detail.template.destination}</Typography>
-            <Typography sx={{ whiteSpace: 'pre-wrap' }}>
-              {detail.template.description}
-            </Typography>
-            <Typography>
-              {t('cost')}:{' '}
-              {formatCurrency(
-                detail.template.estimatedCost,
-                detail.template.currency,
-                locale,
+            <Stack spacing={1} sx={{ minWidth: 0 }}>
+              <Typography component="h1" sx={{ fontSize: { xs: '22px', sm: '24px' }, lineHeight: 1.3, fontWeight: 700 }}>
+                {detail.template.title}
+              </Typography>
+              <Typography variant="body2">{detail.template.destination}</Typography>
+              <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
+                {t('summary', {
+                  days: detail.template.durationDays,
+                  activities: detail.snapshot.days.reduce((total, day) => total + day.activities.length, 0),
+                })}
+              </Typography>
+              {detail.template.description?.trim() && (
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                  {detail.template.description}
+                </Typography>
               )}
-            </Typography>
-            <Typography variant="body2">
-              {t('author', {
-                name: detail.template.authorName,
-                count: detail.template.usageCount,
-              })}
-            </Typography>
+              <Stack direction="row" sx={{ flexWrap: 'wrap', alignItems: 'baseline', columnGap: 1, rowGap: 0.5 }}>
+                <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>{t('cost')}:</Typography>
+                <Typography sx={{ fontSize: { xs: '16px', sm: '18px' }, fontWeight: 700, color: 'primary.main', fontVariantNumeric: 'tabular-nums' }}>
+                  {formatCurrency(detail.template.estimatedCost, detail.template.currency, locale)}
+                </Typography>
+              </Stack>
+              <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
+                {t('author', {
+                  name: detail.template.authorName,
+                  count: detail.template.usageCount,
+                })}
+              </Typography>
+            </Stack>
             <Stack
               direction="row"
               spacing={1}

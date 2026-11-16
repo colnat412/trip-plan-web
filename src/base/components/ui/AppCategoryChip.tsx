@@ -15,6 +15,7 @@ type KnownCategory =
   | 'ACCOMMODATION'
   | 'TRANSPORTATION'
   | 'FOOD_BEVERAGE'
+  | 'VISIT'
   | 'SIGHTSEEING'
   | 'SHOPPING'
   | 'OTHER';

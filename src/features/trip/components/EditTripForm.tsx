@@ -1,5 +1,7 @@
 'use client';
 
+import useDialogDraft from '@/base/hooks/use-dialog-draft';
+
 import { type FormEvent, useEffect, useState } from 'react';
 import { Box, DialogActions, MenuItem, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
@@ -52,6 +54,11 @@ const EditTripForm = ({
   const [baseCurrency, setBaseCurrency] = useState(trip.baseCurrency || 'VND');
   const [status, setStatus] = useState<TripStatus>(trip.status || 'DRAFT');
   const [description, setDescription] = useState(trip.description || '');
+  useDialogDraft(() => ({
+    name, destination, startDate, endDate, baseCurrency, status, description,
+    cover: coverFile === undefined ? undefined : coverFile === null ? null : [coverFile.name, coverFile.size, coverFile.lastModified],
+  }));
+
   const [errors, setErrors] = useState<TripFormErrors>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 

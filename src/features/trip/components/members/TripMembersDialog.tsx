@@ -222,12 +222,11 @@ const TripMembersDialog = ({
   return (
     <>
       <AppDialog
-        open={open}
+        open={open && !isInviteVisible}
         onClose={onClose}
         title={!isLoading && !isStale && !error
           ? t('dialogTitleWithCount', { count: members.length })
           : t('dialogTitle')}
-        description={t('dialogSubtitle')}
         showSheetHandle
         maxWidth="sm"
         fullWidth
@@ -292,8 +291,9 @@ const TripMembersDialog = ({
         title={t('actions.confirmRemoveTitle')}
         description={
           removingMember
-            ? t('actions.confirmRemoveDesc', {
+            ? t.rich('actions.confirmRemoveDesc', {
                 name: removingMember.name,
+                subject: (chunks) => <strong>{chunks}</strong>,
                 email: removingMember.email,
               })
             : ''
@@ -309,7 +309,7 @@ const TripMembersDialog = ({
       <AppConfirmDialog
         open={isLeaving}
         title={t('actions.confirmLeaveTitle')}
-        description={t('actions.confirmLeaveDesc', { tripName })}
+        description={t.rich('actions.confirmLeaveDesc', { tripName, subject: (chunks) => <strong>{chunks}</strong> })}
         confirmText={t('actions.confirmLeaveBtn')}
         cancelText={t('cancel')}
         intent="danger"

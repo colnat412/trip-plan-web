@@ -1,5 +1,6 @@
 'use client';
 
+import { alpha } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -215,12 +216,12 @@ const Register = () => {
           minWidth: 0,
           minHeight: { xs: '200px', sm: '240px', md: '100svh' },
           overflow: 'hidden',
-          bgcolor: 'primary.dark',
+          bgcolor: (theme) => alpha(theme.palette.common.black, 0.6),
           justifyContent: 'space-between',
           p: { xs: 3, md: 4 },
           color: 'common.white',
-          backgroundImage:
-            'linear-gradient(180deg, rgba(6, 28, 68, 0.48) 0%, rgba(6, 28, 68, 0.08) 42%, rgba(6, 28, 68, 0.78) 100%), url("/login-travel.svg")',
+          backgroundImage: 'url("/login-travel.svg")',
+          backgroundBlendMode: 'multiply',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           '& .MuiTypography-root': { color: 'inherit' },
@@ -237,11 +238,6 @@ const Register = () => {
             }}
           >
             {t('login.slogan')}
-          </Typography>
-          <Typography
-            sx={{ color: 'rgba(255,255,255,.82) !important', fontSize: '16px' }}
-          >
-            {t('login.sloganDescription')}
           </Typography>
         </Stack>
       </Box>

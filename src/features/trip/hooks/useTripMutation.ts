@@ -1,9 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
-import { axiosPut, type ApiResponse } from '@/base/api';
+import { axiosPost, axiosPut, type ApiResponse } from '@/base/api';
 import {
-  useMutationPost,
   useMutationRequest,
   useUploadFile,
   useMutationPut,
@@ -26,12 +25,27 @@ export interface UseDeleteTripParams {
   options?: MutationCallbacks<ApiResponse<null>, Record<string, never>>;
 }
 
+type CreateTripWithCoverPayload = CreateTripPayload & { coverFile?: File | null };
+
 export function useCreateTrip(
-  options?: MutationCallbacks<ApiResponse<Trip>, CreateTripPayload>,
+  options?: MutationCallbacks<ApiResponse<Trip>, CreateTripWithCoverPayload>,
 ) {
-  const createMutation = useMutationPost<ApiResponse<Trip>, CreateTripPayload>({
+  const upload = useUploadFile();
+  const pendingUpload = useRef<{ file: File; uploadId: string } | null>(null);
+  const createMutation = useMutationRequest<ApiResponse<Trip>, CreateTripWithCoverPayload>({
     mutationKey: tripMutationKeys.create,
-    endPoint: '/trip/create',
+    mutationFn: async ({ coverFile, ...payload }) => {
+      if (coverFile) {
+        if (pendingUpload.current?.file !== coverFile) {
+          const response = await upload.mutateAsync({ file: coverFile, purpose: 'TRIP_COVER' });
+          pendingUpload.current = { file: coverFile, uploadId: response.data.uploadId };
+        }
+        payload.coverUploadId = pendingUpload.current.uploadId;
+      }
+      const response = await axiosPost<ApiResponse<Trip>>('/trip/create', payload);
+      pendingUpload.current = null;
+      return response;
+    },
     options,
   });
 
