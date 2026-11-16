@@ -13,6 +13,7 @@ import useTemplateLibrary from '../hooks/useTemplateLibrary';
 import type { TemplateListing } from '../types';
 import TemplateFilters from './TemplateFilters';
 import TemplateCard from './TemplateCard';
+import TemplateLibraryCard from './TemplateLibraryCard';
 import { TemplateSaveProvider } from './TemplateSaveControls';
 
 const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
@@ -102,12 +103,12 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
               minWidth: 0,
               maxWidth: compact ? { xs: '78%', md: 'none' } : undefined,
             }}>
-              <TemplateCard template={item} compact={compact} />
+              {!compact ? <TemplateLibraryCard template={item} /> : <TemplateCard template={item} compact={compact} />}
             </Box>
           ))}
         </Box>
       </TemplateSaveProvider>
-      {!compact && data && data.totalPages > 1 && (
+      {!compact && data && data.totalPages > 0 && (
         <AppPagination page={page} count={data.totalPages} onChange={(_, value) => setPage(value)} />
       )}
     </Stack>

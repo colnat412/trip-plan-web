@@ -1,14 +1,11 @@
 'use client';
 
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Chip, IconButton, Stack, Typography } from '@mui/material';
+import { Chip, Stack, Typography } from '@mui/material';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import { useTranslations } from 'next-intl';
-import { AppActionMenu, AppButton, AppCard } from '@/base/components/ui';
+import { AppActionMenu, AppCard } from '@/base/components/ui';
 import TemplateBanner from './TemplateBanner';
 import type { TemplateCardData } from '../types';
 
@@ -92,38 +89,26 @@ const MyTemplateCard = ({
               })}
             />
           </Stack>
-          {published && (
+          {(template.sourceTripId || published) && (
             <AppActionMenu
               ariaLabel={t('templateActions', { title: template.title })}
-              trigger={
-                <IconButton
-                  aria-label={t('templateActions', { title: template.title })}
-                  aria-haspopup="menu"
-                  sx={{
-                    width: 44,
-                    height: 44,
-                    flexShrink: 0,
-                    color: 'text.secondary',
-                  }}
-                >
-                  <MoreHorizRoundedIcon />
-                </IconButton>
-              }
+              sheetTitle={template.title}
+              minTouchTarget
               items={[
-                {
-                  id: 'view',
-                  label: t('view'),
-                  icon: <VisibilityOutlinedIcon fontSize="small" />,
-                  onClick: () => router.push(`/templates/${template.id}`),
-                },
-                {
+                ...(template.sourceTripId ? [{
+                  id: 'edit',
+                  label: t(published ? 'edit' : 'republish'),
+                  icon: <EditRoundedIcon fontSize="small" />,
+                  onClick: () => router.push(`/plan?tripId=${encodeURIComponent(template.sourceTripId!)}&publish=1`),
+                }] : []),
+                ...(published ? [{
                   id: 'unpublish',
                   label: t('unpublish'),
                   icon: <VisibilityOffOutlinedIcon fontSize="small" />,
                   disabled: isUnpublishing,
                   danger: true,
                   onClick: () => onUnpublish(template.id),
-                },
+                }] : []),
               ]}
             />
           )}
@@ -154,19 +139,7 @@ const MyTemplateCard = ({
             {t('myUsage', { count: template.usageCount })}
           </Typography>
         </Stack>
-        {template.sourceTripId && (
-          <AppButton
-            component={Link}
-            href={`/plan?tripId=${encodeURIComponent(template.sourceTripId)}&publish=1`}
-            intent="secondary"
-            size="small"
-            startIcon={<EditRoundedIcon />}
-            wrapLabel
-            sx={{ alignSelf: 'flex-start', minHeight: 44, maxWidth: '100%' }}
-          >
-            {t(published ? 'edit' : 'republish')}
-          </AppButton>
-        )}
+
       </Stack>
     </AppCard>
   );

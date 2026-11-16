@@ -123,7 +123,10 @@ const appTheme = createTheme({
     },
     MuiMenuItem: {
       styleOverrides: {
-        root: ({ theme }) => ({ '&.Mui-selected': selectedSurface(theme) }),
+        root: ({ theme }) => ({
+          borderRadius: 'var(--app-radius-small)',
+          '&.Mui-selected': selectedSurface(theme),
+        }),
       },
     },
     MuiToggleButton: {
@@ -274,6 +277,11 @@ const appTheme = createTheme({
           ...glassSurface(theme, 'overlay'),
           borderRadius: 'var(--app-radius-card)',
         }),
+      },
+    },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: { borderRadius: 'var(--app-radius-small)' },
       },
     },
     MuiAutocomplete: {

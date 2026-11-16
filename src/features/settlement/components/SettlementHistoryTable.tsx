@@ -16,6 +16,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import { useTranslations } from 'next-intl';
@@ -29,6 +30,31 @@ export interface SettlementHistoryTableProps {
   canDelete?: (settlement: Settlement) => boolean;
   onDelete?: (settlement: Settlement) => void;
 }
+
+const deleteButtonSx = (theme: Theme) => {
+  const palette = theme.vars?.palette ?? theme.palette;
+  return {
+    width: 44,
+    height: 44,
+    flexShrink: 0,
+    color: palette.error.main,
+    bgcolor: 'transparent',
+    '& .settlement-delete-glyph': {
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      width: 28, height: 28, borderRadius: '50%',
+      bgcolor: `color-mix(in srgb, ${palette.error.main} 6%, transparent)`,
+    },
+    '&:hover': {
+      bgcolor: 'transparent',
+      '& .settlement-delete-glyph': { bgcolor: `color-mix(in srgb, ${palette.error.main} 12%, transparent)` },
+    },
+    '&:active': {
+      bgcolor: 'transparent',
+      '& .settlement-delete-glyph': { bgcolor: `color-mix(in srgb, ${palette.error.main} 18%, transparent)` },
+    },
+    '&.Mui-focusVisible': { outline: `2px solid ${palette.error.main}`, outlineOffset: 2 },
+  };
+};
 
 const SettlementHistoryTable = ({
   settlements,
@@ -78,15 +104,16 @@ const SettlementHistoryTable = ({
         <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
           {settlements.map((settlement) => (
             <AppFinanceRow key={settlement.id}
-              icon={<Avatar src={settlement.payerAvatarUrl || undefined} sx={{ width: 40, height: 40 }}>{getUserInitials(settlement.payerName || '')}</Avatar>}
+              compact
+              icon={<Avatar src={settlement.payerAvatarUrl || undefined} sx={{ width: 32, height: 32, fontSize: '13px' }}>{getUserInitials(settlement.payerName || '')}</Avatar>}
               title={`${settlement.payerName || '—'} → ${settlement.payeeName || '—'}`}
               subtitle={<>{formatDate(settlement.settledAt)} · {t(settlement.paymentMethod === 'BANK_TRANSFER' ? 'methodBank' : settlement.paymentMethod === 'CASH' ? 'methodCash' : 'methodOther')}
                 {settlement.note && <><br />{settlement.note}</>}</>}
               amount={formatCurrency(settlement.amount, settlement.currency)}
               actionPlacement="amount"
               action={onDelete && (canDelete?.(settlement) ?? true) ? (
-                <IconButton aria-label={t('deleteConfirm.title')} onClick={() => setSelectedSettlement(settlement)} sx={{ width: 44, height: 44, color: 'error.main', '&:hover': { bgcolor: 'action.hover' } }}>
-                  <CloseRoundedIcon fontSize="small" />
+                <IconButton aria-label={t('deleteConfirm.title')} onClick={() => setSelectedSettlement(settlement)} sx={deleteButtonSx}>
+                  <Box component="span" className="settlement-delete-glyph"><CloseRoundedIcon sx={{ fontSize: 16 }} /></Box>
                 </IconButton>
               ) : undefined}
             />
@@ -301,14 +328,9 @@ const SettlementHistoryTable = ({
                             size="small"
                             aria-label={t('deleteConfirm.title')}
                             onClick={() => setSelectedSettlement(s)}
-                            sx={{
-                              width: 44,
-                              height: 44,
-                              color: 'error.main',
-                              '&:hover': { bgcolor: 'action.hover' },
-                            }}
+                            sx={deleteButtonSx}
                           >
-                            <CloseRoundedIcon fontSize="small" />
+                            <Box component="span" className="settlement-delete-glyph"><CloseRoundedIcon sx={{ fontSize: 16 }} /></Box>
                           </IconButton>
                         </Tooltip>
                       )}

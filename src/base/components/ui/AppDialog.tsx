@@ -303,7 +303,7 @@ const AppDialog = ({
 
           {fullScreen && <Box aria-hidden="true" sx={{ flex: '0 0 var(--app-dialog-control-size)' }} />}
 
-          {!hideCloseButton && !fullScreen && (
+          {!hideCloseButton && !fullScreen && !isSheet && (
             <IconButton
               onClick={requestClose}
               disabled={closeDisabled}

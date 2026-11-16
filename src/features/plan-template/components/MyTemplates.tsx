@@ -59,7 +59,7 @@ const MyTemplates = () => {
             onUnpublish={unpublish.mutate}
           />
         ))}
-        {(currentData?.totalPages ?? 0) > 1 && (
+        {(currentData?.totalPages ?? 0) > 0 && (
           <AppPagination
             page={page}
             count={currentData!.totalPages}

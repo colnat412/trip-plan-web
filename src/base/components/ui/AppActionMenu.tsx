@@ -1,6 +1,8 @@
 'use client';
 
 import { useId, useState, type MouseEvent, type ReactNode } from 'react';
+import { flushSync } from 'react-dom';
+import { waitForMobileOverlayHistory } from '@/base/hooks/use-mobile-overlay-back';
 import {
   IconButton,
   ListItemIcon,
@@ -62,9 +64,15 @@ const AppActionMenu = ({
     setAnchorEl(null);
   };
 
-  const handleItemClick = (item: AppActionMenuItem, event: MouseEvent) => {
+  const handleItemClick = async (item: AppActionMenuItem, event: MouseEvent) => {
     event.stopPropagation();
-    handleClose();
+    if (isMobile) {
+      // Complete the sheet's Back entry before an action opens a page or another overlay.
+      flushSync(() => handleClose());
+      await waitForMobileOverlayHistory();
+    } else {
+      handleClose();
+    }
     item.onClick();
   };
 

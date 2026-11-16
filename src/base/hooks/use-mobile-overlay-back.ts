@@ -5,6 +5,10 @@ import { createOverlayHistory } from '@/base/utils/overlay-history';
 
 let mobileHistory: ReturnType<typeof createOverlayHistory> | undefined;
 
+export function waitForMobileOverlayHistory() {
+  return mobileHistory?.whenSettled() ?? Promise.resolve();
+}
+
 export default function useMobileOverlayBack(active: boolean, requestClose: () => boolean) {
   const onBack = useEffectEvent(requestClose);
   useEffect(() => {

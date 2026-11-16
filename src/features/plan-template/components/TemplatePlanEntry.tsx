@@ -34,7 +34,7 @@ const TemplatePlanEntry = ({
     );
   return (
     <PlanOverview
-      key={`${tripId ?? activeTrip?.id ?? ''}:${dayId ?? ''}`}
+      key={`${tripId ?? activeTrip?.id ?? ''}:${dayId ?? ''}:${ai}:${publish}`}
       initialDayId={dayId}
       initialAiOpen={ai}
       initialPublishOpen={publish}

@@ -14,6 +14,7 @@ export function createOverlayHistory(target: Window) {
   let listening = false;
   const sessionId = globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2)}`;
   let sequence = 0;
+  const settledListeners = new Set<() => void>();
 
   const push = (overlay: Overlay) => {
     target.history.pushState({ ...target.history.state, [marker]: overlay.id }, '');
@@ -36,6 +37,8 @@ export function createOverlayHistory(target: Window) {
     if (pendingBack) {
       pendingBack = false;
       overlays.filter((overlay) => overlay.phase === 'queued').forEach(push);
+      settledListeners.forEach((resolve) => resolve());
+      settledListeners.clear();
       stopIfIdle();
       return;
     }
@@ -47,6 +50,10 @@ export function createOverlayHistory(target: Window) {
   };
 
   return {
+    whenSettled(): Promise<void> {
+      if (!pendingBack) return Promise.resolve();
+      return new Promise((resolve) => settledListeners.add(resolve));
+    },
     register(requestClose: () => boolean) {
       const overlay: Overlay = { id: `overlay-${sessionId}-${++sequence}`, requestClose, phase: 'queued' };
       overlays.push(overlay);

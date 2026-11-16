@@ -74,7 +74,7 @@ const AppFinanceRow = ({
         onClick={onClick}
         sx={{
           display: 'flex',
-          alignItems: 'flex-start',
+          alignItems: actionPlacement === 'amount' ? 'center' : 'flex-start',
           gap: compact ? 1 : 1.25,
           py: compact ? 1.25 : 1.5,
           px: 1.5,
@@ -105,7 +105,7 @@ const AppFinanceRow = ({
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'baseline',
+              alignItems: actionPlacement === 'amount' ? 'center' : 'baseline',
               flexWrap: 'wrap',
               gap: 0.75,
               minWidth: 0,

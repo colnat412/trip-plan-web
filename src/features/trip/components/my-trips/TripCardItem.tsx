@@ -64,6 +64,7 @@ const TripCardItem = ({
         onDelete={onDelete}
       />
       <Box
+        data-app-surface="card"
         onClick={() => onSelect(trip)}
         sx={(theme) => ({
           position: 'relative',
