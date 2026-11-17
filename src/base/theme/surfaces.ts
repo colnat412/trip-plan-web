@@ -6,19 +6,19 @@ type SurfaceKind = 'card' | 'overlay' | 'navigation';
 export const glassSurface = (theme: Theme, kind: SurfaceKind = 'card'): CSSObject => {
   const palette = theme.vars?.palette ?? theme.palette;
   const floating = kind !== 'card';
-  const opacity = kind === 'navigation' ? 84 : 90;
+  const opacity = kind === 'navigation' ? 76 : 86;
   const highlight = `color-mix(in srgb, ${palette.common.white} 20%, transparent)`;
 
   return {
     backgroundColor: palette.background.paper,
-    backgroundImage: 'none',
+    backgroundImage: floating ? `linear-gradient(150deg, color-mix(in srgb, ${palette.common.white} 14%, transparent), transparent 65%)` : 'none',
     border: `1px solid ${floating ? `color-mix(in srgb, ${palette.common.white} 18%, ${palette.divider})` : palette.divider}`,
     boxShadow: `inset 0 1px 0 ${highlight}, 0 ${floating ? 12 : 2}px ${floating ? 36 : 12}px color-mix(in srgb, ${palette.common.black} ${floating ? 12 : 3}%, transparent)`,
     ...(floating && {
       '@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)))': {
         backgroundColor: `color-mix(in srgb, ${palette.background.paper} ${opacity}%, transparent)`,
-        backdropFilter: 'blur(20px) saturate(125%)',
-        WebkitBackdropFilter: 'blur(20px) saturate(125%)',
+        backdropFilter: 'blur(24px) saturate(150%)',
+        WebkitBackdropFilter: 'blur(24px) saturate(150%)',
       },
     }),
     '@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active)': {

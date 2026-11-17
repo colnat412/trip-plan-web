@@ -93,8 +93,8 @@ const AppPageHeader = ({
                 component="h1"
                 sx={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: '24px',
-                  fontWeight: 700,
+                  fontSize: { xs: '22px', sm: '24px' },
+                  fontWeight: 600,
                   color: 'text.primary',
                   letterSpacing: '-0.5px',
                   minWidth: 0,

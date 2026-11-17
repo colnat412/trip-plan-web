@@ -1,8 +1,9 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppLoadingState, AppButton, AppInfiniteScrollTrigger } from '@/base/components/ui';
+import { AppLoadingState, AppEmptyState, AppButton, AppInfiniteScrollTrigger } from '@/base/components/ui';
 
 import { Avatar, Box, Stack, Typography } from '@mui/material';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
@@ -15,16 +16,30 @@ import type { Trip } from '../types';
 
 interface TripSwitcherResultsProps {
   search: string;
+  scrollRoot?: HTMLDivElement | null;
   selectedTripId: number | string;
   onSelect: (trip: Trip) => void;
 }
 
 const TripSwitcherResults = ({
   search,
+  scrollRoot = null,
   selectedTripId,
   onSelect,
 }: TripSwitcherResultsProps) => {
   const t = useTranslations('navigation');
+  const [scrollVisit, setScrollVisit] = useState({ search, root: scrollRoot, scrolled: false });
+  if (scrollVisit.search !== search || scrollVisit.root !== scrollRoot) {
+    setScrollVisit({ search, root: scrollRoot, scrolled: false });
+  }
+  const hasScrolled = scrollVisit.search === search && scrollVisit.root === scrollRoot && scrollVisit.scrolled;
+  useEffect(() => {
+    if (!scrollRoot) return;
+    scrollRoot.scrollTo(0, 0);
+    const markScroll = () => { if (scrollRoot.scrollTop > 0) setScrollVisit({ search, root: scrollRoot, scrolled: true }); };
+    scrollRoot.addEventListener('scroll', markScroll, { passive: true });
+    return () => scrollRoot.removeEventListener('scroll', markScroll);
+  }, [search, scrollRoot]);
   const {
     trips,
     isLoading,
@@ -37,11 +52,11 @@ const TripSwitcherResults = ({
   } = useTripSwitcherSearch(search);
   if (isLoading)
     return (
-      <AppLoadingState />
+      <AppLoadingState local sx={{ minHeight: 160 }} />
     );
   return (
     <Box aria-busy={isFetching || isFetchingNextPage}>
-      <Stack spacing={0.75}>
+      <Stack spacing={0.5}>
         {trips.map((trip) => {
           const selected = String(trip.id) === String(selectedTripId);
           return (
@@ -58,8 +73,10 @@ const TripSwitcherResults = ({
               sx={{
                 width: '100%',
                 minWidth: 0,
-                minHeight: 76,
-                px: 1.5,
+                minHeight: 64,
+                height: 64,
+                px: 1,
+                py: 0.5,
                 border: 1,
                 borderColor: 'transparent',
                 ...(selected ? {} : { bgcolor: 'transparent', color: 'text.primary' }),
@@ -80,8 +97,8 @@ const TripSwitcherResults = ({
                   alt={trip.name}
                   variant="rounded"
                   sx={{
-                    width: 40,
-                    height: 40,
+                    width: 32,
+                    height: 32,
                     flexShrink: 0,
                     bgcolor: 'action.hover',
                     color: 'primary.main',
@@ -93,7 +110,7 @@ const TripSwitcherResults = ({
                   <Typography
                     noWrap
                     title={trip.name}
-                    sx={{ fontSize: '14px', fontWeight: 700 }}
+                    sx={{ fontSize: '13px', fontWeight: 600 }}
                   >
                     {trip.name}
                   </Typography>
@@ -125,9 +142,7 @@ const TripSwitcherResults = ({
           );
         })}
         {!trips.length && !error && (
-          <Typography sx={{ py: 2, fontSize: '13px', color: 'text.secondary' }}>
-            {t('noMatchingTrips')}
-          </Typography>
+          <AppEmptyState compact title={t('noMatchingTrips')} sx={{ py: 2 }} />
         )}
         {error && (
           <AppErrorState
@@ -139,9 +154,12 @@ const TripSwitcherResults = ({
         )}
         <AppInfiniteScrollTrigger
           hasMore={hasNextPage && !error}
+          root={scrollRoot}
+          rootMargin="0px"
+          enabled={Boolean(scrollRoot) && hasScrolled && !isFetching}
           loading={isFetchingNextPage}
           onLoadMore={() => {
-            void fetchNextPage();
+            if (scrollRoot && scrollRoot.scrollTop > 0) void fetchNextPage();
           }}
         />
       </Stack>

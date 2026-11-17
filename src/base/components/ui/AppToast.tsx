@@ -1,6 +1,7 @@
 'use client';
 
 import type { ReactNode } from 'react';
+import AppMascot from './AppMascot';
 import { Alert, Portal, Snackbar } from '@mui/material';
 
 export type AppToastSeverity = 'success' | 'info' | 'warning' | 'error';
@@ -44,9 +45,16 @@ const AppToast = ({
       >
         <Alert
           severity={severity}
-          variant="filled"
+          variant="standard"
+          icon={<AppMascot size={44} mood={severity === 'info' ? 'welcome' : severity} />}
           onClose={onClose}
           sx={{
+            bgcolor: 'background.paper',
+            color: 'text.primary',
+            alignItems: 'center',
+            border: 1,
+            borderColor: 'divider',
+            '& .MuiAlert-icon': { opacity: 1, p: 0, alignItems: 'center' },
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.16)',
             borderRadius: 'var(--app-radius-control)',
             fontWeight: 600,

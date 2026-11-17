@@ -226,7 +226,7 @@ const EditActivityForm = ({
         <Box
           sx={{
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
+            flexDirection: 'column',
             gap: 2,
           }}
         >
@@ -242,6 +242,7 @@ const EditActivityForm = ({
           </Box>
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <AppNumberInput
+              emphasis="primary"
               disabled={busy}
               label={tDialog('estimatedCostLabel')}
               value={estimatedCost}

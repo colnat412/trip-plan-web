@@ -1,10 +1,9 @@
 'use client';
 
-import { AppLoadingState, AppLinearProgress } from '@/base/components/ui';
+import { AppLoadingState, AppEmptyState, AppLinearProgress } from '@/base/components/ui';
 
 import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
-import PieChartOutlineRoundedIcon from '@mui/icons-material/PieChartOutlineRounded';
 import { useTranslations } from 'next-intl';
 
 import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
@@ -34,33 +33,7 @@ const CategoryList = ({
     ) || [];
 
   if (activeCategories.length === 0) {
-    return (
-      <Stack
-        spacing={1}
-        sx={{
-          py: 4,
-          alignItems: 'center',
-          justifyContent: 'center',
-          textAlign: 'center',
-          color: 'text.secondary',
-        }}
-      >
-        <Box
-          sx={{
-            p: 1.5,
-            borderRadius: '50%',
-            bgcolor: 'action.hover',
-            color: 'text.disabled',
-            display: 'inline-flex',
-          }}
-        >
-          <PieChartOutlineRoundedIcon sx={{ fontSize: 32 }} />
-        </Box>
-        <Typography sx={{ fontSize: '13px', fontWeight: 600 }}>
-          {tExpense('table.emptyTitle')}
-        </Typography>
-      </Stack>
-    );
+    return <AppEmptyState title={tExpense('table.emptyTitle')} />;
   }
 
   return (

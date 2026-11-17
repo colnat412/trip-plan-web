@@ -1,6 +1,7 @@
 'use client';
 
 import { Backdrop, Box } from '@mui/material';
+import AppMascotLoading from './AppMascotLoading';
 import AppLoadingIndicator from './AppLoadingIndicator';
 
 export interface AppLoadingOverlayProps {
@@ -13,10 +14,9 @@ const AppLoadingOverlay = ({ open, message, scope = 'screen' }: AppLoadingOverla
   open ? (
     <Box sx={{
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-      flex: 1, minHeight: 160, minWidth: 0, py: 3,
-      pb: 'calc(24px + var(--app-bottom-navigation-space, 0px))',
+      gap: 1.5, flex: 1, minHeight: 0, minWidth: 0, py: 3,
     }}>
-      <AppLoadingIndicator {...(message ? { 'aria-label': message } : {})} />
+      <AppMascotLoading message={message} />
     </Box>
   ) : null
 ) : (

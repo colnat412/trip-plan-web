@@ -9,13 +9,14 @@
   --app-dialog-header-height: 56px;
   --app-dialog-control-size: 44px;
   --app-radius-detail: 4px;
-  --app-radius-badge: 6px;
-  --app-radius-small: 8px;
-  --app-radius-control: 12px;
-  --app-radius-card: 20px;
-  --app-radius-panel: 24px;
-  --app-radius-dialog: 28px;
+  --app-radius-badge: 5px;
+  --app-radius-small: 6px;
+  --app-radius-control: 10px;
+  --app-radius-card: 18px;
+  --app-radius-panel: 22px;
+  --app-radius-dialog: 26px;
   --app-radius-pill: 999px;
+  --app-radius-segmented: var(--app-radius-pill);
   --background: var(--mui-palette-background-default, #ffffff);
   --foreground: var(--mui-palette-text-primary, #0f172a);
 

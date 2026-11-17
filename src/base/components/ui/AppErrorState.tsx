@@ -11,7 +11,7 @@ import AppEmptyState from './AppEmptyState';
 import AppErrorIllustration from './AppErrorIllustration';
 
 export interface AppErrorStateProps {
-  variant?: 'load' | 'unexpected' | 'notFound' | 'forbidden';
+  variant?: 'load' | 'unexpected' | 'notFound' | 'forbidden' | 'offline' | 'maintenance';
   status?: number | null;
   compact?: boolean;
   onRetry?: () => unknown | Promise<unknown>;
@@ -36,7 +36,7 @@ const AppErrorState = ({
   const inFlight = useRef(false);
   const kind =
     variant ??
-    (status === 403 ? 'forbidden' : status === 404 ? 'notFound' : 'load');
+    (status === 403 ? 'forbidden' : status === 404 ? 'notFound' : status === 503 ? 'maintenance' : status === 0 ? 'offline' : 'load');
   const canRetry =
     Boolean(onRetry) && kind !== 'notFound' && kind !== 'forbidden';
   const retry = async () => {
@@ -65,10 +65,6 @@ const AppErrorState = ({
             display: 'flex',
             alignItems: 'center',
             minHeight: { xs: 320, sm: 360 },
-            bgcolor: 'background.paper',
-            border: 1,
-            borderColor: 'divider',
-            borderRadius: 'var(--app-radius-panel)',
           }),
         },
         ...(Array.isArray(sx) ? sx : [sx]),
@@ -76,7 +72,7 @@ const AppErrorState = ({
     >
       <AppEmptyState
         role="alert"
-        illustration={<AppErrorIllustration compact={compact} />}
+        illustration={<AppErrorIllustration compact={compact} mood={kind === 'notFound' ? 'not_found' : kind === 'forbidden' ? 'forbidden' : kind === 'offline' ? 'offline' : kind === 'maintenance' ? 'maintenance' : 'error'} />}
         title={
           <Box
             component="span"
@@ -85,7 +81,7 @@ const AppErrorState = ({
               lineHeight: 1.5,
             }}
           >
-            {t('title')}
+            {t(kind === 'load' || kind === 'unexpected' ? 'title' : kind)}
           </Box>
         }
         action={

@@ -46,6 +46,8 @@ const AppCategoryChip = ({
           fontWeight: 600,
           fontSize: '12px',
           borderRadius: 'var(--app-radius-badge)',
+          alignSelf: 'flex-start',
+          width: 'fit-content',
           maxWidth: '100%',
           height: 'auto',
           minHeight: 24,

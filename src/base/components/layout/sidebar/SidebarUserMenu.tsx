@@ -37,12 +37,14 @@ const SidebarUserMenu = ({
 }: SidebarUserMenuProps) => {
   const t = useTranslations('userMenu');
   const tNavigation = useTranslations('navigation');
+  const tPreferences = useTranslations('preferences');
   return (
     <AppPopover
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}
-      label={tNavigation('account')}
+      label={headerMenu ? tPreferences('settings') : tNavigation('account')}
+      title={headerMenu ? tPreferences('settings') : undefined}
       width={320}
       anchorOrigin={{
         vertical: headerMenu ? 'bottom' : 'top',

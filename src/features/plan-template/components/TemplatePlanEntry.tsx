@@ -24,11 +24,11 @@ const TemplatePlanEntry = ({
   }, [tripId, selectTrip]);
   if (tripId && String(activeTrip?.id) !== tripId)
     return (
-      <AppPageContainer>
+      <AppPageContainer embedded>
         {error ? (
           <AppErrorState status={error.status} onRetry={() => refetchTrips()} />
         ) : (
-          <AppLoadingState sx={{ minHeight: 300 }} />
+          <AppLoadingState />
         )}
       </AppPageContainer>
     );

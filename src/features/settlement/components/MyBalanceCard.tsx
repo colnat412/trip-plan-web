@@ -72,16 +72,10 @@ const MyBalanceCard = ({
   return (
     <AppCard
       sx={{
-        p: { xs: 2, sm: 3 },
+        p: 3,
         borderRadius: 'var(--app-radius-card)',
         border: '1px solid',
         borderColor: 'divider',
-        borderLeft: '4px solid',
-        borderLeftColor: isOwed
-          ? 'success.main'
-          : isOwes
-            ? 'error.main'
-            : 'divider',
         bgcolor: 'background.paper',
       }}
     >
@@ -166,8 +160,8 @@ const MyBalanceCard = ({
             display: 'flex',
             flexWrap: 'wrap',
             gap: 2,
-            pt: 2,
-            borderTop: '1px solid',
+            pt: 3,
+            borderTop: '1px dashed',
             borderColor: 'divider',
           }}
         >

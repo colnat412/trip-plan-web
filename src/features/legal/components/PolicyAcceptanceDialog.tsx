@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Alert, Box, Stack, Typography } from '@mui/material';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import FactCheckRoundedIcon from '@mui/icons-material/FactCheckRounded';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import { AppButton, AppDialog } from '@/base/components/ui';
 import AppBrand from '@/base/components/layout/AppBrand';
 import { useMutationPost } from '@/base/hooks';
@@ -119,7 +119,7 @@ const PolicyAcceptanceDialog = () => {
           document ? (
             <AppButton
               intent="secondary"
-              startIcon={<ArrowBackRoundedIcon />}
+              startIcon={<ChevronLeftRoundedIcon />}
               onClick={() => setDocument(null)}
             >
               {t('backToAcceptance')}
@@ -137,7 +137,7 @@ const PolicyAcceptanceDialog = () => {
                 loading={acceptance.isPending}
                 disabled={!allChecked || busy || !versionMatches}
                 onClick={() => void accept()}
-                endIcon={<ArrowForwardRoundedIcon />}
+                endIcon={<ChevronRightRoundedIcon />}
                 sx={{
                   flex: 1,
                   minHeight: '48px',

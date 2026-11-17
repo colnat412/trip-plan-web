@@ -93,9 +93,9 @@ const ActiveTripBanner = ({
             sx={{
               fontFamily: 'var(--font-display)',
               fontSize: compact
-                ? { xs: '24px', sm: '28px', lg: '32px' }
-                : { xs: '30px', sm: '40px', lg: '48px' },
-              fontWeight: 800,
+                ? { xs: '22px', sm: '24px', lg: '26px' }
+                : { xs: '26px', sm: '32px', lg: '36px' },
+              fontWeight: 700,
               lineHeight: 1.12,
               color: 'inherit',
               overflowWrap: 'anywhere',

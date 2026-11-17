@@ -1,11 +1,11 @@
 'use client';
 
-import { Box, Typography } from '@mui/material';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
+import AppMascot from '@/base/components/ui/AppMascot';
 
-import { AppButton } from '@/base/components/ui';
+import { AppButton, AppCard, AppEmptyState } from '@/base/components/ui';
 
 interface EmptyTripStateProps {
   onCreateTrip: () => void;
@@ -15,62 +15,30 @@ const EmptyTripState = ({ onCreateTrip }: EmptyTripStateProps) => {
   const tTrip = useTranslations('trip');
 
   return (
-    <Box
+    <AppCard
       component="section"
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        gap: 2.5,
-        p: { xs: 4, md: 6 },
-        borderRadius: 'var(--app-radius-card)',
-        bgcolor: 'background.paper',
-        border: 1,
-        borderColor: 'divider',
+        minWidth: 0,
+        p: { xs: 2, md: 3 },
       }}
     >
-      <Box
-        sx={{
-          width: 64,
-          height: 64,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 'var(--app-radius-card)',
-          bgcolor: 'primary.light',
-          color: 'primary.contrastText',
-        }}
-      >
-        <FlightTakeoffRoundedIcon sx={{ fontSize: '32px' }} />
-      </Box>
-
-      <Box sx={{ maxWidth: 460 }}>
-        <Typography
-          component="h2"
-          sx={{
-            fontFamily: 'var(--font-display)',
-            fontSize: { xs: '24px', md: '28px' },
-            fontWeight: 700,
-            color: 'text.primary',
-            mb: 1,
-          }}
-        >
-          {tTrip('noTrips')}
-        </Typography>
-      </Box>
-
-      <AppButton
-        intent="primary"
-        size="large"
-        startIcon={<AddRoundedIcon />}
-        onClick={onCreateTrip}
-        sx={{ minHeight: 48, px: 4 }}
-      >
-        {tTrip('createTrip')}
-      </AppButton>
-    </Box>
+      <AppEmptyState
+        illustration={<AppMascot mood="empty_data" size={128} />}
+        title={tTrip('noTrips')}
+        icon={<FlightTakeoffRoundedIcon />}
+        action={
+          <AppButton
+            intent="primary"
+            size="medium"
+            startIcon={<AddRoundedIcon />}
+            onClick={onCreateTrip}
+            sx={{ minHeight: 44 }}
+          >
+            {tTrip('createTrip')}
+          </AppButton>
+        }
+      />
+    </AppCard>
   );
 };
 

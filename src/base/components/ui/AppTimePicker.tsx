@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useState, type ReactNode } from 'react';
-import { Box, FormHelperText, Stack, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
+import { Box, FormHelperText, Stack, Typography } from '@mui/material';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import { MultiSectionDigitalClock } from '@mui/x-date-pickers/MultiSectionDigitalClock';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -9,6 +9,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { enUS, viVN } from '@mui/x-date-pickers/locales';
 import { useLocale, useTranslations } from 'next-intl';
 import 'dayjs/locale/vi';
+import AppSegmentedControl from './AppSegmentedControl';
 import AppButton from './AppButton';
 import AppDialog from './AppDialog';
 import AppPickerField from './AppPickerField';
@@ -94,23 +95,20 @@ const AppTimePicker = (props: AppTimePickerProps) => {
         {open && (
           <Stack id={dialogId} spacing={2} sx={{ minWidth: 0 }}>
             {range && (
-              <ToggleButtonGroup
-                exclusive
+              <AppSegmentedControl<0 | 1>
                 value={active}
-                onChange={(_, next: 0 | 1 | null) => { if (next !== null) setActive(next); }}
-                aria-label={t('rangeLabel')}
+                onChange={setActive}
+                label={t('rangeLabel')}
                 disabled={disabled}
-                sx={{ width: '100%', '& .MuiToggleButton-root': { flex: 1, minWidth: 0, py: 1, textTransform: 'none' } }}
-              >
-                {([0, 1] as const).map((index) => (
-                  <ToggleButton key={index} value={index} aria-label={t(index === 0 ? 'start' : 'end')}>
-                    <Stack spacing={0.5}>
-                      <Typography variant="caption">{t(index === 0 ? 'start' : 'end')}</Typography>
-                      <Typography sx={{ fontSize: '18px', fontWeight: 700 }}>{draft[index] || '--:--'}</Typography>
-                    </Stack>
-                  </ToggleButton>
-                ))}
-              </ToggleButtonGroup>
+                options={([0, 1] as const).map(index => ({
+                  value: index,
+                  ariaLabel: t(index === 0 ? 'start' : 'end'),
+                  label: <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+                    <Typography variant="caption">{t(index === 0 ? 'start' : 'end')}</Typography>
+                    <Typography sx={{ fontSize: 18, fontWeight: 600 }}>{draft[index] || '--:--'}</Typography>
+                  </Stack>,
+                }))}
+              />
             )}
             <Stack spacing={0.5} sx={{ minWidth: 0 }}>
             <Box sx={{ display: 'flex' }} aria-hidden="true">

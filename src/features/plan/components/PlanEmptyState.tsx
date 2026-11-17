@@ -4,6 +4,7 @@ import React from 'react';
 import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
+import AppMascot from '@/base/components/ui/AppMascot';
 
 import { AppButton, AppCard, AppEmptyState } from '@/base/components/ui';
 
@@ -21,6 +22,7 @@ const PlanEmptyState = ({
   return (
     <AppCard component="section" sx={{ p: { xs: 2, md: 3 }, borderRadius: 'var(--app-radius-card)' }}>
       <AppEmptyState
+        illustration={<AppMascot mood="empty_data" size={128} />}
         icon={<EventAvailableRoundedIcon />}
         title={t('emptyActivities')}
         action={!readOnly && onAddActivity ? (

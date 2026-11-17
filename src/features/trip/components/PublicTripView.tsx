@@ -1,5 +1,7 @@
 'use client';
 
+import AppEmptyState from '@/base/components/ui/AppEmptyState';
+
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import React, { useState, useEffect } from 'react';
@@ -353,11 +355,7 @@ const PublicTripView = ({
                 />
               </>
             ) : (
-              <Card sx={{ p: 4, textAlign: 'center', borderRadius: 'var(--app-radius-card)' }}>
-                <Typography sx={{ color: 'text.secondary' }}>
-                  {t('noActivitiesNotice')}
-                </Typography>
-              </Card>
+              <AppEmptyState title={t('noActivitiesNotice')} />
             )}
           </Stack>
         </Container>

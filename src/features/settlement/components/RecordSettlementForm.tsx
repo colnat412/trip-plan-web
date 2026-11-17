@@ -139,6 +139,17 @@ const RecordSettlementForm = ({
           </Box>
         )}
 
+        <AppNumberInput
+          emphasis="primary"
+          label={tDialog('amountLabel')}
+          value={amount}
+          onValueChange={(num) => setAmount(num)}
+          currencySuffix={currency}
+          placeholder="0"
+          fullWidth
+          required
+        />
+
         <Box
           sx={{
             display: 'flex',
@@ -172,15 +183,7 @@ const RecordSettlementForm = ({
           </Box>
         </Box>
 
-        <AppNumberInput
-          label={tDialog('amountLabel')}
-          value={amount}
-          onValueChange={(num) => setAmount(num)}
-          currencySuffix={currency}
-          placeholder="0"
-          fullWidth
-          required
-        />
+
 
         <Box
           sx={{

@@ -2,6 +2,7 @@
 
 import type { ReactNode } from 'react';
 import { Box, ButtonBase, Typography } from '@mui/material';
+import { useFinanceStyle } from '@/base/providers/FinanceStyleProvider';
 
 export interface AppFinanceRowProps {
   icon: ReactNode;
@@ -29,13 +30,16 @@ const AppFinanceRow = ({
   onClick,
   compact = false,
 }: AppFinanceRowProps) => {
+  const finance = useFinanceStyle();
+  const isCompact = compact || finance;
   const titleContent = (
     <Typography
       component="span"
       sx={{
-        flex: compact ? undefined : '1 1 96px',
+        flex: isCompact ? undefined : '1 1 96px',
         minWidth: 0,
-        fontSize: '14px',
+        fontSize: finance ? '15px' : '14px',
+        lineHeight: 1.5,
         fontWeight: 600,
         overflowWrap: 'anywhere',
       }}
@@ -46,7 +50,9 @@ const AppFinanceRow = ({
   const subtitleContent = subtitle && (
     <Box
       sx={{
-        fontSize: '12px',
+        fontSize: finance ? '13px' : '12px',
+        fontWeight: 400,
+        lineHeight: 1.5,
         color: 'text.secondary',
         minWidth: 0,
         overflowWrap: 'anywhere',
@@ -58,6 +64,7 @@ const AppFinanceRow = ({
 
   return (
     <Box
+      data-finance-row
       sx={{
         display: 'flex',
         alignItems: 'flex-start',
@@ -75,8 +82,8 @@ const AppFinanceRow = ({
         sx={{
           display: 'flex',
           alignItems: actionPlacement === 'amount' ? 'center' : 'flex-start',
-          gap: compact ? 1 : 1.25,
-          py: compact ? 1.25 : 1.5,
+          gap: isCompact ? 1 : 1.25,
+          py: isCompact ? 1.25 : 1.5,
           px: 1.5,
           minWidth: 0,
           flex: 1,
@@ -111,7 +118,7 @@ const AppFinanceRow = ({
               minWidth: 0,
             }}
           >
-            {compact ? (
+            {isCompact ? (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.25, flex: '1 1 96px', minWidth: 0 }}>
                 {titleContent}
                 {subtitleContent}
@@ -132,10 +139,11 @@ const AppFinanceRow = ({
                 <Typography
                   component="span"
                   sx={{
-                    fontSize: '14px',
+                    fontSize: finance ? '16px' : '14px',
+                    lineHeight: 1.5,
                     fontWeight: 700,
                     color: amountColor,
-                    whiteSpace: compact ? 'normal' : 'nowrap',
+                    whiteSpace: isCompact ? 'normal' : 'nowrap',
                     textAlign: 'right',
                     overflowWrap: 'anywhere',
                     fontVariantNumeric: 'tabular-nums',
@@ -148,7 +156,7 @@ const AppFinanceRow = ({
               {actionPlacement === 'amount' && action}
             </Box>
           </Box>
-          {!compact && subtitleContent}
+          {!isCompact && subtitleContent}
         </Box>
       </Box>
       {actionPlacement === 'row' && action && <Box sx={{ flexShrink: 0, pt: 0.5 }}>{action}</Box>}

@@ -1,15 +1,20 @@
 'use client';
 
 import {
+  AppEmptyState,
   AppMapSearchPaper,
   AppMapSearchSourcesContext,
   AppLoadingIndicator,
   AppTextField,
 } from '@/base/components/ui';
 
+import Image from 'next/image';
+import { getDestinationPhoto } from '../data/destination-photos';
+import DestinationPhotoCredits from './DestinationPhotoCredits';
 import React, { useMemo, useState } from 'react';
 import {
   Autocomplete,
+  type PaperProps,
   type AutocompleteInputChangeReason,
   Box,
   Stack,
@@ -21,6 +26,10 @@ import { useTranslations } from 'next-intl';
 
 import useDestinationSearch from '../hooks/useDestinationSearch';
 import type { DestinationItem } from '@/app/api/trip/destinations/route';
+
+const DestinationSearchPaper = ({ children, ...props }: PaperProps) => (
+  <AppMapSearchPaper {...props}>{children}<DestinationPhotoCredits /></AppMapSearchPaper>
+);
 
 export interface DestinationAutocompleteProps {
   value: string;
@@ -81,7 +90,7 @@ const DestinationAutocomplete = ({
       value={options.map((option) => option.source)}
     >
       <Autocomplete<DestinationItem, false, false, false>
-        slots={{ paper: AppMapSearchPaper }}
+        slots={{ paper: DestinationSearchPaper }}
         disabled={disabled}
         options={options}
         filterOptions={(items) => items}
@@ -101,11 +110,12 @@ const DestinationAutocomplete = ({
         }
         isOptionEqualToValue={(option, val) => option.label === val.label}
         noOptionsText={
-          searchError ? tMaps('searchUnavailable') : t('noDestinationsFound')
+          searchError ? tMaps('searchUnavailable') : <AppEmptyState compact title={t('noDestinationsFound')} />
         }
         loadingText={<AppLoadingIndicator />}
         renderOption={(props, option) => {
           const { key, ...restProps } = props;
+          const photo = getDestinationPhoto(option.name);
           return (
             <Box component="li" key={key} {...restProps}>
               <Stack
@@ -117,7 +127,7 @@ const DestinationAutocomplete = ({
                   py: 0.5,
                 }}
               >
-                <Box
+                {photo ? <Image src={photo} alt="" width={56} height={44} style={{ objectFit: 'cover', borderRadius: 'var(--app-radius-small)', flexShrink: 0 }} /> : <Box
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -137,7 +147,7 @@ const DestinationAutocomplete = ({
                   ) : (
                     <PlaceRoundedIcon sx={{ fontSize: 18 }} />
                   )}
-                </Box>
+                </Box>}
                 <Stack spacing={0.2} sx={{ minWidth: 0, flex: 1 }}>
                   <Typography
                     variant="body2"

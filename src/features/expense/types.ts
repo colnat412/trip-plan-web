@@ -10,6 +10,7 @@ export interface AddExpenseInitialData {
 }
 
 export type SplitType = 'EQUAL' | 'EXACT_AMOUNT' | 'PERCENTAGE' | 'SHARE';
+export type EditableSplitType = Extract<SplitType, 'EQUAL' | 'EXACT_AMOUNT'>;
 
 export type ExpenseStatus = 'CONFIRMED' | 'DRAFT' | 'DELETED';
 
@@ -68,6 +69,12 @@ export interface CategoryBreakdown {
   percentageUsed: number;
 }
 
+export interface DailySpending {
+  expenseDate: string;
+  currency: string;
+  amount: number;
+}
+
 export interface TripBudgetSummary {
   tripId: number | string;
   totalBudget: number;
@@ -76,6 +83,7 @@ export interface TripBudgetSummary {
   percentageUsed: number;
   currency: string;
   categoryBreakdown: CategoryBreakdown[];
+  dailyTotals?: DailySpending[];
 }
 
 export interface SplitItemPayload {

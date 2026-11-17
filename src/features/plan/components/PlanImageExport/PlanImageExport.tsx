@@ -1,5 +1,8 @@
 'use client';
 
+import { contentColumn } from '@/base/theme/content-layout';
+import AppEmptyState from '@/base/components/ui/AppEmptyState';
+
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { useEffect, useState } from 'react';
@@ -175,13 +178,13 @@ const PlanImageExport = ({ tripId }: { tripId: string }) => {
           ) : undefined
         }
       />
-      <Stack spacing={2}>
+      <Stack spacing={2} sx={contentColumn}>
         {loadError || current?.error ? (
           <AppErrorState status={loadError?.status} onRetry={retry} />
         ) : !current ? (
           <AppLoadingState />
         ) : images.length === 0 ? (
-          <Typography>{t('emptyPlan')}</Typography>
+          <AppEmptyState title={t('emptyPlan')} />
         ) : (
           <>
             <Typography variant="body2" color="text.secondary">

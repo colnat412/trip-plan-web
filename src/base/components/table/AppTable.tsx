@@ -32,6 +32,7 @@ import type { AppTableProps, ColumnFilterValue, TableSortState } from './types';
 
 const AppTable = <T,>({
   columns,
+  surface = 'card',
   data,
   keyExtractor,
   renderMobileRow,
@@ -141,9 +142,9 @@ const AppTable = <T,>({
     <Stack
       spacing={0}
       sx={{
-        bgcolor: 'background.paper',
-        borderRadius: 'var(--app-radius-card)',
-        border: 1,
+        bgcolor: surface === 'plain' ? 'transparent' : 'background.paper',
+        borderRadius: surface === 'plain' ? 0 : 'var(--app-radius-card)',
+        border: surface === 'plain' ? 0 : 1,
         borderColor: 'divider',
         overflow: 'hidden',
         ...sx,
@@ -272,7 +273,7 @@ const AppTable = <T,>({
                   label={`${label}: ${displayVal}`}
                   onDelete={() => handleFilterChange(colId, null)}
                   sx={{
-                    bgcolor: 'background.paper',
+                    bgcolor: surface === 'plain' ? 'transparent' : 'background.paper',
                     border: 1,
                     borderColor: 'divider',
                     fontWeight: 600,
@@ -351,7 +352,7 @@ const AppTable = <T,>({
           borderRadius: 0,
           overflow: tableMaxHeight ? 'auto' : 'hidden',
           maxHeight: tableMaxHeight,
-          bgcolor: 'background.paper',
+          bgcolor: surface === 'plain' ? 'transparent' : 'background.paper',
         }}
       >
         <Table
@@ -360,9 +361,9 @@ const AppTable = <T,>({
         >
           <TableHead
             sx={{
-              bgcolor: 'background.paper',
+              bgcolor: surface === 'plain' && !(stickyHeader ?? Boolean(tableMaxHeight)) ? 'transparent' : 'background.paper',
               '& th': {
-                bgcolor: 'background.paper',
+                bgcolor: surface === 'plain' && !(stickyHeader ?? Boolean(tableMaxHeight)) ? 'transparent' : 'background.paper',
                 borderBottom: 1,
                 borderColor: 'divider',
               },
@@ -513,6 +514,7 @@ const AppTable = <T,>({
 
       {pagination && (
         <AppTablePagination
+          surface={surface}
           page={pagination.page}
           pageSize={pagination.pageSize}
           totalCount={pagination.totalCount}

@@ -74,10 +74,10 @@ const TripItineraryPreview = ({ trip, now }: TripItineraryPreviewProps) => {
         setToast({ message: tPlan('toasts.error'), severity: 'error' }),
     },
   });
+  if (finished) return null;
+
   const planHref = `/plan?tripId=${encodeURIComponent(String(trip.id))}${next ? `&dayId=${encodeURIComponent(next.day.id)}` : ''}`;
-  const heading = finished
-    ? t('summary')
-    : timing?.phase === 'upcoming' && next
+  const heading = timing?.phase === 'upcoming' && next
       ? t('first')
       : next?.kind === 'inProgress'
         ? t('inProgress')
@@ -103,22 +103,7 @@ const TripItineraryPreview = ({ trip, now }: TripItineraryPreviewProps) => {
               <AppSectionLink href={planHref}>{t('viewPlan')}</AppSectionLink>
             }
           />
-          {finished ? (
-            <AppEmptyState
-              title={t(
-                timing?.phase === 'cancelled' ? 'cancelled' : 'completed',
-              )}
-              icon={<EventAvailableRoundedIcon />}
-              sx={{ py: 1 }}
-              action={
-                timing?.phase === 'completed' ? (
-                  <AppSectionLink href="/settlement">
-                    {t('viewSettlement')}
-                  </AppSectionLink>
-                ) : undefined
-              }
-            />
-          ) : !now || isLoading || (isStale && !error) ? (
+          {!now || isLoading || (isStale && !error) ? (
             <AppLoadingState />
           ) : error ? (
             <AppErrorState

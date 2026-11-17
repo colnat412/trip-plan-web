@@ -9,6 +9,7 @@ import { IMAGE_MIME_TYPES, MAX_IMAGE_BYTES } from '@/base/types';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import AppButton from './AppButton';
+import AppToast from './AppToast';
 
 interface AppImageUploaderProps {
   src?: string | null;
@@ -123,7 +124,7 @@ const AppImageUploader = ({
         aria-busy={loading}
         sx={{
           position: 'relative', display: 'flex', flex: 1,
-          alignSelf: 'stretch', minHeight: 112, minWidth: 0,
+          alignSelf: 'stretch', minHeight: compact ? 0 : 112, minWidth: 0, height: compact ? '100%' : undefined,
           overflow: 'hidden', bgcolor: 'action.hover',
         }}
       >
@@ -155,18 +156,17 @@ const AppImageUploader = ({
           {!displayed && !loading && (
             <>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
-                width: 40, height: 40, border: '1px dashed', borderColor: 'divider', borderRadius: 'var(--app-radius-control)' }}>
+                width: compact ? 32 : 40, height: compact ? 32 : 40, border: '1px dashed', borderColor: 'divider', borderRadius: 'var(--app-radius-control)' }}>
                 <AddPhotoAlternateOutlinedIcon sx={{ fontSize: 22 }} />
               </Box>
-              <Typography component="span" sx={{ fontSize: '11px', fontWeight: 500 }}>
-                {t('choose')}
-              </Typography>
+              {!compact && <Typography component="span" sx={{ fontSize: '11px', fontWeight: 500 }}>{t('choose')}</Typography>}
             </>
           )}
         </ButtonBase>
         {loading && (
           <Box
             role="status"
+            aria-label={t('saving')}
             aria-live="polite"
             sx={{
               position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column',
@@ -176,12 +176,11 @@ const AppImageUploader = ({
             }}
           >
             <CircularProgress size={24} thickness={4} aria-hidden="true" />
-            <Typography component="span" sx={{ fontSize: '11px', fontWeight: 600, textAlign: 'center' }}>
-              {t('saving')}
-            </Typography>
+            {!compact && <Typography component="span" sx={{ fontSize: '11px', fontWeight: 600, textAlign: 'center' }}>{t('saving')}</Typography>}
           </Box>
         )}
-        {error && (
+        {error && compact && <AppToast open message={error} severity="error" autoHideDuration={null} onClose={() => setValidationError(null)} />}
+        {error && !compact && (
           <Typography
             role="alert"
             sx={{ position: 'absolute', bottom: 0, width: '100%', bgcolor: 'background.paper',

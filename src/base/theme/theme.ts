@@ -85,32 +85,45 @@ const appTheme = createTheme({
       },
     },
   },
-  shape: { borderRadius: 12 },
+  shape: { borderRadius: 10 },
   typography: {
     fontFamily: 'var(--font-body)',
     h1: {
+      fontSize: '24px',
+      lineHeight: 1.4,
       fontFamily: 'var(--font-display)',
       fontWeight: 700,
       letterSpacing: '-0.5px',
     },
     h2: {
+      fontSize: '20px',
+      lineHeight: 1.4,
       fontFamily: 'var(--font-display)',
       fontWeight: 700,
       letterSpacing: '-0.5px',
     },
     h3: {
+      fontSize: '18px',
+      lineHeight: 1.4,
       fontFamily: 'var(--font-display)',
       fontWeight: 700,
       letterSpacing: '-0.25px',
     },
     h4: {
+      fontSize: '17px',
+      lineHeight: 1.4,
       fontFamily: 'var(--font-display)',
       fontWeight: 700,
       letterSpacing: '0px',
     },
-    h5: { fontFamily: 'var(--font-display)', fontWeight: 600 },
-    h6: { fontFamily: 'var(--font-display)', fontWeight: 600 },
-    button: { fontFamily: 'var(--font-body)', fontWeight: 700 },
+    h5: { fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 600, lineHeight: 1.5 },
+    h6: { fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 600, lineHeight: 1.5 },
+    body1: { fontSize: '15px', lineHeight: 1.6 },
+    body2: { fontSize: '14px', lineHeight: 1.6 },
+    subtitle1: { fontSize: '16px', fontWeight: 600, lineHeight: 1.5 },
+    subtitle2: { fontSize: '15px', fontWeight: 600, lineHeight: 1.5 },
+    caption: { fontSize: '12px', lineHeight: 1.5 },
+    button: { fontFamily: 'var(--font-body)', fontSize: '14px', fontWeight: 600 },
   },
   components: {
     MuiCssBaseline: {
@@ -190,6 +203,14 @@ const appTheme = createTheme({
           };
         },
         input: { padding: '11px 14px' },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          fontSize: '15px',
+          [theme.breakpoints.down('sm')]: { fontSize: '16px' },
+        }),
       },
     },
     MuiInputLabel: {

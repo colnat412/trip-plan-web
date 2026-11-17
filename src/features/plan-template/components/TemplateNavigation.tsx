@@ -1,9 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { AppButton } from '@/base/components/ui';
+import AppRouteTabs from '@/base/components/ui/AppRouteTabs';
 
 const destinations = [
   { id: 'explore', href: '/templates', label: 'navExplore' },
@@ -16,40 +14,11 @@ export default function TemplateNavigation({ active }: {
 }) {
   const t = useTranslations('planTemplate');
   return (
-    <Box
-      component="nav"
-      aria-label={t('library')}
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
-        gap: 0.5,
-        p: 0.5,
-        bgcolor: 'action.hover',
-        borderRadius: 'var(--app-radius-control)',
-      }}
-    >
-      {destinations.map((item) => (
-        <AppButton
-          key={item.id}
-          component={Link}
-          href={item.href}
-          scroll={false}
-          intent="text"
-          selected={active === item.id}
-          aria-current={active === item.id ? 'page' : undefined}
-          wrapLabel
-          sx={{
-            minWidth: 0,
-            minHeight: 44,
-            px: 0.75,
-            fontSize: { xs: '13px', sm: '14px' },
-            borderRadius: 'var(--app-radius-small)',
-            ...(active !== item.id && { color: 'text.secondary' }),
-          }}
-        >
-          {t(item.label)}
-        </AppButton>
-      ))}
-    </Box>
+    <AppRouteTabs
+      label={t('library')}
+      active={active}
+      items={destinations.map((item) => ({ ...item, label: t(item.label) }))}
+      buttonSx={{ px: 0.75, fontSize: { xs: '13px', sm: '14px' } }}
+    />
   );
 }

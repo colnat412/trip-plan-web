@@ -1,5 +1,6 @@
 'use client';
 
+import { contentColumn } from '@/base/theme/content-layout';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { AppPagination, AppLoadingState, AppButton, AppCard, AppEmptyState, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
@@ -32,7 +33,7 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
   });
   const data = query.error ? null : query.listing;
   const content = (
-    <Stack spacing={2} sx={{ width: '100%', minWidth: 0 }}>
+    <Stack spacing={2} sx={{ ...(!compact ? contentColumn : {}), width: '100%', minWidth: 0 }}>
       {compact ? (
         <AppSectionHeader title={t('homeLibrary')} actions={
           <AppSectionLink href="/templates">

@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Avatar, Box, Checkbox, Stack, Typography } from '@mui/material';
+import { Box, Checkbox, Divider, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
-import { AppButton, AppNumberInput } from '@/base/components/ui';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import { useUserContext } from '@/features/user/context/UserContext';
+import { AppButton, AppNumberInput, AppFilterChip } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
-import { getUserInitials } from '@/base/utils/user';
-import type { SplitItemPayload, SplitType } from '../types';
+import type { SplitItemPayload, EditableSplitType } from '../types';
 
 export interface SplitMember {
   userId: string | number;
@@ -17,7 +19,7 @@ export interface SplitMember {
 }
 
 export interface SplitAllocationSectionProps {
-  splitType: SplitType;
+  splitType: EditableSplitType;
   disabled?: boolean;
   totalAmount: number;
   currency: string;
@@ -33,7 +35,6 @@ export interface SplitAllocationSectionProps {
 interface CustomAllocation {
   selected?: boolean;
   amount?: number;
-  splitValue?: number;
 }
 
 const SplitAllocationSection = ({
@@ -46,6 +47,7 @@ const SplitAllocationSection = ({
   onChange,
 }: SplitAllocationSectionProps) => {
   const t = useTranslations('expense');
+  const { user } = useUserContext();
 
   const [customAllocations, setCustomAllocations] = useState<
     Record<string, CustomAllocation>
@@ -60,24 +62,18 @@ const SplitAllocationSection = ({
       );
 
       const isSelected =
-        custom?.selected !== undefined ? custom.selected : true;
+        custom?.selected !== undefined ? custom.selected : initialSplits.length === 0 || Boolean(initial);
       const amount =
         custom?.amount !== undefined
           ? custom.amount
           : (initial?.allocatedAmount ?? 0);
-      const splitValue =
-        custom?.splitValue !== undefined
-          ? custom.splitValue
-          : (initial?.splitValue ?? (splitType === 'PERCENTAGE' ? 0 : 1));
-
       return {
         member: m,
         selected: isSelected,
         amount,
-        splitValue,
       };
     });
-  }, [members, customAllocations, initialSplits, splitType]);
+  }, [members, customAllocations, initialSplits]);
 
   const selectedMembers = useMemo(
     () => memberAllocations.filter((s) => s.selected),
@@ -141,66 +137,6 @@ const SplitAllocationSection = ({
         };
       }
 
-      if (splitType === 'PERCENTAGE') {
-        const sumPct = selectedMembers.reduce(
-          (acc, m) => acc + (m.splitValue || 0),
-          0,
-        );
-        const remPct = 100 - sumPct;
-        const valid = Math.abs(remPct) < 0.01;
-
-        const splits: SplitItemPayload[] = selectedMembers.map((m) => {
-          const pct = m.splitValue || 0;
-          const allocated = Math.floor(((totalAmount * pct) / 100) * 100) / 100;
-          return {
-            userId: m.member.userId,
-            splitValue: pct,
-            allocatedAmount: allocated,
-          };
-        });
-
-        return {
-          allocatedSum: sumPct,
-          remaining: remPct,
-          isValid: valid,
-          errorMessage: valid
-            ? undefined
-            : t('form.errors.splitErrorPercent', { sum: String(sumPct) }),
-          generatedSplits: splits,
-        };
-      }
-
-      if (splitType === 'SHARE') {
-        const totalShares = selectedMembers.reduce(
-          (acc, m) => acc + (m.splitValue > 0 ? m.splitValue : 0),
-          0,
-        );
-        const hasInvalidShare = selectedMembers.some((m) => m.splitValue <= 0);
-
-        const splits: SplitItemPayload[] = selectedMembers.map((m) => {
-          const share = m.splitValue > 0 ? m.splitValue : 1;
-          const allocated =
-            totalShares > 0
-              ? Math.floor(((totalAmount * share) / totalShares) * 100) / 100
-              : 0;
-          return {
-            userId: m.member.userId,
-            splitValue: share,
-            allocatedAmount: allocated,
-          };
-        });
-
-        return {
-          allocatedSum: totalShares,
-          remaining: 0,
-          isValid: !hasInvalidShare && totalShares > 0,
-          errorMessage: hasInvalidShare
-            ? t('form.errors.splitErrorPositiveShare')
-            : undefined,
-          generatedSplits: splits,
-        };
-      }
-
       return {
         allocatedSum: 0,
         remaining: 0,
@@ -260,51 +196,15 @@ const SplitAllocationSection = ({
     }));
   };
 
-  const handleSplitValueChange = (
-    userId: string | number,
-    value: number | undefined,
-  ) => {
-    const key = String(userId);
-    setCustomAllocations((prev) => ({
-      ...prev,
-      [key]: {
-        ...prev[key],
-        splitValue: value ?? 0,
-      },
-    }));
-  };
-
   const handleAutoFillRemaining = (targetUserId: string | number) => {
     const key = String(targetUserId);
-    if (splitType === 'EXACT_AMOUNT') {
-      setCustomAllocations((prev) => {
-        const current = memberAllocations.find(
-          (m) => String(m.member.userId) === key,
-        );
-        const currentAmount = current?.amount ?? 0;
-        return {
-          ...prev,
-          [key]: {
-            ...prev[key],
-            amount: Math.max(0, currentAmount + remaining),
-          },
-        };
-      });
-    } else if (splitType === 'PERCENTAGE') {
-      setCustomAllocations((prev) => {
-        const current = memberAllocations.find(
-          (m) => String(m.member.userId) === key,
-        );
-        const currentPct = current?.splitValue ?? 0;
-        return {
-          ...prev,
-          [key]: {
-            ...prev[key],
-            splitValue: Math.max(0, currentPct + remaining),
-          },
-        };
-      });
-    }
+    setCustomAllocations((previous) => {
+      const current = memberAllocations.find(item => String(item.member.userId) === key);
+      return {
+        ...previous,
+        [key]: { ...previous[key], amount: Math.max(0, (current?.amount ?? 0) + remaining) },
+      };
+    });
   };
 
   if (members.length === 0) {
@@ -313,11 +213,7 @@ const SplitAllocationSection = ({
 
   const hasAmount = Number.isFinite(totalAmount) && totalAmount > 0;
   const allSelected = selectedCount === members.length;
-  const canFillRemaining =
-    hasAmount &&
-    selectedCount > 0 &&
-    Math.abs(remaining) >= 0.01 &&
-    (splitType === 'EXACT_AMOUNT' || splitType === 'PERCENTAGE');
+  const canFillRemaining = hasAmount && selectedCount > 0 && remaining >= 0.01 && splitType === 'EXACT_AMOUNT';
 
   const toggleAllMembers = () => {
     setCustomAllocations((previous) => {
@@ -330,221 +226,81 @@ const SplitAllocationSection = ({
     });
   };
 
-  const allocationStatus = () => {
-    if (splitType === 'EQUAL') {
-      return t('form.equalSummary', { count: selectedCount });
-    }
-    if (splitType === 'SHARE') {
-      return t('form.totalShares', { count: allocatedSum });
-    }
-    if (isValid) return t('form.allocationComplete');
-    const value =
-      splitType === 'PERCENTAGE'
-        ? `${Math.abs(remaining)}%`
-        : formatCurrency(Math.abs(remaining), currency);
-    return t(remaining < 0 ? 'form.overAllocated' : 'form.leftToSplit', {
-      amount: value,
-    });
-  };
+  const status = !hasAmount
+    ? t('form.enterAmountToSplit')
+    : splitType === 'EQUAL'
+      ? t('form.equalSummary', { count: selectedCount })
+      : isValid
+        ? t('form.allocationComplete')
+        : t(remaining < 0 ? 'form.overAllocated' : 'form.leftToSplit', { amount: formatCurrency(Math.abs(remaining), currency) });
 
   return (
     <Stack spacing={1.5} sx={{ minWidth: 0 }}>
-      {/* <Stack spacing={1} sx={{ p: 1.5, borderRadius: 2, bgcolor: 'action.hover', minWidth: 0 }}>
-        <Stack direction="row" spacing={1} useFlexGap sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
-          <Typography variant="body2" color="text.secondary">
-            {t('form.splitTotal')}
-          </Typography>
-          <Typography variant="body2" sx={{ fontWeight: 700, overflowWrap: 'anywhere', minWidth: 0 }}>
-            {hasAmount ? formatCurrency(totalAmount, currency) : '—'}
-          </Typography>
-        </Stack>
-        <Typography
-          variant="caption"
-          aria-live="polite"
-          sx={{ color: !hasAmount ? 'text.secondary' : isValid ? 'text.secondary' : 'error.main' }}
-        >
-          {!hasAmount ? t('form.enterAmountToSplit') : allocationStatus()}
-        </Typography>
-      </Stack> */}
-
-      <Stack
-        direction="row"
-        spacing={1}
-        useFlexGap
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-        }}
-      >
+      <Stack direction="row" spacing={1} useFlexGap sx={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
         <Typography variant="body2" sx={{ fontWeight: 700 }}>
           {t('form.splitsTitle')} ({selectedCount}/{members.length})
         </Typography>
-        <AppButton
-          type="button"
-          intent="text"
-          size="small"
-          disabled={disabled}
-          onClick={toggleAllMembers}
-          sx={{ minHeight: 44, px: 1 }}
-        >
+        <AppButton type="button" intent="text" size="small" disabled={disabled} onClick={toggleAllMembers} sx={{ minHeight: 44, px: 0.5 }}>
           {t(allSelected ? 'form.deselectAllMembers' : 'form.selectAllMembers')}
         </AppButton>
       </Stack>
 
-      <Stack sx={{ borderTop: 1, borderColor: 'divider' }}>
-        {memberAllocations.map(({ member, selected, amount, splitValue }) => {
-          const memberLabel =
-            member.name || member.email || String(member.userId);
-          // Dùng cùng kết quả với payload để số tiền xem trước khớp số tiền gửi đi.
-          const allocatedAmount =
-            generatedSplits.find(
-              (split) => String(split.userId) === String(member.userId),
-            )?.allocatedAmount ?? 0;
-          const inputLabel =
-            splitType === 'EXACT_AMOUNT'
-              ? t('form.allocatedAmountLabel')
-              : t(
-                  splitType === 'PERCENTAGE'
-                    ? 'form.percentageInputLabel'
-                    : 'form.shareInputLabel',
-                );
-
-          return (
-            <Stack
-              key={String(member.userId)}
-              spacing={1.5}
-              sx={{
-                py: 2,
-                borderBottom: 1,
-                borderColor: 'divider',
-                minWidth: 0,
-              }}
-            >
-              <Stack
-                direction="row"
-                spacing={1.5}
-                sx={{ alignItems: 'center', minWidth: 0 }}
-              >
-                <Stack
-                  direction="row"
-                  spacing={1}
-                  sx={{ alignItems: 'center', flex: 1, minWidth: 0 }}
-                >
-                  <Checkbox
-                    size="small"
-                    checked={selected}
-                    disabled={disabled}
-                    onChange={() => handleToggleMember(member.userId)}
-                    slotProps={{ input: { 'aria-label': memberLabel } }}
-                    sx={{ p: 1, width: 44, height: 44, flexShrink: 0 }}
-                  />
-                  <Avatar
-                    src={member.avatarUrl || undefined}
-                    sx={{
-                      width: 32,
-                      height: 32,
-                      fontSize: '12px',
-                      bgcolor: 'primary.light',
-                    }}
-                  >
-                    {getUserInitials(member.name || member.email)}
-                  </Avatar>
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography
-                      variant="body2"
-                      noWrap
-                      title={memberLabel}
-                      sx={{ fontWeight: 600 }}
-                    >
-                      {memberLabel}
-                    </Typography>
-                    {member.email && member.name && (
-                      <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        noWrap
-                        title={member.email}
-                        sx={{ display: 'block' }}
-                      >
-                        {member.email}
-                      </Typography>
-                    )}
-                  </Box>
-                </Stack>
-                <Box sx={{ maxWidth: '45%', minWidth: 0, textAlign: 'right' }}>
-                  {selected ? (
-                    <>
-                      <Typography variant="caption" color="text.secondary">
-                        {t('form.allocatedAmountLabel')}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{ fontWeight: 700, overflowWrap: 'anywhere' }}
-                      >
-                        {hasAmount
-                          ? formatCurrency(allocatedAmount, currency)
-                          : '—'}
-                      </Typography>
-                    </>
-                  ) : (
-                    <Typography variant="caption" color="text.secondary">
-                      {t('form.notSharing')}
-                    </Typography>
-                  )}
+      {splitType === 'EQUAL' ? (
+        <Stack direction="row" useFlexGap sx={{ flexWrap: 'wrap', gap: 1 }}>
+          {memberAllocations.map(({ member, selected }) => {
+            const name = member.name || member.email || String(member.userId);
+            const label = user?.id != null && String(user.id) === String(member.userId) ? t('form.you') : name;
+            return (
+              <AppFilterChip key={String(member.userId)} label={label} title={name}
+                icon={selected ? <CheckRoundedIcon /> : <AddRoundedIcon />}
+                selected={selected} disabled={disabled} onClick={() => handleToggleMember(member.userId)}
+                sx={{ borderRadius: 'var(--app-radius-pill)', maxWidth: '100%', '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' } }} />
+            );
+          })}
+        </Stack>
+      ) : (
+        <Stack divider={<Divider />}>
+          <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right', pb: 1 }}>
+            {t('form.allocatedAmountLabel')} ({currency})
+          </Typography>
+          {memberAllocations.map(({ member, selected, amount }) => {
+            const name = member.name || member.email || String(member.userId);
+            const label = user?.id != null && String(user.id) === String(member.userId) ? t('form.you') : name;
+            return (
+              <Stack key={String(member.userId)} direction="row" spacing={1} sx={{ py: 1.25, alignItems: 'center', minWidth: 0 }}>
+                <Checkbox checked={selected} disabled={disabled} onChange={() => handleToggleMember(member.userId)}
+                  slotProps={{ input: { 'aria-label': name } }} sx={{ width: 44, height: 44, p: 1, flexShrink: 0 }} />
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography variant="body2" noWrap title={name} sx={{ fontWeight: 600 }}>{label}</Typography>
+                  {!selected && <Typography variant="caption" color="text.secondary">{t('form.notSharing')}</Typography>}
                 </Box>
+                <AppNumberInput disabled={disabled || !selected} size="small" variant="standard"
+                  value={amount} placeholder="0" allowDecimals={currency !== 'VND' || !Number.isInteger(amount)}
+                  onValueChange={(value) => handleAmountChange(member.userId, value)}
+                  slotProps={{ htmlInput: { 'aria-label': `${t('form.allocatedAmountLabel')} — ${name}`, style: { textAlign: 'right' } } }}
+                  sx={{ width: { xs: 120, sm: 168 }, flexShrink: 0, '& .MuiInputBase-input': { fontSize: '16px', py: 1, fontWeight: 600, fontVariantNumeric: 'tabular-nums' } }} />
               </Stack>
-
-              {selected && splitType !== 'EQUAL' && (
-                <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-                  <AppNumberInput
-                    fullWidth
-                    disabled={disabled}
-                    label={inputLabel}
-                    value={splitType === 'EXACT_AMOUNT' ? amount : splitValue}
-                    currencySuffix={
-                      splitType === 'EXACT_AMOUNT'
-                        ? currency
-                        : splitType === 'PERCENTAGE'
-                          ? '%'
-                          : t('form.sharesUnit')
-                    }
-                    onValueChange={(value) =>
-                      splitType === 'EXACT_AMOUNT'
-                        ? handleAmountChange(member.userId, value)
-                        : handleSplitValueChange(member.userId, value)
-                    }
-                    slotProps={{
-                      htmlInput: {
-                        'aria-label': `${inputLabel} — ${memberLabel}`,
-                        style: { textAlign: 'right', fontSize: '16px' },
-                      },
-                    }}
-                  />
-                  {canFillRemaining && (
-                    <AppButton
-                      type="button"
-                      size="small"
-                      intent="text"
-                      disabled={disabled}
-                      onClick={() => handleAutoFillRemaining(member.userId)}
-                      sx={{ alignSelf: 'flex-end', minHeight: 44, px: 1 }}
-                    >
-                      {t('form.autoFillRemaining')}
-                    </AppButton>
-                  )}
-                </Stack>
-              )}
-            </Stack>
-          );
-        })}
-      </Stack>
-
-      {errorMessage && (hasAmount || selectedCount === 0) && (
-        <Typography variant="caption" role="alert" color="error.main">
-          {errorMessage}
-        </Typography>
+            );
+          })}
+          <Stack direction="row" useFlexGap sx={{ justifyContent: 'space-between', gap: 1, pt: 1.5, flexWrap: 'wrap' }}>
+            <Typography variant="caption" color="text.secondary">{currency}</Typography>
+            <Typography variant="caption" color="text.secondary">
+              {t('form.allocatedTotalLabel', { amount: formatCurrency(allocatedSum, currency) })}
+            </Typography>
+          </Stack>
+          {canFillRemaining && (
+            <AppButton intent="text" size="small" disabled={disabled}
+              onClick={() => handleAutoFillRemaining(selectedMembers[selectedMembers.length - 1].member.userId)}
+              sx={{ alignSelf: 'flex-end', minHeight: 44 }}>
+              {t('form.fillRemainingFor', { name: selectedMembers[selectedMembers.length - 1].member.name || selectedMembers[selectedMembers.length - 1].member.email || String(selectedMembers[selectedMembers.length - 1].member.userId) })}
+            </AppButton>
+          )}
+        </Stack>
       )}
+      <Typography variant="caption" aria-live="polite" sx={{ color: hasAmount && !isValid ? 'error.main' : 'text.secondary' }}>
+        {status}
+      </Typography>
+      {selectedCount === 0 && <Typography variant="caption" role="alert" color="error.main">{errorMessage}</Typography>}
     </Stack>
   );
 };

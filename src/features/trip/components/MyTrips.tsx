@@ -4,12 +4,10 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
 
 import { Box } from '@mui/material';
 
 import {
-  AppFloatingActionButton,
   AppPageContainer,
   type ColumnFilterValue,
   type TableSortState,
@@ -27,7 +25,6 @@ import DeleteTripDialog from './DeleteTripDialog';
 import type { Trip } from '../types';
 
 const MyTrips = () => {
-  const t = useTranslations('myTrips');
   const router = useRouter();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
@@ -72,7 +69,6 @@ const MyTrips = () => {
   const {
     activeTrip,
     selectTrip,
-    openCreateTrip,
     refetchTrips,
     subscribeTrips,
   } = useTripContext();
@@ -176,14 +172,7 @@ const MyTrips = () => {
   const totalCount = pagination?.totalElements ?? trips.length;
 
   return (
-    <AppPageContainer
-      floatingAction={
-        <AppFloatingActionButton
-          label={t('createNew')}
-          onClick={openCreateTrip}
-        />
-      }
-    >
+    <AppPageContainer>
       <MyTripsHeader totalTrips={totalCount} />
 
       <TripFilterBar
@@ -204,13 +193,12 @@ const MyTrips = () => {
       {error && !isDebouncing ? (
         <AppErrorState status={error.status} onRetry={() => refetch()} />
       ) : viewMode === 'grid' ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, gap: 2.5 }}>
           <TripCardGrid
             trips={trips}
             isLoading={isLoading || isStale || isDebouncing}
             activeTripId={activeTrip?.id ?? null}
             onSelectTrip={handleSelectTrip}
-            onCreateTrip={openCreateTrip}
             onEditTrip={setEditingTrip}
             onDeleteTrip={setDeletingTrip}
           />
@@ -231,7 +219,6 @@ const MyTrips = () => {
           isFetching={isFetching || isDebouncing}
           activeTripId={activeTrip?.id ?? null}
           onSelectTrip={handleSelectTrip}
-          onCreateTrip={openCreateTrip}
           onEditTrip={setEditingTrip}
           onDeleteTrip={setDeletingTrip}
           sort={sort}

@@ -7,11 +7,11 @@ import { useState } from 'react';
 import { Box, Typography, Stack } from '@mui/material';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
-import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   AppButton,
+  AppEmptyState,
   AppFloatingActionButton,
   AppPageContainer,
   AppPageHeader,
@@ -48,6 +48,7 @@ import type {
 
 // Tạm ẩn phần chi tiết ngân sách theo nhóm; bật lại khi cần.
 const SHOW_CATEGORY_BUDGET_DETAILS = false;
+const SHOW_EXPENSE_FILTERS = false;
 
 const ExpenseOverview = () => {
   const router = useRouter();
@@ -72,19 +73,20 @@ const ExpenseOverview = () => {
   const [deletingExpense, setDeletingExpense] = useState<Expense | null>(null);
   const [setBudgetOpen, setSetBudgetOpen] = useState(false);
 
-  const search = typeof filters.title === 'string' ? filters.title : undefined;
+  const activeFilters = SHOW_EXPENSE_FILTERS ? filters : {};
+  const search = typeof activeFilters.title === 'string' ? activeFilters.title : undefined;
   const category =
-    typeof filters.category === 'string'
-      ? filters.category
-      : Array.isArray(filters.category)
-        ? filters.category.join(',')
+    typeof activeFilters.category === 'string'
+      ? activeFilters.category
+      : Array.isArray(activeFilters.category)
+        ? activeFilters.category.join(',')
         : undefined;
-  const payer = typeof filters.payer === 'string' ? filters.payer : undefined;
+  const payer = typeof activeFilters.payer === 'string' ? activeFilters.payer : undefined;
   const splitType =
-    typeof filters.splitType === 'string'
-      ? filters.splitType
-      : Array.isArray(filters.splitType)
-        ? filters.splitType.join(',')
+    typeof activeFilters.splitType === 'string'
+      ? activeFilters.splitType
+      : Array.isArray(activeFilters.splitType)
+        ? activeFilters.splitType.join(',')
         : undefined;
 
   const handleSortChange = (newSort: TableSortState | null) => {
@@ -185,6 +187,8 @@ const ExpenseOverview = () => {
     options: {
       onSuccess: () => {
         showToast(t('toasts.deleteSuccess'));
+        setEditingExpense(current => current && String(current.id) === String(deletingExpense?.id) ? null : current);
+        setDetailExpense(current => current && String(current.id) === String(deletingExpense?.id) ? null : current);
         setDeletingExpense(null);
         refreshAll();
       },
@@ -253,39 +257,9 @@ const ExpenseOverview = () => {
   if (!activeTrip) {
     return (
       <AppPageContainer embedded>
-        <Stack
-          spacing={2}
-          sx={{ alignItems: 'center', textAlign: 'center', py: 8 }}
-        >
-          <Box
-            sx={{
-              p: 3,
-              borderRadius: '50%',
-              bgcolor: 'action.hover',
-              color: 'primary.main',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <LuggageRoundedIcon sx={{ fontSize: '64px' }} />
-          </Box>
-          <Stack spacing={1} sx={{ alignItems: 'center', maxWidth: 480 }}>
-            <Typography
-              sx={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '22px',
-                fontWeight: 700,
-                color: 'text.primary',
-              }}
-            >
-              {t('noTripTitle')}
-            </Typography>
-          </Stack>
-          <AppButton intent="primary" onClick={() => router.push('/trips')}>
-            {t('viewTrips')}
-          </AppButton>
-        </Stack>
+        <AppEmptyState title={t('noTripTitle')} action={
+          <AppButton intent="primary" onClick={() => router.push('/trips')}>{t('viewTrips')}</AppButton>
+        } />
       </AppPageContainer>
     );
   }
@@ -303,7 +277,7 @@ const ExpenseOverview = () => {
       <AppPageHeader
         icon={<AccountBalanceWalletRoundedIcon sx={{ fontSize: '24px' }} />}
         title={t('pageTitle')}
-        badge={activeTrip.baseCurrency}
+        titleActions={<Typography variant="body2" color="text.secondary">{activeTrip.baseCurrency}</Typography>}
         actions={canWrite && canManage ? (
           <AppButton
             intent="secondary"
@@ -337,59 +311,66 @@ const ExpenseOverview = () => {
         />
       </Box>
 
-      {summary?.categoryBreakdown && (
-        <Stack spacing={1.5}>
-          <CategorySpendingChart
-            key={String(tripId)}
-            breakdown={summary.categoryBreakdown}
-            currency={summary.currency || activeTrip.baseCurrency}
-            totalBudget={summary.totalBudget}
+      <Box sx={{
+        display: 'grid',
+        gridTemplateColumns: { xs: 'minmax(0, 1fr)', xl: 'minmax(0, 1fr) 340px' },
+        gap: 3,
+        alignItems: 'start',
+      }}>
+        <Box sx={{ minWidth: 0, gridColumn: summary?.categoryBreakdown ? undefined : '1 / -1' }}>
+          <ExpenseTable
+            expenses={expenses}
+            dailyTotals={summary?.dailyTotals}
+            isLoading={isExpensesLoading || isSummaryLoading}
+            isFetching={isExpensesFetching}
+            pagination={pagination}
+            onPageChange={(newPage) => setPage(newPage)}
+            onViewDetail={(expense) => setDetailExpense(expense)}
+            sort={sort}
+            onSortChange={handleSortChange}
+            filters={activeFilters}
+            onFilterChange={SHOW_EXPENSE_FILTERS ? handleFilterChange : undefined}
+            readOnly={!canWrite}
           />
-          {SHOW_CATEGORY_BUDGET_DETAILS && summary.categoryBreakdown.some(
-            (item) => item.spentAmount > 0 || item.limitAmount > 0,
-          ) && (
-            <Box component="details">
-              <Box
-                component="summary"
-                sx={{
-                  cursor: 'pointer',
-                  color: 'primary.main',
-                  py: 1.5,
-                  fontSize: '14px',
-                  fontWeight: 600,
-                }}
-              >
-                {t('spendingChart.budgetDetails')}
+        </Box>
+        {summary?.categoryBreakdown && (
+          <Stack spacing={1.5} sx={{ minWidth: 0 }}>
+            <CategorySpendingChart
+              compact
+              key={String(tripId)}
+              breakdown={summary.categoryBreakdown}
+              currency={summary.currency || activeTrip.baseCurrency}
+              totalBudget={summary.totalBudget}
+            />
+            {SHOW_CATEGORY_BUDGET_DETAILS && summary.categoryBreakdown.some(
+              (item) => item.spentAmount > 0 || item.limitAmount > 0,
+            ) && (
+              <Box component="details">
+                <Box
+                  component="summary"
+                  sx={{
+                    cursor: 'pointer',
+                    color: 'primary.main',
+                    py: 1.5,
+                    fontSize: '14px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {t('spendingChart.budgetDetails')}
+                </Box>
+                <CategorySpendingList
+                  breakdown={summary.categoryBreakdown}
+                  currency={summary.currency || activeTrip.baseCurrency}
+                  onOpenSetBudget={
+                    canManage ? () => setSetBudgetOpen(true) : undefined
+                  }
+                />
               </Box>
-              <CategorySpendingList
-                breakdown={summary.categoryBreakdown}
-                currency={summary.currency || activeTrip.baseCurrency}
-                onOpenSetBudget={
-                  canManage ? () => setSetBudgetOpen(true) : undefined
-                }
-              />
-            </Box>
-          )}
-        </Stack>
-      )}
+            )}
+          </Stack>
+        )}
 
-      <ExpenseTable
-        canManageExpense={(expense) => canManageRecord(expense.createdBy)}
-        expenses={expenses}
-        isLoading={isExpensesLoading || isSummaryLoading}
-        isFetching={isExpensesFetching}
-        pagination={pagination}
-        tableMaxHeight={380}
-        onPageChange={(newPage) => setPage(newPage)}
-        onViewDetail={(expense) => setDetailExpense(expense)}
-        onEdit={(expense) => setEditingExpense(expense)}
-        onDelete={(expense) => setDeletingExpense(expense)}
-        sort={sort}
-        onSortChange={handleSortChange}
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        readOnly={!canWrite}
-      />
+      </Box>
 
       <ExpenseDetailDialog
         open={Boolean(detailExpense)}
@@ -397,6 +378,8 @@ const ExpenseOverview = () => {
         onClose={() => setDetailExpense(null)}
         onEdit={(expense) => setEditingExpense(expense)}
         readOnly={!canManageRecord(detailExpense?.createdBy)}
+        onDelete={canManageRecord(detailExpense?.createdBy) ? (expense) => setDeletingExpense(expense) : undefined}
+        isDeleting={isDeleting}
       />
 
       <AddExpenseDialog
@@ -413,7 +396,7 @@ const ExpenseOverview = () => {
         expense={editingExpense}
         onClose={() => setEditingExpense(null)}
         onSubmit={handleUpdateSubmit}
-        isLoading={isUpdating}
+        isLoading={isUpdating || isDeleting}
       />
 
       <DeleteExpenseDialog

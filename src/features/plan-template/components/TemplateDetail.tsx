@@ -2,11 +2,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AppErrorState from '@/base/components/ui/AppErrorState';
-import Link from 'next/link';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import { IconButton, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppPageContainer, AppButton } from '@/base/components/ui';
+import { AppPageContainer, AppButton, AppBackHeader } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { TemplateDetailData } from '../types';
 import TemplateBanner from './TemplateBanner';
@@ -27,19 +25,7 @@ const TemplateDetail = ({
   return (
     <AppPageContainer>
       <Stack spacing={2} sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', minWidth: 0, minHeight: 'var(--app-dialog-header-height)' }}>
-          <IconButton
-            component={Link}
-            href="/templates"
-            aria-label={t('backToLibrary')}
-            sx={{ width: 'var(--app-dialog-control-size)', height: 'var(--app-dialog-control-size)', flexShrink: 0 }}
-          >
-            <ArrowBackRoundedIcon />
-          </IconButton>
-          <Typography variant="subtitle1" sx={{ minWidth: 0, fontWeight: 600 }}>
-            {t('backToLibrary')}
-          </Typography>
-        </Stack>
+        <AppBackHeader title={t('backToLibrary')} backHref="/templates" backLabel={t('backToLibrary')} headingComponent="h2" />
         {!detail ? (
           <AppErrorState
             variant={status === 404 ? 'notFound' : status === 403 ? 'forbidden' : 'load'}

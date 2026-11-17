@@ -6,7 +6,7 @@ import { Box, Typography } from '@mui/material';
 import GavelRoundedIcon from '@mui/icons-material/GavelRounded';
 import PolicyRoundedIcon from '@mui/icons-material/PolicyRounded';
 import ShieldRoundedIcon from '@mui/icons-material/ShieldRounded';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppCard, AppCheckbox } from '@/base/components/ui';
 import type { PolicyId } from '../constants';
@@ -81,7 +81,7 @@ const PolicyAcceptanceCard = ({
       <AppButton
         intent={checked && !disabled ? "secondary" : "text"}
         size="small"
-        endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: '16px' }} />}
+        endIcon={<ChevronRightRoundedIcon sx={{ fontSize: '16px' }} />}
         aria-label={t('read', { name: t(`documents.${policy}.title`) })}
         onClick={onRead}
         sx={{

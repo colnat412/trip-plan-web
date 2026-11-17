@@ -193,6 +193,7 @@ const AiPlannerDialog = ({
         </Stack>
 
         <AppNumberInput
+          emphasis="primary"
           label={tDialog('aiBudgetLabel')}
           value={budget}
           onValueChange={(val) => setBudget(val)}

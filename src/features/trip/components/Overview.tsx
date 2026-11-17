@@ -8,11 +8,10 @@ import { useCurrentTime } from '@/base/hooks';
 
 import { useTripContext } from '../context/TripContext';
 import TemplateLibrary from '@/features/plan-template/components/TemplateLibrary';
-import QuickCreate from '@/features/plan-template/components/QuickCreate';
 import ActiveTripBanner from './overview/ActiveTripBanner';
 import OverviewDetails from './overview/OverviewDetails';
-import EmptyTripState from './overview/EmptyTripState';
 import TripCountdown from './overview/TripCountdown';
+import OverviewActions from './overview/OverviewActions';
 
 const Overview = () => {
   const now = useCurrentTime();
@@ -22,7 +21,7 @@ const Overview = () => {
   if (isLoading) {
     return (
       <AppPageContainer>
-        <AppLoadingState sx={{ minHeight: 320 }} />
+        <AppLoadingState />
       </AppPageContainer>
     );
   }
@@ -35,9 +34,8 @@ const Overview = () => {
   if (!trips?.length)
     return (
       <AppPageContainer>
+        <OverviewActions onCreateTrip={openCreateTrip} />
         <TemplateLibrary compact />
-        <QuickCreate />
-        <EmptyTripState onCreateTrip={openCreateTrip} />
       </AppPageContainer>
     );
   const currentTrip = activeTrip || trips[0];

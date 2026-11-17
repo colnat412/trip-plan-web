@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import DonutLargeRoundedIcon from '@mui/icons-material/DonutLargeRounded';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppButton, AppCard, AppEmptyState } from '@/base/components/ui';
+import { AppButton, AppEmptyState } from '@/base/components/ui';
 import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
 import { formatCurrency, formatCompactCurrency } from '@/base/utils';
 import type { CategoryBreakdown } from '../types';
@@ -13,9 +13,10 @@ interface CategorySpendingChartProps {
   breakdown: CategoryBreakdown[];
   currency: string;
   totalBudget: number;
+  compact?: boolean;
 }
 
-const CategorySpendingChart = ({ breakdown, currency, totalBudget }: CategorySpendingChartProps) => {
+const CategorySpendingChart = ({ breakdown, currency, totalBudget, compact = false }: CategorySpendingChartProps) => {
   const locale = useLocale();
   const t = useTranslations('expense.spendingChart');
   const tCategories = useTranslations('expense.categories');
@@ -50,13 +51,13 @@ const CategorySpendingChart = ({ breakdown, currency, totalBudget }: CategorySpe
     return { ...item, length: (item.spentAmount / totalSpent) * circumference, offset: (previousTotal / totalSpent) * circumference };
   });
   return (
-    <AppCard sx={{ p: { xs: 2, sm: 2.5 }, border: 1, borderColor: 'divider' }}>
+    <Box component="section" sx={{ py: 2, minWidth: 0 }}>
       <Stack spacing={2}>
         <Typography component="h2" variant="subtitle1" sx={{ fontWeight: 700 }}>{t('title')}</Typography>
         {categories.length === 0 ? (
           <AppEmptyState title={t('empty')} icon={<DonutLargeRoundedIcon />} />
         ) : (
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: 'center' }}>
+          <Stack direction={compact ? 'column' : { xs: 'column', sm: 'row' }} spacing={2} sx={{ alignItems: 'center' }}>
             <Box sx={{ width: { xs: 208, sm: 240 }, maxWidth: '100%', flexShrink: 0, color: 'text.primary' }}>
               <svg viewBox="0 0 240 240" width="100%" role="img"
                 aria-label={centerSummary} style={{ display: 'block', fontFamily: 'inherit' }}>
@@ -115,7 +116,7 @@ const CategorySpendingChart = ({ breakdown, currency, totalBudget }: CategorySpe
           </Stack>
         )}
       </Stack>
-    </AppCard>
+    </Box>
   );
 };
 

@@ -18,6 +18,7 @@ export interface AppNumberInputProps extends Omit<
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   allowDecimals?: boolean;
   currencySuffix?: string;
+  emphasis?: 'default' | 'primary';
 }
 
 const AppNumberInput = ({
@@ -26,6 +27,8 @@ const AppNumberInput = ({
   onChange,
   allowDecimals = false,
   currencySuffix,
+  emphasis = 'default',
+  sx,
   fullWidth = true,
   size = 'medium',
   variant = 'outlined',
@@ -175,9 +178,24 @@ const AppNumberInput = ({
   return (
     <TextField
       {...restProps}
+      placeholder={restProps.placeholder ?? (emphasis === 'primary' ? '0' : undefined)}
       fullWidth={fullWidth}
       size={size}
-      variant={variant}
+      variant={emphasis === 'primary' ? 'standard' : variant}
+      sx={[
+        ...(emphasis === 'primary' ? [{
+          minWidth: 0,
+          '& .MuiInputBase-root': { bgcolor: 'transparent', minHeight: 72 },
+          '& .MuiInputBase-input': {
+            fontSize: displayValue.length > 14 ? { xs: '26px', sm: '32px' } : { xs: '34px', sm: '42px' },
+            fontWeight: 700, lineHeight: 1.25, py: 1.5, minWidth: 0,
+            fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.5px',
+          },
+          '& .MuiInputAdornment-root': { flexShrink: 0 },
+          '& .MuiFormHelperText-root': { mx: 0, overflowWrap: 'anywhere' },
+        }] : []),
+        ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
+      ]}
       type="text"
       value={displayValue}
       onChange={handleChange}
@@ -185,6 +203,9 @@ const AppNumberInput = ({
       inputRef={internalInputRef}
       slotProps={{
         ...slotProps,
+        inputLabel: emphasis === 'primary' && typeof slotProps?.inputLabel !== 'function'
+          ? { ...slotProps?.inputLabel, shrink: true }
+          : slotProps?.inputLabel,
         htmlInput:
           typeof slotProps?.htmlInput === 'function'
             ? slotProps.htmlInput

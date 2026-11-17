@@ -10,6 +10,8 @@ export interface AppInfiniteScrollTriggerProps {
   loading?: boolean;
   onLoadMore: () => void;
   rootMargin?: string;
+  root?: Element | null;
+  enabled?: boolean;
 }
 
 const AppInfiniteScrollTrigger = ({
@@ -17,6 +19,8 @@ const AppInfiniteScrollTrigger = ({
   loading = false,
   onLoadMore,
   rootMargin = '160px',
+  root = null,
+  enabled = true,
 }: AppInfiniteScrollTriggerProps) => {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const onLoadMoreRef = useRef(onLoadMore);
@@ -27,7 +31,7 @@ const AppInfiniteScrollTrigger = ({
 
   useEffect(() => {
     const node = sentinelRef.current;
-    if (!node || !hasMore || loading) return;
+    if (!node || !hasMore || loading || !enabled) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -35,12 +39,12 @@ const AppInfiniteScrollTrigger = ({
           onLoadMoreRef.current();
         }
       },
-      { rootMargin },
+      { root, rootMargin },
     );
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [hasMore, loading, rootMargin]);
+  }, [hasMore, loading, rootMargin, root, enabled]);
 
   if (!hasMore && !loading) return null;
 

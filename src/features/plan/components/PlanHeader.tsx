@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import ChecklistRoundedIcon from '@mui/icons-material/ChecklistRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
@@ -11,7 +11,6 @@ import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
 import { useLocale, useTranslations } from 'next-intl';
 import {
   AppActionMenu,
-  AppButton,
   AppMetricValue,
   AppPageHeader,
 } from '@/base/components/ui';
@@ -52,8 +51,6 @@ const PlanHeader = ({
   const router = useRouter();
   const t = useTranslations('plan');
   const tTemplate = useTranslations('planTemplate');
-  const theme = useTheme();
-  const isNarrow = useMediaQuery(theme.breakpoints.down(360));
 
   return (
     <AppPageHeader
@@ -108,33 +105,18 @@ const PlanHeader = ({
             minWidth: 0,
           }}
         >
-          {!isNarrow && !readOnly && onOpenAiPlanner && (
-            <AppButton
-              intent="secondary"
-              size="small"
-              wrapLabel
-              startIcon={<AutoAwesomeRoundedIcon />}
-              onClick={onOpenAiPlanner}
-              sx={{ minHeight: 44 }}
-            >
-              {t('aiPlannerBtn')}
-            </AppButton>
+          {!readOnly && onOpenAiPlanner && (
+            <Tooltip title={t('aiPlannerBtn')}>
+              <IconButton color="primary" aria-label={t('aiPlannerBtn')} onClick={onOpenAiPlanner} sx={{ width: 44, height: 44 }}>
+                <AutoAwesomeRoundedIcon />
+              </IconButton>
+            </Tooltip>
           )}
           <AppActionMenu
             ariaLabel={t('actionsLabel')}
             triggerIcon={<MoreHorizRoundedIcon />}
             minTouchTarget
             items={[
-              ...(isNarrow && !readOnly && onOpenAiPlanner
-                ? [
-                    {
-                      id: 'ai',
-                      label: t('aiPlannerBtn'),
-                      icon: <AutoAwesomeRoundedIcon fontSize="small" />,
-                      onClick: onOpenAiPlanner,
-                    },
-                  ]
-                : []),
               {
                 id: 'templates',
                 label: tTemplate('chooseTemplate'),

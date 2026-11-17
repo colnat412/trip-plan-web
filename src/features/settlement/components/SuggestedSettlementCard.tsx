@@ -1,13 +1,8 @@
 'use client';
 
-import React from 'react';
-import { Avatar, Box, Typography } from '@mui/material';
-import { alpha } from '@mui/material/styles';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import { Avatar, Box, ButtonBase, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
-import { useTranslations } from 'next-intl';
-
-import { AppButton, AppCard, AppFinanceRow } from '@/base/components/ui';
+import { useLocale, useTranslations } from 'next-intl';
 import { formatCurrency, getUserInitials } from '@/base/utils';
 import type { SuggestedSettlement } from '../types';
 
@@ -16,126 +11,40 @@ export interface SuggestedSettlementCardProps {
   onSettle?: (settlement: SuggestedSettlement) => void;
 }
 
-const SuggestedSettlementCard = ({
-  settlement,
-  onSettle,
-}: SuggestedSettlementCardProps) => {
+const SuggestedSettlementCard = ({ settlement, onSettle }: SuggestedSettlementCardProps) => {
   const t = useTranslations('settlement');
+  const locale = useLocale();
+  const actionLabel = `${t('settleBtn')}: ${settlement.fromUserName} → ${settlement.toUserName}`;
 
   return (
-    <>
-    <Box sx={{ display: { xs: 'block', sm: 'none' }, minWidth: 0, border: 1, borderColor: 'divider', borderRadius: 'var(--app-radius-control)', bgcolor: 'background.paper' }}>
-      <AppFinanceRow icon={<Avatar sx={{ width: 40, height: 40 }}>{getUserInitials(settlement.fromUserName)}</Avatar>}
-        title={settlement.fromUserName}
-        subtitle={t('transferTo', { name: settlement.toUserName })}
-        amount={formatCurrency(settlement.amount, settlement.currency)}
+    <Stack role="listitem" direction="row" spacing={0.5} sx={{ alignItems: 'center', minWidth: 0 }}>
+      <Box component={onSettle ? ButtonBase : 'div'}
         onClick={onSettle ? () => onSettle(settlement) : undefined}
-        action={onSettle ? <AppButton intent="text" aria-label={t('settleBtn')} onClick={() => onSettle(settlement)} sx={{ minWidth: 44, minHeight: 44 }}><PaymentRoundedIcon fontSize="small" /></AppButton> : undefined}
-      />
-    </Box>
-    <AppCard
-      sx={{
-        display: { xs: 'none', sm: 'flex' },
-        p: 2,
-        borderRadius: 'var(--app-radius-card)',
-        border: '1px solid',
-        borderColor: 'divider',
-        bgcolor: 'background.paper',
-        flexDirection: { xs: 'column', sm: 'row' },
-        alignItems: { xs: 'flex-start', sm: 'center' },
-        justifyContent: 'space-between',
-        gap: 2,
-        transition: 'all 0.2s ease',
-        '&:hover': {
-          boxShadow: (theme) => {
-            return `0 4px 12px ${alpha(theme.palette.text.primary, 0.06)}`;
-          },
-          borderColor: 'primary.main',
-        },
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1.5,
-          flexWrap: 'wrap',
-          minWidth: 0,
-          overflowWrap: 'anywhere',
-        }}
-      >
-        <Box
-          sx={{
-            px: 1.5,
-            py: 0.75,
-            borderRadius: 'var(--app-radius-control)',
-            bgcolor: 'action.hover',
-            fontWeight: 700,
-            fontSize: '13px',
-            color: 'text.primary',
-          }}
-        >
-          {settlement.fromUserName}
-        </Box>
-
-        <Box
-          sx={{ display: 'flex', alignItems: 'center', color: 'primary.main' }}
-        >
-          <ArrowForwardRoundedIcon sx={{ fontSize: '18px' }} />
-        </Box>
-
-        <Box
-          sx={{
-            px: 1.5,
-            py: 0.75,
-            borderRadius: 'var(--app-radius-control)',
-            bgcolor: 'action.hover',
-            fontWeight: 700,
-            fontSize: '13px',
-            color: 'text.primary',
-          }}
-        >
-          {settlement.toUserName}
-        </Box>
-      </Box>
-
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: { xs: 'space-between', sm: 'flex-end' },
-          width: { xs: '100%', sm: 'auto' },
-          gap: 2,
-          flexWrap: 'wrap',
-          minWidth: 0,
-        }}
-      >
-        <Typography
-          sx={{
-            fontSize: '16px',
-            minWidth: 0,
-            overflowWrap: 'anywhere',
-            fontWeight: 800,
-            fontFamily: 'var(--font-mono)',
-            color: 'primary.main',
-          }}
-        >
-          {formatCurrency(settlement.amount, settlement.currency)}
+        aria-label={onSettle ? actionLabel : undefined}
+        sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1, minWidth: 0, py: 1.25, px: 0.5,
+          textAlign: 'left', color: 'text.primary', borderRadius: 'var(--app-radius-small)',
+          '&:hover': onSettle ? { bgcolor: 'action.hover' } : undefined,
+          '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: -2 } }}>
+        <Avatar sx={{ width: 32, height: 32, fontSize: '12px', flexShrink: 0 }}>{getUserInitials(settlement.fromUserName)}</Avatar>
+        <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
+          <Typography noWrap title={settlement.fromUserName} sx={{ fontSize: '14px', fontWeight: 600 }}>{settlement.fromUserName}</Typography>
+          <Typography noWrap title={t('transferTo', { name: settlement.toUserName })} sx={{ fontSize: '12px', color: 'text.secondary' }}>
+            {t('transferTo', { name: settlement.toUserName })}
+          </Typography>
+        </Stack>
+        <Typography sx={{ maxWidth: '45%', fontSize: '14px', fontWeight: 600, fontVariantNumeric: 'tabular-nums', textAlign: 'right', overflowWrap: 'anywhere' }}>
+          {formatCurrency(settlement.amount, settlement.currency, locale)}
         </Typography>
-
-        {onSettle && (
-          <AppButton
-            size="medium"
-            intent="primary"
-            startIcon={<PaymentRoundedIcon sx={{ fontSize: '16px' }} />}
-            onClick={() => onSettle(settlement)}
-          >
-            {t('settleBtn')}
-          </AppButton>
-        )}
       </Box>
-    </AppCard>
-    </>
+      {onSettle && (
+        <Tooltip title={t('settleBtn')}>
+          <IconButton aria-label={actionLabel} onClick={() => onSettle(settlement)}
+            sx={{ width: 44, height: 44, flexShrink: 0, color: 'primary.main', borderRadius: 'var(--app-radius-control)' }}>
+            <PaymentRoundedIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      )}
+    </Stack>
   );
 };
 

@@ -4,10 +4,10 @@ import React from 'react';
 import { TableRow, TableCell, Typography, Stack, Avatar } from '@mui/material';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
 import { useTranslations } from 'next-intl';
 import { AppActionMenu, AppCategoryChip } from '@/base/components/ui';
 import { formatCurrency, formatDate } from '@/base/utils';
+import { useUserContext } from '@/features/user/context/UserContext';
 import type { Expense } from '../types';
 
 export interface ExpenseTableRowProps {
@@ -24,18 +24,9 @@ const ExpenseTableRow = ({
   onViewDetail,
 }: ExpenseTableRowProps) => {
   const t = useTranslations('expense');
+  const { user } = useUserContext();
 
   const menuItems = [
-    ...(onViewDetail
-      ? [
-          {
-            id: 'view',
-            label: t('dialog.detailTitle'),
-            icon: <VisibilityRoundedIcon fontSize="small" />,
-            onClick: () => onViewDetail(expense),
-          },
-        ]
-      : []),
     {
       id: 'edit',
       label: t('row.edit'),
@@ -152,7 +143,7 @@ const ExpenseTableRow = ({
                 whiteSpace: 'nowrap',
               }}
             >
-              {expense.payerName || '—'}
+              {user?.id != null && String(user.id) === String(expense.payerId) ? t('row.youPaid') : expense.payerName || '—'}
             </Typography>
             {expense.payerEmail && (
               <Typography

@@ -1,3 +1,4 @@
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import FlightTakeoffOutlinedIcon from '@mui/icons-material/FlightTakeoffOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -7,6 +8,7 @@ import CollectionsBookmarkOutlinedIcon from '@mui/icons-material/CollectionsBook
 import type { SidebarMenuItem, SidebarTrip, SidebarUser } from './types';
 
 export const DEFAULT_SIDEBAR_MENU: SidebarMenuItem[] = [
+  { id: 'settings', href: '/settings', label: 'Cài đặt', messageKey: 'settings', icon: <SettingsOutlinedIcon /> },
   {
     id: 'overview',
     href: '/overview',

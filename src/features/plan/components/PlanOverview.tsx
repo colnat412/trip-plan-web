@@ -6,6 +6,7 @@ import {
   AppLoadingState,
   AppFloatingActionButton,
   AppPageContainer,
+  AppEmptyState,
   AppToast,
   AppConfirmDialog,
   AppInfiniteScrollTrigger,
@@ -13,8 +14,7 @@ import {
 } from '@/base/components/ui';
 
 import { useRef, useState } from 'react';
-import { Box, Card, Typography } from '@mui/material';
-import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
+import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import { useCreateExpense } from '@/features/expense/hooks/useExpenseMutation';
@@ -62,7 +62,6 @@ import PlanHeader from './PlanHeader';
 import ActivityLogDialog from './ActivityLogDialog';
 import AiPlannerDialog from './AiPlannerDialog';
 import PlanMapPanel from './PlanMapPanel';
-import ActiveTripBanner from '@/features/trip/components/overview/ActiveTripBanner';
 import { useRouter } from 'next/navigation';
 
 const PlanOverview = ({
@@ -335,8 +334,7 @@ const PlanOverview = ({
 
   if (tripError || planError) {
     return (
-      <AppPageContainer>
-        {activeTrip && <ActiveTripBanner trip={activeTrip} compact />}
+      <AppPageContainer embedded>
         <AppErrorState
           status={(tripError ?? planError)?.status}
           onRetry={() => (tripError ? refetchTrips() : refetch())}
@@ -346,7 +344,7 @@ const PlanOverview = ({
   }
   if (tripLoading)
     return (
-      <AppPageContainer>
+      <AppPageContainer embedded>
         <AppLoadingState />
       </AppPageContainer>
     );
@@ -354,70 +352,21 @@ const PlanOverview = ({
   if (!tripId) {
     return (
       <AppPageContainer
+        embedded
         sx={{
           alignItems: 'center',
           justifyContent: 'center',
         }}
       >
-        <Card
-          sx={{
-            p: { xs: 4, md: 6 },
-            borderRadius: 'var(--app-radius-card)',
-            border: 1,
-            borderColor: 'divider',
-            textAlign: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 2,
-          }}
-        >
-          <Box
-            sx={{
-              width: 64,
-              height: 64,
-              borderRadius: 'var(--app-radius-card)',
-              bgcolor: 'action.hover',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'primary.main',
-            }}
-          >
-            <LuggageRoundedIcon sx={{ fontSize: '36px' }} />
-          </Box>
-          <Typography
-            variant="h6"
-            sx={{
-              fontSize: '18px',
-              fontWeight: 700,
-              color: 'text.primary',
-            }}
-          >
-            {t('pageTitle')}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: '14px',
-              color: 'text.secondary',
-              maxWidth: 440,
-            }}
-          >
-            {t('noActiveTrip')}
-          </Typography>
-          <UseTemplateButton />
-        </Card>
+        <AppEmptyState title={t('noActiveTrip')} action={<UseTemplateButton />} />
       </AppPageContainer>
     );
   }
 
   return (
-    <AppPageContainer floatingAction={canWrite && selectedDay && !isLoading && !isStale && !planError && !activitiesError ? (
+    <AppPageContainer embedded floatingAction={canWrite && selectedDay && !isLoading && !isStale && !planError && !activitiesError ? (
       <AppFloatingActionButton label={t('addActivity')} onClick={() => setAddActivityOpen(true)} />
     ) : undefined}>
-      {activeTrip && (
-        <ActiveTripBanner key={activeTrip.id} trip={activeTrip} compact />
-      )}
       {isLoading || (isStale && !planError) ? null : !planError ? (
         <PlanHeader
           totalDays={overview?.totalDays ?? overview?.days.length ?? 0}
@@ -485,7 +434,8 @@ const PlanOverview = ({
             width: '100%',
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'start',
+            alignItems: 'stretch',
+            flex: 1,
             gap: { xs: 2, md: 3 },
           }}
         >
@@ -493,10 +443,13 @@ const PlanOverview = ({
             sx={{
               width: '100%',
               minWidth: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              flex: 1,
             }}
           >
             {isLoading || (isStale && !planError) || isLoadingActivities ? (
-              <AppLoadingState local />
+              <AppLoadingState local sx={{ flex: 1 }} />
             ) : (
               <DayTimelineList
                 activities={dayActivities}
@@ -532,6 +485,7 @@ const PlanOverview = ({
       )}
 
       <AddActivityDialog
+        destination={overview?.destination ?? activeTrip?.destination ?? ''}
         planDate={selectedDay?.planDate}
         open={addActivityOpen}
         onClose={() => setAddActivityOpen(false)}
