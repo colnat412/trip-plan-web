@@ -5,11 +5,12 @@ export const DESKTOP_NAV_BREAKPOINT = 1440;
 
 const NAVIGATION_IDS = [
   'overview',
-  'plan',
   'trips',
-  'expenses',
   'templates',
+  'plan',
+  'expenses',
   'ai',
+  'settings',
 ] as const;
 type NavigationId = (typeof NAVIGATION_IDS)[number];
 
@@ -22,7 +23,7 @@ export interface AppNavigationItem {
 }
 
 export const APP_NAVIGATION_ITEMS: AppNavigationItem[] =
-  NAVIGATION_IDS.flatMap((id) => {
+  NAVIGATION_IDS.filter(id => id === 'overview' || id === 'trips' || id === 'templates' || id === 'settings').flatMap((id) => {
     const item = DEFAULT_SIDEBAR_MENU.find((item) => item.id === id);
     return item ? [{ id, href: item.href, icon: item.icon }] : [];
   });
@@ -41,7 +42,7 @@ export const MORE_NAVIGATION_ITEMS = APP_NAVIGATION_ITEMS.slice(
 );
 
 const MOBILE_NAVIGATION_IDS: readonly NavigationId[] = [
-  'overview', 'trips', 'plan', 'expenses', 'templates', 'ai',
+  'overview', 'trips', 'plan', 'expenses', 'templates', 'ai', 'settings',
 ];
 
 export const MOBILE_PRIMARY_NAVIGATION_ITEMS = [...PRIMARY_NAVIGATION_ITEMS].sort(

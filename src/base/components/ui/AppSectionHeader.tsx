@@ -65,8 +65,8 @@ const AppSectionHeader = ({
           component="h2"
           sx={{
             fontFamily: 'var(--font-display)',
-            fontSize: { xs: '16px', sm: '18px' },
-            fontWeight: 700,
+            fontSize: { xs: '16px', sm: '17px' },
+            fontWeight: 600,
             minWidth: 0,
             overflowWrap: 'anywhere',
           }}
@@ -121,7 +121,7 @@ const AppSectionHeader = ({
         component="div"
         sx={{
           color: 'text.secondary',
-          fontSize: '14px',
+          fontSize: '13px',
           lineHeight: 1.6,
           overflowWrap: 'anywhere',
         }}

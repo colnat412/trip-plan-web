@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import DonutLargeRoundedIcon from '@mui/icons-material/DonutLargeRounded';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppButton, AppCard, AppEmptyState } from '@/base/components/ui';
+import { AppButton, AppEmptyState } from '@/base/components/ui';
 import { CATEGORY_CONFIG } from '@/base/components/ui/AppCategoryChip';
 import { formatCurrency, formatCompactCurrency } from '@/base/utils';
 import type { CategoryBreakdown } from '../types';
@@ -51,7 +51,7 @@ const CategorySpendingChart = ({ breakdown, currency, totalBudget, compact = fal
     return { ...item, length: (item.spentAmount / totalSpent) * circumference, offset: (previousTotal / totalSpent) * circumference };
   });
   return (
-    <AppCard sx={{ p: { xs: 2, sm: 2.5 }, border: 1, borderColor: 'divider' }}>
+    <Box component="section" sx={{ py: 2, minWidth: 0 }}>
       <Stack spacing={2}>
         <Typography component="h2" variant="subtitle1" sx={{ fontWeight: 700 }}>{t('title')}</Typography>
         {categories.length === 0 ? (
@@ -116,7 +116,7 @@ const CategorySpendingChart = ({ breakdown, currency, totalBudget, compact = fal
           </Stack>
         )}
       </Stack>
-    </AppCard>
+    </Box>
   );
 };
 

@@ -51,7 +51,8 @@
       "ai": "Trợ lý AI",
       "templates": "Thư viện lịch trình",
       "savedTemplates": "Lịch trình đã lưu",
-      "myTemplates": "Mẫu của tôi"
+      "myTemplates": "Mẫu của tôi",
+      "settings": "Cài đặt"
     },
     "mobile": {
       "overview": "Trang chủ",
@@ -60,7 +61,8 @@
       "expenses": "Tài chính",
       "settlement": "Chia tiền",
       "ai": "Trợ lý AI",
-      "templates": "Thư viện"
+      "templates": "Khám phá",
+      "settings": "Cài đặt"
     },
     "more": "Thêm",
     "moreDescription": "Các tiện ích cho chuyến đi của bạn",
@@ -133,7 +135,9 @@
     "light": "Chế độ sáng",
     "dark": "Chế độ tối",
     "system": "Theo hệ thống",
-    "changeError": "Không thể đổi ngôn ngữ. Vui lòng thử lại."
+    "changeError": "Không thể đổi ngôn ngữ. Vui lòng thử lại.",
+    "accountGroup": "Tài khoản",
+    "applicationGroup": "Ứng dụng"
   },
   "topBar": {
     "addExpense": "Thêm khoản chi",
@@ -237,7 +241,8 @@
     "personalSection": "Cá nhân & Tiện ích",
     "noInProgressTrip": "Không có chuyến đi đang diễn ra",
     "noInProgressTripDesc": "Chỉ các chuyến đi có trạng thái Đang đi mới hiển thị tại đây.",
-    "templates": "Thư viện lịch trình"
+    "templates": "Thư viện lịch trình",
+    "settings": "Cài đặt"
   },
   "login": {
     "banner": {
@@ -434,7 +439,10 @@
     "makeActiveTip": "Chọn làm chuyến đi hiện tại",
     "tripsUnit": "chuyến đi",
     "perPageLabel": "/ trang",
-    "pageSizeLabel": "Hiển thị:"
+    "pageSizeLabel": "Hiển thị:",
+    "viewMode": "Cách hiển thị",
+    "gridView": "Dạng thẻ",
+    "tableView": "Dạng bảng"
   },
   "profile": {
     "title": "Thông tin tài khoản",
@@ -560,23 +568,25 @@
       "colActions": "Thao tác",
       "filterExpensePlaceholder": "Tìm kiếm chi tiêu...",
       "filterPayerPlaceholder": "Tìm người chi...",
-      "displayedRows": "{from}–{to} trên {count}"
+      "displayedRows": "{from}–{to} trên {count}",
+      "dayTotal": "Tổng ngày"
     },
     "row": {
       "edit": "Chỉnh sửa",
       "delete": "Xóa khoản chi",
-      "membersCount": "{count} thành viên"
+      "membersCount": "{count} thành viên",
+      "youPaid": "Bạn trả"
     },
     "splits": {
       "EQUAL": "Chia đều",
-      "EXACT_AMOUNT": "Tự nhập tiền",
+      "EXACT_AMOUNT": "Nhập số tiền",
       "PERCENTAGE": "Theo %",
       "SHARE": "Theo suất",
       "options": {
         "EQUAL": "Chia đều",
         "PERCENTAGE": "Chia theo tỷ lệ phần trăm (%)",
         "SHARE": "Chia theo số suất / phần",
-        "EXACT_AMOUNT": "Tự nhập số tiền từng người"
+        "EXACT_AMOUNT": "Nhập số tiền"
       }
     },
     "categories": {
@@ -682,7 +692,11 @@
       "enterAmountToSplit": "Nhập số tiền khoản chi để tính phần tiền mỗi người.",
       "selectAllMembers": "Chọn tất cả",
       "deselectAllMembers": "Bỏ chọn tất cả",
-      "notSharing": "Không tham gia"
+      "notSharing": "Không tham gia",
+      "iPay": "Tôi trả",
+      "you": "Bạn",
+      "allocatedTotalLabel": "Đã chia {amount}",
+      "fillRemainingFor": "Điền phần còn lại cho {name}"
     },
     "toasts": {
       "createSuccess": "Đã thêm khoản chi tiêu mới thành công!",
@@ -868,7 +882,9 @@
       "deleteSuccess": "Đã xóa khoản ghi nhận.",
       "deleteError": "Chưa xóa được. Vui lòng thử lại."
     },
-    "transferTo": "Trả cho {name}"
+    "transferTo": "Trả cho {name}",
+    "collapseSuggestions": "Thu gọn",
+    "showAllSuggestions": "Xem tất cả {count} khoản"
   },
   "plan": {
     "actionsLabel": "Thao tác lịch trình",
@@ -1351,7 +1367,11 @@
   "errors": {
     "title": "Đã có lỗi xảy ra. Vui lòng thử lại.",
     "retry": "Thử lại",
-    "home": "Về trang chủ"
+    "home": "Về trang chủ",
+    "notFound": "Không tìm thấy trang này",
+    "forbidden": "Bạn chưa có quyền truy cập",
+    "offline": "Chưa có kết nối mạng",
+    "maintenance": "Hệ thống đang nghỉ một chút"
   },
   "weather": {
     "summaryLabel": "Dự báo {count} ngày: {condition}, trung bình {temperature}°C",
@@ -1377,5 +1397,48 @@
   "interactiveMap": {
     "unavailable": "Chưa thể hiển thị bản đồ tương tác.",
     "retry": "Tải lại bản đồ"
+  },
+  "journey": {
+    "destination": "Bạn muốn đi đâu?",
+    "dates": "Mình đi khi nào?",
+    "finish": "Sẵn sàng lên đường",
+    "next": "Tiếp tục",
+    "back": "Quay lại",
+    "step": "Bước {current} / {total}",
+    "popular": "Một vài điểm đến cho bạn",
+    "details": "Thêm ảnh và lời nhắn",
+    "activity": "Hôm nay bạn muốn làm gì?",
+    "suggestions": "Khám phá {destination}",
+    "search": "Tìm địa điểm hoặc hoạt động",
+    "manual": "Tự thêm hoạt động",
+    "choose": "Chọn địa điểm",
+    "selected": "Đã chọn",
+    "optional": "Thêm giờ, chi phí và ghi chú",
+    "empty": "Chưa tìm thấy địa điểm. Thử từ khóa khác hoặc tự thêm nhé.",
+    "unavailable": "Chưa tải được gợi ý. Bạn vẫn có thể tự thêm hoạt động.",
+    "start": "Bắt đầu chuyến đi mới",
+    "newTrip": "Lên kế hoạch chuyến mới",
+    "plan": "Mở lịch trình",
+    "expenses": "Xem chi tiêu",
+    "library": "Tìm cảm hứng",
+    "mascot": "Rái cá đồng hành",
+    "review": "Kiểm tra lại chuyến đi của bạn",
+    "startHint": "Chọn một điểm đến, mình cùng lên đường nhé.",
+    "categoryKeywords": {
+      "FOOD_BEVERAGE": "nhà hàng",
+      "VISIT": "địa điểm tham quan",
+      "TRANSPORTATION": "trạm giao thông",
+      "ACCOMMODATION": "khách sạn",
+      "SIGHTSEEING": "điểm vui chơi",
+      "SHOPPING": "cửa hàng",
+      "OTHER": "địa điểm"
+    },
+    "photoCredits": "Nguồn ảnh"
+  },
+  "tripWorkspace": {
+    "navigation": "Chuyến đi",
+    "plan": "Lịch trình",
+    "expenses": "Chi tiêu",
+    "settlement": "Chia tiền"
   }
 }

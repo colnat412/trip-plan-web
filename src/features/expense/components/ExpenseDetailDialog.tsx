@@ -1,18 +1,20 @@
 'use client';
 
-import { Avatar, Box, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Stack, Typography, IconButton, Tooltip } from '@mui/material';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { useLocale, useTranslations } from 'next-intl';
 import {
-  AppDialog, AppButton, AppCard, AppCategoryChip, AppFinanceRow,
+  AppDialog, AppButton, AppFinanceRow,
   AppMetricValue, AppSectionHeader,
 } from '@/base/components/ui';
 import FinanceStyleProvider from '@/base/providers/FinanceStyleProvider';
 import { formatCurrency, formatDate, getUserInitials } from '@/base/utils';
 import ExpenseReceiptPreview from './ExpenseReceiptPreview';
 import type { Expense } from '../types';
+import { useUserContext } from '@/features/user/context/UserContext';
 
-const detailCardSx = { p: { xs: 2.5, sm: 3 }, minWidth: 0 };
+const detailSectionSx = { minWidth: 0 };
 
 export interface ExpenseDetailDialogProps {
   open: boolean;
@@ -20,11 +22,14 @@ export interface ExpenseDetailDialogProps {
   onClose: () => void;
   onEdit?: (expense: Expense) => void;
   readOnly?: boolean;
+  onDelete?: (expense: Expense) => void;
+  isDeleting?: boolean;
 }
 
-const ExpenseDetailDialog = ({ open, expense, onClose, onEdit, readOnly = false }: ExpenseDetailDialogProps) => {
+const ExpenseDetailDialog = ({ open, expense, onClose, onEdit, onDelete, isDeleting = false, readOnly = false }: ExpenseDetailDialogProps) => {
   const t = useTranslations('expense');
   const locale = useLocale();
+  const { user } = useUserContext();
   if (!expense) return null;
   const splitType = ['EQUAL', 'EXACT_AMOUNT', 'PERCENTAGE', 'SHARE'].includes(expense.splitType)
     ? expense.splitType : 'EQUAL';
@@ -36,27 +41,23 @@ const ExpenseDetailDialog = ({ open, expense, onClose, onEdit, readOnly = false 
         mobilePresentation="screen"
         open={open}
         onClose={onClose}
-        title={t('dialog.detailTitle')}
+        closeDisabled={isDeleting}
+        title={expense.title}
+        titleAlign="left"
         maxWidth="sm"
-        actions={onEdit && !readOnly ? (
-          <AppButton
-            intent="primary"
-            data-dialog-action="primary"
-            wrapLabel
-            startIcon={<EditRoundedIcon fontSize="small" />}
-            onClick={() => { onClose(); onEdit(expense); }}
-          >
-            {t('row.edit')}
-          </AppButton>
+        headerActions={onEdit && !readOnly ? (
+          <Tooltip title={t('row.edit')}>
+            <IconButton disabled={isDeleting} aria-label={t('row.edit')} onClick={() => { onClose(); onEdit(expense); }}
+              sx={{ width: 44, height: 44, flexShrink: 0, color: 'primary.main' }}>
+              <EditRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         ) : undefined}
       >
         <Stack spacing={3} sx={{ minWidth: 0 }}>
-          <AppCard component="section" sx={detailCardSx}>
+          <Box component="section" sx={detailSectionSx}>
             <Stack spacing={3}>
               <Stack direction="row" useFlexGap spacing={1.5} sx={{ justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap' }}>
-                <Typography component="h3" sx={{ fontSize: { xs: 20, sm: 24 }, fontWeight: 700, overflowWrap: 'anywhere', minWidth: 0 }}>
-                  {expense.title}
-                </Typography>
                 <Typography variant="body2" color="text.secondary">{formatDate(expense.expenseDate)}</Typography>
               </Stack>
               <Stack spacing={1} sx={{ minWidth: 0 }}>
@@ -64,29 +65,23 @@ const ExpenseDetailDialog = ({ open, expense, onClose, onEdit, readOnly = false 
                 <AppMetricValue sx={{ fontSize: { xs: 32, sm: 40 }, lineHeight: 1.2 }}>
                   {money(expense.amount)}
                 </AppMetricValue>
-                <AppCategoryChip category={expense.category} />
+                <Typography variant="body2" color="text.secondary">{t(`categories.${expense.category}`)}</Typography>
               </Stack>
             </Stack>
             <Box sx={{
-              position: 'relative', borderTop: '1px dashed', borderColor: 'divider', mt: 3, pt: 2.5,
-              '&::before, &::after': {
-                content: '""', position: 'absolute', top: -10, width: 20, height: 20,
-                borderRadius: '50%', bgcolor: 'var(--app-finance-background)',
-              },
-              '&::before': { left: { xs: -30, sm: -34 } },
-              '&::after': { right: { xs: -30, sm: -34 } },
+              borderTop: 1, borderColor: 'divider', mt: 3, pt: 2.5,
             }}>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{t('dialog.paidBy')}</Typography>
               <AppFinanceRow
                 icon={<Avatar src={expense.payerAvatarUrl || undefined} sx={{ width: 40, height: 40 }}>{getUserInitials(expense.payerName || '')}</Avatar>}
-                title={expense.payerName || '—'}
+                title={user?.id != null && String(user.id) === String(expense.payerId) ? t('row.youPaid') : expense.payerName || '—'}
                 subtitle={expense.payerEmail}
                 amount={money(expense.amount)}
               />
             </Box>
-          </AppCard>
+          </Box>
 
-          <AppCard component="section" sx={detailCardSx}>
+          <Box component="section" sx={detailSectionSx}>
             <Stack spacing={1.5}>
               <AppSectionHeader
                 title={t('dialog.splitBreakdown', { count: expense.splits?.length || 0 })}
@@ -115,17 +110,23 @@ const ExpenseDetailDialog = ({ open, expense, onClose, onEdit, readOnly = false 
                 )) : <Typography sx={{ py: 2, textAlign: 'center', color: 'text.secondary' }}>—</Typography>}
               </Stack>
             </Stack>
-          </AppCard>
+          </Box>
 
           {expense.note && (
-            <AppCard component="section" sx={detailCardSx}>
+            <Box component="section" sx={detailSectionSx}>
               <Stack spacing={1.5}>
                 <AppSectionHeader title={t('dialog.note')} />
                 <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', lineHeight: 1.7 }}>{expense.note}</Typography>
               </Stack>
-            </AppCard>
+            </Box>
           )}
           {expense.receiptUrl && <ExpenseReceiptPreview key={expense.receiptUrl} src={expense.receiptUrl} />}
+          {onDelete && !readOnly && (
+            <AppButton type="button" intent="text" loading={isDeleting} onClick={() => onDelete(expense)}
+              startIcon={<DeleteOutlineRoundedIcon />} sx={{ alignSelf: 'center', color: 'error.main' }}>
+              {t('row.delete')}
+            </AppButton>
+          )}
         </Stack>
       </AppDialog>
     </FinanceStyleProvider>

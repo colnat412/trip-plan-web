@@ -1,10 +1,10 @@
 'use client';
 
-import { AppLoadingState, AppButton, AppPopover, AppTextField } from '@/base/components/ui';
+import { AppLoadingIndicator, AppButton, AppPopover, AppTextField } from '@/base/components/ui';
 
 import { useId, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   Avatar,
   Box,
@@ -18,10 +18,9 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import { useTranslations } from 'next-intl';
 
-import { formatDateRange } from '@/base/utils';
 import TripSwitcherResults from '@/features/trip/components/TripSwitcherResults';
 import { useTripContext } from '@/features/trip/context/TripContext';
 
@@ -32,6 +31,7 @@ interface AppTripSwitcherProps {
 const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
   const t = useTranslations('navigation');
   const pathname = usePathname();
+  const router = useRouter();
   const isTripsPage = pathname === '/trips' || pathname.startsWith('/trips/');
   const {
     activeTrip,
@@ -46,6 +46,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
   const popoverId = useId();
   const searchInput = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState('');
+  const [scrollRoot, setScrollRoot] = useState<HTMLDivElement | null>(null);
   const handleClose = () => {
     setAnchorEl(null);
     setSearch('');
@@ -56,7 +57,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
   };
 
   if (isLoading && !activeTrip) {
-    return <AppLoadingState sx={{ minHeight: 56, py: 0 }} />;
+    return <Box sx={{ display: 'flex', alignItems: 'center', minHeight: 48 }}><AppLoadingIndicator /></Box>;
   }
   if (!activeTrip) {
     return (
@@ -99,7 +100,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
           minWidth: 0,
           width: '100%',
           maxWidth: '100%',
-          minHeight: 56,
+          minHeight: 48,
           px: 1.5,
           color: 'text.primary',
           bgcolor: 'action.hover',
@@ -124,8 +125,8 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
             alt={activeTrip.name}
             variant="rounded"
             sx={{
-              width: 36,
-              height: 36,
+              width: 32,
+              height: 32,
               bgcolor: 'action.selected',
               color: 'primary.main',
               flexShrink: 0,
@@ -140,31 +141,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
             >
               {activeTrip.name}
             </Typography>
-            <Typography
-              noWrap
-              sx={{ fontSize: '11px', color: 'text.secondary' }}
-            >
-              <Box
-                component="span"
-                sx={{ display: { xs: 'inline', sm: 'none' } }}
-              >
-                {formatDateRange(
-                  activeTrip.startDate,
-                  activeTrip.endDate,
-                  'DD/MM/YYYY',
-                )}
-              </Box>
-              <Box
-                component="span"
-                sx={{ display: { xs: 'none', sm: 'inline' } }}
-              >
-                {formatDateRange(
-                  activeTrip.startDate,
-                  activeTrip.endDate,
-                  'DD/MM/YYYY',
-                )}
-              </Box>
-            </Typography>
+
           </Box>
           <ExpandMoreRoundedIcon
             sx={{ flexShrink: 0, color: 'text.secondary', fontSize: '20px' }}
@@ -178,7 +155,9 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
         onClose={handleClose}
         label={t('chooseTrip')}
         title={t('chooseTrip')}
-        width={400}
+        width={360}
+        contentMaxHeight={224}
+        contentRef={setScrollRoot}
         header={
           <AppTextField
             autoFocus
@@ -229,7 +208,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
           <Stack spacing={0.5}>
             <Stack direction="row" spacing={1} sx={{ alignItems: 'stretch' }}>
               {actions && (
-                <Box onClick={handleClose} sx={{ display: 'flex', flex: '1 1 0', minWidth: 0 }}>
+                <Box onClick={handleClose} sx={{ display: 'flex', flex: '0 0 auto', minWidth: 0 }}>
                   {actions}
                 </Box>
               )}
@@ -239,7 +218,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
                 startIcon={<AddRoundedIcon />}
                 onClick={handleCreate}
                 wrapLabel
-                sx={{ flex: '1 1 0', minWidth: 0, minHeight: 48, borderRadius: 'var(--app-radius-control)', px: 1 }}
+                sx={{ flex: '1 1 auto', minWidth: 0, minHeight: 44, borderRadius: 'var(--app-radius-control)', px: 1 }}
               >
                 {t('createTrip')}
               </AppButton>
@@ -253,7 +232,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
                 fullWidth
                 wrapLabel
                 onClick={handleClose}
-                endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: '18px' }} />}
+                endIcon={<ChevronRightRoundedIcon sx={{ fontSize: '18px' }} />}
                 sx={{ minHeight: 44, borderRadius: 'var(--app-radius-control)', px: 1.5, justifyContent: 'space-between', textAlign: 'left' }}
               >
                 {t('allTrips')}
@@ -265,10 +244,12 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
         {open && (
           <TripSwitcherResults
             search={search}
+            scrollRoot={scrollRoot}
             selectedTripId={activeTrip.id}
             onSelect={(trip) => {
               selectTrip(trip.id);
               handleClose();
+              router.push(`/plan?tripId=${encodeURIComponent(String(trip.id))}`);
             }}
           />
         )}

@@ -2,13 +2,12 @@
 
 import type { ReactNode } from 'react';
 import {
-  Box,
   Stack,
   Typography,
   type SxProps,
   type Theme,
 } from '@mui/material';
-import InboxRoundedIcon from '@mui/icons-material/InboxRounded';
+import AppMascot from './AppMascot';
 
 export interface AppEmptyStateProps {
   title: ReactNode;
@@ -24,7 +23,6 @@ export interface AppEmptyStateProps {
 const AppEmptyState = ({
   title,
   description,
-  icon = <InboxRoundedIcon sx={{ fontSize: 40 }} />,
   action,
   illustration,
   compact = false,
@@ -54,22 +52,7 @@ const AppEmptyState = ({
         spacing={1.5}
         sx={{ alignItems: 'center', minWidth: 0 }}
       >
-        {illustration ?? (
-          <Box
-            aria-hidden="true"
-            sx={{
-              p: compact ? 1.25 : 2,
-              borderRadius: '50%',
-              bgcolor: 'action.hover',
-              color: 'text.secondary',
-              display: 'inline-flex',
-              flexShrink: 0,
-              '& .MuiSvgIcon-root': { fontSize: compact ? 24 : 40 },
-            }}
-          >
-            {icon}
-          </Box>
-        )}
+        {illustration ?? <AppMascot mood="empty_data" size={compact ? 64 : 104} />}
         <Stack
           spacing={0.5}
           sx={{
@@ -81,8 +64,8 @@ const AppEmptyState = ({
           <Typography
             component="p"
             sx={{
-              fontSize: compact ? 14 : 16,
-              fontWeight: 700,
+              fontSize: compact ? 14 : 15,
+              fontWeight: 600,
               color: 'text.primary',
             }}
           >

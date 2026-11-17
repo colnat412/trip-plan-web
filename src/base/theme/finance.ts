@@ -1,14 +1,16 @@
 import type { Theme } from '@mui/material/styles';
+import { pageBackground } from './page-background';
 
 /** Receipt-inspired surfaces, scoped to Finance and its portal dialogs. */
-export const financeStyles = (theme: Theme) => {
+export const financeStyles = (theme: Theme, surface = true) => {
   const palette = theme.vars?.palette ?? theme.palette;
+  const backdrop = pageBackground(theme, 'quiet');
   return {
-    '--app-radius-card': '28px',
-    '--app-radius-control': '18px',
-    '--app-finance-background': `color-mix(in srgb, ${palette.primary.main} 6%, ${palette.background.default})`,
-    '--app-page-surface': 'var(--app-finance-background)',
-    backgroundColor: 'var(--app-finance-background)',
+    ...(surface ? backdrop : {}),
+    '--app-radius-card': '24px',
+    '--app-radius-control': '14px',
+    '--app-finance-background': backdrop.backgroundColor,
+    ...(surface ? { '--app-page-surface': 'var(--app-finance-background)', backgroundColor: 'var(--app-finance-background)' } : {}),
     color: palette.text.primary,
     '& .MuiCard-root': {
       backgroundColor: palette.background.paper,
@@ -25,7 +27,7 @@ export const financeStyles = (theme: Theme) => {
     },
     '& [data-finance-row]': { borderColor: `color-mix(in srgb, ${palette.divider} 60%, transparent)` },
     '& [data-finance-row] > :first-child': { py: 2, px: 0.5 },
-    '& .MuiButton-root[data-dialog-action="primary"]': { minHeight: 52, borderRadius: 'var(--app-radius-pill)' },
+    '& .MuiButton-root[data-dialog-action="primary"]': { minHeight: 52, borderRadius: 'var(--app-radius-control)' },
     '@media (forced-colors: active)': {
       '& .MuiCard-root': { border: '1px solid CanvasText' },
     },

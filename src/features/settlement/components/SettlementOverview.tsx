@@ -2,13 +2,12 @@
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppLoadingState, AppButton, AppFloatingActionButton, AppCard, AppPageContainer, AppPageHeader, AppSectionHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
+import { AppLoadingState, AppEmptyState, AppButton, AppFloatingActionButton, AppCard, AppPageContainer, AppPageHeader, AppSectionHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
 
 
 import { useState } from 'react';
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
-import LuggageRoundedIcon from '@mui/icons-material/LuggageRounded';
 import { useTranslations } from 'next-intl';
 
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
@@ -119,7 +118,7 @@ const SettlementOverview = () => {
   };
 
   if (isTripLoading || (tripId && isSummaryLoading)) {
-    return <AppPageContainer embedded><AppLoadingState sx={{ minHeight: 320 }} /></AppPageContainer>;
+    return <AppPageContainer embedded><AppLoadingState /></AppPageContainer>;
   }
 
   if (tripError || summaryError) {
@@ -136,17 +135,9 @@ const SettlementOverview = () => {
   if (!currentTrip) {
     return (
       <AppPageContainer embedded>
-        <AppCard sx={{ p: 5, textAlign: 'center', borderRadius: 'var(--app-radius-card)' }}>
-          <Stack spacing={2} sx={{ alignItems: 'center' }}>
-            <LuggageRoundedIcon sx={{ fontSize: 48, color: 'text.disabled' }} />
-            <Typography sx={{ fontSize: '18px', fontWeight: 700 }}>
-              {tTrip('noTrips')}
-            </Typography>
-            <AppButton intent="primary" onClick={openCreateTrip}>
-              {tTrip('createTrip')}
-            </AppButton>
-          </Stack>
-        </AppCard>
+        <AppEmptyState title={tTrip('noTrips')} action={
+          <AppButton intent="primary" onClick={openCreateTrip}>{tTrip('createTrip')}</AppButton>
+        } />
       </AppPageContainer>
     );
   }
@@ -180,9 +171,9 @@ const SettlementOverview = () => {
         onOpenRecordPayment={() => handleOpenRecordPayment()}
       />
 
-      <AppCard component="section" sx={{ p: { xs: 2.5, sm: 3 } }}>
-      <Stack spacing={2}>
-        <AppSectionHeader title={t('suggestedTitle')} subtitle={t('suggestedDesc')} />
+      <AppCard component="section" sx={{ p: { xs: 2, sm: 2.5 } }}>
+      <Stack spacing={1}>
+        <AppSectionHeader title={t('suggestedTitle')} count={summary?.suggestedSettlements.length ?? 0} />
 
         <SuggestedSettlementsList
           suggestedSettlements={summary?.suggestedSettlements ?? []}

@@ -41,6 +41,7 @@ export interface AppTableColumn<T> {
 }
 
 export interface AppTablePaginationProps {
+  surface?: 'card' | 'plain';
   page: number;
   pageSize: number;
   totalCount: number;
@@ -58,6 +59,7 @@ export interface AppTableEmptyStateProps {
 }
 
 export interface AppTableProps<T> {
+  surface?: 'card' | 'plain';
   columns: AppTableColumn<T>[];
   data: T[];
   renderMobileRow?: (item: T, index: number, rows: T[]) => React.ReactNode;

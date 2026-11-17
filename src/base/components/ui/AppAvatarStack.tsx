@@ -1,6 +1,6 @@
 'use client';
 
-import AppLoadingState from './AppLoadingState';
+import AppLoadingIndicator from './AppLoadingIndicator';
 
 import {
   Avatar,
@@ -53,7 +53,7 @@ const AppAvatarStack = ({
         },
       }}
     >
-      {loading ? <AppLoadingState sx={{ minHeight: 32, width: 32, py: 0 }} /> : items.length ? (
+      {loading ? <AppLoadingIndicator /> : items.length ? (
         <AvatarGroup
           total={items.length}
           max={visibleCount + 1}

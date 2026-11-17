@@ -18,10 +18,9 @@ import {
 } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppCard, AppConfirmDialog, AppFinanceRow } from '@/base/components/ui';
+import { AppCard, AppConfirmDialog, AppEmptyState, AppFinanceRow } from '@/base/components/ui';
 import { formatCurrency, formatDate, getUserInitials } from '@/base/utils';
 import type { Settlement } from '../types';
 
@@ -66,27 +65,7 @@ const SettlementHistoryTable = ({
     useState<Settlement | null>(null);
 
   if (settlements.length === 0) {
-    return (
-      <AppCard
-        sx={{
-          p: 3,
-          borderRadius: 'var(--app-radius-card)',
-          border: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          textAlign: 'center',
-        }}
-      >
-        <Stack spacing={1} sx={{ alignItems: 'center', py: 2 }}>
-          <HistoryRoundedIcon sx={{ fontSize: 36, color: 'text.disabled' }} />
-          <Typography
-            sx={{ fontSize: '14px', fontWeight: 600, color: 'text.secondary' }}
-          >
-            {t('historyEmpty')}
-          </Typography>
-        </Stack>
-      </AppCard>
-    );
+    return <AppEmptyState title={t('historyEmpty')} />;
   }
 
   return (

@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
-import { Stack, Typography } from '@mui/material';
+import { useId, useState } from 'react';
+import { Divider, Stack } from '@mui/material';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppCard } from '@/base/components/ui';
+import { AppButton, AppEmptyState } from '@/base/components/ui';
 import SuggestedSettlementCard from './SuggestedSettlementCard';
 import type { SuggestedSettlement } from '../types';
 
@@ -15,48 +15,32 @@ export interface SuggestedSettlementsListProps {
   onSettle: (settlement: SuggestedSettlement) => void;
 }
 
-const SuggestedSettlementsList = ({
-  suggestedSettlements,
-  onSettle,
-  canSettle,
-}: SuggestedSettlementsListProps) => {
+const PREVIEW_COUNT = 3;
+
+const SuggestedSettlementsList = ({ suggestedSettlements, onSettle, canSettle }: SuggestedSettlementsListProps) => {
   const t = useTranslations('settlement');
+  const [expanded, setExpanded] = useState(false);
+  const listId = useId();
 
   if (suggestedSettlements.length === 0) {
-    return (
-      <AppCard
-        sx={{
-          p: 3,
-          borderRadius: 'var(--app-radius-card)',
-          border: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
-          textAlign: 'center',
-        }}
-      >
-        <Stack spacing={1} sx={{ alignItems: 'center', py: 2 }}>
-          <CheckCircleRoundedIcon
-            sx={{ fontSize: 40, color: 'success.main' }}
-          />
-          <Typography
-            sx={{ fontSize: '14px', fontWeight: 600, color: 'text.secondary' }}
-          >
-            {t('suggestedEmpty')}
-          </Typography>
-        </Stack>
-      </AppCard>
-    );
+    return <AppEmptyState compact icon={<CheckCircleRoundedIcon color="success" />} title={t('suggestedEmpty')} />;
   }
 
+  const visible = expanded ? suggestedSettlements : suggestedSettlements.slice(0, PREVIEW_COUNT);
   return (
-    <Stack spacing={1.5}>
-      {suggestedSettlements.map((item, idx) => (
-        <SuggestedSettlementCard
-          key={`${item.fromUserId}-${item.toUserId}-${idx}`}
-          settlement={item}
-          onSettle={canSettle?.(item) === false ? undefined : onSettle}
-        />
-      ))}
+    <Stack spacing={1} sx={{ minWidth: 0 }}>
+      <Stack id={listId} role="list" aria-label={t('suggestedTitle')} divider={<Divider aria-hidden="true" />} sx={{ minWidth: 0 }}>
+        {visible.map((item, index) => (
+          <SuggestedSettlementCard key={`${item.fromUserId}-${item.toUserId}-${index}`} settlement={item}
+            onSettle={canSettle?.(item) === false ? undefined : onSettle} />
+        ))}
+      </Stack>
+      {suggestedSettlements.length > PREVIEW_COUNT && (
+        <AppButton intent="text" size="small" aria-expanded={expanded} aria-controls={listId}
+          onClick={() => setExpanded(current => !current)} sx={{ alignSelf: 'center', minHeight: 44 }}>
+          {expanded ? t('collapseSuggestions') : t('showAllSuggestions', { count: suggestedSettlements.length })}
+        </AppButton>
+      )}
     </Stack>
   );
 };

@@ -18,17 +18,18 @@ export interface AppBackHeaderProps {
   titleId?: string;
   descriptionId?: string;
   headingComponent?: 'h1' | 'h2';
+  titleAlign?: 'center' | 'left';
 }
 
 /** Equal side columns keep the heading centered even without a trailing action. */
 const AppBackHeader = ({
   title, description, backHref, onBack, backLabel, backDisabled = false,
-  hideBack = false, actions, titleId, descriptionId, headingComponent = 'h1',
+  hideBack = false, actions, titleId, descriptionId, headingComponent = 'h1', titleAlign = 'center',
 }: AppBackHeaderProps) => {
   const t = useTranslations('dialog');
   const backButtonSx = {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
     borderRadius: '50%',
     bgcolor: 'background.paper',
     color: 'text.primary',
@@ -40,28 +41,28 @@ const AppBackHeader = ({
 
   return (
     <Box sx={{
-      display: 'grid', gridTemplateColumns: '48px minmax(0, 1fr) 48px',
+      display: 'grid', gridTemplateColumns: '44px minmax(0, 1fr) 44px',
       alignItems: 'center', gap: 1.5, minHeight: 80, py: 1.5, width: '100%', minWidth: 0,
     }}>
-      <Box sx={{ width: 48, minWidth: 0 }}>
+      <Box sx={{ width: 44, minWidth: 0 }}>
         {!hideBack && (backHref ? (
           <IconButton component={Link} href={backHref} disabled={backDisabled} aria-label={backLabel ?? t('back')} sx={backButtonSx}>
-            <ChevronLeftRoundedIcon sx={{ fontSize: 28 }} />
+            <ChevronLeftRoundedIcon sx={{ fontSize: 24 }} />
           </IconButton>
         ) : (
           <IconButton onClick={onBack} disabled={backDisabled} aria-label={backLabel ?? t('back')} sx={backButtonSx}>
-            <ChevronLeftRoundedIcon sx={{ fontSize: 28 }} />
+            <ChevronLeftRoundedIcon sx={{ fontSize: 24 }} />
           </IconButton>
         ))}
       </Box>
-      <Stack spacing={0.5} sx={{ textAlign: 'center', minWidth: 0, overflowWrap: 'anywhere' }}>
-        <Typography id={titleId} component={headingComponent} sx={{
-          fontFamily: 'var(--font-display)', fontSize: { xs: 18, sm: 20 },
-          fontWeight: 700, lineHeight: 1.5, color: 'text.primary',
+      <Stack spacing={0.5} sx={{ textAlign: titleAlign, minWidth: 0, overflowWrap: 'anywhere' }}>
+        <Typography id={titleId} component={headingComponent} noWrap title={typeof title === 'string' ? title : undefined} sx={{
+          fontFamily: 'var(--font-display)', fontSize: titleAlign === 'left' ? { xs: 16, sm: 17 } : { xs: 17, sm: 18 },
+          fontWeight: 600, lineHeight: 1.5, color: 'text.primary',
         }}>{title}</Typography>
         {description && <Typography id={descriptionId} variant="caption" color="text.secondary" sx={{ lineHeight: 1.5 }}>{description}</Typography>}
       </Stack>
-      <Box aria-hidden={actions ? undefined : true} sx={{ width: 48, minWidth: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Box aria-hidden={actions ? undefined : true} sx={{ width: 44, minWidth: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         {actions}
       </Box>
     </Box>

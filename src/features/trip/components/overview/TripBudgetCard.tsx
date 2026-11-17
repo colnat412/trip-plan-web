@@ -49,7 +49,7 @@ const TripBudgetCard = ({
     <AppSectionHeader
       title={t('tripBudget')}
       actions={
-        <AppSectionLink href="/expenses">{t('manageBudget')}</AppSectionLink>
+        <AppSectionLink href={`/expenses?tripId=${encodeURIComponent(String(trip.id))}`}>{t('manageBudget')}</AppSectionLink>
       }
     />
   );

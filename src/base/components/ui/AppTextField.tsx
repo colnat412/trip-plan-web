@@ -23,7 +23,7 @@ const AppTextField = ({
             bgcolor: 'background.paper',
             height: 38,
             minHeight: '38px !important',
-            fontSize: '13px',
+            fontSize: { xs: '16px', sm: '13px' },
             '& fieldset': {
               borderColor: 'divider',
             },
@@ -38,7 +38,7 @@ const AppTextField = ({
           '& .MuiOutlinedInput-input': {
             py: '8px !important',
             px: '6px !important',
-            fontSize: '13px',
+            fontSize: { xs: '16px', sm: '13px' },
           },
         }
       : undefined;

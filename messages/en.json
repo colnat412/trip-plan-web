@@ -51,7 +51,8 @@
       "ai": "AI assistant",
       "templates": "Itinerary library",
       "savedTemplates": "Saved itineraries",
-      "myTemplates": "My templates"
+      "myTemplates": "My templates",
+      "settings": "Settings"
     },
     "mobile": {
       "overview": "Home",
@@ -60,7 +61,8 @@
       "expenses": "Finances",
       "settlement": "Split costs",
       "ai": "AI assistant",
-      "templates": "Library"
+      "templates": "Explore",
+      "settings": "Settings"
     },
     "more": "More",
     "moreDescription": "More tools for your trip",
@@ -133,7 +135,9 @@
     "light": "Light mode",
     "dark": "Dark mode",
     "system": "System mode",
-    "changeError": "Unable to change language. Please try again."
+    "changeError": "Unable to change language. Please try again.",
+    "accountGroup": "Account",
+    "applicationGroup": "Application"
   },
   "topBar": {
     "addExpense": "Add expense",
@@ -237,7 +241,8 @@
     "personalSection": "Personal & Utilities",
     "noInProgressTrip": "No trip in progress",
     "noInProgressTripDesc": "Only trips in 'In Progress' status are displayed here.",
-    "templates": "Itinerary library"
+    "templates": "Itinerary library",
+    "settings": "Settings"
   },
   "login": {
     "banner": {
@@ -434,7 +439,10 @@
     "makeActiveTip": "Set as active trip",
     "tripsUnit": "trips",
     "perPageLabel": "/ page",
-    "pageSizeLabel": "Show:"
+    "pageSizeLabel": "Show:",
+    "viewMode": "View mode",
+    "gridView": "Grid view",
+    "tableView": "Table view"
   },
   "profile": {
     "title": "User Profile",
@@ -560,23 +568,25 @@
       "colActions": "Actions",
       "filterExpensePlaceholder": "Search expenses...",
       "filterPayerPlaceholder": "Search payer...",
-      "displayedRows": "{from}–{to} of {count}"
+      "displayedRows": "{from}–{to} of {count}",
+      "dayTotal": "Day total"
     },
     "row": {
       "edit": "Edit",
       "delete": "Delete expense",
-      "membersCount": "{count} members"
+      "membersCount": "{count} members",
+      "youPaid": "You paid"
     },
     "splits": {
       "EQUAL": "Equal",
-      "EXACT_AMOUNT": "Exact amount",
+      "EXACT_AMOUNT": "Enter amounts",
       "PERCENTAGE": "Percentage",
       "SHARE": "Shares",
       "options": {
         "EQUAL": "Split equally",
         "PERCENTAGE": "Split by percentage (%)",
         "SHARE": "Split by number of shares",
-        "EXACT_AMOUNT": "Enter individual amounts manually"
+        "EXACT_AMOUNT": "Enter amounts"
       }
     },
     "categories": {
@@ -682,7 +692,11 @@
       "enterAmountToSplit": "Enter the expense amount to calculate each person’s share.",
       "selectAllMembers": "Select all",
       "deselectAllMembers": "Deselect all",
-      "notSharing": "Not included"
+      "notSharing": "Not included",
+      "iPay": "I pay",
+      "you": "You",
+      "allocatedTotalLabel": "Allocated {amount}",
+      "fillRemainingFor": "Fill remaining for {name}"
     },
     "toasts": {
       "createSuccess": "Expense added successfully!",
@@ -868,7 +882,9 @@
       "deleteSuccess": "Payment record deleted.",
       "deleteError": "Could not delete. Please retry."
     },
-    "transferTo": "Pay {name}"
+    "transferTo": "Pay {name}",
+    "collapseSuggestions": "Show less",
+    "showAllSuggestions": "View all {count} transfers"
   },
   "plan": {
     "actionsLabel": "Itinerary actions",
@@ -1351,7 +1367,11 @@
   "errors": {
     "title": "Something went wrong. Please try again.",
     "retry": "Try again",
-    "home": "Back to home"
+    "home": "Back to home",
+    "notFound": "This page is missing",
+    "forbidden": "You do not have access yet",
+    "offline": "You are offline",
+    "maintenance": "We will be back soon"
   },
   "weather": {
     "summaryLabel": "{count, plural, one {# day} other {# days}} forecast: {condition}, average {temperature}°C",
@@ -1377,5 +1397,48 @@
   "interactiveMap": {
     "unavailable": "The interactive map is unavailable.",
     "retry": "Reload map"
+  },
+  "journey": {
+    "destination": "Where shall we go?",
+    "dates": "When are we going?",
+    "finish": "Ready for a new adventure",
+    "next": "Continue",
+    "back": "Back",
+    "step": "Step {current} / {total}",
+    "popular": "A little destination inspiration",
+    "details": "Add a photo and a message",
+    "activity": "What would you like to do today?",
+    "suggestions": "Explore {destination}",
+    "search": "Find a place or an activity",
+    "manual": "Add your own activity",
+    "choose": "Choose a place",
+    "selected": "Selected",
+    "optional": "Add time, cost and notes",
+    "empty": "No places found. Try another search or add your own activity.",
+    "unavailable": "Suggestions are unavailable. You can still add your own activity.",
+    "start": "Start a new adventure",
+    "newTrip": "Plan a new trip",
+    "plan": "Open itinerary",
+    "expenses": "View expenses",
+    "library": "Find inspiration",
+    "mascot": "Your otter companion",
+    "review": "Review your trip",
+    "startHint": "Pick a destination. Let’s plan your next adventure.",
+    "categoryKeywords": {
+      "FOOD_BEVERAGE": "restaurant",
+      "VISIT": "tourist attraction",
+      "TRANSPORTATION": "transport station",
+      "ACCOMMODATION": "hotel",
+      "SIGHTSEEING": "amusement attraction",
+      "SHOPPING": "shop",
+      "OTHER": "place"
+    },
+    "photoCredits": "Photo credits"
+  },
+  "tripWorkspace": {
+    "navigation": "Trip",
+    "plan": "Itinerary",
+    "expenses": "Expenses",
+    "settlement": "Split"
   }
 }

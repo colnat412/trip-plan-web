@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
-import { Box, ButtonBase, Stack, Typography } from '@mui/material';
+import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
@@ -19,13 +19,15 @@ import {
   AppToast,
   AppAmountRatio,
   AppButton,
-  AppCategoryChip,
-  AppStatusChip,
+  AppCategoryIcon,
   AppNumberBadge,
   AppTimePicker,
   AppTimelineRow,
   type AppActionMenuItem,
 } from '@/base/components/ui';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
+import SkipNextRoundedIcon from '@mui/icons-material/SkipNextRounded';
+import { compactTouchTarget } from '@/base/theme/interactions';
 import { formatCurrency } from '@/base/utils';
 import useActivityImage from '../hooks/useActivityImage';
 import type { ActivityStatus, PlanActivity } from '../types';
@@ -166,6 +168,7 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
     !compact &&
     (activity.estimatedCost > 0 || Number(activity.actualSpent) > 0);
   // Địa chỉ và ghi chú chỉ một dòng, đủ chữ xem nhanh; đầy đủ nằm trong hộp thoại sửa.
+  const details = [activity.location, !compact ? activity.note : null].filter(Boolean).join(' · ');
   const oneLineSx = {
     minWidth: 0,
     overflow: 'hidden',
@@ -184,6 +187,10 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
           />
         )
       }
+      railDetails={<AppCategoryIcon category={activity.category} size={20} bare />}
+      status={activity.status !== 'PLANNED' && <Tooltip title={tStatus(activity.status)}><Box component="span" role="img" aria-label={tStatus(activity.status)} sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 20, color: isCompleted ? 'success.main' : activity.status === 'IN_PROGRESS' ? 'primary.main' : 'text.secondary', '& .MuiSvgIcon-root': { fontSize: 18 } }}>
+          {isCompleted ? <CheckCircleRoundedIcon /> : activity.status === 'IN_PROGRESS' ? <AccessTimeRoundedIcon /> : <SkipNextRoundedIcon />}
+        </Box></Tooltip>}
       hasNext={hasNext}
       selected={selected}
       onSelect={onSelect}
@@ -196,6 +203,7 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
             file={photo.pendingFile}
             alt={activity.title}
             layout="tile"
+            compact
             previewSelection={false}
             disabled={photo.busy}
             loading={photo.busy}
@@ -221,53 +229,28 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
             }
             renderTrigger={({ value, onOpen, open, dialogId }) => (
               <ButtonBase
+                disableRipple
                 onClick={onOpen}
                 aria-haspopup="dialog"
                 aria-expanded={open}
                 aria-controls={open ? dialogId : undefined}
                 aria-label={`${tDialog('timeRangeLabel')}: ${value || '--:--'}`}
                 sx={{
-                  alignSelf: 'flex-start',
-                  maxWidth: '100%',
-                  minWidth: '116px',
-                  justifyContent: 'space-between',
-                  gap: 0.75,
-                  pl: 1.25,
-                  pr: 0.75,
-                  py: 0.5,
-                  alignItems: 'center',
-                  // Viền vẽ bằng bóng trong để mọi cạnh luôn cùng một màu, không có vạch lệch.
-                  border: 0,
-                  boxShadow: (theme) =>
-                    `inset 0 0 0 1px ${(theme.vars ?? theme).palette.divider}`,
-                  borderRadius: 'var(--app-radius-small)',
-                  fontVariantNumeric: 'tabular-nums',
-                  // Hover chỉ cho thiết bị có chuột để không bị "dính" sau khi chạm.
-                  '@media (hover: hover)': {
-                    '&:hover': { bgcolor: 'action.hover' },
-                  },
-                  // Viền nổi bật chỉ khi điều hướng bằng bàn phím, không giữ lại sau khi bấm.
-                  '&.Mui-focusVisible': { outline: 'none' },
-                  '&:focus-visible': {
-                    outline: '2px solid',
-                    outlineColor: 'primary.main',
-                  },
-                  '&:focus:not(:focus-visible)': { outline: 'none' },
+                  ...compactTouchTarget,
+                  alignSelf: 'flex-start', maxWidth: '100%', minWidth: 0,
+                  p: 0, justifyContent: 'flex-start', borderRadius: 'var(--app-radius-small)',
+                  '@media (hover: hover) and (pointer: fine)': { '&:hover [data-activity-time]': { bgcolor: 'action.hover' } },
+                  '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: -2 },
                 }}
               >
-                <Box
-                  component="span"
-                  sx={{
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {value || '--:--'}
+                <Box component="span" data-activity-time sx={{
+                  display: 'inline-flex', alignItems: 'center', gap: 0.5, height: 24, maxWidth: '100%', minWidth: 0,
+                  px: 0.75, borderRadius: 'var(--app-radius-small)',
+                  boxShadow: theme => `inset 0 0 0 1px ${(theme.vars ?? theme).palette.divider}`,
+                }}>
+                  <Box component="span" sx={{ fontSize: 12, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', minWidth: 0, fontVariantNumeric: 'tabular-nums' }}>{value || '--:--'}</Box>
+                  <KeyboardArrowDownRoundedIcon sx={{ fontSize: 14, flexShrink: 0 }} />
                 </Box>
-                <KeyboardArrowDownRoundedIcon
-                  sx={{ fontSize: '16px', flexShrink: 0 }}
-                />
               </ButtonBase>
             )}
           />
@@ -303,8 +286,9 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
                 size="small"
                 aria-label={t('activityActions', { title: activity.title })}
                 sx={{
-                  minWidth: 36,
-                  minHeight: 36,
+                  ...compactTouchTarget,
+                  minWidth: 44,
+                  py: 0,
                   px: 0,
                   color: 'text.secondary',
                 }}
@@ -317,57 +301,19 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
         ) : undefined
       }
     >
-      <Stack spacing={0.5} sx={{ alignItems: 'flex-start', minWidth: 0 }}>
-        <AppCategoryChip category={activity.category} />
-        {activity.status !== 'PLANNED' && (
-          <AppStatusChip
-            label={tStatus(activity.status)}
-            tone={isCompleted ? 'success' : activity.status === 'IN_PROGRESS' ? 'primary' : 'neutral'}
-            icon={isCompleted ? <CheckCircleRoundedIcon /> : undefined}
-            sx={{ fontSize: '12px' }}
-          />
-        )}
-      </Stack>
-      {activity.location && (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 0.5,
-            color: 'text.secondary',
-            minWidth: 0,
-          }}
-        >
-          <PlaceRoundedIcon sx={{ fontSize: '14px', flexShrink: 0 }} />
-          <Typography
-            component="span"
-            title={activity.location}
-            sx={{ fontSize: '12px', lineHeight: 1.5, ...oneLineSx }}
-          >
-            {activity.location}
-          </Typography>
-        </Box>
-      )}
-      {!compact && activity.note && (
-        <Typography
-          component="span"
-          title={activity.note}
-          sx={{
-            color: 'text.secondary',
-            fontSize: '12px',
-            lineHeight: 1.5,
-            ...oneLineSx,
-          }}
-        >
-          {activity.note}
-        </Typography>
-      )}
+      {(details || hasAmount) && <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
+        {details && <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flex: 1, minWidth: 0, color: 'text.secondary' }}>
+          {activity.location && <PlaceRoundedIcon sx={{ fontSize: 14, flexShrink: 0 }} />}
+          <Typography component="span" title={details} sx={{ fontSize: 12, lineHeight: 1.5, ...oneLineSx }}>{details}</Typography>
+        </Box>}
       {hasAmount && (
         <AppAmountRatio
           amount={Number(activity.actualSpent ?? 0)}
           total={activity.estimatedCost > 0 ? activity.estimatedCost : null}
           currency={currency}
-          highlighted
+          compact
+          notation="standard"
+          numberLocale="en-US"
           tone={
             activity.estimatedCost > 0 &&
             Number(activity.actualSpent) > activity.estimatedCost
@@ -386,6 +332,7 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
           })}
         />
       )}
+      </Box>}
     </AppTimelineRow>
   );
 };

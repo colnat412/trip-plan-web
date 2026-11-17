@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 import { Box, Popover, Typography, type PopoverProps } from '@mui/material';
 
 export interface AppPopoverProps extends Omit<
@@ -13,6 +13,8 @@ export interface AppPopoverProps extends Omit<
   actions?: ReactNode;
   width?: number;
   children: ReactNode;
+  contentMaxHeight?: number | string;
+  contentRef?: Ref<HTMLDivElement>;
 }
 
 const AppPopover = ({
@@ -22,6 +24,8 @@ const AppPopover = ({
   actions,
   width = 400,
   children,
+  contentMaxHeight,
+  contentRef,
   anchorOrigin = { vertical: 'bottom', horizontal: 'left' },
   transformOrigin = { vertical: 'top', horizontal: 'left' },
   ...props
@@ -72,9 +76,11 @@ const AppPopover = ({
       </Box>
     )}
     <Box
+      ref={contentRef}
       sx={{
         p: 1.5,
         minHeight: 0,
+        maxHeight: contentMaxHeight,
         overflowY: 'auto',
         overscrollBehaviorY: 'contain',
       }}

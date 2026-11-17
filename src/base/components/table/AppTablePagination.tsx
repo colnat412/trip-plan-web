@@ -10,6 +10,7 @@ import type { AppTablePaginationProps } from './types';
 
 const AppTablePagination = ({
   page,
+  surface = 'card',
   pageSize,
   totalCount,
   onPageChange,
@@ -40,7 +41,7 @@ const AppTablePagination = ({
         py: 1.25,
         borderTop: 1,
         borderColor: 'divider',
-        bgcolor: 'background.paper',
+        bgcolor: surface === 'plain' ? 'transparent' : 'background.paper',
         color: 'text.secondary',
       }}
     >

@@ -4,7 +4,6 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import {
   AppLoadingState,
-  AppCard,
   AppLinearProgress,
   AppMetricValue,
   AppAmountRatio,
@@ -67,14 +66,13 @@ const MobileBudgetSummaryCard = ({
   const unavailable = hasError || (!isLoading && !summary);
 
   return (
-    <AppCard
+    <Box
       component="section"
       aria-label={t('mobileTitle')}
       sx={{
         display: { xs: 'block', sm: 'none' },
         minWidth: 0,
-        borderRadius: 'var(--app-radius-card)',
-        p: 3,
+        py: 2,
         overflowWrap: 'anywhere',
       }}
     >
@@ -143,30 +141,7 @@ const MobileBudgetSummaryCard = ({
                 aria-label={t('mobileTitle')}
                 aria-valuetext={t('usedRatio', { percent: ratio })}
               />
-              <Stack
-                direction="row"
-                useFlexGap
-                spacing={0.75}
-                sx={{ justifyContent: 'space-between', flexWrap: 'wrap' }}
-              >
-                <Typography
-                  sx={{
-                    fontSize: '12px',
-                    color: 'text.secondary',
-                    minWidth: 0,
-                  }}
-                >
-                  {t('totalBudget')}: {formatCurrency(total, curr, locale)}
-                </Typography>
-                <Typography
-                  sx={[
-                    statusTextSx,
-                    { fontSize: '12px', fontWeight: over ? 700 : 500 },
-                  ]}
-                >
-                  {t('usedRatio', { percent: ratio })}
-                </Typography>
-              </Stack>
+
               <Box
                 sx={{
                   display: 'flex',
@@ -201,7 +176,7 @@ const MobileBudgetSummaryCard = ({
           )}
         </Stack>
       )}
-    </AppCard>
+    </Box>
   );
 };
 export default MobileBudgetSummaryCard;

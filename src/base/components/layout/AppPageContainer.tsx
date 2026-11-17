@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { contentColumn } from '@/base/theme/content-layout';
 import { Box, type SxProps, type Theme } from '@mui/material';
 
 export interface AppPageContainerProps {
@@ -21,11 +22,10 @@ const AppPageContainer = ({
   return (
     <Box
       sx={{
+        ...contentColumn,
         width: '100%',
-        minWidth: 0,
-        minHeight: '100%',
-        bgcolor: (theme) =>
-          `var(--app-page-surface, ${(theme.vars?.palette ?? theme.palette).action.hover})`,
+        // The shell/section owns the canvas; nested containers stay transparent.
+        bgcolor: 'transparent',
         p: { xs: 2, md: 3, xl: 4 },
         pb: (theme) => ({
           xs: `calc(${theme.spacing(2)} + var(--app-bottom-navigation-space, 0px)${floatingAction ? ' + 72px' : ''})`,

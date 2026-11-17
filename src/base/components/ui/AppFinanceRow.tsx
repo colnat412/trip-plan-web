@@ -40,7 +40,7 @@ const AppFinanceRow = ({
         minWidth: 0,
         fontSize: finance ? '15px' : '14px',
         lineHeight: 1.5,
-        fontWeight: finance ? 700 : 600,
+        fontWeight: 600,
         overflowWrap: 'anywhere',
       }}
     >

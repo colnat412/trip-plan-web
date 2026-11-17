@@ -143,12 +143,13 @@ const SetBudgetForm = ({
       id={formId}
       onSubmit={handleSubmit}
       noValidate
-      sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, flexShrink: 0, '& .MuiInputBase-input': { fontSize: { xs: '16px', sm: '14px' } } }}
+      sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, flexShrink: 0, '& .MuiOutlinedInput-input': { fontSize: { xs: '16px', sm: '14px' } } }}
     >
       <Stack spacing={1} sx={{ minWidth: 0 }}>
         <AppNumberInput
+          emphasis="primary"
           label={tDialog('totalBudgetLabel')}
-          placeholder={tDialog('totalBudgetPlaceholder')}
+          placeholder="0"
           currencySuffix={tripCurrency}
           value={totalBudget}
           onChange={(e) => {

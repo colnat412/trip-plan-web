@@ -17,6 +17,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { formatCurrency, formatDate } from '@/base/utils';
 import useTripExpenses from '@/features/expense/hooks/useTripExpenses';
 import ExpenseDetailDialog from '@/features/expense/components/ExpenseDetailDialog';
+import { useUserContext } from '@/features/user/context/UserContext';
 import type { Expense } from '@/features/expense/types';
 
 export interface RecentExpenseListProps {
@@ -29,6 +30,7 @@ const RecentExpenseList = ({
   currency = 'VND',
 }: RecentExpenseListProps) => {
   const locale = useLocale();
+  const { user } = useUserContext();
   const tExpense = useTranslations('expense');
   const tOverview = useTranslations('overview');
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
@@ -65,7 +67,7 @@ const RecentExpenseList = ({
             key={expense.id}
             icon={<AppCategoryIcon category={expense.category} />}
             title={expense.title}
-            subtitle={`${expense.payerName || tOverview('defaultMember')} · ${formatDate(expense.expenseDate)}`}
+            subtitle={`${user?.id != null && String(user.id) === String(expense.payerId) ? tExpense('row.youPaid') : expense.payerName || tOverview('defaultMember')} · ${formatDate(expense.expenseDate)}`}
             amount={formatCurrency(
               expense.amount,
               expense.currency || currency,

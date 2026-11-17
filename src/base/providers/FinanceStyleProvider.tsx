@@ -2,6 +2,7 @@
 
 import { createContext, useContext, type ReactNode } from 'react';
 import { Box } from '@mui/material';
+import { contentColumn } from '@/base/theme/content-layout';
 import { financeStyles } from '@/base/theme/finance';
 
 const FinanceStyleContext = createContext(false);
@@ -11,7 +12,7 @@ export default function FinanceStyleProvider({ children, surface = true }: { chi
   return (
     <FinanceStyleContext.Provider value={true}>
       {surface ? (
-        <Box data-finance-surface sx={(theme) => ({ ...financeStyles(theme), minHeight: '100%', width: '100%', minWidth: 0 })}>
+        <Box data-finance-surface sx={(theme) => ({ ...financeStyles(theme, false), ...contentColumn, width: '100%' })}>
           {children}
         </Box>
       ) : children}

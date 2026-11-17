@@ -17,6 +17,7 @@ import { parseCalendarDate, selectCalendarRange, type CalendarRange } from '@/ba
 
 interface CommonDatePickerProps {
   label: string;
+  inline?: boolean;
   disabled?: boolean;
   required?: boolean;
   error?: boolean;
@@ -31,7 +32,7 @@ export type AppDatePickerProps = CommonDatePickerProps & (
 );
 
 const AppDatePicker = (props: AppDatePickerProps) => {
-  const { label, disabled, required, error, helperText, minDate, maxDate } = props;
+  const { label, disabled, required, error, helperText, minDate, maxDate, inline = false } = props;
   const locale = useLocale();
   const t = useTranslations('calendar');
   const dialogId = useId();
@@ -39,6 +40,7 @@ const AppDatePicker = (props: AppDatePickerProps) => {
   const [draft, setDraft] = useState<CalendarRange>(['', '']);
   const range = props.mode === 'range';
   const dates = range ? props.value : [props.value, ''];
+  const selection: CalendarRange = inline ? [dates[0], dates[1]] : draft;
   const display = dates.filter(Boolean).map((date) => parseCalendarDate(date)?.format('DD/MM/YYYY') ?? '').join(' – ');
   const validDraft = !!parseCalendarDate(draft[0]) && (!range || (!!parseCalendarDate(draft[1]) && draft[1] >= draft[0]))
     && (!minDate || draft[0] >= minDate) && (!maxDate || (draft[1] || draft[0]) <= maxDate);
@@ -54,6 +56,56 @@ const AppDatePicker = (props: AppDatePickerProps) => {
     else props.onChange(draft[0]);
     setOpen(false);
   };
+
+  const calendar = (
+    <Box id={dialogId} role={inline ? 'group' : undefined} aria-label={inline ? label : undefined} sx={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 1 }}>
+      <Typography aria-live="polite" sx={{ fontSize: '14px', color: 'text.secondary' }}>
+        {range
+          ? selection[0] && selection[1]
+            ? `${parseCalendarDate(selection[0])?.format('DD/MM/YYYY')} – ${parseCalendarDate(selection[1])?.format('DD/MM/YYYY')}`
+            : t(selection[0] ? 'selectEnd' : 'selectStart')
+          : selection[0] ? parseCalendarDate(selection[0])?.format('DD/MM/YYYY') : t('selectDate')}
+      </Typography>
+      <LocalizationProvider
+        dateAdapter={AdapterDayjs}
+        adapterLocale={locale === 'vi' ? 'vi' : 'en'}
+        localeText={(locale === 'vi' ? viVN : enUS).components.MuiLocalizationProvider.defaultProps.localeText}
+      >
+        <AppCalendarRangeContext.Provider value={{ start: selection[0], end: range ? selection[1] : '' }}>
+          <DateCalendar
+            // A null value lets a second click on the start day select a one-day range.
+            value={null}
+            referenceDate={parseCalendarDate(selection[0]) ?? undefined}
+            onChange={(date, selectionState) => {
+              if (selectionState !== 'finish' || !date?.isValid()) return;
+              const next = date.format('YYYY-MM-DD');
+              if (inline) {
+                if (props.mode === 'range') props.onChange(selectCalendarRange(selection, next));
+                else props.onChange(next);
+              } else setDraft((previous) => range ? selectCalendarRange(previous, next) : [next, '']);
+            }}
+            minDate={parseCalendarDate(minDate) ?? undefined}
+            maxDate={parseCalendarDate(maxDate) ?? undefined}
+            disabled={disabled}
+            showDaysOutsideCurrentMonth
+            fixedWeekNumber={6}
+            dayOfWeekFormatter={(date) => date.format('dd')}
+            views={['year', 'month', 'day']}
+            slots={{ day: AppCalendarDay }}
+            sx={{
+              width: '100%', minWidth: 0, maxHeight: 'none', height: 'auto',
+              '& .MuiDayCalendar-header, & .MuiDayCalendar-weekContainer': { gap: 0 },
+              '& .MuiDayCalendar-weekDayLabel': { flex: 1, maxWidth: 44, m: 0 },
+              '& .MuiPickersCalendarHeader-root': { px: 0 },
+              '& .MuiDayCalendar-slideTransition': { minHeight: 264 },
+            }}
+          />
+        </AppCalendarRangeContext.Provider>
+      </LocalizationProvider>
+      {helperText && <Typography role={error ? 'alert' : undefined} variant="caption" color={error ? 'error' : 'text.secondary'}>{helperText}</Typography>}
+    </Box>
+  );
+  if (inline) return calendar;
 
   return (
     <>
@@ -77,50 +129,7 @@ const AppDatePicker = (props: AppDatePickerProps) => {
         maxWidth="xs"
         actions={<AppButton onClick={apply} disabled={!validDraft || disabled}>{t('apply')}</AppButton>}
       >
-        {open && (
-          <Box id={dialogId} sx={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Typography aria-live="polite" sx={{ fontSize: '14px', color: 'text.secondary' }}>
-              {range
-                ? draft[0] && draft[1]
-                  ? `${parseCalendarDate(draft[0])?.format('DD/MM/YYYY')} – ${parseCalendarDate(draft[1])?.format('DD/MM/YYYY')}`
-                  : t(draft[0] ? 'selectEnd' : 'selectStart')
-                : draft[0] ? parseCalendarDate(draft[0])?.format('DD/MM/YYYY') : t('selectDate')}
-            </Typography>
-            <LocalizationProvider
-              dateAdapter={AdapterDayjs}
-              adapterLocale={locale === 'vi' ? 'vi' : 'en'}
-              localeText={(locale === 'vi' ? viVN : enUS).components.MuiLocalizationProvider.defaultProps.localeText}
-            >
-              <AppCalendarRangeContext.Provider value={{ start: draft[0], end: range ? draft[1] : '' }}>
-                <DateCalendar
-                  // A null value lets a second click on the start day select a one-day range.
-                  value={null}
-                  referenceDate={parseCalendarDate(draft[0]) ?? undefined}
-                  onChange={(date, selectionState) => {
-                    if (selectionState !== 'finish' || !date?.isValid()) return;
-                    const next = date.format('YYYY-MM-DD');
-                    setDraft((previous) => range ? selectCalendarRange(previous, next) : [next, '']);
-                  }}
-                  minDate={parseCalendarDate(minDate) ?? undefined}
-                  maxDate={parseCalendarDate(maxDate) ?? undefined}
-                  disabled={disabled}
-                  showDaysOutsideCurrentMonth
-                  fixedWeekNumber={6}
-                  dayOfWeekFormatter={(date) => date.format('dd')}
-                  views={['year', 'month', 'day']}
-                  slots={{ day: AppCalendarDay }}
-                  sx={{
-                    width: '100%', minWidth: 0, maxHeight: 'none', height: 'auto',
-                    '& .MuiDayCalendar-header, & .MuiDayCalendar-weekContainer': { gap: 0 },
-                    '& .MuiDayCalendar-weekDayLabel': { flex: 1, maxWidth: 44, m: 0 },
-                    '& .MuiPickersCalendarHeader-root': { px: 0 },
-                    '& .MuiDayCalendar-slideTransition': { minHeight: 264 },
-                  }}
-                />
-              </AppCalendarRangeContext.Provider>
-            </LocalizationProvider>
-          </Box>
-        )}
+        {open && calendar}
       </AppDialog>
     </>
   );

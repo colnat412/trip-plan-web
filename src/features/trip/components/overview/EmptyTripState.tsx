@@ -3,6 +3,7 @@
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
+import AppMascot from '@/base/components/ui/AppMascot';
 
 import { AppButton, AppCard, AppEmptyState } from '@/base/components/ui';
 
@@ -22,6 +23,7 @@ const EmptyTripState = ({ onCreateTrip }: EmptyTripStateProps) => {
       }}
     >
       <AppEmptyState
+        illustration={<AppMascot mood="empty_data" size={128} />}
         title={tTrip('noTrips')}
         icon={<FlightTakeoffRoundedIcon />}
         action={

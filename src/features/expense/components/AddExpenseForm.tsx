@@ -1,5 +1,6 @@
 'use client';
 
+import { useUserContext } from '@/features/user/context/UserContext';
 import useDialogDraft from '@/base/hooks/use-dialog-draft';
 
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -10,6 +11,7 @@ import {
   AppNumberInput,
   AppTextField,
   AppSelect,
+  AppSegmentedControl,
   type AppSelectOption,
 } from '@/base/components/ui';
 import { getCategorySelectOptions, normalizeTripCategory } from '@/base/constants';
@@ -22,7 +24,7 @@ import type {
   ReceiptItem,
   ScannedReceipt,
   SplitItemPayload,
-  SplitType,
+  EditableSplitType,
 } from '../types';
 import ReceiptImageField from './ReceiptImageField';
 import SplitAllocationSection from './SplitAllocationSection';
@@ -45,22 +47,13 @@ const AddExpenseForm = ({
   initialData,
 }: AddExpenseFormProps) => {
   const tForm = useTranslations('expense.form');
+  const { user } = useUserContext();
   const tCat = useTranslations('expense.categories');
   const tSplits = useTranslations('expense.splits.options');
 
   const categoryOptions: AppSelectOption[] = useMemo(
     () => getCategorySelectOptions(tCat),
     [tCat],
-  );
-
-  const splitOptions: AppSelectOption[] = useMemo(
-    () => [
-      { value: 'EQUAL', label: tSplits('EQUAL') },
-      { value: 'EXACT_AMOUNT', label: tSplits('EXACT_AMOUNT') },
-      { value: 'PERCENTAGE', label: tSplits('PERCENTAGE') },
-      { value: 'SHARE', label: tSplits('SHARE') },
-    ],
-    [tSplits],
   );
 
   const [title, setTitle] = useState(initialData?.title || '');
@@ -76,7 +69,7 @@ const AddExpenseForm = ({
     initialData?.expenseDate || new Date().toISOString().split('T')[0],
   );
 
-  const [splitType, setSplitType] = useState<SplitType>('EQUAL');
+  const [splitType, setSplitType] = useState<EditableSplitType>('EQUAL');
   const [payerId, setPayerId] = useState<string | number | ''>(() => {
     return members.length > 0 ? members[0].userId : '';
   });
@@ -189,10 +182,7 @@ const AddExpenseForm = ({
       noValidate
       sx={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}
     >
-      <ReceiptScanBanner
-        onScanSuccess={handleScanSuccess}
-        disabled={isLoading}
-      />
+
 
       <Stack component="fieldset" disabled={isLoading} spacing={2.5}
         sx={{ border: 0, p: 0, m: 0, minWidth: 0 }}>
@@ -200,22 +190,9 @@ const AddExpenseForm = ({
           <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
             {tForm('detailsSection')}
           </Typography>
-          <AppTextField
-            disabled={isLoading}
-            label={tForm('titleLabel')}
-            placeholder={tForm('titlePlaceholder')}
-            value={title}
-            onChange={(e) => {
-              setTitle(e.target.value);
-              if (errors.title)
-                setErrors((prev) => ({ ...prev, title: undefined }));
-            }}
-            error={Boolean(errors.title)}
-            helperText={errors.title}
-          />
-
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <AppNumberInput
+              emphasis="primary"
               disabled={isLoading}
               label={tForm('amountLabel')}
               placeholder="0"
@@ -230,6 +207,25 @@ const AddExpenseForm = ({
               helperText={errors.amount}
             />
           </Box>
+
+          <ReceiptScanBanner
+            onScanSuccess={handleScanSuccess}
+            disabled={isLoading}
+          />
+
+          <AppTextField
+            disabled={isLoading}
+            label={tForm('titleLabel')}
+            placeholder={tForm('titlePlaceholder')}
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (errors.title)
+                setErrors((prev) => ({ ...prev, title: undefined }));
+            }}
+            error={Boolean(errors.title)}
+            helperText={errors.title}
+          />
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -272,12 +268,12 @@ const AddExpenseForm = ({
               label={tForm('payerLabel')}
               renderValue={(value) => {
                 const member = members.find((item) => String(item.userId) === String(value));
-                return member?.name || member?.email || String(value);
+                return user?.id != null && String(user.id) === String(value) ? tForm('iPay') : member?.name || member?.email || String(value);
               }}
               value={selectedPayerId}
               options={members.map((m) => ({
                 value: m.userId,
-                label: m.name && m.email ? `${m.name} (${m.email})` : m.name || m.email || String(m.userId),
+                label: user?.id != null && String(user.id) === String(m.userId) ? tForm('iPay') : m.name && m.email ? `${m.name} (${m.email})` : m.name || m.email || String(m.userId),
               }))}
               onChange={(e) => {
                 setPayerId(e.target.value as string | number);
@@ -290,15 +286,16 @@ const AddExpenseForm = ({
             />
           )}
 
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <AppSelect
-              disabled={isLoading}
-              label={tForm('splitTypeLabel')}
-              value={splitType}
-              options={splitOptions}
-              onChange={(e) => setSplitType(e.target.value as SplitType)}
-            />
-          </Box>
+          <AppSegmentedControl<EditableSplitType>
+            label={tForm('splitTypeLabel')}
+            disabled={isLoading}
+            value={splitType}
+            onChange={(value) => { if (!isLoading) setSplitType(value as EditableSplitType); }}
+            options={[
+              { value: 'EQUAL', label: tSplits('EQUAL') },
+              { value: 'EXACT_AMOUNT', label: tSplits('EXACT_AMOUNT') },
+            ]}
+          />
 
           {members && members.length > 0 && (
             <SplitAllocationSection

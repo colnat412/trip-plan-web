@@ -8,7 +8,6 @@ import ShoppingCartRoundedIcon from '@mui/icons-material/ShoppingCartRounded';
 import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
 import { useLocale, useTranslations } from 'next-intl';
 import {
-  AppCard,
   AppButton,
   AppMetricValue,
   AppAmountRatio,
@@ -77,16 +76,11 @@ const BudgetMetricsCards = ({
           height: '100%',
         }}
       >
-        <AppCard
+        <Box component="section"
           sx={{
-            p: { xs: 1.75, sm: 2 },
+            py: 2,
             height: '100%',
-            borderRadius: 'var(--app-radius-card)',
-            border: 1,
-            borderColor: 'divider',
-          }}
-          contentSx={{
-            height: '100%',
+            minWidth: 0,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -98,8 +92,7 @@ const BudgetMetricsCards = ({
               <Box
                 sx={{
                   p: 0.6,
-                  borderRadius: 'var(--app-radius-small)',
-                  bgcolor: 'action.hover',
+                  borderRadius: 0,
                   color: 'primary.main',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -162,7 +155,7 @@ const BudgetMetricsCards = ({
               {t('entireTripLimit')}
             </Typography>
           )}
-        </AppCard>
+        </Box>
       </Box>
 
       <Box
@@ -172,16 +165,11 @@ const BudgetMetricsCards = ({
           height: '100%',
         }}
       >
-        <AppCard
+        <Box component="section"
           sx={{
-            p: { xs: 1.75, sm: 2 },
+            py: 2,
             height: '100%',
-            borderRadius: 'var(--app-radius-card)',
-            border: 1,
-            borderColor: 'divider',
-          }}
-          contentSx={{
-            height: '100%',
+            minWidth: 0,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -200,8 +188,7 @@ const BudgetMetricsCards = ({
                 <Box
                   sx={{
                     p: 0.6,
-                    borderRadius: 'var(--app-radius-small)',
-                    bgcolor: 'action.hover',
+                    borderRadius: 0,
                     color: isOverBudget
                       ? 'error.main'
                       : isWarning
@@ -232,12 +219,6 @@ const BudgetMetricsCards = ({
                   sx={{
                     px: 0.8,
                     py: 0.2,
-                    borderRadius: 'var(--app-radius-pill)',
-                    bgcolor: isOverBudget
-                      ? 'error.light'
-                      : isWarning
-                        ? 'secondary.light'
-                        : 'action.hover',
                     color: isOverBudget
                       ? 'error.dark'
                       : isWarning
@@ -302,7 +283,7 @@ const BudgetMetricsCards = ({
               </Typography>
             )}
           </Stack>
-        </AppCard>
+        </Box>
       </Box>
 
       <Box
@@ -312,16 +293,11 @@ const BudgetMetricsCards = ({
           height: '100%',
         }}
       >
-        <AppCard
+        <Box component="section"
           sx={{
-            p: { xs: 1.75, sm: 2 },
+            py: 2,
             height: '100%',
-            borderRadius: 'var(--app-radius-card)',
-            border: 1,
-            borderColor: 'divider',
-          }}
-          contentSx={{
-            height: '100%',
+            minWidth: 0,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -333,8 +309,7 @@ const BudgetMetricsCards = ({
               <Box
                 sx={{
                   p: 0.6,
-                  borderRadius: 'var(--app-radius-small)',
-                  bgcolor: 'action.hover',
+                  borderRadius: 0,
                   color: `${remainingTone}.main`,
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -386,7 +361,7 @@ const BudgetMetricsCards = ({
                   ? t('lowBudget')
                   : t('underControl')}
           </Typography>
-        </AppCard>
+        </Box>
       </Box>
     </>
   );

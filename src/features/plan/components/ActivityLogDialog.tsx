@@ -1,5 +1,7 @@
 'use client';
 
+import AppEmptyState from '@/base/components/ui/AppEmptyState';
+
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import {
@@ -141,38 +143,7 @@ const ActivityLogDialog = ({
           compact
         />
       ) : logs.length === 0 ? (
-        <Box
-          sx={{
-            textAlign: 'center',
-            py: 6,
-            px: 2,
-            color: 'text.secondary',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 1.5,
-          }}
-        >
-          <Box
-            sx={{
-              width: 56,
-              height: 56,
-              borderRadius: 'var(--app-radius-card)',
-              bgcolor: 'action.hover',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'text.secondary',
-            }}
-          >
-            <HistoryRoundedIcon sx={{ fontSize: '28px', opacity: 0.7 }} />
-          </Box>
-          <Typography
-            sx={{ fontWeight: 700, fontSize: '15px', color: 'text.primary' }}
-          >
-            {t('activityLog.emptyTitle')}
-          </Typography>
-        </Box>
+        <AppEmptyState title={t('activityLog.emptyTitle')} />
       ) : (
         <Box
           sx={{

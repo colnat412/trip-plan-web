@@ -10,6 +10,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import UnfoldMoreRoundedIcon from '@mui/icons-material/UnfoldMoreRounded';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -33,6 +34,7 @@ const SidebarUser = ({
 }: SidebarUserProps) => {
   const router = useRouter();
   const t = useTranslations('navigation');
+  const tPreferences = useTranslations('preferences');
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const { user: currentUser, isLoading } = useUserContext();
@@ -84,25 +86,13 @@ const SidebarUser = ({
         <IconButton
           onClick={handleOpenMenu}
           disabled={logoutMutation.isPending}
-          aria-label={t('accountMenu')}
+          aria-label={tPreferences('settings')}
+          title={tPreferences('settings')}
           aria-haspopup="dialog"
           aria-expanded={Boolean(anchorEl)}
           sx={{ width: 44, height: 44, flexShrink: 0, color: 'text.primary' }}
         >
-          <Avatar
-            src={avatarSrc}
-            alt={displayName}
-            sx={{
-              width: 36,
-              height: 36,
-              bgcolor: 'action.selected',
-              color: 'primary.main',
-              fontSize: '13px',
-              fontWeight: 800,
-            }}
-          >
-            {displayInitials}
-          </Avatar>
+          <SettingsOutlinedIcon />
         </IconButton>
       ) : (
         <Stack

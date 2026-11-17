@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
 
 import AppTopBar from './AppTopBar';
+import AppTripWorkspace from './AppTripWorkspace';
 import AppBottomNavigation from './AppBottomNavigation';
 import CreateTripHost from './CreateTripHost';
 import TripMembersHost from './TripMembersHost';
@@ -16,6 +17,8 @@ import PolicyAcceptanceGate from '@/features/legal/components/PolicyAcceptanceGa
 import { getTabSection, isSameTabSection } from '@/base/utils/tab-section';
 import { DESKTOP_NAV_BREAKPOINT } from './navigation/config';
 import AppPageLoadingProvider from '@/base/providers/AppPageLoadingProvider';
+import { contentColumn } from '@/base/theme/content-layout';
+import { pageBackground } from '@/base/theme/page-background';
 
 export interface AppShellProps {
   children: ReactNode;
@@ -30,6 +33,7 @@ const AppShell = ({
 }: AppShellProps) => {
   const pathname = usePathname();
   const tabSection = getTabSection(pathname);
+  const tripWorkspace = ['/plan', '/expenses', '/settlement'].includes(pathname);
   const mainRef = useRef<HTMLElement | null>(null);
   const previousPath = useRef(pathname);
   useLayoutEffect(() => {
@@ -58,11 +62,11 @@ const AppShell = ({
         height: '100dvh',
         overflow: 'hidden',
         minWidth: 0,
-        '--app-page-surface': `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).primary.main} 3%, ${(theme.vars?.palette ?? theme.palette).background.default})`,
+        '--app-page-surface': pageBackground(theme).backgroundColor,
         [theme.breakpoints.down(DESKTOP_NAV_BREAKPOINT)]: {
-          '--app-bottom-navigation-height': '80px',
+          '--app-bottom-navigation-height': '56px',
           '--app-bottom-navigation-space':
-            'calc(var(--app-bottom-navigation-height) + 12px + env(safe-area-inset-bottom, 0px))',
+            tripWorkspace ? 'env(safe-area-inset-bottom, 0px)' : 'calc(var(--app-bottom-navigation-height) + 12px + env(safe-area-inset-bottom, 0px))',
         },
       })}
     >
@@ -72,26 +76,24 @@ const AppShell = ({
         ref={mainRef}
         id="main-content"
         tabIndex={-1}
-        sx={{
-          minWidth: 0,
-          minHeight: 0,
+        sx={(theme) => ({
+          ...pageBackground(theme),
+          ...contentColumn,
           flex: 1,
           overflowY: 'auto',
-          bgcolor: (theme) =>
-            `var(--app-page-surface, ${(theme.vars?.palette ?? theme.palette).action.hover})`,
           scrollbarGutter: 'stable',
           overscrollBehaviorY: 'contain',
           scrollPaddingBottom: 'var(--app-bottom-navigation-space, 0px)',
           pl: 'env(safe-area-inset-left, 0px)',
           pr: 'env(safe-area-inset-right, 0px)',
-        }}
+        })}
       >
         <AppPageLoadingProvider>
-          {children}
+          {tripWorkspace && withAccount ? <AppTripWorkspace>{children}</AppTripWorkspace> : children}
           {withAccount && !tabSection && <GlobalLoadingHost />}
         </AppPageLoadingProvider>
       </Box>
-      <AppBottomNavigation />
+      {!tripWorkspace && <AppBottomNavigation guest={!withAccount} />}
       {withAccount && <CreateTripHost />}
       {withAccount && <TripMembersHost />}
     </Box>

@@ -8,9 +8,7 @@ import {
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import AppDialog from './AppDialog';
-import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
-import HelpOutlineRoundedIcon from '@mui/icons-material/HelpOutlineRounded';
-import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
+import AppMascot from './AppMascot';
 
 import AppButton from './AppButton';
 
@@ -42,53 +40,6 @@ const AppConfirmDialog = ({
   const t = useTranslations('dialog');
   const confirmLabel = confirmText ?? t('confirm');
   const cancelLabel = cancelText ?? t('cancel');
-  const getDefaultIcon = () => {
-    switch (intent) {
-      case 'danger':
-        return <WarningRoundedIcon sx={{ fontSize: 32 }} />;
-      case 'success':
-        return <CheckCircleOutlineRoundedIcon sx={{ fontSize: 32 }} />;
-      default:
-        return <HelpOutlineRoundedIcon sx={{ fontSize: 32 }} />;
-    }
-  };
-
-  const getIconContainerStyles = () => {
-    return (theme: {
-      palette: {
-        error: { main: string };
-        success: { main: string };
-        primary: { main: string };
-      };
-      vars?: {
-        palette: {
-          error: { main: string };
-          success: { main: string };
-          primary: { main: string };
-        };
-      };
-    }) => {
-      const palette = theme.vars?.palette ?? theme.palette;
-      switch (intent) {
-        case 'danger':
-          return {
-            color: palette.error.main,
-            bgcolor: 'rgba(239, 68, 68, 0.12)',
-          };
-        case 'success':
-          return {
-            color: palette.success.main,
-            bgcolor: 'rgba(34, 197, 94, 0.12)',
-          };
-        default:
-          return {
-            color: palette.primary.main,
-            bgcolor: 'rgba(59, 130, 246, 0.12)',
-          };
-      }
-    };
-  };
-
   const descriptionContent = (
     <Typography
       component="div"
@@ -107,14 +58,14 @@ const AppConfirmDialog = ({
 
   const actions = (
     <Stack
-      direction={{ xs: 'column', sm: 'row' }}
+      direction="row"
       spacing={1.5}
       useFlexGap
       sx={{
         width: '100%',
         '& > .MuiButton-root': {
-          flex: { sm: '1 1 0' },
-          width: { sm: 'auto' },
+          flex: '1 1 0',
+          minWidth: 0,
         },
       }}
     >
@@ -148,17 +99,15 @@ const AppConfirmDialog = ({
       onClose={onClose}
       closeDisabled={loading}
       title={title}
+      hideHeader
+      description={typeof description === 'string' ? description : undefined}
       maxWidth="xs"
       actions={actions}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Box sx={[{
-          width: 48, height: 48, borderRadius: '50%',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }, getIconContainerStyles()]}>
-          {icon ?? getDefaultIcon()}
-        </Box>
-      </Box>
+      <Stack spacing={1.5} sx={{ alignItems: 'center', textAlign: 'center', pt: 1 }}>
+        {icon ?? <AppMascot size={112} mood={intent === 'danger' ? 'warning' : intent === 'success' ? 'success' : 'thinking'} />}
+        <Typography component="p" sx={{ fontSize: { xs: 18, sm: 20 }, fontWeight: 600, overflowWrap: 'anywhere' }}>{title}</Typography>
+      </Stack>
       <Box sx={{ textAlign: 'center' }}>{descriptionContent}</Box>
     </AppDialog>
   );

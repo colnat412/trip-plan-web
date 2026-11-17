@@ -1,5 +1,7 @@
 'use client';
 
+import AppEmptyState from '@/base/components/ui/AppEmptyState';
+
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { AppLoadingState, AppDialog, AppButton, AppTextField, AppImageUploader, AppToast } from '@/base/components/ui';
@@ -257,9 +259,7 @@ const PublishTemplateDialog = ({
                 {t('checklist')}
               </Typography>
               {!checklists.length && (
-                <Typography variant="body2" color="text.secondary">
-                  {t('emptyChecklist')}
-                </Typography>
+                <AppEmptyState compact title={t('emptyChecklist')} />
               )}
               {checklists.map((item) => (
                 <TemplateCheckboxOption

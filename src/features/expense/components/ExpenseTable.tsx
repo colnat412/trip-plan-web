@@ -3,17 +3,13 @@
 import React, { useMemo } from 'react';
 import { Avatar, Box, Stack, Typography } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 import {
-  AppActionMenu,
   AppCategoryIcon,
   AppFinanceRow,
   AppButton,
-  AppCategoryChip,
   AppTable,
   AppSectionHeader,
   type AppTableColumn,
@@ -22,16 +18,16 @@ import {
 } from '@/base/components/ui';
 import { TRIP_CATEGORIES } from '@/base/constants';
 import { formatCurrency, formatDate } from '@/base/utils';
-import type { Expense, Pagination } from '../types';
+import { useUserContext } from '@/features/user/context/UserContext';
+import type { Expense, Pagination, DailySpending } from '../types';
 
 export interface ExpenseTableProps {
   expenses: Expense[];
+  dailyTotals?: DailySpending[];
   isLoading?: boolean;
   isFetching?: boolean;
   pagination?: Pagination | null;
   onPageChange?: (newPage: number) => void;
-  onEdit: (expense: Expense) => void;
-  onDelete: (expense: Expense) => void;
   onAddNew?: () => void;
   onViewDetail?: (expense: Expense) => void;
   sort?: TableSortState | null;
@@ -40,17 +36,15 @@ export interface ExpenseTableProps {
   onFilterChange?: (filters: Record<string, ColumnFilterValue>) => void;
   tableMaxHeight?: number | string;
   readOnly?: boolean;
-  canManageExpense?: (expense: Expense) => boolean;
 }
 
 const ExpenseTable = ({
   expenses,
+  dailyTotals,
   isLoading,
   isFetching = false,
   pagination,
   onPageChange,
-  onEdit,
-  onDelete,
   onAddNew,
   onViewDetail,
   sort,
@@ -59,9 +53,10 @@ const ExpenseTable = ({
   onFilterChange,
   tableMaxHeight,
   readOnly = false,
-  canManageExpense,
 }: ExpenseTableProps) => {
   const t = useTranslations('expense');
+  const locale = useLocale();
+  const { user } = useUserContext();
   const tTable = useTranslations('expense.table');
 
   const page = pagination?.page ?? 0;
@@ -86,6 +81,9 @@ const ExpenseTable = ({
             }}
           >
             {formatDate(expense.expenseDate, 'DD/MM/YYYY')}
+            {dailyTotals?.filter(day => day.expenseDate === expense.expenseDate).map(day => (
+              <Box component="span" key={day.currency} sx={{ display: 'block', fontSize: '12px', fontWeight: 600 }}>{formatCurrency(day.amount, day.currency, locale)}</Box>
+            ))}
           </Typography>
         ),
       },
@@ -141,7 +139,7 @@ const ExpenseTable = ({
         })),
         getValue: (e) => e.category,
         renderCell: (expense) => (
-          <AppCategoryChip category={expense.category} />
+          <Typography variant="body2" color="text.secondary">{t(`categories.${expense.category}`)}</Typography>
         ),
       },
       {
@@ -180,7 +178,7 @@ const ExpenseTable = ({
                   whiteSpace: 'nowrap',
                 }}
               >
-                {expense.payerName || '—'}
+                {user?.id != null && String(user.id) === String(expense.payerId) ? t('row.youPaid') : expense.payerName || '—'}
               </Typography>
               {expense.payerEmail && (
                 <Typography
@@ -252,77 +250,33 @@ const ExpenseTable = ({
           </Typography>
         ),
       },
-      ...(!readOnly
-        ? [
-            {
-              id: 'actions',
-              label: tTable('colActions'),
-              align: 'center' as const,
-              width: 48,
-              renderCell: (expense: Expense) => {
-                const menuItems = [
-                  ...(canManageExpense?.(expense) === false
-                    ? []
-                    : [
-                        {
-                          id: 'edit',
-                          label: t('row.edit'),
-                          icon: <EditRoundedIcon fontSize="small" />,
-                          onClick: () => onEdit(expense),
-                        },
-                        {
-                          id: 'delete',
-                          label: t('row.delete'),
-                          icon: <DeleteOutlineRoundedIcon fontSize="small" />,
-                          danger: true,
-                          onClick: () => onDelete(expense),
-                        },
-                      ]),
-                ];
-
-                return menuItems.length ? <AppActionMenu items={menuItems} /> : null;
-              },
-            },
-          ]
-        : []),
     ],
-    [t, tTable, onViewDetail, onEdit, onDelete, readOnly, canManageExpense],
+    [t, tTable, onViewDetail, user, dailyTotals, locale],
   );
 
   return (
     <AppTable<Expense>
+      surface="plain"
       sx={{ border: 0 }}
-      columns={columns}
+      columns={onFilterChange ? columns : columns.map(column => ({ ...column, filterable: false, sortable: false }))}
       renderMobileRow={(expense, index, rows) => (
-        <Box sx={{ px: { xs: 2.5, sm: 3 }, borderBottom: 1, borderColor: 'divider', '&:last-child': { borderBottom: 0 } }}>
+        <Box sx={{ px: 0, borderBottom: 1, borderColor: 'divider', '&:last-child': { borderBottom: 0 } }}>
           {(index === 0 ||
             rows[index - 1].expenseDate !== expense.expenseDate) && (
-            <Typography
-              sx={{
-                px: 1.5,
-                pt: 1.5,
-                fontSize: '13px',
-                lineHeight: 1.5,
-                color: 'text.secondary',
-                fontWeight: 600,
-              }}
-            >
-              {formatDate(expense.expenseDate)}
-            </Typography>
+            <Stack direction="row" useFlexGap sx={{ justifyContent: 'space-between', alignItems: 'baseline', gap: 1, pt: 1.5, flexWrap: 'wrap' }}>
+              <Typography sx={{ fontSize: '13px', color: 'text.secondary', fontWeight: 600 }}>{formatDate(expense.expenseDate)}</Typography>
+              {dailyTotals?.filter(day => day.expenseDate === expense.expenseDate).map(day => (
+                <Typography key={day.currency} aria-label={`${tTable('dayTotal')}: ${formatCurrency(day.amount, day.currency, locale)}`}
+                  sx={{ fontSize: '13px', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(day.amount, day.currency, locale)}</Typography>
+              ))}
+            </Stack>
           )}
           <AppFinanceRow
             icon={<AppCategoryIcon category={expense.category} />}
             title={expense.title}
-            subtitle={`${t(`categories.${expense.category}`)} · ${expense.payerName || '—'}`}
+            subtitle={user?.id != null && String(user.id) === String(expense.payerId) ? t('row.youPaid') : expense.payerName || '—'}
             amount={formatCurrency(expense.amount, expense.currency)}
             onClick={onViewDetail ? () => onViewDetail(expense) : undefined}
-            action={
-              !readOnly
-                ? columns
-                    .find((column) => column.id === 'actions')
-                    ?.renderCell(expense, index)
-                : undefined
-            }
           />
         </Box>
       )}
@@ -341,7 +295,7 @@ const ExpenseTable = ({
           count={totalElements}
           stackActionsOnMobile
           sx={{
-            p: { xs: 2, sm: 2.5 },
+            px: 0, py: 2,
           }}
           actions={
             !readOnly && onAddNew ? (

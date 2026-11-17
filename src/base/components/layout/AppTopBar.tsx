@@ -1,17 +1,20 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import AppTripWorkspaceHeader from './AppTripWorkspaceHeader';
 import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import AppBrand from './AppBrand';
 import { AppButton } from '@/base/components/ui';
 import AppTripBar from './AppTripBar';
 import AppDesktopNavigation from './AppDesktopNavigation';
-import SidebarUser from './sidebar/SidebarUser';
 import { glassSurface } from '@/base/theme/surfaces';
 
 const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
   const t = useTranslations('navigation');
+  const pathname = usePathname();
+  const workspace = !guest && ['/plan', '/expenses', '/settlement'].includes(pathname);
   return (
     <Box
       component="header"
@@ -51,7 +54,7 @@ const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
             minWidth: 0,
           }}
         >
-          <Box
+          {workspace ? <AppTripWorkspaceHeader /> : <><Box
             component={Link}
             href="/overview"
             aria-label={t('homeLink')}
@@ -69,14 +72,14 @@ const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
           >
             <AppBrand compactOnMobile showTag={false} />
           </Box>
-          {!guest && <AppTripBar />}
+          {!guest && <AppTripBar />}</>}
         </Box>
-        <AppDesktopNavigation />
+        {!workspace && <AppDesktopNavigation />}
         {guest ? (
           <AppButton component={Link} href="/login" intent="secondary" size="small">
             {t('signIn')}
           </AppButton>
-        ) : <SidebarUser compact />}
+        ) : null}
       </Box>
     </Box>
   );

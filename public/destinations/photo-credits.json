@@ -1,0 +1,80 @@
+[
+  {
+    "slug": "danang",
+    "file": "danang-photo.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Da_Nang_-_Dragon_Bridge.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Da_Nang_-_Dragon_Bridge.jpg/500px-Da_Nang_-_Dragon_Bridge.jpg",
+    "author": "P. Hughes",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "attribution": "",
+    "changes": "Wikimedia thumbnail; displayed with object-fit:cover; no subject edits.",
+    "city": "Đà Nẵng",
+    "landmark": "Cầu Rồng"
+  },
+  {
+    "slug": "dalat",
+    "file": "dalat-photo.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Da_Lat_-_Xuan_Huong_Lake.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Da_Lat_-_Xuan_Huong_Lake.jpg/500px-Da_Lat_-_Xuan_Huong_Lake.jpg",
+    "author": "P. Hughes",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+    "attribution": "",
+    "changes": "Wikimedia thumbnail; displayed with object-fit:cover; no subject edits.",
+    "city": "Đà Lạt",
+    "landmark": "Hồ Xuân Hương"
+  },
+  {
+    "slug": "hanoi",
+    "file": "hanoi-photo.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:TurtleTower_HoanKiemLake_Hanoi.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/TurtleTower_HoanKiemLake_Hanoi.jpg/500px-TurtleTower_HoanKiemLake_Hanoi.jpg",
+    "author": "Tillea",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+    "attribution": "",
+    "changes": "Wikimedia thumbnail; displayed with object-fit:cover; no subject edits.",
+    "city": "Hà Nội",
+    "landmark": "Hồ Gươm · Tháp Rùa"
+  },
+  {
+    "slug": "hoian",
+    "file": "hoian-photo.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:H%E1%BB%99i_An,_Vietnam_(Unsplash_E_ySzvSJRI).jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f7/H%E1%BB%99i_An%2C_Vietnam_%28Unsplash_E_ySzvSJRI%29.jpg/500px-H%E1%BB%99i_An%2C_Vietnam_%28Unsplash_E_ySzvSJRI%29.jpg",
+    "author": "Vincent Guth vingtcent",
+    "license": "CC0",
+    "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+    "attribution": "",
+    "changes": "Wikimedia thumbnail; displayed with object-fit:cover; no subject edits.",
+    "city": "Hội An",
+    "landmark": "Đèn lồng phố cổ"
+  },
+  {
+    "slug": "phuquoc",
+    "file": "phuquoc-photo.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Bai_Sao_Beach.jpg",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/Bai_Sao_Beach.jpg/500px-Bai_Sao_Beach.jpg",
+    "author": "Prince Roy",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+    "attribution": "",
+    "changes": "Wikimedia thumbnail; displayed with object-fit:cover; no subject edits.",
+    "city": "Phú Quốc",
+    "landmark": "Bãi Sao"
+  },
+  {
+    "slug": "saigon",
+    "file": "saigon-photo.png",
+    "source": "https://commons.wikimedia.org/wiki/File:Landmark_81.png",
+    "download": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Landmark_81.png/500px-Landmark_81.png",
+    "author": "Phucduongqb",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+    "attribution": "",
+    "changes": "Wikimedia thumbnail; displayed with object-fit:cover; no subject edits.",
+    "city": "TP. Hồ Chí Minh",
+    "landmark": "Landmark 81"
+  }
+]

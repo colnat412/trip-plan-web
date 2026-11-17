@@ -4,7 +4,7 @@ import { selectedSurface } from '@/base/theme/surfaces';
 
 import React, { useMemo } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
@@ -33,7 +33,7 @@ export interface TripTableProps {
   isFetching?: boolean;
   activeTripId?: string | number | null;
   onSelectTrip: (trip: Trip) => void;
-  onCreateTrip: () => void;
+  onCreateTrip?: () => void;
   onEditTrip?: (trip: Trip) => void;
   onDeleteTrip?: (trip: Trip) => void;
   pagination?: AppTablePaginationProps | null;
@@ -245,7 +245,7 @@ const TripTable = ({
                   isSelected ? (
                     <CheckCircleRoundedIcon fontSize="small" />
                   ) : (
-                    <ArrowForwardRoundedIcon fontSize="small" />
+                    <ChevronRightRoundedIcon fontSize="small" />
                   )
                 }
                 onClick={(e) => {

@@ -7,8 +7,6 @@ import {
   IconButton,
   InputAdornment,
   Stack,
-  ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
@@ -18,6 +16,7 @@ import TableRowsRoundedIcon from '@mui/icons-material/TableRowsRounded';
 import { useTranslations } from 'next-intl';
 
 import {
+  AppSegmentedControl,
   AppSelect,
   type AppSelectOption,
   AppTextField,
@@ -290,32 +289,16 @@ const TripFilterBar = ({
             />
           </Stack>
 
-          <ToggleButtonGroup
-            size="small"
+          <AppSegmentedControl<'grid' | 'table'>
             value={viewMode}
-            exclusive
-            onChange={(_, val) => {
-              if (val) onViewModeChange(val);
-            }}
-            aria-label="view mode"
-            sx={{
-              display: { xs: 'none', sm: 'inline-flex' },
-              height: 32,
-              bgcolor: 'background.paper',
-              '& .MuiToggleButton-root': {
-                px: 1,
-                py: 0.25,
-                borderColor: 'divider',
-              },
-            }}
-          >
-            <ToggleButton value="grid" aria-label="grid view">
-              <GridViewRoundedIcon sx={{ fontSize: 16 }} />
-            </ToggleButton>
-            <ToggleButton value="table" aria-label="table view">
-              <TableRowsRoundedIcon sx={{ fontSize: 16 }} />
-            </ToggleButton>
-          </ToggleButtonGroup>
+            onChange={onViewModeChange}
+            label={t('viewMode')}
+            options={[
+              { value: 'grid', label: <GridViewRoundedIcon sx={{ fontSize: 18 }} />, ariaLabel: t('gridView') },
+              { value: 'table', label: <TableRowsRoundedIcon sx={{ fontSize: 18 }} />, ariaLabel: t('tableView') },
+            ]}
+            sx={{ display: { xs: 'none', sm: 'grid' }, width: 104, flexShrink: 0 }}
+          />
         </Stack>
       </Box>
     </Box>

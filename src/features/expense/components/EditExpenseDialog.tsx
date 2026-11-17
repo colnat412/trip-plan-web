@@ -39,7 +39,8 @@ const EditExpenseDialog = ({
       open={open}
       onClose={onClose}
       closeDisabled={isLoading}
-      title={t('dialog.editTitle')}
+      title={expense.title}
+      titleAlign="left"
       icon={<EditRoundedIcon color="primary" />}
       maxWidth="sm"
       actions={

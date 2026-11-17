@@ -1,5 +1,6 @@
 'use client';
 
+import { useUserContext } from '@/features/user/context/UserContext';
 import useDialogDraft from '@/base/hooks/use-dialog-draft';
 
 import React, { useCallback, useMemo, useRef, useState } from 'react';
@@ -10,6 +11,7 @@ import {
   AppNumberInput,
   AppTextField,
   AppSelect,
+  AppSegmentedControl,
   type AppSelectOption,
 } from '@/base/components/ui';
 import { getCategorySelectOptions, normalizeTripCategory } from '@/base/constants';
@@ -17,7 +19,7 @@ import type {
   Expense,
   ExpenseCategory,
   SplitItemPayload,
-  SplitType,
+  EditableSplitType,
   UpdateExpensePayload,
 } from '../types';
 import ReceiptImageField from './ReceiptImageField';
@@ -41,6 +43,7 @@ const EditExpenseForm = ({
   formId,
 }: EditExpenseFormProps) => {
   const tForm = useTranslations('expense.form');
+  const { user } = useUserContext();
   const tCat = useTranslations('expense.categories');
   const tSplits = useTranslations('expense.splits.options');
 
@@ -49,24 +52,14 @@ const EditExpenseForm = ({
     [tCat],
   );
 
-  const splitOptions: AppSelectOption[] = useMemo(
-    () => [
-      { value: 'EQUAL', label: tSplits('EQUAL') },
-      { value: 'PERCENTAGE', label: tSplits('PERCENTAGE') },
-      { value: 'SHARE', label: tSplits('SHARE') },
-      { value: 'EXACT_AMOUNT', label: tSplits('EXACT_AMOUNT') },
-    ],
-    [tSplits],
-  );
-
   const allMembers: SplitMember[] = useMemo(() => {
-    if (members && members.length > 0) return members;
-    return (expense.splits || []).map((s) => ({
-      userId: s.userId,
-      name: s.userName,
-      email: s.userEmail,
-      avatarUrl: s.userAvatarUrl,
-    }));
+    const result: SplitMember[] = [...members];
+    for (const split of expense.splits || []) {
+      if (!result.some(member => String(member.userId) === String(split.userId))) {
+        result.push({ userId: split.userId, name: split.userName, email: split.userEmail, avatarUrl: split.userAvatarUrl });
+      }
+    }
+    return result;
   }, [members, expense.splits]);
 
   const initialSplits: SplitItemPayload[] = useMemo(() => {
@@ -83,7 +76,7 @@ const EditExpenseForm = ({
     normalizeTripCategory(expense.category),
   );
   const [expenseDate, setExpenseDate] = useState(expense.expenseDate);
-  const [splitType, setSplitType] = useState<SplitType>(expense.splitType);
+  const [splitType, setSplitType] = useState<EditableSplitType>(expense.splitType === 'EQUAL' ? 'EQUAL' : 'EXACT_AMOUNT');
   const [payerId, setPayerId] = useState<string | number | ''>(
     expense.payerId || '',
   );
@@ -173,21 +166,9 @@ const EditExpenseForm = ({
           <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
             {tForm('detailsSection')}
           </Typography>
-          <AppTextField
-            disabled={isLoading}
-            label={tForm('titleLabel')}
-            value={title}
-            onChange={(e) => {
-              setTitle(e.target.value);
-              if (errors.title)
-                setErrors((prev) => ({ ...prev, title: undefined }));
-            }}
-            error={Boolean(errors.title)}
-            helperText={errors.title}
-          />
-
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <AppNumberInput
+              emphasis="primary"
               disabled={isLoading}
               label={tForm('amountLabel')}
               currencySuffix={expense.currency}
@@ -201,6 +182,19 @@ const EditExpenseForm = ({
               helperText={errors.amount}
             />
           </Box>
+
+          <AppTextField
+            disabled={isLoading}
+            label={tForm('titleLabel')}
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (errors.title)
+                setErrors((prev) => ({ ...prev, title: undefined }));
+            }}
+            error={Boolean(errors.title)}
+            helperText={errors.title}
+          />
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -243,12 +237,12 @@ const EditExpenseForm = ({
               label={tForm('payerLabel')}
               renderValue={(value) => {
                 const member = allMembers.find((item) => String(item.userId) === String(value));
-                return member?.name || member?.email || String(value);
+                return user?.id != null && String(user.id) === String(value) ? tForm('iPay') : member?.name || member?.email || String(value);
               }}
               value={payerId}
               options={allMembers.map((m) => ({
                 value: m.userId,
-                label: m.name && m.email ? `${m.name} (${m.email})` : m.name || m.email || String(m.userId),
+                label: user?.id != null && String(user.id) === String(m.userId) ? tForm('iPay') : m.name && m.email ? `${m.name} (${m.email})` : m.name || m.email || String(m.userId),
               }))}
               onChange={(e) => {
                 setPayerId(e.target.value as string | number);
@@ -261,15 +255,16 @@ const EditExpenseForm = ({
             />
           )}
 
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <AppSelect
-              disabled={isLoading}
-              label={tForm('splitTypeLabel')}
-              value={splitType}
-              options={splitOptions}
-              onChange={(e) => setSplitType(e.target.value as SplitType)}
-            />
-          </Box>
+          <AppSegmentedControl<EditableSplitType>
+            label={tForm('splitTypeLabel')}
+            disabled={isLoading}
+            value={splitType}
+            onChange={(value) => { if (!isLoading) setSplitType(value as EditableSplitType); }}
+            options={[
+              { value: 'EQUAL', label: tSplits('EQUAL') },
+              { value: 'EXACT_AMOUNT', label: tSplits('EXACT_AMOUNT') },
+            ]}
+          />
 
           {allMembers && allMembers.length > 0 && (
             <SplitAllocationSection
@@ -305,6 +300,7 @@ const EditExpenseForm = ({
             onChange={setReceiptFile}
           />
         </Stack>
+
       </Stack>
     </Box>
   );

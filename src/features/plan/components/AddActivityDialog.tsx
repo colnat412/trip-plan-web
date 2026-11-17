@@ -16,6 +16,7 @@ export interface AddActivityDialogProps {
   isLoading?: boolean;
   tripCurrency?: string;
   planDate?: string | null;
+  destination?: string;
 }
 
 const AddActivityDialog = ({
@@ -25,9 +26,14 @@ const AddActivityDialog = ({
   isLoading = false,
   tripCurrency = 'VND',
   planDate,
+  destination,
 }: AddActivityDialogProps) => {
   const t = useTranslations('plan.dialog');
   const [saving, setSaving] = useState(false);
+  const [step, setStep] = useState({ open, discovering: true });
+  if (step.open !== open) {
+    setStep({ open, discovering: true });
+  }
 
   return (
     <AppDialog
@@ -36,12 +42,16 @@ const AddActivityDialog = ({
       open={open}
       closeDisabled={isLoading || saving}
       onClose={onClose}
+      onBack={step.discovering ? undefined : () => setStep(current => ({ ...current, discovering: true }))}
       title={t('addTitle')}
       description={planDate ? formatDate(planDate) : undefined}
       icon={<AddCircleOutlineRoundedIcon />}
       maxWidth="sm"
     >
       <AddActivityForm
+        discovering={step.discovering}
+        onDiscoveringChange={(discovering) => setStep(current => ({ ...current, discovering }))}
+        destination={destination}
         tripCurrency={tripCurrency}
         isLoading={isLoading}
         onSubmit={onSubmit}

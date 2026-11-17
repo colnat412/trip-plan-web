@@ -3,7 +3,7 @@
 import useDialogDraft from '@/base/hooks/use-dialog-draft';
 
 import React, { useMemo, useRef, useState } from 'react';
-import { Box, Stack } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import {
@@ -21,8 +21,13 @@ import { useUploadFile } from '@/base/hooks';
 import { ACTIVITY_CATEGORIES, getCategorySelectOptions } from '@/base/constants';
 import type { ActivityCategory, CreateActivityPayload } from '../types';
 import LocationAutocompleteInput from './LocationAutocompleteInput';
+import ActivityDiscovery from './ActivityDiscovery';
+import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 
 export interface AddActivityFormProps {
+  destination?: string;
+  discovering: boolean;
+  onDiscoveringChange: (discovering: boolean) => void;
   tripCurrency?: string;
   isLoading?: boolean;
   onSubmit: (payload: CreateActivityPayload) => void | Promise<unknown>;
@@ -31,6 +36,9 @@ export interface AddActivityFormProps {
 }
 
 const AddActivityForm = ({
+  destination = '',
+  discovering,
+  onDiscoveringChange: setDiscovering,
   tripCurrency = 'VND',
   isLoading = false,
   onSubmit,
@@ -38,6 +46,8 @@ const AddActivityForm = ({
   onSavingChange,
 }: AddActivityFormProps) => {
   const upload = useUploadFile();
+  const j = useTranslations('journey');
+  const [detailsExpanded, setDetailsExpanded] = useState(false);
   const [imageFile, setImageFile] = useState<File | null | undefined>();
   const [imageUpload, setImageUpload] = useState<{ file: File; id: string }>();
   const [saving, setSaving] = useState(false);
@@ -72,7 +82,7 @@ const AddActivityForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (busy || inFlight.current) return;
+    if (busy || inFlight.current || discovering) return;
     if (!title.trim()) {
       setTitleError(tDialog('titleRequired'));
       return;
@@ -80,6 +90,7 @@ const AddActivityForm = ({
     setTitleError('');
 
     if (startTime && endTime && endTime < startTime) {
+      setDetailsExpanded(true);
       setTimeError(tDialog('timeOrderInvalid'));
       return;
     }
@@ -118,7 +129,9 @@ const AddActivityForm = ({
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
       <Stack spacing={2.5}>
-        <AppImageUploader file={imageFile} alt={title} variant="cover" disabled={busy} onChange={setImageFile} />
+        {discovering ? <ActivityDiscovery destination={destination} category={category} disabled={busy}
+          onCategoryChange={setCategory} onManual={() => setDiscovering(false)}
+          onChoose={(place) => { setTitle(place.mainText); setLocation(place.description || place.mainText); setTitleError(''); setDiscovering(false); }} /> : <>
         <AppToast open={imageError} message={tToast('error')} severity="error" onClose={() => setImageError(false)} />
         <AppTextField
           disabled={busy}
@@ -136,49 +149,6 @@ const AddActivityForm = ({
           autoFocus
         />
 
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: 2,
-          }}
-        >
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <AppSelect
-              disabled={busy}
-              label={tDialog('categoryLabel')}
-              value={category}
-              onChange={(e) => setCategory(e.target.value as ActivityCategory)}
-              options={categoryOptions}
-              fullWidth
-            />
-          </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <AppNumberInput
-              disabled={busy}
-              label={tDialog('estimatedCostLabel')}
-              value={estimatedCost}
-              onValueChange={(val) => setEstimatedCost(val)}
-              currencySuffix={tripCurrency}
-              fullWidth
-            />
-          </Box>
-        </Box>
-
-        <AppTimePicker
-          mode="range"
-          label={tDialog('timeRangeLabel')}
-          value={[startTime, endTime]}
-          disabled={busy}
-          error={!!timeError}
-          helperText={timeError}
-          onChange={([start, end]) => {
-            setStartTime(start);
-            setEndTime(end);
-            if (timeError) setTimeError('');
-          }}
-        />
-
         <LocationAutocompleteInput
           disabled={busy}
           label={tDialog('locationLabel')}
@@ -188,16 +158,66 @@ const AddActivityForm = ({
           fullWidth
         />
 
-        <AppTextArea
-          disabled={busy}
-          label={tDialog('noteLabel')}
-          placeholder={tDialog('notePlaceholder')}
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          rows={3}
-          fullWidth
-        />
+        <Accordion expanded={detailsExpanded} onChange={(_, expanded) => setDetailsExpanded(expanded)} disableGutters elevation={0} sx={{ bgcolor: 'transparent', '&:before': { display: 'none' } }}>
+          <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>{j('optional')}</AccordionSummary>
+          <AccordionDetails sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+              }}
+            >
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <AppSelect
+                  disabled={busy}
+                  label={tDialog('categoryLabel')}
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as ActivityCategory)}
+                  options={categoryOptions}
+                  fullWidth
+                />
+              </Box>
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <AppNumberInput
+                  emphasis="primary"
+                  disabled={busy}
+                  label={tDialog('estimatedCostLabel')}
+                  value={estimatedCost}
+                  onValueChange={(val) => setEstimatedCost(val)}
+                  currencySuffix={tripCurrency}
+                  fullWidth
+                />
+              </Box>
+            </Box>
 
+            <AppTimePicker
+              mode="range"
+              label={tDialog('timeRangeLabel')}
+              value={[startTime, endTime]}
+              disabled={busy}
+              error={!!timeError}
+              helperText={timeError}
+              onChange={([start, end]) => {
+                setStartTime(start);
+                setEndTime(end);
+                if (timeError) setTimeError('');
+              }}
+            />
+
+            <AppTextArea
+              disabled={busy}
+              label={tDialog('noteLabel')}
+              placeholder={tDialog('notePlaceholder')}
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              rows={3}
+              fullWidth
+            />
+
+            <AppImageUploader file={imageFile} alt={title} variant="cover" disabled={busy} onChange={setImageFile} />
+          </AccordionDetails>
+        </Accordion>
         <Box
           sx={{
             display: 'flex',
@@ -213,6 +233,7 @@ const AddActivityForm = ({
             {tDialog('saveBtn')}
           </AppButton>
         </Box>
+        </>}
       </Stack>
     </Box>
   );

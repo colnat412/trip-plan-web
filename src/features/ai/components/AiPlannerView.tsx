@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
-import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { useTranslations } from 'next-intl';
 
@@ -132,7 +132,7 @@ const AiPlannerView = () => {
               intent="secondary"
               size="small"
               onClick={() => router.push('/plan')}
-              endIcon={<ArrowForwardRoundedIcon sx={{ fontSize: 16 }} />}
+              endIcon={<ChevronRightRoundedIcon sx={{ fontSize: 16 }} />}
             >
               {t('viewPlanBtn')}
             </AppButton>
@@ -220,6 +220,7 @@ const AiPlannerView = () => {
               </Stack>
 
               <AppNumberInput
+                emphasis="primary"
                 label={t('budgetLabel')}
                 value={budget}
                 onValueChange={(val) => setBudget(val)}

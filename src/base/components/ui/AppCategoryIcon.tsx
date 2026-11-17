@@ -7,6 +7,7 @@ import { CATEGORY_CONFIG, type ActivityCategory } from '@/base/constants';
 export interface AppCategoryIconProps {
   category: ActivityCategory | string;
   size?: number;
+  bare?: boolean;
 }
 
 const CATEGORY_TONES = {
@@ -18,7 +19,7 @@ const CATEGORY_TONES = {
   SHOPPING: 'secondary',
 } as const;
 
-const AppCategoryIcon = ({ category, size = 40 }: AppCategoryIconProps) => {
+const AppCategoryIcon = ({ category, size = 40, bare = false }: AppCategoryIconProps) => {
   const t = useTranslations('expense.categories');
   const config = CATEGORY_CONFIG[category] ?? CATEGORY_CONFIG.OTHER;
   const tone = CATEGORY_TONES[category as keyof typeof CATEGORY_TONES];
@@ -42,11 +43,11 @@ const AppCategoryIcon = ({ category, size = 40 }: AppCategoryIconProps) => {
           height: size,
           flexShrink: 0,
           borderRadius: '50%',
-          bgcolor: tone
+          bgcolor: bare ? 'transparent' : tone
             ? `color-mix(in srgb, ${palette[tone].main} 10%, ${palette.background.paper})`
             : palette.action.selected,
           color: tone ? palette[tone].dark : palette.text.secondary,
-          '& .MuiSvgIcon-root': { fontSize: Math.round(size * 0.55) },
+          '& .MuiSvgIcon-root': { fontSize: Math.round(size * (bare ? 0.85 : 0.55)) },
           ...theme.applyStyles('dark', {
             color: tone ? palette[tone].light : palette.text.secondary,
           }),

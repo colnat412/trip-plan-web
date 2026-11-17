@@ -1,5 +1,6 @@
 'use client';
 
+import { contentColumn } from '@/base/theme/content-layout';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { AppPagination, AppLoadingState, AppEmptyState, AppPageHeader, AppButton } from '@/base/components/ui';
@@ -23,7 +24,7 @@ const MyTemplates = () => {
   });
   const currentData = query.error ? null : query.listing;
   return (
-      <Stack spacing={2}>
+      <Stack spacing={2} sx={contentColumn}>
         <AppPageHeader
           title={t('mine')}
           actions={
