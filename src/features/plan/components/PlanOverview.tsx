@@ -449,7 +449,7 @@ const PlanOverview = ({
             }}
           >
             {isLoading || (isStale && !planError) || isLoadingActivities ? (
-              <AppLoadingState local sx={{ flex: 1 }} />
+              <AppLoadingState sx={{ flex: 1 }} />
             ) : (
               <DayTimelineList
                 activities={dayActivities}

@@ -15,7 +15,7 @@ const AppLoadingState = ({ sx, pageOnly = false, local = false, ...props }: AppL
   const registerLoading = context?.registerLoading;
   useLayoutEffect(() => local ? undefined : registerLoading?.(), [registerLoading, local]);
 
-  if ((!local && context?.initialPageLoad) || pageOnly) return null;
+  if ((!local && context) || pageOnly) return null;
   return (
     <Box
       {...props}

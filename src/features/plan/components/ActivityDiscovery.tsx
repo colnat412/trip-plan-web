@@ -39,7 +39,7 @@ const ActivityDiscovery = ({ destination, category, disabled, onCategoryChange, 
       <AppTextField label={j('search')} value={search} disabled={disabled} onChange={(event) => setSearch(event.target.value)}
         slotProps={{ input: { startAdornment: <InputAdornment position="start"><SearchRoundedIcon /></InputAdornment> } }} />
       <Typography component="h3" sx={{ fontWeight: 700 }}>{destination ? j('suggestions', { destination }) : j('choose')}</Typography>
-      {loading ? <AppLoadingState sx={{ minHeight: 120 }} /> : error ? (
+      {loading ? <AppLoadingState local sx={{ minHeight: 120 }} /> : error ? (
         <Typography role="status" color="text.secondary">{j('unavailable')}</Typography>
       ) : options.length ? (
         <Stack divider={<Divider />}>

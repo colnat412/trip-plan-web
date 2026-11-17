@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, type ReactNode } from 'react';
+import { useEffect, useEffectEvent, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { Box, Stack, type SxProps, type Theme } from '@mui/material';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
@@ -17,6 +17,7 @@ export interface AppErrorStateProps {
   onRetry?: () => unknown | Promise<unknown>;
   retryLabel?: string;
   retrying?: boolean;
+  autoRetryInterval?: number;
   action?: ReactNode;
   sx?: SxProps<Theme>;
 }
@@ -28,6 +29,7 @@ const AppErrorState = ({
   onRetry,
   retryLabel,
   retrying = false,
+  autoRetryInterval,
   action,
   sx,
 }: AppErrorStateProps) => {
@@ -52,6 +54,15 @@ const AppErrorState = ({
       setPending(false);
     }
   };
+
+  const retryAutomatically = useEffectEvent(retry);
+  useEffect(() => {
+    if (!canRetry || !autoRetryInterval || autoRetryInterval <= 0 || pending || retrying) return;
+    const retryTimer = window.setTimeout(() => void retryAutomatically(), autoRetryInterval);
+    return () => {
+      window.clearTimeout(retryTimer);
+    };
+  }, [canRetry, autoRetryInterval, pending, retrying]);
 
   return (
     <Box

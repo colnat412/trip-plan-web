@@ -20,6 +20,8 @@ import useMobileOverlayBack from '@/base/hooks/use-mobile-overlay-back';
 import { DialogDraftContext } from '@/base/hooks/use-dialog-draft';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AppButton from './AppButton';
+import AppPageLoadingProvider from '@/base/providers/AppPageLoadingProvider';
+import { contentColumn } from '@/base/theme/content-layout';
 import AppMascot from './AppMascot';
 import AppDialogSlide from './AppDialogSlide';
 import AppBackHeader from './AppBackHeader';
@@ -321,7 +323,9 @@ const AppDialog = ({
             overscrollBehaviorY: 'contain',
           }}
         >
-          {children}
+          <AppPageLoadingProvider scope="section">
+            <Box sx={{ ...contentColumn, gap: 2.5 }}>{children}</Box>
+          </AppPageLoadingProvider>
         </DialogContent>
 
         {actions && (
