@@ -1,15 +1,19 @@
 'use client';
 
-import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type MouseEvent, type ReactNode, type RefObject } from 'react';
 import {
-  Avatar, Box, ButtonBase, CircularProgress, Stack, Typography,
+  Avatar, Box, ButtonBase, CircularProgress, IconButton, Stack, Tooltip, Typography,
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { IMAGE_MIME_TYPES, MAX_IMAGE_BYTES } from '@/base/types';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
+import UploadRoundedIcon from '@mui/icons-material/UploadRounded';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import AppButton from './AppButton';
 import AppToast from './AppToast';
+import AppPopover from './AppPopover';
 
 interface AppImageUploaderProps {
   src?: string | null;
@@ -25,6 +29,9 @@ interface AppImageUploaderProps {
   compact?: boolean;
   layout?: 'field' | 'tile';
   previewSelection?: boolean;
+  allowCamera?: boolean;
+  removeAction?: 'icon' | 'button' | 'none';
+  emptyLabel?: string;
 }
 
 const AppImageUploader = ({
@@ -41,10 +48,15 @@ const AppImageUploader = ({
   compact = false,
   layout = 'field',
   previewSelection = true,
+  allowCamera = variant === 'cover' && layout === 'field',
+  removeAction = layout === 'tile' ? 'none' : variant === 'cover' ? 'button' : 'icon',
+  emptyLabel,
 }: AppImageUploaderProps) => {
   const t = useTranslations('imageUpload');
   const localInput = useRef<HTMLInputElement>(null);
   const input = inputRef ?? localInput;
+  const cameraInput = useRef<HTMLInputElement>(null);
+  const [sourceAnchor, setSourceAnchor] = useState<HTMLElement | null>(null);
   const [localFile, setLocalFile] = useState<File | null | undefined>();
   const unavailable = disabled || loading;
   const selectedFile = file === undefined && previewSelection ? localFile : file;
@@ -79,38 +91,56 @@ const AppImageUploader = ({
       ? undefined
       : (src ?? undefined);
 
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (unavailable) return;
+    const nextFile = event.target.files?.[0];
+    event.target.value = '';
+    if (!nextFile) return;
+    if (!IMAGE_MIME_TYPES.includes(nextFile.type)) {
+      setValidationError({
+        file: selectedFile,
+        message: t('invalidType'),
+      });
+      return;
+    }
+    if (!nextFile.size || nextFile.size > MAX_IMAGE_BYTES) {
+      setValidationError({
+        file: selectedFile,
+        message: t('invalidSize'),
+      });
+      return;
+    }
+    setValidationError(null);
+    if (file === undefined && previewSelection) setLocalFile(nextFile);
+    onChange(nextFile);
+  };
+  const chooseImage = (event: MouseEvent<HTMLElement>) => {
+    if (unavailable) return;
+    if (allowCamera) setSourceAnchor(event.currentTarget);
+    else input.current?.click();
+  };
   const fileInput = (
-    <input
-      ref={input}
-      type="file"
-      hidden
-      accept={IMAGE_MIME_TYPES.join(',')}
-      disabled={unavailable}
-      aria-label={t('choose')}
-      onChange={(event) => {
-        const nextFile = event.target.files?.[0];
-        event.target.value = '';
-        if (!nextFile) return;
-        if (!IMAGE_MIME_TYPES.includes(nextFile.type)) {
-          setValidationError({
-            file: selectedFile,
-            message: t('invalidType'),
-          });
-          return;
-        }
-        if (!nextFile.size || nextFile.size > MAX_IMAGE_BYTES) {
-          setValidationError({
-            file: selectedFile,
-            message: t('invalidSize'),
-          });
-          return;
-        }
-        setValidationError(null);
-        if (file === undefined && previewSelection) setLocalFile(nextFile);
-        onChange(nextFile);
-      }}
+    <input ref={input} type="file" hidden accept={IMAGE_MIME_TYPES.join(',')}
+      disabled={unavailable} aria-label={t('choose')} onChange={handleFileChange}
     />
   );
+  const sourcePicker = allowCamera && <>
+    <input ref={cameraInput} type="file" hidden accept={IMAGE_MIME_TYPES.join(',')} capture="environment"
+      disabled={unavailable} aria-label={t('camera')} onChange={handleFileChange} />
+    <AppPopover open={Boolean(sourceAnchor) && !unavailable} anchorEl={sourceAnchor} onClose={() => setSourceAnchor(null)}
+      label={t('choose')} width={240} disableRestoreFocus>
+      <Stack spacing={0.5}>
+        <AppButton intent="text" size="small" startIcon={<CameraAltOutlinedIcon />} disabled={unavailable}
+          onClick={() => { setSourceAnchor(null); cameraInput.current?.click(); }} sx={{ minHeight: 44, justifyContent: 'flex-start' }}>
+          {t('camera')}
+        </AppButton>
+        <AppButton intent="text" size="small" startIcon={<UploadRoundedIcon />} disabled={unavailable}
+          onClick={() => { setSourceAnchor(null); input.current?.click(); }} sx={{ minHeight: 44, justifyContent: 'flex-start' }}>
+          {t('upload')}
+        </AppButton>
+      </Stack>
+    </AppPopover>
+  </>;
 
   const removeImage = () => {
     if (file === undefined && previewSelection) setLocalFile(null);
@@ -118,17 +148,25 @@ const AppImageUploader = ({
     onChange(null);
   };
 
-  if (layout === 'tile') {
-    return (
+  if (layout === 'tile' || variant === 'cover') {
+    const frame = (
       <Box
         aria-busy={loading}
+        data-image-upload-frame
+        data-image-present={Boolean(displayed)}
         sx={{
           position: 'relative', display: 'flex', flex: 1,
           alignSelf: 'stretch', minHeight: compact ? 0 : 112, minWidth: 0, height: compact ? '100%' : undefined,
           overflow: 'hidden', bgcolor: 'action.hover',
+          ...(layout === 'field' && {
+            width: '100%', height: compact ? 128 : 160, flex: '0 0 auto',
+            border: '1px solid', borderStyle: displayed ? 'solid' : 'dashed', borderColor: 'divider',
+            borderRadius: 'var(--app-radius-control)',
+          }),
         }}
       >
         {fileInput}
+        {sourcePicker}
         {displayed && (
           <Avatar
             src={displayed}
@@ -142,10 +180,10 @@ const AppImageUploader = ({
         <ButtonBase
           type="button"
           disabled={unavailable}
-          onClick={() => input.current?.click()}
+          onClick={chooseImage}
           aria-label={`${t(displayed ? 'change' : 'choose')}: ${alt}`}
           sx={{
-            flex: 1, minWidth: 0, flexDirection: 'column', gap: 1,
+            flex: 1, minWidth: 0, flexDirection: emptyLabel && layout === 'field' ? 'row' : 'column', gap: 1,
             color: 'text.secondary',
             '&.Mui-focusVisible': {
               outline: '2px solid', outlineColor: 'primary.main', outlineOffset: -2,
@@ -159,10 +197,19 @@ const AppImageUploader = ({
                 width: compact ? 32 : 40, height: compact ? 32 : 40, border: '1px dashed', borderColor: 'divider', borderRadius: 'var(--app-radius-control)' }}>
                 <AddPhotoAlternateOutlinedIcon sx={{ fontSize: 22 }} />
               </Box>
-              {!compact && <Typography component="span" sx={{ fontSize: '11px', fontWeight: 500 }}>{t('choose')}</Typography>}
+              {(!compact || emptyLabel) && <Typography component="span" sx={{ fontSize: emptyLabel ? '14px' : '11px', fontWeight: 500 }}>{emptyLabel ?? t('choose')}</Typography>}
             </>
           )}
         </ButtonBase>
+        {displayed && removeAction === 'icon' && (
+          <Tooltip title={t('remove')}>
+            <IconButton aria-label={t('remove')} disabled={unavailable} onClick={removeImage}
+              sx={{ position: 'absolute', top: 4, right: 4, width: 44, height: 44, bgcolor: 'background.paper', color: 'error.main',
+                '&:hover': { bgcolor: 'background.paper' }, '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main' } }}>
+              <DeleteOutlineRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
         {loading && (
           <Box
             role="status"
@@ -191,6 +238,17 @@ const AppImageUploader = ({
         )}
       </Box>
     );
+    return layout === 'tile' ? frame : <Stack spacing={1} sx={{ width: '100%', minWidth: 0 }}>
+      {frame}
+      {displayed && removeAction === 'button' && (
+        <AppButton type="button" intent="text" size="small" disabled={unavailable} onClick={removeImage}
+          sx={{ alignSelf: 'flex-end', minHeight: 44, px: 1, fontSize: '12px', color: 'text.secondary',
+            '&:hover': { color: 'error.main' } }}>
+          {t('remove')}
+        </AppButton>
+      )}
+      {showHint && !error && <Typography variant="caption" color="text.secondary">{t('hint')}</Typography>}
+    </Stack>;
   }
 
   return (
@@ -213,9 +271,7 @@ const AppImageUploader = ({
                 ? compact
                   ? 160
                   : 240
-                : variant === 'cover'
-                  ? 160
-                  : 80,
+                : 80,
             bgcolor: variant === 'avatar' ? 'primary.light' : 'action.hover',
             color:
               variant === 'avatar' ? 'primary.contrastText' : 'text.secondary',
@@ -233,6 +289,7 @@ const AppImageUploader = ({
         </Avatar>
       )}
       {fileInput}
+      {sourcePicker}
       <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: 'wrap' }}>
         <AppButton
           type="button"
@@ -240,7 +297,7 @@ const AppImageUploader = ({
           size="small"
           disabled={unavailable}
           sx={compact ? { minHeight: 44 } : undefined}
-          onClick={() => input.current?.click()}
+          onClick={chooseImage}
         >
           {t('choose')}
         </AppButton>

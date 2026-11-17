@@ -6,7 +6,7 @@ export interface AddExpenseInitialData {
   title?: string;
   amount?: number;
   category?: ExpenseCategory;
-  expenseDate?: string;
+  expenseTime?: string;
 }
 
 export type SplitType = 'EQUAL' | 'EXACT_AMOUNT' | 'PERCENTAGE' | 'SHARE';
@@ -50,7 +50,7 @@ export interface Expense {
   category: ExpenseCategory;
   amount: number;
   currency: string;
-  expenseDate: string;
+  expenseTime: string;
   splitType: SplitType;
   status: ExpenseStatus;
   note?: string;
@@ -70,7 +70,7 @@ export interface CategoryBreakdown {
 }
 
 export interface DailySpending {
-  expenseDate: string;
+  date: string;
   currency: string;
   amount: number;
 }
@@ -97,7 +97,7 @@ export interface CreateExpensePayload {
   category: ExpenseCategory;
   amount: number;
   currency?: string;
-  expenseDate?: string;
+  expenseTime?: string;
   splitType?: SplitType;
   note?: string;
   receiptUrl?: string;
@@ -114,7 +114,7 @@ export interface UpdateExpensePayload {
   category?: ExpenseCategory;
   amount?: number;
   currency?: string;
-  expenseDate?: string;
+  expenseTime?: string;
   splitType?: SplitType;
   note?: string;
   receiptUrl?: string;

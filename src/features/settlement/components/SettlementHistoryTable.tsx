@@ -21,7 +21,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppCard, AppConfirmDialog, AppEmptyState, AppFinanceRow } from '@/base/components/ui';
-import { formatCurrency, formatDate, getUserInitials } from '@/base/utils';
+import { formatCurrency, formatDateTime, getUserInitials } from '@/base/utils';
 import type { Settlement } from '../types';
 
 export interface SettlementHistoryTableProps {
@@ -86,7 +86,7 @@ const SettlementHistoryTable = ({
               compact
               icon={<Avatar src={settlement.payerAvatarUrl || undefined} sx={{ width: 32, height: 32, fontSize: '13px' }}>{getUserInitials(settlement.payerName || '')}</Avatar>}
               title={`${settlement.payerName || '—'} → ${settlement.payeeName || '—'}`}
-              subtitle={<>{formatDate(settlement.settledAt)} · {t(settlement.paymentMethod === 'BANK_TRANSFER' ? 'methodBank' : settlement.paymentMethod === 'CASH' ? 'methodCash' : 'methodOther')}
+              subtitle={<>{formatDateTime(settlement.settledAt)} · {t(settlement.paymentMethod === 'BANK_TRANSFER' ? 'methodBank' : settlement.paymentMethod === 'CASH' ? 'methodCash' : 'methodOther')}
                 {settlement.note && <><br />{settlement.note}</>}</>}
               amount={formatCurrency(settlement.amount, settlement.currency)}
               actionPlacement="amount"
@@ -204,7 +204,7 @@ const SettlementHistoryTable = ({
                         fontFamily: 'var(--font-mono)',
                       }}
                     >
-                      {formatDate(s.settledAt, 'DD/MM/YYYY')}
+                      {formatDateTime(s.settledAt)}
                     </Typography>
                   </TableCell>
 

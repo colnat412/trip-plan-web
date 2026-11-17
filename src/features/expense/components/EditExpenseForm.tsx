@@ -3,8 +3,8 @@
 import { useUserContext } from '@/features/user/context/UserContext';
 import useDialogDraft from '@/base/hooks/use-dialog-draft';
 
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Box, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import {
   AppDatePicker,
@@ -12,9 +12,8 @@ import {
   AppTextField,
   AppSelect,
   AppSegmentedControl,
-  type AppSelectOption,
 } from '@/base/components/ui';
-import { getCategorySelectOptions, normalizeTripCategory } from '@/base/constants';
+import { normalizeTripCategory } from '@/base/constants';
 import type {
   Expense,
   ExpenseCategory,
@@ -23,6 +22,8 @@ import type {
   UpdateExpensePayload,
 } from '../types';
 import ReceiptImageField from './ReceiptImageField';
+import ExpenseCategoryPicker from './ExpenseCategoryPicker';
+import { expenseFormSx } from './expense-form.styles';
 import SplitAllocationSection, {
   type SplitMember,
 } from './SplitAllocationSection';
@@ -33,6 +34,7 @@ export interface EditExpenseFormProps {
   isLoading?: boolean;
   onSubmit: (payload: UpdateExpensePayload) => void;
   formId: string;
+  onValidityChange?: (valid: boolean) => void;
 }
 
 const EditExpenseForm = ({
@@ -41,16 +43,11 @@ const EditExpenseForm = ({
   isLoading = false,
   onSubmit,
   formId,
+  onValidityChange,
 }: EditExpenseFormProps) => {
   const tForm = useTranslations('expense.form');
   const { user } = useUserContext();
-  const tCat = useTranslations('expense.categories');
   const tSplits = useTranslations('expense.splits.options');
-
-  const categoryOptions: AppSelectOption[] = useMemo(
-    () => getCategorySelectOptions(tCat),
-    [tCat],
-  );
 
   const allMembers: SplitMember[] = useMemo(() => {
     const result: SplitMember[] = [...members];
@@ -75,7 +72,7 @@ const EditExpenseForm = ({
   const [category, setCategory] = useState<ExpenseCategory>(
     normalizeTripCategory(expense.category),
   );
-  const [expenseDate, setExpenseDate] = useState(expense.expenseDate);
+  const [expenseTime, setExpenseTime] = useState(expense.expenseTime);
   const [splitType, setSplitType] = useState<EditableSplitType>(expense.splitType === 'EQUAL' ? 'EQUAL' : 'EXACT_AMOUNT');
   const [payerId, setPayerId] = useState<string | number | ''>(
     expense.payerId || '',
@@ -87,10 +84,11 @@ const EditExpenseForm = ({
 
   const splitsRef = useRef<SplitItemPayload[]>(initialSplits);
   const isSplitValidRef = useRef<boolean>(true);
+  const [splitValid, setSplitValid] = useState(true);
 
   const baselineSplits = useRef<string | undefined>(undefined);
   useDialogDraft(() => ({
-    title, amount, category, expenseDate, splitType, payerId, note,
+    title, amount, category, expenseTime, splitType, payerId, note,
     receipt: receiptFile === undefined ? undefined : receiptFile === null ? null : [receiptFile.name, receiptFile.size, receiptFile.lastModified],
     splitsChanged: baselineSplits.current !== undefined && JSON.stringify(splitsRef.current) !== baselineSplits.current,
   }));
@@ -100,6 +98,7 @@ const EditExpenseForm = ({
       baselineSplits.current ??= JSON.stringify(newSplits);
       splitsRef.current = newSplits;
       isSplitValidRef.current = valid;
+      setSplitValid(valid);
     },
     [],
   );
@@ -107,15 +106,15 @@ const EditExpenseForm = ({
   const [errors, setErrors] = useState<{
     title?: string;
     amount?: string;
-    expenseDate?: string;
+    expenseTime?: string;
     payerId?: string;
   }>({});
 
-  const validate = () => {
+  const getValidationErrors = () => {
     const newErrors: {
       title?: string;
       amount?: string;
-      expenseDate?: string;
+      expenseTime?: string;
       payerId?: string;
     } = {};
     if (!title.trim()) {
@@ -124,14 +123,24 @@ const EditExpenseForm = ({
     if (!amount.trim() || isNaN(Number(amount)) || Number(amount) <= 0) {
       newErrors.amount = tForm('errors.amountPositive');
     }
-    if (!expenseDate || !expenseDate.trim()) {
-      newErrors.expenseDate = tForm('errors.dateRequired');
+    if (!expenseTime || !expenseTime.trim()) {
+      newErrors.expenseTime = tForm('errors.dateRequired');
     }
     if (allMembers && allMembers.length > 1 && !payerId) {
       newErrors.payerId = tForm('errors.payerRequired');
     }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0 && isSplitValidRef.current;
+    return newErrors;
+  };
+
+  const isFormValid = Object.keys(getValidationErrors()).length === 0 && splitValid;
+  useEffect(() => {
+    onValidityChange?.(isFormValid);
+  }, [isFormValid, onValidityChange]);
+
+  const validate = () => {
+    const nextErrors = getValidationErrors();
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0 && isSplitValidRef.current;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -143,7 +152,7 @@ const EditExpenseForm = ({
       amount: Number(amount),
       category,
       currency: expense.currency,
-      expenseDate,
+      expenseTime,
       splitType,
       payerId: payerId ? payerId : undefined,
       receiptFile,
@@ -158,15 +167,12 @@ const EditExpenseForm = ({
       component="form"
       onSubmit={handleSubmit}
       noValidate
-      sx={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}
+      sx={expenseFormSx}
     >
-      <Stack component="fieldset" disabled={isLoading} spacing={2.5}
+      <Stack component="fieldset" disabled={isLoading} spacing={3}
         sx={{ border: 0, p: 0, m: 0, minWidth: 0 }}>
         <Stack component="section" aria-label={tForm('detailsSection')} spacing={2.5}>
-          <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
-            {tForm('detailsSection')}
-          </Typography>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box data-expense-amount sx={{ minWidth: 0 }}>
             <AppNumberInput
               emphasis="primary"
               disabled={isLoading}
@@ -196,40 +202,30 @@ const EditExpenseForm = ({
             helperText={errors.title}
           />
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <Stack spacing={2.5}>
+            <ExpenseCategoryPicker value={category} onChange={setCategory} disabled={isLoading} />
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <AppDatePicker
+                includeTime
                 disabled={isLoading}
                 label={tForm('dateLabel')}
-                value={expenseDate}
+                value={expenseTime}
                 onChange={(value) => {
-                  setExpenseDate(value);
-                  if (errors.expenseDate) {
-                    setErrors((prev) => ({ ...prev, expenseDate: undefined }));
+                  setExpenseTime(value);
+                  if (errors.expenseTime) {
+                    setErrors((prev) => ({ ...prev, expenseTime: undefined }));
                   }
                 }}
-                error={Boolean(errors.expenseDate)}
-                helperText={errors.expenseDate}
+                error={Boolean(errors.expenseTime)}
+                helperText={errors.expenseTime}
               />
             </Box>
 
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <AppSelect
-                disabled={isLoading}
-                label={tForm('categoryLabel')}
-                value={category}
-                options={categoryOptions}
-                onChange={(e) => setCategory(e.target.value as ExpenseCategory)}
-              />
-            </Box>
           </Stack>
         </Stack>
 
-        <Stack component="section" aria-label={tForm('sharingSection')} spacing={2.5}
-          sx={{ borderTop: 1, borderColor: 'divider', pt: 2.5 }}>
-          <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
-            {tForm('sharingSection')}
-          </Typography>
+        <Stack component="section" aria-label={tForm('sharingSection')} spacing={2}
+          sx={{ minWidth: 0 }}>
 
           {allMembers && allMembers.length > 1 && (
             <AppSelect
@@ -273,6 +269,7 @@ const EditExpenseForm = ({
               totalAmount={Number(amount) || 0}
               currency={expense.currency}
               members={allMembers}
+              payerId={payerId}
               initialSplits={initialSplits}
               onChange={handleSplitChange}
             />
@@ -280,10 +277,7 @@ const EditExpenseForm = ({
         </Stack>
 
         <Stack component="section" aria-label={tForm('extrasSection')} spacing={2.5}
-          sx={{ borderTop: 1, borderColor: 'divider', pt: 2.5 }}>
-          <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
-            {tForm('extrasSection')}
-          </Typography>
+          sx={{ minWidth: 0 }}>
           <AppTextField
             disabled={isLoading}
             label={tForm('noteLabel')}

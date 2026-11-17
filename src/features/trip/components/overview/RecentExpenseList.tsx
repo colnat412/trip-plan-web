@@ -14,7 +14,7 @@ import { Stack } from '@mui/material';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import { useLocale, useTranslations } from 'next-intl';
 
-import { formatCurrency, formatDate } from '@/base/utils';
+import { formatCurrency, formatDateTime } from '@/base/utils';
 import useTripExpenses from '@/features/expense/hooks/useTripExpenses';
 import ExpenseDetailDialog from '@/features/expense/components/ExpenseDetailDialog';
 import { useUserContext } from '@/features/user/context/UserContext';
@@ -65,9 +65,10 @@ const RecentExpenseList = ({
         {expenses.map((expense) => (
           <AppFinanceRow
             key={expense.id}
-            icon={<AppCategoryIcon category={expense.category} />}
+            dense
+            icon={<AppCategoryIcon category={expense.category} size={32} />}
             title={expense.title}
-            subtitle={`${user?.id != null && String(user.id) === String(expense.payerId) ? tExpense('row.youPaid') : expense.payerName || tOverview('defaultMember')} · ${formatDate(expense.expenseDate)}`}
+            subtitle={`${user?.id != null && String(user.id) === String(expense.payerId) ? tExpense('row.youPaid') : expense.payerName || tOverview('defaultMember')} · ${formatDateTime(expense.expenseTime)}`}
             amount={formatCurrency(
               expense.amount,
               expense.currency || currency,

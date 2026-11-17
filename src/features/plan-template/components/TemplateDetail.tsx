@@ -1,10 +1,12 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import AppErrorState from '@/base/components/ui/AppErrorState';
-import { Stack, Typography } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppPageContainer, AppButton, AppBackHeader } from '@/base/components/ui';
+import { AppPageContainer, AppPageHeader, AppButton } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { TemplateDetailData } from '../types';
 import TemplateBanner from './TemplateBanner';
@@ -25,7 +27,19 @@ const TemplateDetail = ({
   return (
     <AppPageContainer>
       <Stack spacing={2} sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
-        <AppBackHeader title={t('backToLibrary')} backHref="/templates" backLabel={t('backToLibrary')} headingComponent="h2" />
+        <AppPageHeader
+          title={t('backToLibrary')}
+          icon={
+            <IconButton
+              component={Link}
+              href="/templates"
+              aria-label={t('backToLibrary')}
+              sx={{ width: 44, height: 44, color: 'text.primary' }}
+            >
+              <ChevronLeftRoundedIcon />
+            </IconButton>
+          }
+        />
         {!detail ? (
           <AppErrorState
             variant={status === 404 ? 'notFound' : status === 403 ? 'forbidden' : 'load'}
@@ -35,7 +49,7 @@ const TemplateDetail = ({
           <TemplateSaveProvider key={detail.template.id} ids={[detail.template.id]}>
             {detail.template.coverUrl && <TemplateBanner src={detail.template.coverUrl} title={detail.template.title} />}
             <Stack spacing={1} sx={{ minWidth: 0 }}>
-              <Typography component="h1" sx={{ fontSize: { xs: '22px', sm: '24px' }, lineHeight: 1.3, fontWeight: 700 }}>
+              <Typography component="h2" sx={{ fontSize: { xs: '22px', sm: '24px' }, lineHeight: 1.3, fontWeight: 700 }}>
                 {detail.template.title}
               </Typography>
               <Typography variant="body2">{detail.template.destination}</Typography>

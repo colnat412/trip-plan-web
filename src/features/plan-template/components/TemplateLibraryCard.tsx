@@ -46,13 +46,8 @@ const TemplateLibraryCard = ({ template }: { template: TemplateCardData }) => {
         backgroundImage: { sm: coverUrl ? `url(${JSON.stringify(coverUrl)})` : 'none' },
         backgroundSize: 'cover', backgroundPosition: 'center', bgcolor: { sm: 'action.hover' },
       }}>
-        <Box data-template-save sx={(theme) => ({
-          borderRadius: '50%',
-          bgcolor: coverUrl ? alpha(theme.palette.common.black, 0.56) : 'background.paper',
-          '& .MuiIconButton-root:not([aria-pressed="true"])': { color: coverUrl ? theme.palette.common.white : 'text.secondary' },
-          '& .MuiIconButton-root.Mui-disabled': { color: coverUrl ? alpha(theme.palette.common.white, 0.5) : 'text.disabled' },
-        })}>
-          <TemplateSaveButton id={template.id} iconOnly />
+        <Box data-template-save sx={{ display: 'flex' }}>
+          <TemplateSaveButton id={template.id} iconOnly onImage={Boolean(coverUrl)} />
         </Box>
         {!coverUrl && <Box sx={{ display: { xs: 'none', sm: 'flex' }, flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center', color: 'text.secondary' }}>
           <PhotoCameraOutlinedIcon sx={{ fontSize: 28, opacity: 0.45 }} />

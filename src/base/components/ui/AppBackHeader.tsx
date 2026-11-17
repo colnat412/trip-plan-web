@@ -41,8 +41,9 @@ const AppBackHeader = ({
 
   return (
     <Box sx={{
-      display: 'grid', gridTemplateColumns: '44px minmax(0, 1fr) 44px',
-      alignItems: 'center', gap: 1.5, minHeight: 80, py: 1.5, width: '100%', minWidth: 0,
+      display: 'grid', gridTemplateColumns: titleAlign === 'left' ? '44px minmax(0, 1fr) auto' : '44px minmax(0, 1fr) 44px',
+      alignItems: 'center', gap: 1.5, minHeight: 64, py: 1, width: '100%', minWidth: 0,
+      boxSizing: 'border-box',
     }}>
       <Box sx={{ width: 44, minWidth: 0 }}>
         {!hideBack && (backHref ? (
@@ -62,7 +63,7 @@ const AppBackHeader = ({
         }}>{title}</Typography>
         {description && <Typography id={descriptionId} variant="caption" color="text.secondary" sx={{ lineHeight: 1.5 }}>{description}</Typography>}
       </Stack>
-      <Box aria-hidden={actions ? undefined : true} sx={{ width: 44, minWidth: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Box aria-hidden={actions ? undefined : true} sx={{ width: titleAlign === 'left' && actions ? 'auto' : 44, minWidth: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         {actions}
       </Box>
     </Box>
