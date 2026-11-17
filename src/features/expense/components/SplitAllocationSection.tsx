@@ -4,12 +4,11 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Checkbox, Divider, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useUserContext } from '@/features/user/context/UserContext';
-import { AppButton, AppNumberInput, AppFilterChip } from '@/base/components/ui';
+import { AppButton, AppNumberInput } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { SplitItemPayload, EditableSplitType } from '../types';
+import ExpensePayerBadge from './ExpensePayerBadge';
 
 export interface SplitMember {
   userId: string | number;
@@ -25,6 +24,7 @@ export interface SplitAllocationSectionProps {
   currency: string;
   members: SplitMember[];
   initialSplits?: SplitItemPayload[];
+  payerId?: string | number;
   onChange: (
     splits: SplitItemPayload[],
     isValid: boolean,
@@ -44,6 +44,7 @@ const SplitAllocationSection = ({
   currency,
   members,
   initialSplits = [],
+  payerId,
   onChange,
 }: SplitAllocationSectionProps) => {
   const t = useTranslations('expense');
@@ -226,16 +227,29 @@ const SplitAllocationSection = ({
     });
   };
 
-  const status = !hasAmount
+  const status = selectedCount === 0
+    ? errorMessage
+    : !hasAmount
     ? t('form.enterAmountToSplit')
     : splitType === 'EQUAL'
-      ? t('form.equalSummary', { count: selectedCount })
+      ? t.rich('form.equalSummary', {
+          count: selectedCount,
+          amount: formatCurrency(generatedSplits[0]?.allocatedAmount ?? 0, currency),
+          highlight: (chunks) => (
+            <Box component="span" sx={{ color: 'primary.main', fontWeight: 700, fontSize: '14px', fontVariantNumeric: 'tabular-nums' }}>
+              {chunks}
+            </Box>
+          ),
+        })
       : isValid
-        ? t('form.allocationComplete')
-        : t(remaining < 0 ? 'form.overAllocated' : 'form.leftToSplit', { amount: formatCurrency(Math.abs(remaining), currency) });
+        ? t('form.allocationComplete', { amount: formatCurrency(allocatedSum, currency) })
+        : t('form.allocationProgress', {
+            allocated: t('form.allocatedTotalLabel', { amount: formatCurrency(allocatedSum, currency) }),
+            status: t(remaining < 0 ? 'form.overAllocated' : 'form.leftToSplit', { amount: formatCurrency(Math.abs(remaining), currency) }),
+          });
 
   return (
-    <Stack spacing={1.5} sx={{ minWidth: 0 }}>
+    <Stack spacing={1} sx={{ minWidth: 0 }}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
         <Typography variant="body2" sx={{ fontWeight: 700 }}>
           {t('form.splitsTitle')} ({selectedCount}/{members.length})
@@ -246,61 +260,81 @@ const SplitAllocationSection = ({
       </Stack>
 
       {splitType === 'EQUAL' ? (
-        <Stack direction="row" useFlexGap sx={{ flexWrap: 'wrap', gap: 1 }}>
+        <Stack direction="row" useFlexGap sx={{ gap: 1, flexWrap: 'wrap', minWidth: 0 }}>
           {memberAllocations.map(({ member, selected }) => {
             const name = member.name || member.email || String(member.userId);
             const label = user?.id != null && String(user.id) === String(member.userId) ? t('form.you') : name;
             return (
-              <AppFilterChip key={String(member.userId)} label={label} title={name}
-                icon={selected ? <CheckRoundedIcon /> : <AddRoundedIcon />}
-                selected={selected} disabled={disabled} onClick={() => handleToggleMember(member.userId)}
-                sx={{ borderRadius: 'var(--app-radius-pill)', maxWidth: '100%', '& .MuiChip-label': { overflow: 'hidden', textOverflow: 'ellipsis' } }} />
-            );
-          })}
-        </Stack>
-      ) : (
-        <Stack divider={<Divider />}>
-          <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right', pb: 1 }}>
-            {t('form.allocatedAmountLabel')} ({currency})
-          </Typography>
-          {memberAllocations.map(({ member, selected, amount }) => {
-            const name = member.name || member.email || String(member.userId);
-            const label = user?.id != null && String(user.id) === String(member.userId) ? t('form.you') : name;
-            return (
-              <Stack key={String(member.userId)} direction="row" spacing={1} sx={{ py: 1.25, alignItems: 'center', minWidth: 0 }}>
+              <Box key={String(member.userId)} component="label" sx={(theme) => ({
+                display: 'flex', alignItems: 'center', minHeight: 44, maxWidth: '100%', minWidth: 0,
+                pr: 1.5, border: 1, borderRadius: 'var(--app-radius-control)',
+                borderColor: selected ? 'primary.main' : 'divider',
+                bgcolor: selected
+                  ? `color-mix(in srgb, ${(theme.vars?.palette ?? theme.palette).primary.main} 6%, ${(theme.vars?.palette ?? theme.palette).background.paper})`
+                  : 'background.paper',
+                cursor: disabled ? 'default' : 'pointer',
+                '&:focus-within': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 2 },
+              })}>
                 <Checkbox checked={selected} disabled={disabled} onChange={() => handleToggleMember(member.userId)}
                   slotProps={{ input: { 'aria-label': name } }} sx={{ width: 44, height: 44, p: 1, flexShrink: 0 }} />
-                <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography variant="body2" noWrap title={name} sx={{ fontWeight: 600 }}>{label}</Typography>
-                  {!selected && <Typography variant="caption" color="text.secondary">{t('form.notSharing')}</Typography>}
-                </Box>
-                <AppNumberInput disabled={disabled || !selected} size="small" variant="standard"
-                  value={amount} placeholder="0" allowDecimals={currency !== 'VND' || !Number.isInteger(amount)}
-                  onValueChange={(value) => handleAmountChange(member.userId, value)}
-                  slotProps={{ htmlInput: { 'aria-label': `${t('form.allocatedAmountLabel')} — ${name}`, style: { textAlign: 'right' } } }}
-                  sx={{ width: { xs: 120, sm: 168 }, flexShrink: 0, '& .MuiInputBase-input': { fontSize: '16px', py: 1, fontWeight: 600, fontVariantNumeric: 'tabular-nums' } }} />
-              </Stack>
+                <Stack direction="row" useFlexGap sx={{ alignItems: 'center', gap: 0.75, flexWrap: 'wrap', minWidth: 0 }}>
+                  <Typography variant="body2" title={name} sx={{ fontWeight: 600, overflowWrap: 'anywhere', minWidth: 0 }}>{label}</Typography>
+                  {payerId != null && String(payerId) === String(member.userId) && <ExpensePayerBadge />}
+                </Stack>
+              </Box>
             );
           })}
-          <Stack direction="row" useFlexGap sx={{ justifyContent: 'space-between', gap: 1, pt: 1.5, flexWrap: 'wrap' }}>
-            <Typography variant="caption" color="text.secondary">{currency}</Typography>
-            <Typography variant="caption" color="text.secondary">
-              {t('form.allocatedTotalLabel', { amount: formatCurrency(allocatedSum, currency) })}
-            </Typography>
-          </Stack>
-          {canFillRemaining && (
-            <AppButton intent="text" size="small" disabled={disabled}
-              onClick={() => handleAutoFillRemaining(selectedMembers[selectedMembers.length - 1].member.userId)}
-              sx={{ alignSelf: 'flex-end', minHeight: 44 }}>
-              {t('form.fillRemainingFor', { name: selectedMembers[selectedMembers.length - 1].member.name || selectedMembers[selectedMembers.length - 1].member.email || String(selectedMembers[selectedMembers.length - 1].member.userId) })}
-            </AppButton>
-          )}
         </Stack>
-      )}
-      <Typography variant="caption" aria-live="polite" sx={{ color: hasAmount && !isValid ? 'error.main' : 'text.secondary' }}>
-        {status}
-      </Typography>
-      {selectedCount === 0 && <Typography variant="caption" role="alert" color="error.main">{errorMessage}</Typography>}
+      ) : <Stack divider={<Divider />} sx={{ border: 1, borderColor: 'divider', borderRadius: 'var(--app-radius-control)', bgcolor: 'background.paper' }}>
+        {memberAllocations.map(({ member, selected, amount }) => {
+          const name = member.name || member.email || String(member.userId);
+          const label = user?.id != null && String(user.id) === String(member.userId) ? t('form.you') : name;
+          return (
+            <Stack key={String(member.userId)} direction="row" useFlexGap sx={{ py: 0.5, px: 1, minHeight: 52, alignItems: 'center', minWidth: 0, columnGap: 1, rowGap: 0.5, flexWrap: 'wrap' }}>
+              <Box component="label" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flex: '1 1 104px', minWidth: 0, minHeight: 44, cursor: disabled ? 'default' : 'pointer' }}>
+                <Checkbox checked={selected} disabled={disabled} onChange={() => handleToggleMember(member.userId)}
+                  slotProps={{ input: { 'aria-label': name } }} sx={{ width: 44, height: 44, p: 1, flexShrink: 0 }} />
+                <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
+                  <Typography variant="body2" noWrap title={name} sx={{ fontWeight: 600 }}>{label}</Typography>
+                  <Stack direction="row" useFlexGap sx={{ gap: 0.75, alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}>
+                    {payerId != null && String(payerId) === String(member.userId) && (
+                      <ExpensePayerBadge />
+                    )}
+                  </Stack>
+                </Stack>
+              </Box>
+              {!selected ? (
+                <Typography variant="body2" color="text.disabled" sx={{ flexShrink: 0 }}>
+                  —
+                </Typography>
+              ) : <AppNumberInput data-expense-share-input disabled={disabled} size="small" variant="outlined"
+                currencySuffix={currency}
+                value={amount} placeholder="0" allowDecimals={currency !== 'VND' || !Number.isInteger(amount)}
+                onValueChange={(value) => handleAmountChange(member.userId, value)}
+                slotProps={{ htmlInput: { 'aria-label': `${t('form.allocatedAmountLabel')} (${currency}) — ${name}`, style: { textAlign: 'right' } } }}
+                sx={{
+                  width: { xs: 192, sm: 224 }, flex: '1 1 192px', maxWidth: { xs: '100%', sm: 240 }, minWidth: 0,
+                  '& .MuiInputBase-root': { height: 36, minHeight: 36, gap: 0.5, px: 1, borderRadius: 'var(--app-radius-small)', bgcolor: 'background.paper' },
+                  '& .MuiInputBase-input': { fontSize: '14px', height: '20px', lineHeight: '20px', py: 0, px: 0, minWidth: 0, fontWeight: 600, fontVariantNumeric: 'tabular-nums' },
+                  '& .MuiInputAdornment-root': { ml: 0, flexShrink: 0, '& .MuiTypography-root': { fontSize: '12px' } },
+                }} />}
+            </Stack>
+          );
+        })}
+      </Stack>}
+      <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+        <Typography variant="caption" role={selectedCount === 0 ? 'alert' : 'status'}
+          sx={{ color: selectedCount === 0 || (hasAmount && !isValid) ? 'error.main' : 'text.secondary', overflowWrap: 'anywhere' }}>
+          {status}
+        </Typography>
+        {canFillRemaining && (
+          <AppButton intent="text" size="small" disabled={disabled}
+            onClick={() => handleAutoFillRemaining(selectedMembers[selectedMembers.length - 1].member.userId)}
+            sx={{ alignSelf: 'flex-end', minHeight: 44 }}>
+            {t('form.fillRemainingFor', { name: selectedMembers[selectedMembers.length - 1].member.name || selectedMembers[selectedMembers.length - 1].member.email || String(selectedMembers[selectedMembers.length - 1].member.userId) })}
+          </AppButton>
+        )}
+      </Stack>
     </Stack>
   );
 };

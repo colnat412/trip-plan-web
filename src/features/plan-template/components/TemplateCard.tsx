@@ -63,13 +63,8 @@ const TemplateCard = ({
         })}>
           {t('durationLabel', { days: template.durationDays })}
         </Typography>
-        <Box data-template-save sx={(theme) => ({
-          borderRadius: '50%',
-          bgcolor: alpha(theme.palette.common.black, 0.56),
-          '& .MuiIconButton-root:not([aria-pressed="true"])': { color: theme.palette.common.white },
-          '& .MuiIconButton-root.Mui-disabled': { color: alpha(theme.palette.common.white, 0.5) },
-        })}>
-          <TemplateSaveButton id={template.id} iconOnly />
+        <Box data-template-save sx={{ display: 'flex' }}>
+          <TemplateSaveButton id={template.id} iconOnly onImage />
         </Box>
       </Stack>
       <Box

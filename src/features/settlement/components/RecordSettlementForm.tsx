@@ -17,6 +17,7 @@ import {
   AppTextField,
 } from '@/base/components/ui';
 import type { CreateSettlementRequest, PaymentMethod } from '../types';
+import { getZonedDateTime } from '@/base/utils';
 
 export interface RecordSettlementFormProps {
   members: { userId: string; name: string }[];
@@ -47,8 +48,9 @@ const RecordSettlementForm = ({
     initialData?.payeeId || (members.length > 1 ? members[1]?.userId : ''),
   );
   const [amount, setAmount] = useState<number | undefined>(initialData?.amount);
+  const [createdDateTime] = useState(() => getZonedDateTime(new Date()));
   const [settledAt, setSettledAt] = useState(
-    initialData?.settledAt || new Date().toISOString().split('T')[0],
+    initialData?.settledAt || `${createdDateTime.date}T${createdDateTime.time}:00`,
   );
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
     initialData?.paymentMethod || 'BANK_TRANSFER',
@@ -194,6 +196,7 @@ const RecordSettlementForm = ({
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <AppDatePicker
+              includeTime
               label={tDialog('dateLabel')}
               value={settledAt}
               onChange={(value) => setSettledAt(value)}

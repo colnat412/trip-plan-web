@@ -15,7 +15,7 @@ const ReceiptImageField = ({ src, file, disabled, onChange }: {
     <Typography component="h3" sx={{ fontSize: '14px', fontWeight: 700, color: 'text.primary' }}>
       {t('label')}
     </Typography>
-    <AppImageUploader src={src} file={file} alt={t('imageAlt')} variant="receipt" compact disabled={disabled}
+    <AppImageUploader src={src} file={file} alt={t('imageAlt')} variant="cover" compact showHint={false} allowCamera disabled={disabled}
       onChange={onChange} />
   </Stack>;
 };

@@ -17,7 +17,7 @@ import {
   type TableSortState,
 } from '@/base/components/ui';
 import { TRIP_CATEGORIES } from '@/base/constants';
-import { formatCurrency, formatDate } from '@/base/utils';
+import { formatCurrency, formatDate, formatDateTime } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
 import type { Expense, Pagination, DailySpending } from '../types';
 
@@ -66,10 +66,10 @@ const ExpenseTable = ({
   const columns: AppTableColumn<Expense>[] = useMemo(
     () => [
       {
-        id: 'expenseDate',
+        id: 'expenseTime',
         label: tTable('colDate'),
         sortable: true,
-        getValue: (e) => e.expenseDate,
+        getValue: (e) => e.expenseTime,
         renderCell: (expense) => (
           <Typography
             sx={{
@@ -80,8 +80,8 @@ const ExpenseTable = ({
               whiteSpace: 'nowrap',
             }}
           >
-            {formatDate(expense.expenseDate, 'DD/MM/YYYY')}
-            {dailyTotals?.filter(day => day.expenseDate === expense.expenseDate).map(day => (
+            {formatDateTime(expense.expenseTime)}
+            {dailyTotals?.filter(day => day.date === expense.expenseTime.slice(0, 10)).map(day => (
               <Box component="span" key={day.currency} sx={{ display: 'block', fontSize: '12px', fontWeight: 600 }}>{formatCurrency(day.amount, day.currency, locale)}</Box>
             ))}
           </Typography>
@@ -262,19 +262,23 @@ const ExpenseTable = ({
       renderMobileRow={(expense, index, rows) => (
         <Box sx={{ px: 0, borderBottom: 1, borderColor: 'divider', '&:last-child': { borderBottom: 0 } }}>
           {(index === 0 ||
-            rows[index - 1].expenseDate !== expense.expenseDate) && (
+            rows[index - 1].expenseTime.slice(0, 10) !== expense.expenseTime.slice(0, 10)) && (
             <Stack direction="row" useFlexGap sx={{ justifyContent: 'space-between', alignItems: 'baseline', gap: 1, pt: 1.5, flexWrap: 'wrap' }}>
-              <Typography sx={{ fontSize: '13px', color: 'text.secondary', fontWeight: 600 }}>{formatDate(expense.expenseDate)}</Typography>
-              {dailyTotals?.filter(day => day.expenseDate === expense.expenseDate).map(day => (
+              <Typography sx={{ fontSize: '13px', color: 'text.secondary', fontWeight: 600 }}>{formatDate(expense.expenseTime.slice(0, 10))}</Typography>
+              {dailyTotals?.filter(day => day.date === expense.expenseTime.slice(0, 10)).map(day => (
                 <Typography key={day.currency} aria-label={`${tTable('dayTotal')}: ${formatCurrency(day.amount, day.currency, locale)}`}
                   sx={{ fontSize: '13px', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(day.amount, day.currency, locale)}</Typography>
               ))}
             </Stack>
           )}
           <AppFinanceRow
-            icon={<AppCategoryIcon category={expense.category} />}
+            dense
+            icon={<AppCategoryIcon category={expense.category} size={32} />}
             title={expense.title}
-            subtitle={user?.id != null && String(user.id) === String(expense.payerId) ? t('row.youPaid') : expense.payerName || '—'}
+            subtitle={[
+              user?.id != null && String(user.id) === String(expense.payerId) ? t('row.youPaid') : expense.payerName || '—',
+              expense.expenseTime.slice(11, 16),
+            ].filter(Boolean).join(' · ')}
             amount={formatCurrency(expense.amount, expense.currency)}
             onClick={onViewDetail ? () => onViewDetail(expense) : undefined}
           />

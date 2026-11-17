@@ -14,12 +14,14 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, type SxProps, type Theme } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 import useMobileOverlayBack from '@/base/hooks/use-mobile-overlay-back';
 import { DialogDraftContext } from '@/base/hooks/use-dialog-draft';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AppButton from './AppButton';
+import AppPageLoadingProvider from '@/base/providers/AppPageLoadingProvider';
+import { contentColumn } from '@/base/theme/content-layout';
 import AppMascot from './AppMascot';
 import AppDialogSlide from './AppDialogSlide';
 import AppBackHeader from './AppBackHeader';
@@ -50,6 +52,7 @@ export interface AppDialogProps {
   hideHeader?: boolean;
   headerActions?: ReactNode;
   titleAlign?: 'center' | 'left';
+  paperSx?: SxProps<Theme>;
 }
 
 const AppDialog = ({
@@ -74,6 +77,7 @@ const AppDialog = ({
   hideHeader = false,
   headerActions,
   titleAlign = 'center',
+  paperSx,
   protectChanges = false,
   hasUnsavedChanges = false,
 }: AppDialogProps) => {
@@ -162,7 +166,7 @@ const AppDialog = ({
             } : undefined,
           },
           paper: {
-            sx: {
+            sx: [{
               borderRadius: fullScreen ? 0 : 'var(--app-radius-dialog)',
               p: 0,
               ...(finance && {
@@ -231,7 +235,7 @@ const AppDialog = ({
                   ml: 0,
                 },
               }),
-            },
+            }, ...(Array.isArray(paperSx) ? paperSx : paperSx ? [paperSx] : [])],
           },
         }}
       >
@@ -249,7 +253,7 @@ const AppDialog = ({
           component="div"
           sx={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            gap: 1, px: 2, py: fullScreen ? 0 : 0.75,
+            gap: 1, px: 2, py: fullScreen || titleAlign === 'left' || onBack ? 0 : 0.75,
             minHeight: 'var(--app-dialog-header-height)', flexShrink: 0,
             ...(isSheet && { borderBottom: 1, borderColor: 'divider' }),
           }}
@@ -321,7 +325,9 @@ const AppDialog = ({
             overscrollBehaviorY: 'contain',
           }}
         >
-          {children}
+          <AppPageLoadingProvider scope="section">
+            <Box sx={{ ...contentColumn, gap: 2.5 }}>{children}</Box>
+          </AppPageLoadingProvider>
         </DialogContent>
 
         {actions && (

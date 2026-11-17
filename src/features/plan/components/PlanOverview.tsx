@@ -449,7 +449,7 @@ const PlanOverview = ({
             }}
           >
             {isLoading || (isStale && !planError) || isLoadingActivities ? (
-              <AppLoadingState local sx={{ flex: 1 }} />
+              <AppLoadingState sx={{ flex: 1 }} />
             ) : (
               <DayTimelineList
                 activities={dayActivities}
@@ -566,9 +566,10 @@ const PlanOverview = ({
               return undefined;
             })(),
             category: normalizeTripCategory(convertExpenseActivity.category),
-            expenseDate:
-              overview?.days.find((d) => d.id === convertExpenseActivity.dayId)
-                ?.planDate || undefined,
+            expenseTime: (() => {
+              const date = overview?.days.find((d) => d.id === convertExpenseActivity.dayId)?.planDate;
+              return date ? `${date}T${convertExpenseActivity.startTime?.slice(0, 5) || '00:00'}:00` : undefined;
+            })(),
           }}
         />
       )}

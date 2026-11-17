@@ -109,6 +109,10 @@ export const formatTimeRange = (
     .map((time) => time.slice(0, 5))
     .join(' - ');
 
+/** A local calendar timestamp, displayed without converting it through UTC. */
+export const formatDateTime = (value: string): string =>
+  [formatDate(value.slice(0, 10)), value.slice(11, 16)].filter(Boolean).join(' · ');
+
 /** Calendar day difference, independent of DST or the execution host's timezone. */
 export const getCalendarDayDifference = (from: string, to: string): number | null => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(from) || !/^\d{4}-\d{2}-\d{2}$/.test(to)) return null;

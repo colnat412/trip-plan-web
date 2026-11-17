@@ -4,6 +4,7 @@ import { useId, useState, type ReactNode } from 'react';
 import { Box, Typography } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import { MultiSectionDigitalClock } from '@mui/x-date-pickers/MultiSectionDigitalClock';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { enUS, viVN } from '@mui/x-date-pickers/locales';
@@ -12,8 +13,10 @@ import 'dayjs/locale/vi';
 import AppPickerField from './AppPickerField';
 import AppDialog from './AppDialog';
 import AppButton from './AppButton';
+import AppSegmentedControl from './AppSegmentedControl';
 import AppCalendarDay, { AppCalendarRangeContext } from './AppCalendarDay';
 import { parseCalendarDate, selectCalendarRange, type CalendarRange } from '@/base/utils/calendar';
+import { parsePickerTime } from '@/base/utils/time';
 
 interface CommonDatePickerProps {
   label: string;
@@ -27,7 +30,7 @@ interface CommonDatePickerProps {
 }
 
 export type AppDatePickerProps = CommonDatePickerProps & (
-  | { mode?: 'single'; value: string; onChange: (value: string) => void }
+  | { mode?: 'single'; value: string; onChange: (value: string) => void; includeTime?: boolean }
   | { mode: 'range'; value: CalendarRange; onChange: (value: CalendarRange) => void }
 );
 
@@ -38,27 +41,47 @@ const AppDatePicker = (props: AppDatePickerProps) => {
   const dialogId = useId();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<CalendarRange>(['', '']);
+  const [draftTime, setDraftTime] = useState('');
+  const [activePart, setActivePart] = useState<'date' | 'time'>('date');
   const range = props.mode === 'range';
-  const dates = range ? props.value : [props.value, ''];
+  const includeTime = props.mode !== 'range' && props.includeTime === true;
+  const timeValue = includeTime ? props.value.slice(11, 16) || '00:00' : '';
+  const dates = range ? props.value : [includeTime ? props.value.slice(0, 10) : props.value, ''];
   const selection: CalendarRange = inline ? [dates[0], dates[1]] : draft;
-  const display = dates.filter(Boolean).map((date) => parseCalendarDate(date)?.format('DD/MM/YYYY') ?? '').join(' – ');
+  const dateDisplay = dates.filter(Boolean).map((date) => parseCalendarDate(date)?.format('DD/MM/YYYY') ?? '').join(' – ');
+  const display = includeTime && dateDisplay && timeValue ? `${dateDisplay} · ${timeValue.slice(0, 5)}` : dateDisplay;
   const validDraft = !!parseCalendarDate(draft[0]) && (!range || (!!parseCalendarDate(draft[1]) && draft[1] >= draft[0]))
-    && (!minDate || draft[0] >= minDate) && (!maxDate || (draft[1] || draft[0]) <= maxDate);
+    && (!minDate || draft[0] >= minDate) && (!maxDate || (draft[1] || draft[0]) <= maxDate)
+    && (!includeTime || !!parsePickerTime(draftTime));
 
   const openCalendar = () => {
     if (disabled) return;
-    setDraft(range ? [...props.value] : [props.value, '']);
+    setDraft([dates[0], dates[1]]);
+    setDraftTime(timeValue);
+    setActivePart('date');
     setOpen(true);
   };
   const apply = () => {
     if (!validDraft || disabled) return;
     if (props.mode === 'range') props.onChange(draft);
-    else props.onChange(draft[0]);
+    else props.onChange(includeTime ? `${draft[0]}T${draftTime}:00` : draft[0]);
     setOpen(false);
   };
 
   const calendar = (
     <Box id={dialogId} role={inline ? 'group' : undefined} aria-label={inline ? label : undefined} sx={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 1 }}>
+      {includeTime && (
+        <AppSegmentedControl<'date' | 'time'>
+          label={t('dateTimeSelection')}
+          value={activePart}
+          onChange={setActivePart}
+          disabled={disabled}
+          options={[
+            { value: 'date', label: parseCalendarDate(selection[0])?.format('DD/MM/YYYY') || t('selectDate'), ariaLabel: t('selectDate') },
+            { value: 'time', label: (inline ? timeValue.slice(0, 5) : draftTime) || t('selectTime'), ariaLabel: t('selectTime') },
+          ]}
+        />
+      )}
       <Typography aria-live="polite" sx={{ fontSize: '14px', color: 'text.secondary' }}>
         {range
           ? selection[0] && selection[1]
@@ -71,7 +94,32 @@ const AppDatePicker = (props: AppDatePickerProps) => {
         adapterLocale={locale === 'vi' ? 'vi' : 'en'}
         localeText={(locale === 'vi' ? viVN : enUS).components.MuiLocalizationProvider.defaultProps.localeText}
       >
-        <AppCalendarRangeContext.Provider value={{ start: selection[0], end: range ? selection[1] : '' }}>
+        {includeTime && activePart === 'time' ? (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ display: 'flex' }} aria-hidden="true">
+              <Typography variant="caption" sx={{ flex: 1, textAlign: 'center' }}>{t('hours')}</Typography>
+              <Typography variant="caption" sx={{ flex: 1, textAlign: 'center' }}>{t('minutes')}</Typography>
+            </Box>
+            <MultiSectionDigitalClock
+              value={parsePickerTime(inline ? timeValue.slice(0, 5) : draftTime)}
+              referenceDate={parsePickerTime('00:00')!}
+              ampm={false}
+              timeSteps={{ hours: 1, minutes: 1 }}
+              views={['hours', 'minutes']}
+              disabled={disabled}
+              onChange={(time) => {
+                if (!time?.isValid()) return;
+                const nextTime = time.format('HH:mm');
+                if (inline) props.onChange(`${dates[0]}T${nextTime}:00`);
+                else setDraftTime(nextTime);
+              }}
+              sx={{ width: '100%', minWidth: 0,
+                '& .MuiMultiSectionDigitalClockSection-root': { flex: 1, width: 'auto', minWidth: 0, px: 1, py: '4px', maxHeight: '208px' },
+                '& .MuiMultiSectionDigitalClockSection-item': { width: '100%', m: 0, borderRadius: 'var(--app-radius-control)', minHeight: 40 },
+              }}
+            />
+          </Box>
+        ) : <AppCalendarRangeContext.Provider value={{ start: selection[0], end: range ? selection[1] : '' }}>
           <DateCalendar
             // A null value lets a second click on the start day select a one-day range.
             value={null}
@@ -81,7 +129,7 @@ const AppDatePicker = (props: AppDatePickerProps) => {
               const next = date.format('YYYY-MM-DD');
               if (inline) {
                 if (props.mode === 'range') props.onChange(selectCalendarRange(selection, next));
-                else props.onChange(next);
+                else props.onChange(includeTime ? `${next}T${timeValue}:00` : next);
               } else setDraft((previous) => range ? selectCalendarRange(previous, next) : [next, '']);
             }}
             minDate={parseCalendarDate(minDate) ?? undefined}
@@ -100,7 +148,7 @@ const AppDatePicker = (props: AppDatePickerProps) => {
               '& .MuiDayCalendar-slideTransition': { minHeight: 264 },
             }}
           />
-        </AppCalendarRangeContext.Provider>
+        </AppCalendarRangeContext.Provider>}
       </LocalizationProvider>
       {helperText && <Typography role={error ? 'alert' : undefined} variant="caption" color={error ? 'error' : 'text.secondary'}>{helperText}</Typography>}
     </Box>

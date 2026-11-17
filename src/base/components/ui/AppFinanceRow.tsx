@@ -16,6 +16,8 @@ export interface AppFinanceRowProps {
   onClick?: () => void;
   // Keep identity details beside the amount for dense detail lists.
   compact?: boolean;
+  dense?: boolean;
+  highlighted?: boolean;
 }
 
 const AppFinanceRow = ({
@@ -29,16 +31,18 @@ const AppFinanceRow = ({
   actionPlacement = 'row',
   onClick,
   compact = false,
+  dense = false,
+  highlighted = false,
 }: AppFinanceRowProps) => {
   const finance = useFinanceStyle();
-  const isCompact = compact || finance;
+  const isCompact = compact || finance || dense;
   const titleContent = (
     <Typography
       component="span"
       sx={{
         flex: isCompact ? undefined : '1 1 96px',
         minWidth: 0,
-        fontSize: finance ? '15px' : '14px',
+        fontSize: finance && !dense ? '15px' : '14px',
         lineHeight: 1.5,
         fontWeight: 600,
         overflowWrap: 'anywhere',
@@ -50,7 +54,7 @@ const AppFinanceRow = ({
   const subtitleContent = subtitle && (
     <Box
       sx={{
-        fontSize: finance ? '13px' : '12px',
+        fontSize: finance && !dense ? '13px' : '12px',
         fontWeight: 400,
         lineHeight: 1.5,
         color: 'text.secondary',
@@ -65,6 +69,7 @@ const AppFinanceRow = ({
   return (
     <Box
       data-finance-row
+      data-density={dense ? 'dense' : undefined}
       sx={{
         display: 'flex',
         alignItems: 'flex-start',
@@ -73,6 +78,10 @@ const AppFinanceRow = ({
         minWidth: 0,
         borderBottom: 1,
         borderColor: 'divider',
+        ...(highlighted && {
+          bgcolor: 'action.selected', borderRadius: 'var(--app-radius-small)',
+          boxShadow: (theme) => `inset 2px 0 0 ${(theme.vars?.palette ?? theme.palette).primary.main}`,
+        }),
         '&:last-child': { borderBottom: 0 },
       }}
     >
@@ -83,8 +92,9 @@ const AppFinanceRow = ({
           display: 'flex',
           alignItems: actionPlacement === 'amount' ? 'center' : 'flex-start',
           gap: isCompact ? 1 : 1.25,
-          py: isCompact ? 1.25 : 1.5,
-          px: 1.5,
+          py: dense ? 1 : isCompact ? 1.25 : 1.5,
+          px: dense ? 0.5 : 1.5,
+          minHeight: dense ? 44 : undefined,
           minWidth: 0,
           flex: 1,
           textAlign: 'left',
@@ -139,7 +149,7 @@ const AppFinanceRow = ({
                 <Typography
                   component="span"
                   sx={{
-                    fontSize: finance ? '16px' : '14px',
+                    fontSize: finance && !dense ? '16px' : '14px',
                     lineHeight: 1.5,
                     fontWeight: 700,
                     color: amountColor,

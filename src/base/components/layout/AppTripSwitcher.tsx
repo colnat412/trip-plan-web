@@ -162,7 +162,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
           <AppTextField
             autoFocus
             inputRef={searchInput}
-            variantType="search"
+            size="small"
             placeholder={t('searchTrips')}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -172,7 +172,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
                 startAdornment: (
                   <InputAdornment position="start">
                     <SearchRoundedIcon
-                      sx={{ fontSize: '18px', color: 'text.secondary' }}
+                      sx={{ fontSize: '16px', color: 'text.secondary' }}
                     />
                   </InputAdornment>
                 ),
@@ -187,7 +187,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
                       }}
                       sx={{ width: 32, height: 32 }}
                     >
-                      <CloseRoundedIcon sx={{ fontSize: '18px' }} />
+                      <CloseRoundedIcon sx={{ fontSize: '16px' }} />
                     </IconButton>
                   </InputAdornment>
                 ) : undefined,
@@ -195,11 +195,18 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
             }}
             sx={{
               '& .MuiOutlinedInput-root': {
-                height: 44,
-                minHeight: 44,
+                height: 36,
+                minHeight: 36,
+                px: 1,
                 borderRadius: 'var(--app-radius-control)',
                 bgcolor: 'action.hover',
                 fontSize: '13px',
+              },
+              '& .MuiOutlinedInput-input': {
+                py: 0,
+                px: 0,
+                fontSize: '13px',
+                lineHeight: '20px',
               },
             }}
           />

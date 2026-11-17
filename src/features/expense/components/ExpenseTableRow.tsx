@@ -6,7 +6,7 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import { useTranslations } from 'next-intl';
 import { AppActionMenu, AppCategoryChip } from '@/base/components/ui';
-import { formatCurrency, formatDate } from '@/base/utils';
+import { formatCurrency, formatDateTime } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
 import type { Expense } from '../types';
 
@@ -76,7 +76,7 @@ const ExpenseTableRow = ({
             fontFamily: 'var(--font-mono)',
           }}
         >
-          {formatDate(expense.expenseDate, 'DD/MM/YYYY')}
+          {formatDateTime(expense.expenseTime)}
         </Typography>
       </TableCell>
 

@@ -3,8 +3,8 @@
 import { useUserContext } from '@/features/user/context/UserContext';
 import useDialogDraft from '@/base/hooks/use-dialog-draft';
 
-import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Box, Stack, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import {
   AppDatePicker,
@@ -12,21 +12,20 @@ import {
   AppTextField,
   AppSelect,
   AppSegmentedControl,
-  type AppSelectOption,
 } from '@/base/components/ui';
-import { getCategorySelectOptions, normalizeTripCategory } from '@/base/constants';
+import { normalizeTripCategory } from '@/base/constants';
+import { getZonedDateTime } from '@/base/utils';
 import type { TripMember } from '@/features/trip/types/member.types';
-import ReceiptScanBanner from './ReceiptScanBanner';
 import type {
   AddExpenseInitialData,
   CreateExpensePayload,
   ExpenseCategory,
-  ReceiptItem,
-  ScannedReceipt,
   SplitItemPayload,
   EditableSplitType,
 } from '../types';
 import ReceiptImageField from './ReceiptImageField';
+import ExpenseCategoryPicker from './ExpenseCategoryPicker';
+import { expenseFormSx } from './expense-form.styles';
 import SplitAllocationSection from './SplitAllocationSection';
 
 export interface AddExpenseFormProps {
@@ -35,6 +34,7 @@ export interface AddExpenseFormProps {
   members?: TripMember[];
   onSubmit: (payload: CreateExpensePayload) => void;
   formId: string;
+  onValidityChange?: (valid: boolean) => void;
   initialData?: AddExpenseInitialData;
 }
 
@@ -44,17 +44,12 @@ const AddExpenseForm = ({
   members = [],
   onSubmit,
   formId,
+  onValidityChange,
   initialData,
 }: AddExpenseFormProps) => {
   const tForm = useTranslations('expense.form');
   const { user } = useUserContext();
-  const tCat = useTranslations('expense.categories');
   const tSplits = useTranslations('expense.splits.options');
-
-  const categoryOptions: AppSelectOption[] = useMemo(
-    () => getCategorySelectOptions(tCat),
-    [tCat],
-  );
 
   const [title, setTitle] = useState(initialData?.title || '');
   const [amount, setAmount] = useState(
@@ -65,8 +60,9 @@ const AddExpenseForm = ({
   const [category, setCategory] = useState<ExpenseCategory>(
     normalizeTripCategory(initialData?.category || 'FOOD_BEVERAGE'),
   );
-  const [expenseDate, setExpenseDate] = useState(
-    initialData?.expenseDate || new Date().toISOString().split('T')[0],
+  const [createdDateTime] = useState(() => getZonedDateTime(new Date()));
+  const [expenseTime, setExpenseTime] = useState(
+    initialData?.expenseTime || `${createdDateTime.date}T${createdDateTime.time}:00`,
   );
 
   const [splitType, setSplitType] = useState<EditableSplitType>('EQUAL');
@@ -81,10 +77,11 @@ const AddExpenseForm = ({
 
   const splitsRef = useRef<SplitItemPayload[]>([]);
   const isSplitValidRef = useRef<boolean>(true);
+  const [splitValid, setSplitValid] = useState(true);
 
   const baselineSplits = useRef<string | undefined>(undefined);
   useDialogDraft(() => ({
-    title, amount, category, expenseDate, splitType, payerId, note,
+    title, amount, category, expenseTime, splitType, payerId, note,
     receipt: receiptFile === undefined ? undefined : receiptFile === null ? null : [receiptFile.name, receiptFile.size, receiptFile.lastModified],
     splitsChanged: baselineSplits.current !== undefined && JSON.stringify(splitsRef.current) !== baselineSplits.current,
   }));
@@ -94,50 +91,23 @@ const AddExpenseForm = ({
       baselineSplits.current ??= JSON.stringify(newSplits);
       splitsRef.current = newSplits;
       isSplitValidRef.current = valid;
+      setSplitValid(valid);
     },
     [],
   );
 
-  const handleScanSuccess = (scanned: ScannedReceipt, sourceImage?: File) => {
-    if (sourceImage) setReceiptFile(sourceImage);
-    if (scanned.merchant_name) {
-      setTitle(scanned.merchant_name);
-      setErrors((prev) => ({ ...prev, title: undefined }));
-    }
-    if (scanned.amount != null && scanned.amount > 0) {
-      setAmount(String(scanned.amount));
-      setErrors((prev) => ({ ...prev, amount: undefined }));
-    }
-    if (scanned.category) {
-      setCategory(scanned.category);
-    }
-    if (scanned.expense_date) {
-      setExpenseDate(scanned.expense_date);
-      setErrors((prev) => ({ ...prev, expenseDate: undefined }));
-    }
-    if (scanned.raw_text) {
-      setNote(scanned.raw_text);
-    } else if (scanned.items && scanned.items.length > 0) {
-      setNote(
-        scanned.items
-          .map((i: ReceiptItem) => `${i.name} (x${i.quantity || 1})`)
-          .join(', '),
-      );
-    }
-  };
-
   const [errors, setErrors] = useState<{
     title?: string;
     amount?: string;
-    expenseDate?: string;
+    expenseTime?: string;
     payerId?: string;
   }>({});
 
-  const validate = () => {
+  const getValidationErrors = () => {
     const newErrors: {
       title?: string;
       amount?: string;
-      expenseDate?: string;
+      expenseTime?: string;
       payerId?: string;
     } = {};
     if (!title.trim()) {
@@ -146,14 +116,24 @@ const AddExpenseForm = ({
     if (!amount.trim() || isNaN(Number(amount)) || Number(amount) <= 0) {
       newErrors.amount = tForm('errors.amountPositive');
     }
-    if (!expenseDate || !expenseDate.trim()) {
-      newErrors.expenseDate = tForm('errors.dateRequired');
+    if (!expenseTime || !expenseTime.trim()) {
+      newErrors.expenseTime = tForm('errors.dateRequired');
     }
     if (members && members.length > 1 && !selectedPayerId) {
       newErrors.payerId = tForm('errors.payerRequired');
     }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0 && isSplitValidRef.current;
+    return newErrors;
+  };
+
+  const isFormValid = Object.keys(getValidationErrors()).length === 0 && splitValid;
+  useEffect(() => {
+    onValidityChange?.(isFormValid);
+  }, [isFormValid, onValidityChange]);
+
+  const validate = () => {
+    const nextErrors = getValidationErrors();
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0 && isSplitValidRef.current;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -165,7 +145,7 @@ const AddExpenseForm = ({
       amount: Number(amount),
       category,
       currency: tripCurrency,
-      expenseDate,
+      expenseTime,
       splitType,
       payerId: selectedPayerId || undefined,
       receiptFile,
@@ -180,17 +160,14 @@ const AddExpenseForm = ({
       component="form"
       onSubmit={handleSubmit}
       noValidate
-      sx={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}
+      sx={expenseFormSx}
     >
 
 
-      <Stack component="fieldset" disabled={isLoading} spacing={2.5}
+      <Stack component="fieldset" disabled={isLoading} spacing={3}
         sx={{ border: 0, p: 0, m: 0, minWidth: 0 }}>
         <Stack component="section" aria-label={tForm('detailsSection')} spacing={2.5}>
-          <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
-            {tForm('detailsSection')}
-          </Typography>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box data-expense-amount sx={{ minWidth: 0 }}>
             <AppNumberInput
               emphasis="primary"
               disabled={isLoading}
@@ -208,11 +185,6 @@ const AddExpenseForm = ({
             />
           </Box>
 
-          <ReceiptScanBanner
-            onScanSuccess={handleScanSuccess}
-            disabled={isLoading}
-          />
-
           <AppTextField
             disabled={isLoading}
             label={tForm('titleLabel')}
@@ -227,40 +199,30 @@ const AddExpenseForm = ({
             helperText={errors.title}
           />
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+          <Stack spacing={2.5}>
+            <ExpenseCategoryPicker value={category} onChange={setCategory} disabled={isLoading} />
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <AppDatePicker
+                includeTime
                 disabled={isLoading}
                 label={tForm('dateLabel')}
-                value={expenseDate}
+                value={expenseTime}
                 onChange={(value) => {
-                  setExpenseDate(value);
-                  if (errors.expenseDate) {
-                    setErrors((prev) => ({ ...prev, expenseDate: undefined }));
+                  setExpenseTime(value);
+                  if (errors.expenseTime) {
+                    setErrors((prev) => ({ ...prev, expenseTime: undefined }));
                   }
                 }}
-                error={Boolean(errors.expenseDate)}
-                helperText={errors.expenseDate}
+                error={Boolean(errors.expenseTime)}
+                helperText={errors.expenseTime}
               />
             </Box>
 
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <AppSelect
-                disabled={isLoading}
-                label={tForm('categoryLabel')}
-                value={category}
-                options={categoryOptions}
-                onChange={(e) => setCategory(e.target.value as ExpenseCategory)}
-              />
-            </Box>
           </Stack>
         </Stack>
 
-        <Stack component="section" aria-label={tForm('sharingSection')} spacing={2.5}
-          sx={{ borderTop: 1, borderColor: 'divider', pt: 2.5 }}>
-          <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
-            {tForm('sharingSection')}
-          </Typography>
+        <Stack component="section" aria-label={tForm('sharingSection')} spacing={2}
+          sx={{ minWidth: 0 }}>
 
           {members && members.length > 1 && (
             <AppSelect
@@ -304,16 +266,14 @@ const AddExpenseForm = ({
               totalAmount={Number(amount) || 0}
               currency={tripCurrency}
               members={members}
+              payerId={selectedPayerId}
               onChange={handleSplitChange}
             />
           )}
         </Stack>
 
         <Stack component="section" aria-label={tForm('extrasSection')} spacing={2.5}
-          sx={{ borderTop: 1, borderColor: 'divider', pt: 2.5 }}>
-          <Typography component="h3" variant="subtitle2" sx={{ fontWeight: 700 }}>
-            {tForm('extrasSection')}
-          </Typography>
+          sx={{ minWidth: 0 }}>
           <AppTextField
             disabled={isLoading}
             label={tForm('noteLabel')}

@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useId } from 'react';
+import React, { useId, useState } from 'react';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppDialog } from '@/base/components/ui';
 import { useTripMembers } from '@/features/trip/hooks/useTripMembers';
 import AddExpenseForm from './AddExpenseForm';
+import { expenseFormPaperSx } from './expense-form.styles';
 import type { AddExpenseInitialData, CreateExpensePayload } from '../types';
 
 export interface AddExpenseDialogProps {
@@ -29,6 +30,7 @@ const AddExpenseDialog = ({
 }: AddExpenseDialogProps) => {
   const t = useTranslations('expense');
   const formId = useId();
+  const [isFormValid, setFormValid] = useState(false);
   const { activeMembers } = useTripMembers({ tripId, enabled: open });
 
   return (
@@ -39,6 +41,8 @@ const AddExpenseDialog = ({
       onClose={onClose}
       closeDisabled={isLoading}
       title={t('dialog.addTitle')}
+      titleAlign="left"
+      paperSx={expenseFormPaperSx}
       icon={<ReceiptLongRoundedIcon />}
       maxWidth="sm"
       actions={
@@ -48,7 +52,7 @@ const AddExpenseDialog = ({
             {t('form.cancel')}
           </AppButton>
           <AppButton data-dialog-action="primary" intent="primary" type="submit"
-            form={formId} loading={isLoading} sx={{ minHeight: 48 }}>
+            form={formId} loading={isLoading} disabled={!isFormValid} sx={{ minHeight: 48 }}>
             {t('form.submitAdd')}
           </AppButton>
         </>
@@ -61,6 +65,7 @@ const AddExpenseDialog = ({
         members={activeMembers}
         onSubmit={onSubmit}
         formId={formId}
+        onValidityChange={setFormValid}
         initialData={initialData}
       />
     </AppDialog>

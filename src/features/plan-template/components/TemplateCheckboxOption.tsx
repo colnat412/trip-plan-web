@@ -45,7 +45,11 @@ const TemplateCheckboxOption = ({
       checked={checked}
       disabled={disabled}
       onChange={(_, value) => onChange(value)}
-      sx={{ p: 0.5, flexShrink: 0 }}
+      sx={{
+        p: 0.5,
+        flexShrink: 0,
+        '&.Mui-checked:not(.Mui-disabled)': { color: 'inherit' },
+      }}
     />
     <Typography
       component="span"

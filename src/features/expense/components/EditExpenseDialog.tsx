@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useId } from 'react';
+import React, { useId, useState } from 'react';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppDialog } from '@/base/components/ui';
 import { useTripMembers } from '@/features/trip/hooks/useTripMembers';
 import EditExpenseForm from './EditExpenseForm';
+import { expenseFormPaperSx } from './expense-form.styles';
 import type { Expense, UpdateExpensePayload } from '../types';
 
 export interface EditExpenseDialogProps {
@@ -25,6 +26,7 @@ const EditExpenseDialog = ({
 }: EditExpenseDialogProps) => {
   const t = useTranslations('expense');
   const formId = useId();
+  const [isFormValid, setFormValid] = useState(false);
   const { activeMembers } = useTripMembers({
     tripId: expense?.tripId,
     enabled: open && Boolean(expense?.tripId),
@@ -39,8 +41,9 @@ const EditExpenseDialog = ({
       open={open}
       onClose={onClose}
       closeDisabled={isLoading}
-      title={expense.title}
+      title={t('dialog.editTitle')}
       titleAlign="left"
+      paperSx={expenseFormPaperSx}
       icon={<EditRoundedIcon color="primary" />}
       maxWidth="sm"
       actions={
@@ -50,7 +53,7 @@ const EditExpenseDialog = ({
             {t('form.cancel')}
           </AppButton>
           <AppButton data-dialog-action="primary" intent="primary" type="submit"
-            form={formId} loading={isLoading} sx={{ minHeight: 48 }}>
+            form={formId} loading={isLoading} disabled={!isFormValid} sx={{ minHeight: 48 }}>
             {t('form.submitEdit')}
           </AppButton>
         </>
@@ -64,6 +67,7 @@ const EditExpenseDialog = ({
         isLoading={isLoading}
         onSubmit={onSubmit}
         formId={formId}
+        onValidityChange={setFormValid}
       />
     </AppDialog>
   );

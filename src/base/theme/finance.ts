@@ -26,7 +26,7 @@ export const financeStyles = (theme: Theme, surface = true) => {
       color: palette.primary.main,
     },
     '& [data-finance-row]': { borderColor: `color-mix(in srgb, ${palette.divider} 60%, transparent)` },
-    '& [data-finance-row] > :first-child': { py: 2, px: 0.5 },
+    '& [data-finance-row]:not([data-density="dense"]) > :first-child': { py: 2, px: 0.5 },
     '& .MuiButton-root[data-dialog-action="primary"]': { minHeight: 52, borderRadius: 'var(--app-radius-control)' },
     '@media (forced-colors: active)': {
       '& .MuiCard-root': { border: '1px solid CanvasText' },
