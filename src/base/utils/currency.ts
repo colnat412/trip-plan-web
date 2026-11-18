@@ -27,7 +27,7 @@ export function formatCurrency(
     const formatted = numericAmount.toLocaleString(targetLocale, {
       maximumFractionDigits: 0,
     });
-    return `${formatted} ₫`;
+    return `${formatted} VND`;
   }
 
   try {
@@ -58,17 +58,17 @@ export function formatCompactCurrency(
 
     if (abs >= 1_000_000_000) {
       const val = (abs / 1_000_000_000).toFixed(1).replace(/\.0$/, '');
-      return isEnglish ? `${sign}${val}B` : `${sign}${val} tỷ`;
+      return `${sign}${val}${isEnglish ? 'B' : ' tỷ'} VND`;
     }
     if (abs >= 1_000_000) {
       const val = (abs / 1_000_000).toFixed(1).replace(/\.0$/, '');
-      return isEnglish ? `${sign}${val}M` : `${sign}${val} tr`;
+      return `${sign}${val}${isEnglish ? 'M' : ' tr'} VND`;
     }
     if (abs >= 1_000) {
       const val = (abs / 1_000).toFixed(1).replace(/\.0$/, '');
-      return isEnglish ? `${sign}${val}K` : `${sign}${val}k`;
+      return `${sign}${val}${isEnglish ? 'K' : 'k'} VND`;
     }
-    return `${numericAmount.toLocaleString(targetLocale)} ₫`;
+    return `${numericAmount.toLocaleString(targetLocale)} VND`;
   }
 
   try {

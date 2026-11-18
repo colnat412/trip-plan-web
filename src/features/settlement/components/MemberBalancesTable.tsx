@@ -18,6 +18,7 @@ import { useTranslations } from 'next-intl';
 import { AppCard, AppEmptyState, AppFilterChipGroup, AppSectionHeader, AppStatusChip } from '@/base/components/ui';
 import { formatCurrency, getUserInitials } from '@/base/utils';
 import type { BalanceStatus, MemberBalance } from '../types';
+import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
 export interface MemberBalancesTableProps {
   memberBalances: MemberBalance[];
@@ -64,26 +65,26 @@ const MemberBalancesTable = ({
                 const status = t(member.status === 'OWED' ? 'statusOwed' : member.status === 'OWES' ? 'statusOwes' : 'statusSettled');
                 const paid = `${t('paid')}: ${formatCurrency(member.totalPaid, currency)}`;
                 const share = `${t('owed')}: ${formatCurrency(member.totalOwed, currency)}`;
-                return <Stack key={member.userId} role="listitem" direction="row" spacing={1.25} sx={{
-                  alignItems: 'flex-start', py: 1.5, minWidth: 0, borderBottom: 1, borderColor: 'divider',
+                return <Stack key={member.userId} role="listitem" direction="row" sx={{
+                  ...rowStyles.row, borderBottom: 1, borderColor: 'divider',
                   '&:last-child': { borderBottom: 0 },
                 }}>
-                  <Avatar src={member.avatarUrl || undefined} sx={{ width: 32, height: 32, flexShrink: 0 }}>{getUserInitials(member.name)}</Avatar>
+                  <Avatar src={member.avatarUrl || undefined} sx={rowStyles.avatar}>{getUserInitials(member.name)}</Avatar>
                   <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
                     <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', minWidth: 0 }}>
-                      <Typography noWrap title={name} sx={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 600 }}>{name}</Typography>
+                      <Typography noWrap title={name} sx={{ ...rowStyles.primary, flex: 1 }}>{name}</Typography>
                       <Typography noWrap sx={{
-                        flexShrink: 0, fontSize: 14, lineHeight: 1.5, fontWeight: 600, fontVariantNumeric: 'tabular-nums',
+                        ...rowStyles.amount,
                         color: member.status === 'OWED' ? 'success.main' : member.status === 'OWES' ? 'error.main' : 'text.secondary',
                       }}>{formatCurrency(Math.abs(member.netBalance), currency)}</Typography>
                     </Stack>
                     <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', minWidth: 0 }}>
-                      <Typography component="span" noWrap title={paid} sx={{ flexShrink: 0, fontSize: 12, lineHeight: 1.5, color: 'text.secondary', fontVariantNumeric: 'tabular-nums' }}>{paid}</Typography>
-                      <Typography component="span" noWrap title={status} sx={{ flex: 1, minWidth: 0, fontSize: 12, lineHeight: 1.5, textAlign: 'right', color: 'text.secondary' }}>{status}</Typography>
+                      <Typography component="span" noWrap title={paid} sx={{ ...rowStyles.secondary, flex: 1, fontVariantNumeric: 'tabular-nums' }}>{paid}</Typography>
+                      <Typography component="span" noWrap title={status} sx={{ ...rowStyles.secondary, flexShrink: 0, textAlign: 'right' }}>{status}</Typography>
                     </Stack>
                     <Stack direction="row" spacing={0.5} title={share} sx={{ minWidth: 0, alignItems: 'baseline' }}>
-                      <Typography component="span" noWrap sx={{ minWidth: 0, fontSize: 12, lineHeight: 1.5, color: 'text.secondary' }}>{t('owed')}:</Typography>
-                      <Typography component="span" noWrap sx={{ flexShrink: 0, fontSize: 12, lineHeight: 1.5, color: 'text.secondary', fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(member.totalOwed, currency)}</Typography>
+                      <Typography component="span" noWrap sx={rowStyles.secondary}>{t('owed')}:</Typography>
+                      <Typography component="span" noWrap sx={{ ...rowStyles.secondary, flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(member.totalOwed, currency)}</Typography>
                     </Stack>
                   </Stack>
                 </Stack>;

@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import MapRoundedIcon from '@mui/icons-material/MapRounded';
 import { useTranslations } from 'next-intl';
 import {
-  AppButton, AppCard, AppLocationMap, AppLoadingIndicator, AppInteractiveMap,
+  AppLocationMap, AppLoadingIndicator, AppInteractiveMap,
 } from '@/base/components/ui';
 import { getGoogleMapsRouteUrl } from '@/base/utils/maps';
 import usePlanMapStops from '../hooks/usePlanMapStops';
@@ -16,13 +16,14 @@ export interface PlanMapPanelProps {
   activities: PlanActivity[];
   destination?: string;
   loadingActivities?: boolean;
+  bottomInset?: number;
 }
 
 // Tâm mặc định (Việt Nam) chỉ dùng khi chưa có điểm nào; bản đồ được fitBounds ngay khi có điểm.
 const DEFAULT_CENTER = { latitude: 16.05, longitude: 108.2 };
 
 const PlanMapPanel = ({
-  activities, destination = '', loadingActivities = false,
+  activities, destination = '', loadingActivities = false, bottomInset = 0,
 }: PlanMapPanelProps) => {
   const t = useTranslations('plan.map');
   const [selectedId, setSelectedId] = useState('');
@@ -41,36 +42,49 @@ const PlanMapPanel = ({
   }));
 
   return (
-    <AppCard component="section" sx={{ p: 0, borderRadius: 'var(--app-radius-card)', minWidth: 0, overflow: 'hidden' }}>
-      <Box aria-busy={busy} sx={{
+      <Box component="section" aria-busy={busy} sx={{
         position: 'relative', width: '100%',
-        height: { xs: 'clamp(280px, 40dvh, 420px)', md: 440 },
+        height: '100%', minWidth: 0,
         bgcolor: 'action.hover', overflow: 'hidden',
       }}>
         {/* Một bản đồ duy nhất luôn mounted: đổi ngày chỉ đổi điểm dừng và tự zoom vừa các điểm. */}
         <AppInteractiveMap coordinates={stops[0]?.coordinates ?? DEFAULT_CENTER} title={t('title')}
-          stops={stops} selectedId={selectedId} onSelectStop={setSelectedId} />
+          stops={stops} selectedId={selectedId} onSelectStop={setSelectedId} bottomInset={bottomInset} />
         {busy ? (
           <Box sx={{
-            position: 'absolute', inset: 0, display: 'flex', alignItems: 'center',
+            position: 'absolute', inset: 0, bottom: bottomInset, display: 'flex', alignItems: 'center',
             justifyContent: 'center', pointerEvents: 'none',
           }}>
             <AppLoadingIndicator />
           </Box>
         ) : stops.length === 0 && (
-          <Box sx={{ position: 'absolute', inset: 0, p: 2, overflow: 'auto', bgcolor: 'background.paper' }}>
+          <Box sx={{ position: 'absolute', inset: 0, bottom: bottomInset, overflow: 'auto', bgcolor: 'background.paper' }}>
             <AppLocationMap location={destination} />
           </Box>
         )}
         {routeUrl && stops.length > 0 && (
-          <AppButton component="a" intent="secondary" href={routeUrl} target="_blank"
-            rel="noopener noreferrer" startIcon={<MapRoundedIcon />}
-            sx={{ position: 'absolute', right: 12, bottom: 12, zIndex: 1 }}>
-            {t('openRoute')}
-          </AppButton>
+          <Tooltip title={t('openRoute')}>
+            <IconButton component="a" href={routeUrl} target="_blank" rel="noopener noreferrer"
+              aria-label={t('openRoute')}
+              sx={{ position: 'absolute', left: 4, top: 4, zIndex: 1,
+                width: 44, height: 44, p: 0, color: 'text.primary', bgcolor: 'transparent',
+                borderRadius: 'var(--app-radius-control)',
+                '&:hover': { bgcolor: 'transparent', color: 'primary.main',
+                  '& .plan-map-route-icon': { borderColor: 'primary.main' } },
+                '&:active': { bgcolor: 'transparent', color: 'primary.main' },
+                '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: -2 },
+              }}>
+              <Box component="span" className="plan-map-route-icon" sx={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32,
+                flexShrink: 0, bgcolor: 'background.paper', border: 1, borderColor: 'divider',
+                borderRadius: 'var(--app-radius-small)', boxShadow: 1,
+              }}>
+                <MapRoundedIcon sx={{ fontSize: 20 }} />
+              </Box>
+            </IconButton>
+          </Tooltip>
         )}
       </Box>
-    </AppCard>
   );
 };
 

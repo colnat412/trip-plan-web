@@ -1,7 +1,5 @@
 'use client';
 
-import { selectedSurface } from '@/base/theme/surfaces';
-
 import {
   Avatar,
   Box,
@@ -67,23 +65,22 @@ const TripCardItem = ({
       <Box
         data-app-surface="card"
         onClick={() => onSelect(trip)}
-        sx={(theme) => ({
+        sx={{
           position: 'relative',
           display: { xs: 'none', sm: 'flex' },
           flexDirection: 'column',
           borderRadius: 'var(--app-radius-card)',
           overflow: 'hidden',
           border: '1.5px solid',
-          borderColor: 'divider',
+          borderColor: isActive ? 'primary.main' : 'divider',
           bgcolor: 'background.paper',
           transition: 'background-color 0.15s, border-color 0.15s',
           cursor: 'pointer',
           '&:hover': {
             borderColor: 'primary.main',
-            bgcolor: 'action.hover',
+            bgcolor: 'background.paper',
           },
-          ...(isActive && selectedSurface(theme)),
-        })}
+        }}
       >
         <Box
           sx={{
@@ -104,7 +101,7 @@ const TripCardItem = ({
               width: '100%',
               height: '100%',
               bgcolor: 'action.hover',
-              color: isActive ? 'primary.contrastText' : 'text.secondary',
+              color: 'text.secondary',
             }}
           >
             <Stack spacing={0.75} sx={{ alignItems: 'center' }}>
@@ -130,14 +127,14 @@ const TripCardItem = ({
                 aria-label={isActive ? t('activeTripTip') : t('makeActiveTip')}
                 sx={{
                   bgcolor: 'background.paper',
-                  color: isActive ? 'primary.contrastText' : 'text.secondary',
+                  color: isActive ? 'primary.main' : 'text.secondary',
                   boxShadow: '0 2px 6px rgba(0,0,0,0.15)',
                   width: 44,
                   height: 44,
                   p: 1,
                   '&:hover': {
                     bgcolor: 'background.paper',
-                    color: isActive ? 'primary.contrastText' : 'primary.main',
+                    color: 'primary.main',
                   },
                 }}
               >
@@ -176,14 +173,14 @@ const TripCardItem = ({
         </Box>
 
         <Box
-          sx={{ p: 1.75, display: 'flex', flexDirection: 'column', gap: 0.75 }}
+          sx={{ p: 1.75, display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, gap: 0.75 }}
         >
           <Stack
             direction="row"
             sx={{
               alignItems: 'center',
               justifyContent: 'space-between',
-              gap: 1,
+              gap: 1, minWidth: 0,
             }}
           >
             <Box
@@ -192,11 +189,12 @@ const TripCardItem = ({
                 py: 0.2,
                 borderRadius: 'var(--app-radius-badge)',
                 bgcolor: 'action.selected',
-                color: isActive ? 'primary.contrastText' : 'primary.main',
+                color: 'primary.main',
                 fontWeight: 800,
                 fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
                 letterSpacing: '0.25px',
+                flexShrink: 0,
               }}
             >
               {trip.baseCurrency}
@@ -206,7 +204,7 @@ const TripCardItem = ({
               variant="caption"
               noWrap
               sx={{
-                color: isActive ? 'primary.contrastText' : 'text.secondary',
+                color: 'text.secondary',
                 fontSize: '12px',
                 fontFamily: 'var(--font-mono)',
               }}
@@ -221,7 +219,7 @@ const TripCardItem = ({
               sx={{
                 fontSize: '14px',
                 fontWeight: 700,
-                color: isActive ? 'primary.contrastText' : 'text.primary',
+                color: 'text.primary',
                 lineHeight: 1.3,
               }}
             >
@@ -231,7 +229,7 @@ const TripCardItem = ({
               variant="caption"
               noWrap
               sx={{
-                color: isActive ? 'primary.contrastText' : 'text.secondary',
+                color: 'text.secondary',
                 fontSize: '12px',
                 display: 'block',
                 mt: 0.2,
@@ -246,7 +244,7 @@ const TripCardItem = ({
           <Stack
             direction="row"
             spacing={0.5}
-            sx={{ alignItems: 'center', minWidth: 0, color: isActive ? 'primary.contrastText' : 'text.secondary' }}
+            sx={{ alignItems: 'center', minWidth: 0, color: 'text.secondary' }}
           >
             <LocationOnOutlinedIcon sx={{ fontSize: 14, flexShrink: 0 }} />
             <Typography
@@ -259,40 +257,35 @@ const TripCardItem = ({
           </Stack>
 
           <Stack
-            direction="row"
-            sx={{
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: 1,
-              pt: 1,
-              borderTop: 1,
-              borderColor: 'divider',
-            }}
+            spacing={1}
+            sx={{ pt: 1, mt: 'auto', borderTop: 1, borderColor: 'divider', minWidth: 0 }}
           >
-            <Box
-              sx={{
-                px: 0.85,
-                py: 0.2,
-                borderRadius: 'var(--app-radius-badge)',
-                fontSize: '12px',
-                fontWeight: 700,
-                bgcolor: 'action.hover',
-                color: isActive ? 'primary.contrastText' : 'text.secondary',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {isActive
-                ? t('selected')
-                : isOwner
-                  ? t('roleOwner')
-                  : t('roleMember')}
-            </Box>
+            <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', justifyContent: 'space-between', minHeight: 24, minWidth: 0 }}>
+              <Box
+                sx={{
+                  px: 0.85,
+                  py: 0.2,
+                  borderRadius: 'var(--app-radius-badge)',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  bgcolor: 'action.hover',
+                  color: 'text.secondary',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {isOwner ? t('roleOwner') : t('roleMember')}
+              </Box>
+              {isActive && (
+                <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 600, fontSize: '12px', whiteSpace: 'nowrap' }}>
+                  {t('selected')}
+                </Typography>
+              )}
+            </Stack>
 
             <Stack
               direction="row"
               spacing={0.5}
-              sx={{ alignItems: 'center', flexShrink: 0 }}
+              sx={{ alignItems: 'center', width: '100%', minWidth: 0 }}
             >
               <AppButton
                 size="small"
@@ -304,6 +297,7 @@ const TripCardItem = ({
                 startIcon={<FlightTakeoffRoundedIcon sx={{ fontSize: '13px' }} />}
                 sx={{
                   minHeight: 44,
+                  flex: 1, minWidth: 0,
                   px: 1.25,
                   fontSize: '12px',
                 }}
@@ -312,7 +306,7 @@ const TripCardItem = ({
               </AppButton>
 
               {isOwner && (
-                <Box onClick={(e) => e.stopPropagation()}>
+                <Box sx={{ flexShrink: 0 }} onClick={(e) => e.stopPropagation()}>
                   <AppActionMenu
                   sheetTitle={trip.name}
                     minTouchTarget

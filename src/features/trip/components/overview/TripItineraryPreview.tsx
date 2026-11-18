@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded';
@@ -18,14 +18,14 @@ import {
   type AppToastSeverity,
 } from '@/base/components/ui';
 import { useTranslations } from 'next-intl';
-import { formatDate, getZonedDateTime } from '@/base/utils';
+import { getZonedDateTime } from '@/base/utils';
 import useTripPlan from '@/features/plan/hooks/useTripPlan';
 import { useCreateActivity } from '@/features/plan/hooks/usePlanMutation';
 import {
   getUpcomingActivity,
   getSuggestedActivityDay,
 } from '@/features/plan/utils/upcoming-activity';
-import ActivityTimelineCard from '@/features/plan/components/ActivityTimelineCard';
+import UpcomingActivitySummary from './UpcomingActivitySummary';
 import AddActivityDialog from '@/features/plan/components/AddActivityDialog';
 import { useTripPermissions } from '../../hooks/useTripPermissions';
 import { getTripTiming } from '../../utils/trip-timing';
@@ -90,13 +90,13 @@ const TripItineraryPreview = ({ trip, now }: TripItineraryPreviewProps) => {
       <AppCard
         component="section"
         sx={{
-          p: { xs: 2, md: 3 },
+          p: { xs: 2, md: 2.5 },
           minWidth: 0,
           width: '100%',
           borderRadius: 'var(--app-radius-card)',
         }}
       >
-        <Stack spacing={2} sx={{ minWidth: 0 }}>
+        <Stack spacing={1} sx={{ minWidth: 0 }}>
           <AppSectionHeader
             title={heading}
             actions={
@@ -112,33 +112,7 @@ const TripItineraryPreview = ({ trip, now }: TripItineraryPreviewProps) => {
               compact
             />
           ) : next ? (
-            <Stack spacing={1} sx={{ minWidth: 0 }}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  gap: 1,
-                  flexWrap: 'wrap',
-                  color: 'text.secondary',
-                  minWidth: 0,
-                }}
-              >
-                <Typography sx={{ fontSize: '13px' }}>
-                  {formatDate(next.day.planDate)}
-                </Typography>
-                {next.kind === 'unscheduled' && (
-                  <Typography sx={{ fontSize: '13px' }}>
-                    {t('unscheduled')}
-                  </Typography>
-                )}
-              </Box>
-              <ActivityTimelineCard
-                activity={next.activity}
-                currency={trip.baseCurrency}
-                readOnly={!canWrite}
-                onImageSaved={() => void refetch().catch(() => undefined)}
-                compact
-              />
-            </Stack>
+            <UpcomingActivitySummary activity={next.activity} date={next.day.planDate ?? ''} />
           ) : (
             <AppEmptyState
               title={t(empty ? 'emptyPlan' : 'nothingNext')}

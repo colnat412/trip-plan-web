@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { APP_NAME } from '@/base/constants/brand';
 import { cookies } from 'next/headers';
-import { Comfortaa } from 'next/font/google';
+import { Manrope } from 'next/font/google';
 import InitColorSchemeScript from '@mui/material/InitColorSchemeScript';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
@@ -18,9 +18,9 @@ import AppStartupHost from '@/base/components/layout/AppStartupHost';
 
 import './globals.css';
 
-const comfortaa = Comfortaa({
+const manrope = Manrope({
   subsets: ['latin', 'latin-ext', 'vietnamese'],
-  variable: '--font-comfortaa',
+  variable: '--font-manrope',
   display: 'swap',
 });
 
@@ -59,7 +59,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   );
 
   return (
-    <html lang={locale} suppressHydrationWarning className={comfortaa.variable}>
+    <html lang={locale} suppressHydrationWarning className={manrope.variable}>
       <body>
         <InitColorSchemeScript attribute="data" defaultMode="light" />
         <AppInstallListener />

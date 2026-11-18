@@ -56,7 +56,7 @@ const POPULAR_DESTINATIONS = [
 ];
 
 const CURRENCIES = [
-  { code: 'VND', label: 'VND (₫)' },
+  { code: 'VND', label: 'VND' },
   { code: 'USD', label: 'USD ($)' },
   { code: 'EUR', label: 'EUR (€)' },
   { code: 'JPY', label: 'JPY (¥)' },

@@ -7,7 +7,6 @@ import { AppLoadingState, AppEmptyState, AppButton, AppFloatingActionButton, App
 
 import { useState } from 'react';
 import { Stack } from '@mui/material';
-import HandshakeRoundedIcon from '@mui/icons-material/HandshakeRounded';
 import { useTranslations } from 'next-intl';
 
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
@@ -155,7 +154,6 @@ const SettlementOverview = () => {
       floatingAction={canWrite ? (
         <AppFloatingActionButton
           label={t('recordPayment')}
-          icon={<HandshakeRoundedIcon />}
           onClick={() => handleOpenRecordPayment()}
         />
       ) : undefined}
@@ -171,7 +169,7 @@ const SettlementOverview = () => {
         onOpenRecordPayment={() => handleOpenRecordPayment()}
       />
 
-      <AppCard component="section" sx={{ p: { xs: 2, sm: 2.5 } }}>
+      <AppCard component="section" sx={{ p: { xs: 2.5, sm: 2.5 } }}>
       <Stack spacing={1}>
         <AppSectionHeader title={t('suggestedTitle')} count={summary?.suggestedSettlements.length ?? 0} />
 
@@ -191,7 +189,7 @@ const SettlementOverview = () => {
         currency={currency}
       />
 
-      <Stack spacing={1.5} sx={{ width: '100%', minWidth: 0 }}>
+      <Stack spacing={1.5} sx={{ width: '100%', minWidth: 0, flexShrink: 0 }}>
         <AppSectionHeader
           title={t('historyTitle')}
           count={summary?.settlementHistory.length ?? 0}

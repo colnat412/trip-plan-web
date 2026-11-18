@@ -30,7 +30,7 @@ const AppAmountRatio = ({
 }: AppAmountRatioProps) => {
   const locale = useLocale();
   const displayAmount = (value: number) => notation === 'compact'
-    ? `${formatCompactCurrency(value, currency, numberLocale ?? locale)}${currency.toUpperCase() === 'VND' && Math.abs(value) >= 1000 ? ' ₫' : ''}`
+    ? formatCompactCurrency(value, currency, numberLocale ?? locale)
     : formatCurrency(value, currency, numberLocale ?? locale);
   return (
     <Box

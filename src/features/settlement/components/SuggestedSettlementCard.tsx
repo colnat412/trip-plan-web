@@ -5,6 +5,7 @@ import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
 import { useLocale, useTranslations } from 'next-intl';
 import { formatCurrency, getUserInitials } from '@/base/utils';
 import type { SuggestedSettlement } from '../types';
+import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
 export interface SuggestedSettlementCardProps {
   settlement: SuggestedSettlement;
@@ -21,18 +22,18 @@ const SuggestedSettlementCard = ({ settlement, onSettle }: SuggestedSettlementCa
       <Box component={onSettle ? ButtonBase : 'div'}
         onClick={onSettle ? () => onSettle(settlement) : undefined}
         aria-label={onSettle ? actionLabel : undefined}
-        sx={{ display: 'flex', alignItems: 'center', gap: 1, flex: 1, minWidth: 0, py: 1.25, px: 0.5,
+        sx={{ ...rowStyles.row, flex: 1,
           textAlign: 'left', color: 'text.primary', borderRadius: 'var(--app-radius-small)',
           '&:hover': onSettle ? { bgcolor: 'action.hover' } : undefined,
           '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: -2 } }}>
-        <Avatar sx={{ width: 32, height: 32, fontSize: '12px', flexShrink: 0 }}>{getUserInitials(settlement.fromUserName)}</Avatar>
+        <Avatar sx={rowStyles.avatar}>{getUserInitials(settlement.fromUserName)}</Avatar>
         <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-          <Typography noWrap title={settlement.fromUserName} sx={{ fontSize: '14px', fontWeight: 600 }}>{settlement.fromUserName}</Typography>
-          <Typography noWrap title={t('transferTo', { name: settlement.toUserName })} sx={{ fontSize: '12px', color: 'text.secondary' }}>
+          <Typography noWrap title={settlement.fromUserName} sx={rowStyles.primary}>{settlement.fromUserName}</Typography>
+          <Typography noWrap title={t('transferTo', { name: settlement.toUserName })} sx={rowStyles.secondary}>
             {t('transferTo', { name: settlement.toUserName })}
           </Typography>
         </Stack>
-        <Typography sx={{ maxWidth: '45%', fontSize: '14px', fontWeight: 600, fontVariantNumeric: 'tabular-nums', textAlign: 'right', overflowWrap: 'anywhere' }}>
+        <Typography sx={{ ...rowStyles.amount, textAlign: 'right' }}>
           {formatCurrency(settlement.amount, settlement.currency, locale)}
         </Typography>
       </Box>

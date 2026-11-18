@@ -4,7 +4,7 @@ import React from 'react';
 import HotelRoundedIcon from '@mui/icons-material/HotelRounded';
 import DirectionsSubwayRoundedIcon from '@mui/icons-material/DirectionsSubwayRounded';
 import RestaurantRoundedIcon from '@mui/icons-material/RestaurantRounded';
-import AttractionsRoundedIcon from '@mui/icons-material/AttractionsRounded';
+import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
 import ConfirmationNumberRoundedIcon from '@mui/icons-material/ConfirmationNumberRounded';
 import ShoppingBagRoundedIcon from '@mui/icons-material/ShoppingBagRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
@@ -73,7 +73,7 @@ export const CATEGORY_CONFIG: Record<
     color: '#e65100',
   },
   VISIT: {
-    icon: <AttractionsRoundedIcon sx={{ fontSize: 16 }} />,
+    icon: <AccountBalanceRoundedIcon sx={{ fontSize: 16 }} />,
     bg: '#e8f5e9',
     color: '#2e7d32',
   },

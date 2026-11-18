@@ -21,7 +21,7 @@
   --foreground: var(--mui-palette-text-primary, #0f172a);
 
   --font-sans:
-    var(--font-comfortaa), 'Comfortaa', ui-sans-serif, system-ui, sans-serif,
+    var(--font-manrope), 'Manrope', ui-sans-serif, system-ui, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-body: var(--font-sans);
   --font-display: var(--font-body);

@@ -42,7 +42,8 @@ const AppPageContainer = ({
         },
         ...(embedded && {
           p: 0,
-          pb: floatingAction ? '72px' : 0,
+          // 56px action + 16px bottom offset + 16px clearance, including safe area/navigation.
+          pb: floatingAction ? 'calc(88px + var(--app-bottom-navigation-space, 0px))' : 0,
           minHeight: 0,
           flex: 1,
           bgcolor: 'transparent',

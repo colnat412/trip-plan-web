@@ -20,9 +20,10 @@ import type { Theme } from '@mui/material/styles';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppCard, AppConfirmDialog, AppEmptyState, AppFinanceRow } from '@/base/components/ui';
+import { AppCard, AppConfirmDialog, AppEmptyState } from '@/base/components/ui';
 import { formatCurrency, formatDateTime, getUserInitials } from '@/base/utils';
 import type { Settlement } from '../types';
+import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
 export interface SettlementHistoryTableProps {
   settlements: Settlement[];
@@ -77,26 +78,40 @@ const SettlementHistoryTable = ({
           borderColor: 'divider',
           bgcolor: 'background.paper',
           overflow: 'hidden',
-          p: 0,
+          // A flex page must scroll this card, never shrink and clip its rows.
+          flexShrink: 0,
+          width: '100%',
+          minWidth: 0,
+          // AppCard's responsive padding must be overridden at the same breakpoints.
+          p: { xs: 0, sm: 0 },
         }}
       >
-        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-          {settlements.map((settlement) => (
-            <AppFinanceRow key={settlement.id}
-              compact
-              icon={<Avatar src={settlement.payerAvatarUrl || undefined} sx={{ width: 32, height: 32, fontSize: '13px' }}>{getUserInitials(settlement.payerName || '')}</Avatar>}
-              title={`${settlement.payerName || '—'} → ${settlement.payeeName || '—'}`}
-              subtitle={<>{formatDateTime(settlement.settledAt)} · {t(settlement.paymentMethod === 'BANK_TRANSFER' ? 'methodBank' : settlement.paymentMethod === 'CASH' ? 'methodCash' : 'methodOther')}
-                {settlement.note && <><br />{settlement.note}</>}</>}
-              amount={formatCurrency(settlement.amount, settlement.currency)}
-              actionPlacement="amount"
-              action={onDelete && (canDelete?.(settlement) ?? true) ? (
-                <IconButton aria-label={t('deleteConfirm.title')} onClick={() => setSelectedSettlement(settlement)} sx={deleteButtonSx}>
-                  <Box component="span" className="settlement-delete-glyph"><CloseRoundedIcon sx={{ fontSize: 16 }} /></Box>
-                </IconButton>
-              ) : undefined}
-            />
-          ))}
+        <Box role="list" sx={{ display: { xs: 'block', sm: 'none' }, px: 2.5 }}>
+          {settlements.map((settlement) => {
+            const title = `${settlement.payerName || '—'} → ${settlement.payeeName || '—'}`;
+            const date = formatDateTime(settlement.settledAt);
+            const method = t(settlement.paymentMethod === 'BANK_TRANSFER' ? 'methodBank' : settlement.paymentMethod === 'CASH' ? 'methodCash' : 'methodOther');
+            return (
+              <Box key={settlement.id} role="listitem" sx={{ ...rowStyles.row,
+                borderBottom: 1, borderColor: 'divider', '&:last-child': { borderBottom: 0 } }}>
+                <Avatar src={settlement.payerAvatarUrl || undefined} sx={rowStyles.avatar}>{getUserInitials(settlement.payerName || '')}</Avatar>
+                <Box sx={rowStyles.identity}>
+                  <Typography noWrap title={title} sx={rowStyles.primary}>{title}</Typography>
+                  <Typography noWrap title={date} sx={rowStyles.secondary}>{date}</Typography>
+                  <Typography noWrap title={method} sx={rowStyles.secondary}>{method}</Typography>
+                  {settlement.note && <Typography sx={{ ...rowStyles.secondary, overflowWrap: 'anywhere' }}>{settlement.note}</Typography>}
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
+                  <Typography sx={rowStyles.amount}>{formatCurrency(settlement.amount, settlement.currency)}</Typography>
+                  {onDelete && (canDelete?.(settlement) ?? true) && (
+                    <IconButton aria-label={t('deleteConfirm.title')} onClick={() => setSelectedSettlement(settlement)} sx={deleteButtonSx}>
+                      <Box component="span" className="settlement-delete-glyph"><CloseRoundedIcon sx={{ fontSize: 16 }} /></Box>
+                    </IconButton>
+                  )}
+                </Box>
+              </Box>
+            );
+          })}
         </Box>
         <TableContainer sx={{ display: { xs: 'none', sm: 'block' } }}>
           <Table sx={{ minWidth: 650 }}>

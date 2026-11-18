@@ -1,7 +1,7 @@
 export const loadCanvasFont = async (body: HTMLElement = document.body) => {
   const fontFamily = getComputedStyle(body).fontFamily;
 
-  // Ví dụ: 'Comfortaa, "Comfortaa Fallback", sans-serif' → 'Comfortaa'.
+  // Ví dụ: 'Manrope, "Manrope Fallback", sans-serif' → 'Manrope'.
   // Tên font có dấu phẩy trong dấu ngoặc kép vẫn được giữ nguyên.
   const firstFamily = fontFamily.match(/^("[^"]+"|'[^']+'|[^,]+)/u);
   const primaryFontFamily = firstFamily?.[0].trim();

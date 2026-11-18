@@ -1,4 +1,8 @@
 {
+  "deviceExperience": {
+    "message": "Trải nghiệm thuận tiện hơn trên điện thoại. Bạn vẫn có thể sử dụng đầy đủ trên máy tính.",
+    "dismiss": "Đóng gợi ý sử dụng điện thoại"
+  },
   "select": {
     "searchPlaceholder": "Tìm lựa chọn...",
     "searchLabel": "Tìm trong {label}",
@@ -573,7 +577,7 @@
       "filterExpensePlaceholder": "Tìm kiếm chi tiêu...",
       "filterPayerPlaceholder": "Tìm người chi...",
       "displayedRows": "{from}–{to} trên {count}",
-      "dayTotal": "Tổng ngày"
+      "dayTotal": ""
     },
     "row": {
       "edit": "Chỉnh sửa",

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
 
 import AppTopBar from './AppTopBar';
+import AppDeviceHint from './AppDeviceHint';
 import AppTripWorkspace from './AppTripWorkspace';
 import AppBottomNavigation from './AppBottomNavigation';
 import CreateTripHost from './CreateTripHost';
@@ -71,6 +72,7 @@ const AppShell = ({
       })}
     >
       <AppTopBar guest={!withAccount} />
+      {withAccount && <AppDeviceHint />}
       <Box
         component="main"
         ref={mainRef}

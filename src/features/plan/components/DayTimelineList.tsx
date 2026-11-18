@@ -66,7 +66,7 @@ const DayTimelineList = ({
       sx={{
         width: '100%',
         minWidth: 0,
-        p: 0,
+        p: { xs: 0, sm: 0 },
         borderRadius: 'var(--app-radius-card)',
         overflow: 'visible',
       }}

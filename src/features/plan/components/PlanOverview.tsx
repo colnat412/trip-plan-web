@@ -62,6 +62,7 @@ import PlanHeader from './PlanHeader';
 import ActivityLogDialog from './ActivityLogDialog';
 import AiPlannerDialog from './AiPlannerDialog';
 import PlanMapPanel from './PlanMapPanel';
+import PlanMapWorkspace from './PlanMapWorkspace';
 import { useRouter } from 'next/navigation';
 
 const PlanOverview = ({
@@ -364,9 +365,20 @@ const PlanOverview = ({
   }
 
   return (
-    <AppPageContainer embedded floatingAction={canWrite && selectedDay && !isLoading && !isStale && !planError && !activitiesError ? (
+    <AppPageContainer embedded sx={{ gap: 0 }} floatingAction={canWrite && selectedDay && !isLoading && !isStale && !planError && !activitiesError ? (
       <AppFloatingActionButton label={t('addActivity')} onClick={() => setAddActivityOpen(true)} />
     ) : undefined}>
+      <PlanMapWorkspace
+        map={(bottomInset) => !isLoading && !isStale && !planError && !activitiesError && selectedDay ? (
+          <PlanMapPanel key={`plan-map:${tripId}`} activities={dayActivities}
+            loadingActivities={isLoadingActivities} destination={activeTrip.destination} bottomInset={bottomInset} />
+        ) : null}
+        navigation={!isLoading && !isStale && !planError && days.length > 0 ? (
+          <PlanDayTabs days={days} selectedDayId={activeDayId}
+            currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
+            onSelectDay={(dayId) => setSelectedDayId(dayId)} />
+        ) : null}
+      >
       {isLoading || (isStale && !planError) ? null : !planError ? (
         <PlanHeader
           totalDays={overview?.totalDays ?? overview?.days.length ?? 0}
@@ -389,26 +401,6 @@ const PlanOverview = ({
           onOpenExport={() =>
             router.push(`/export/plan/${encodeURIComponent(String(tripId))}`)
           }
-        />
-      ) : null}
-
-      {!isLoading && !isStale && !planError && !activitiesError &&
-        selectedDay && (
-          <PlanMapPanel
-            key={`plan-map:${tripId}`}
-            activities={dayActivities}
-            loadingActivities={isLoadingActivities}
-            destination={activeTrip.destination}
-          />
-        )}
-
-      {isLoading || (isStale && !planError) ? null : !planError &&
-        days.length > 0 ? (
-        <PlanDayTabs
-          days={days}
-          selectedDayId={activeDayId}
-          currency={overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'}
-          onSelectDay={(dayId) => setSelectedDayId(dayId)}
         />
       ) : null}
 
@@ -483,6 +475,8 @@ const PlanOverview = ({
           </Box>
         </Box>
       )}
+
+      </PlanMapWorkspace>
 
       <AddActivityDialog
         destination={overview?.destination ?? activeTrip?.destination ?? ''}

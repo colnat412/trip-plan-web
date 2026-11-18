@@ -16,6 +16,9 @@ import type { Trip } from '../../types';
 import TripStatusBadge from '../TripStatusBadge';
 import TripWeatherText from './TripWeatherText';
 
+// Only the decorative seam is masked; text and member controls remain untouched.
+const TICKET_EDGE_MASK = 'radial-gradient(circle 10px at left center, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at right center, transparent 98%, #000) right / 51% 100% no-repeat';
+
 interface ActiveTripBannerProps {
   trip: Trip;
   compact?: boolean;
@@ -104,70 +107,81 @@ const ActiveTripBanner = ({
           >
             {trip.name}
           </Typography>
-          <Stack
-            direction={{ xs: 'column', sm: 'row' }}
-            useFlexGap
-            sx={{
-              alignItems: 'flex-start',
-              flexWrap: 'wrap',
-              rowGap: '8px',
-              columnGap: '16px',
-              minWidth: 0,
-            }}
-          >
-            {trip.destination && (
-              <Stack
-                direction="row"
-                useFlexGap
-                sx={{ alignItems: 'flex-start', gap: '6px', minWidth: 0 }}
-              >
-                <LocationOnRoundedIcon
-                  sx={{ fontSize: '16px', flexShrink: 0, mt: '2.5px' }}
-                />
-                <Typography
-                  sx={{
-                    fontSize: '14px',
-                    overflowWrap: 'anywhere',
-                    color: 'inherit',
-                    lineHeight: 1.5,
-                  }}
-                >
-                  {trip.destination}
-                </Typography>
-              </Stack>
-            )}
-            <Stack
-              direction="row"
-              useFlexGap
-              sx={{
-                alignItems: 'center',
-                gap: '12px',
-                minWidth: 0,
-                maxWidth: '100%',
-              }}
-            >
-              <Stack
-                direction="row"
-                useFlexGap
-                sx={{ alignItems: 'center', gap: '6px', minWidth: 0 }}
-              >
-                <CalendarTodayRoundedIcon
-                  sx={{ fontSize: '16px', flexShrink: 0 }}
-                />
-                <Typography
-                  sx={{ fontSize: '14px', color: 'inherit', lineHeight: 1.5 }}
-                >
-                  {formatDateRange(trip.startDate, trip.endDate, 'DD/MM/YYYY')}
-                </Typography>
-              </Stack>
-              <TripWeatherText
-                key={`${trip.id}:${trip.startDate}:${trip.endDate}:${trip.destination}`}
-                trip={trip}
-              />
-            </Stack>
-          </Stack>
         </Stack>
       </Box>
+      <Box aria-hidden="true" sx={{
+        height: 24, display: 'flex', alignItems: 'center', px: compact ? 2 : 3,
+        bgcolor: 'background.paper', mask: TICKET_EDGE_MASK, WebkitMask: TICKET_EDGE_MASK,
+        '&::before': { content: '""', width: '100%', borderTop: '1px dashed', borderColor: 'divider' },
+        '@media (forced-colors: active)': { mask: 'none', WebkitMask: 'none' },
+      }} />
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        useFlexGap
+        sx={{
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          px: compact ? { xs: 2, sm: 2.5 } : { xs: 2.5, sm: 3 },
+          pb: compact ? { xs: 2, sm: 2.5 } : { xs: 2.5, sm: 3 },
+          pt: 0.5,
+          bgcolor: 'background.paper', color: 'text.primary',
+          rowGap: '8px',
+          columnGap: '16px',
+          minWidth: 0,
+        }}
+      >
+        {trip.destination && (
+          <Stack
+            direction="row"
+            useFlexGap
+            sx={{ alignItems: 'flex-start', gap: '6px', minWidth: 0 }}
+          >
+            <LocationOnRoundedIcon
+              sx={{ fontSize: '16px', flexShrink: 0, mt: '2.5px' }}
+            />
+            <Typography
+              sx={{
+                fontSize: '14px',
+                overflowWrap: 'anywhere',
+                color: 'inherit',
+                lineHeight: 1.5,
+              }}
+            >
+              {trip.destination}
+            </Typography>
+          </Stack>
+        )}
+        <Stack
+          direction="row"
+          useFlexGap
+          sx={{
+            alignItems: 'center',
+            gap: '12px',
+            minWidth: 0,
+            maxWidth: '100%',
+          }}
+        >
+          <Stack
+            direction="row"
+            useFlexGap
+            sx={{ alignItems: 'center', gap: '6px', minWidth: 0 }}
+          >
+            <CalendarTodayRoundedIcon
+              sx={{ fontSize: '16px', flexShrink: 0 }}
+            />
+            <Typography
+              sx={{ fontSize: '14px', color: 'inherit', lineHeight: 1.5 }}
+            >
+              {formatDateRange(trip.startDate, trip.endDate, 'DD/MM/YYYY')}
+            </Typography>
+          </Stack>
+          <TripWeatherText
+            key={`${trip.id}:${trip.startDate}:${trip.endDate}:${trip.destination}`}
+            trip={trip}
+          />
+        </Stack>
+      </Stack>
       {!compact && Boolean(trip.description?.trim()) && (
         <Box
           sx={{
@@ -177,10 +191,8 @@ const ActiveTripBanner = ({
             gap: 2,
             p: { xs: 2.5, sm: 3 },
             bgcolor: 'background.paper',
-            border: 1,
-            borderTop: 0,
+            borderTop: 1,
             borderColor: 'divider',
-            borderRadius: '0 0 var(--app-radius-panel) var(--app-radius-panel)',
           }}
         >
           <Typography

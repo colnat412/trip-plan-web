@@ -40,12 +40,11 @@ const CategorySpendingChart = ({ breakdown, currency, totalBudget, compact = fal
       ...theme.applyStyles('dark', { color: overBudget ? palette.error.light : palette.text.primary }),
     };
   };
-  const percent = new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 });
   const centerLabel = selectedItem ? label(selectedItem.category) : t('spent');
   const centerAmount = selectedItem?.spentAmount ?? totalSpent;
   const centerBudget = selectedItem ? selectedItem.limitAmount : Math.max(0, Number.isFinite(totalBudget) ? totalBudget : 0);
   const fullAmount = money(centerAmount);
-  const compactMoney = (value: number) => formatCompactCurrency(value, currency, locale);
+  const compactMoney = (value: number) => formatCompactCurrency(value, currency, locale).replace(/ VND$/, '');
   const displayAmount = `${compactMoney(centerAmount)} / ${centerBudget > 0 ? compactMoney(centerBudget) : t('notSet')}`;
   const summary = t('categorySummary', { category: selectedItem ? centerLabel : t('allCategories'),
     spent: fullAmount, budget: centerBudget > 0 ? money(centerBudget) : t('notSet') });
@@ -87,11 +86,10 @@ const CategorySpendingChart = ({ breakdown, currency, totalBudget, compact = fal
               p: 0, m: 0, listStyle: 'none', flex: 1, minWidth: 0 }}>
               {categories.map(item => {
                 const selected = selectedItem?.category === item.category;
-                const percentage = percent.format(totalSpent > 0 ? item.spentAmount / totalSpent : 0);
                 const overAmount = item.limitAmount > 0 ? Math.max(0, item.spentAmount - item.limitAmount) : 0;
                 const details = t('categorySummary', { category: label(item.category), spent: money(item.spentAmount),
                   budget: item.limitAmount > 0 ? money(item.limitAmount) : t('notSet') });
-                const accessibleLabel = `${details}. ${t('spendingShare')}: ${percentage}${overAmount > 0 ? `. ${t('overBudget', { amount: money(overAmount) })}` : ''}`;
+                const accessibleLabel = `${details}${overAmount > 0 ? `. ${t('overBudget', { amount: money(overAmount) })}` : ''}`;
                 return (
                   <Box component="li" key={item.category} sx={{ minWidth: 0 }}>
                     <AppButton intent="text" fullWidth disableRipple aria-pressed={selected} aria-label={accessibleLabel} title={accessibleLabel}
@@ -105,7 +103,6 @@ const CategorySpendingChart = ({ breakdown, currency, totalBudget, compact = fal
                       </Box>
                       <Box component="span" sx={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', flexWrap: 'wrap', gap: 0.75,
                         minWidth: 0, maxWidth: '100%', fontVariantNumeric: 'tabular-nums' }}>
-                        <Box component="span" sx={{ fontSize: '12px', color: 'text.secondary' }}>{percentage}</Box>
                         <Box component="span" sx={[{ fontSize: '12px', fontWeight: 700, textAlign: 'right', whiteSpace: 'normal', overflowWrap: 'anywhere' },
                           amountTextSx(overAmount > 0)]}>{money(item.spentAmount)}</Box>
                       </Box>

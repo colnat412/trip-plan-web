@@ -42,10 +42,7 @@ const AppCategoryIcon = ({ category, size = 40, bare = false }: AppCategoryIconP
           width: size,
           height: size,
           flexShrink: 0,
-          borderRadius: '50%',
-          bgcolor: bare ? 'transparent' : tone
-            ? `color-mix(in srgb, ${palette[tone].main} 10%, ${palette.background.paper})`
-            : palette.action.selected,
+          bgcolor: 'transparent',
           color: tone ? palette[tone].dark : palette.text.secondary,
           '& .MuiSvgIcon-root': { fontSize: Math.round(size * (bare ? 0.85 : 0.55)) },
           ...theme.applyStyles('dark', {

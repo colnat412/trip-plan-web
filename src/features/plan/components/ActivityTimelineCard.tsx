@@ -1,7 +1,5 @@
 'use client';
 
-import { useRef } from 'react';
-import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
@@ -92,25 +90,14 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
   const t = useTranslations('plan');
   const tStatus = useTranslations('plan.statuses');
   const tDialog = useTranslations('plan.dialog');
-  const tImage = useTranslations('imageUpload');
-  const imageInput = useRef<HTMLInputElement>(null);
   const photo = useActivityImage({ id: activity.id, tripId: activity.tripId,
     imageUrl: imageUrl ?? activity.imageUrl }, readOnly, onImageSaved);
   const canChangeImage = !readOnly && Boolean(activity.id && activity.tripId);
-  const hasActions = !readOnly && (canChangeImage || Boolean(onToggleStatus || onConvertToExpense || onEdit || onDelete));
+  const hasActions = !readOnly && Boolean(onToggleStatus || onConvertToExpense || onEdit || onDelete);
   const isCompleted = activity.status === 'COMPLETED';
   const menuItems: AppActionMenuItem[] = readOnly
     ? []
     : [
-        ...(canChangeImage ? [
-          {
-            id: 'change-image',
-            label: tImage(photo.src ? 'change' : 'choose'),
-            icon: <AddPhotoAlternateOutlinedIcon fontSize="small" />,
-            disabled: photo.busy,
-            onClick: () => { imageInput.current?.click(); },
-          },
-        ] : []),
         ...(onToggleStatus
           ? [
               {
@@ -198,7 +185,6 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
       media={canChangeImage ? (
         <>
           <AppImageUploader
-            inputRef={imageInput}
             src={photo.src}
             file={photo.pendingFile}
             alt={activity.title}

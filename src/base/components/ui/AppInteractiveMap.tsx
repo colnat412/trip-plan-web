@@ -35,10 +35,11 @@ export interface AppInteractiveMapProps {
   selectedId?: string;
   onSelectStop?: (id: string) => void;
   fitVersion?: number;
+  bottomInset?: number;
 }
 
 const AppInteractiveMap = ({
-  coordinates, title, stops, selectedId, onSelectStop, fitVersion = 0,
+  coordinates, title, stops, selectedId, onSelectStop, fitVersion = 0, bottomInset = 0,
 }: AppInteractiveMapProps) => {
   const theme = useTheme();
   const t = useTranslations('interactiveMap');
@@ -188,8 +189,10 @@ const AppInteractiveMap = ({
     if (!points.length) return;
     const bounds = new library.LngLatBounds();
     points.forEach(([, latitude, longitude]) => bounds.extend([longitude, latitude]));
-    map.fitBounds(bounds, { padding: 64, maxZoom: 14, duration: 0 });
-  }, [fitKey, styleVersion, fitVersion, useFallback]);
+    const padding = bottomInset > 0 ? { top: 24, right: 48, left: 48,
+      bottom: Math.min(bottomInset + 24, Math.max(24, map.getCanvas().clientHeight - 120)) } : 64;
+    map.fitBounds(bounds, { padding, maxZoom: 14, duration: 0 });
+  }, [fitKey, styleVersion, fitVersion, useFallback, bottomInset]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -206,7 +209,8 @@ const AppInteractiveMap = ({
         title={title} loading="lazy" sx={{ width: '100%', height: '100%', border: 0 }} />
     );
     return (
-      <Stack spacing={2} role="status" sx={{ height: '100%', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+      <Stack spacing={2} role="status" sx={{ height: bottomInset > 0 ? `calc(100% - ${bottomInset}px)` : '100%',
+        overflow: 'auto', alignItems: 'center', justifyContent: 'center', p: 2 }}>
         <Typography>{t('unavailable')}</Typography>
         <AppButton intent="secondary" onClick={() => setUseFallback(false)}>{t('retry')}</AppButton>
       </Stack>

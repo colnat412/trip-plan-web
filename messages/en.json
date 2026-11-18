@@ -1,4 +1,8 @@
 {
+  "deviceExperience": {
+    "message": "For the best experience, use your phone. All features remain available on desktop.",
+    "dismiss": "Dismiss mobile experience tip"
+  },
   "select": {
     "searchPlaceholder": "Search options...",
     "searchLabel": "Search in {label}",
