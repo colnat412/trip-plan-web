@@ -38,6 +38,7 @@ const AppTable = <T,>({
   renderMobileRow,
   isLoading = false,
   isFetching = false,
+  loadingScope = 'page',
   pagination,
   emptyState,
   emptyContent,
@@ -311,7 +312,7 @@ const AppTable = <T,>({
       {renderMobileRow && (
         <Stack sx={{ display: { xs: 'flex', sm: 'none' }, minWidth: 0 }}>
           {shouldShowLoading ? (
-            <AppLoadingState />
+            <AppLoadingState local={loadingScope === 'local'} />
           ) : displayData.length === 0 ? (
             <AppEmptyState
               title={
@@ -392,7 +393,7 @@ const AppTable = <T,>({
             {shouldShowLoading ? (
               <TableRow>
                 <TableCell colSpan={columns.length}>
-                  <AppLoadingState />
+                  <AppLoadingState local={loadingScope === 'local'} />
                 </TableCell>
               </TableRow>
             ) : displayData.length === 0 ? (

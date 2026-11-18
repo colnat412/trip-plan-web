@@ -1425,7 +1425,7 @@
     "activity": "Hôm nay bạn muốn làm gì?",
     "suggestions": "Khám phá {destination}",
     "search": "Tìm địa điểm hoặc hoạt động",
-    "manual": "Tự thêm hoạt động",
+    "manual": "Thêm thủ công",
     "choose": "Chọn địa điểm",
     "selected": "Đã chọn",
     "optional": "Thêm giờ, chi phí và ghi chú",
@@ -1439,6 +1439,9 @@
     "mascot": "Rái cá đồng hành",
     "review": "Kiểm tra lại chuyến đi của bạn",
     "startHint": "Chọn một điểm đến, mình cùng lên đường nhé.",
+    "discoveryDestinationRequired": "Cần điểm đến của chuyến đi để gợi ý đúng khu vực.",
+    "discoverySearchMinLength": "Nhập ít nhất 2 ký tự để tìm địa điểm.",
+    "discoverySearchRequired": "Nhập địa điểm bạn muốn tìm hoặc tự thêm hoạt động.",
     "categoryKeywords": {
       "FOOD_BEVERAGE": "nhà hàng",
       "VISIT": "địa điểm tham quan",

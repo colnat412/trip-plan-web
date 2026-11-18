@@ -311,66 +311,57 @@ const ExpenseOverview = () => {
         />
       </Box>
 
-      <Box sx={{
-        display: 'grid',
-        gridTemplateColumns: { xs: 'minmax(0, 1fr)', xl: 'minmax(0, 1fr) 340px' },
-        gap: 3,
-        alignItems: 'start',
-      }}>
-        <Box sx={{ minWidth: 0, gridColumn: summary?.categoryBreakdown ? undefined : '1 / -1' }}>
-          <ExpenseTable
-            expenses={expenses}
-            dailyTotals={summary?.dailyTotals}
-            isLoading={isExpensesLoading || isSummaryLoading}
-            isFetching={isExpensesFetching}
-            pagination={pagination}
-            onPageChange={(newPage) => setPage(newPage)}
-            onViewDetail={(expense) => setDetailExpense(expense)}
-            sort={sort}
-            onSortChange={handleSortChange}
-            filters={activeFilters}
-            onFilterChange={SHOW_EXPENSE_FILTERS ? handleFilterChange : undefined}
-            readOnly={!canWrite}
+      {summary?.categoryBreakdown && (
+        <Stack spacing={1.5} sx={{ minWidth: 0 }}>
+          <CategorySpendingChart
+            compact
+            key={String(tripId)}
+            breakdown={summary.categoryBreakdown}
+            currency={summary.currency || activeTrip.baseCurrency}
+            totalBudget={summary.totalBudget}
           />
-        </Box>
-        {summary?.categoryBreakdown && (
-          <Stack spacing={1.5} sx={{ minWidth: 0 }}>
-            <CategorySpendingChart
-              compact
-              key={String(tripId)}
-              breakdown={summary.categoryBreakdown}
-              currency={summary.currency || activeTrip.baseCurrency}
-              totalBudget={summary.totalBudget}
-            />
-            {SHOW_CATEGORY_BUDGET_DETAILS && summary.categoryBreakdown.some(
-              (item) => item.spentAmount > 0 || item.limitAmount > 0,
-            ) && (
-              <Box component="details">
-                <Box
-                  component="summary"
-                  sx={{
-                    cursor: 'pointer',
-                    color: 'primary.main',
-                    py: 1.5,
-                    fontSize: '14px',
-                    fontWeight: 600,
-                  }}
-                >
-                  {t('spendingChart.budgetDetails')}
-                </Box>
-                <CategorySpendingList
-                  breakdown={summary.categoryBreakdown}
-                  currency={summary.currency || activeTrip.baseCurrency}
-                  onOpenSetBudget={
-                    canManage ? () => setSetBudgetOpen(true) : undefined
-                  }
-                />
+          {SHOW_CATEGORY_BUDGET_DETAILS && summary.categoryBreakdown.some(
+            (item) => item.spentAmount > 0 || item.limitAmount > 0,
+          ) && (
+            <Box component="details">
+              <Box
+                component="summary"
+                sx={{
+                  cursor: 'pointer',
+                  color: 'primary.main',
+                  py: 1.5,
+                  fontSize: '14px',
+                  fontWeight: 600,
+                }}
+              >
+                {t('spendingChart.budgetDetails')}
               </Box>
-            )}
-          </Stack>
-        )}
+              <CategorySpendingList
+                breakdown={summary.categoryBreakdown}
+                currency={summary.currency || activeTrip.baseCurrency}
+                onOpenSetBudget={
+                  canManage ? () => setSetBudgetOpen(true) : undefined
+                }
+              />
+            </Box>
+          )}
+        </Stack>
+      )}
 
-      </Box>
+      <ExpenseTable
+        expenses={expenses}
+        dailyTotals={summary?.dailyTotals}
+        isLoading={isExpensesLoading || isSummaryLoading}
+        isFetching={isExpensesFetching}
+        pagination={pagination}
+        onPageChange={(newPage) => setPage(newPage)}
+        onViewDetail={(expense) => setDetailExpense(expense)}
+        sort={sort}
+        onSortChange={handleSortChange}
+        filters={activeFilters}
+        onFilterChange={SHOW_EXPENSE_FILTERS ? handleFilterChange : undefined}
+        readOnly={!canWrite}
+      />
 
       <ExpenseDetailDialog
         open={Boolean(detailExpense)}

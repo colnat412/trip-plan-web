@@ -66,6 +66,8 @@ export interface AppTableProps<T> {
   keyExtractor?: (item: T, index: number) => string | number;
   isLoading?: boolean;
   isFetching?: boolean;
+  /** Local keeps page controls visible while the table's results load. */
+  loadingScope?: 'page' | 'local';
   loadingRowsCount?: number;
   pagination?: AppTablePaginationProps | null;
   emptyState?: AppTableEmptyStateProps;

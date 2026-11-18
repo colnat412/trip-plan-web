@@ -197,6 +197,7 @@ const TripItineraryPreview = ({ trip, now }: TripItineraryPreviewProps) => {
         !finished && (
           <AddActivityDialog
             open
+            destination={trip.destination}
             onClose={() => setAddingDayId(null)}
             tripCurrency={trip.baseCurrency}
             planDate={days.find((day) => day.id === addingDayId)?.planDate}

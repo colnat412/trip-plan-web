@@ -7,7 +7,6 @@ import { Box, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import {
-  AppButton,
   AppImageUploader,
   AppToast,
   AppTimePicker,
@@ -32,20 +31,20 @@ import type {
 import LocationAutocompleteInput from './LocationAutocompleteInput';
 
 export interface EditActivityFormProps {
+  formId: string;
   activity: PlanActivity;
   tripCurrency?: string;
   isLoading?: boolean;
   onSubmit: (payload: UpdateActivityPayload) => void | Promise<unknown>;
-  onCancel: () => void;
   onSavingChange?: (saving: boolean) => void;
 }
 
 const EditActivityForm = ({
+  formId,
   activity,
   tripCurrency = 'VND',
   isLoading = false,
   onSubmit,
-  onCancel,
   onSavingChange,
 }: EditActivityFormProps) => {
   const tToast = useTranslations('plan.toasts');
@@ -149,7 +148,7 @@ const EditActivityForm = ({
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+    <Box id={formId} component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
       <Stack spacing={2.5}>
         <AppImageUploader
           src={activity.imageUrl}
@@ -263,21 +262,6 @@ const EditActivityForm = ({
           fullWidth
         />
 
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: 1.5,
-            pt: 1,
-          }}
-        >
-          <AppButton data-dialog-action="cancel" intent="secondary" onClick={onCancel} disabled={busy}>
-            {tDialog('cancelBtn')}
-          </AppButton>
-          <AppButton data-dialog-action="primary" type="submit" intent="primary" loading={busy}>
-            {tDialog('saveBtn')}
-          </AppButton>
-        </Box>
       </Stack>
     </Box>
   );

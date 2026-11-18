@@ -7,7 +7,7 @@ import { requireMapsAccess, readMapsBody } from './maps-access';
 
 export async function forwardMaps(
   request: NextRequest,
-  path: '/maps/places' | '/maps/location' | '/maps/distance',
+  path: '/maps/places' | '/maps/location' | '/maps/distance' | '/maps/discovery',
   regionsOnly = false,
 ) {
   const denied = await requireMapsAccess(request);
@@ -36,6 +36,10 @@ export async function forwardMaps(
             q: query.get('q') || '',
             lang: query.get('lang') || 'vi',
             regionsOnly,
+            ...(path === '/maps/discovery' ? {
+              destination: query.get('destination') || '',
+              category: query.get('category') || '',
+            } : {}),
           },
       data: isDistanceRequest ? await readMapsBody(request) : undefined,
       headers: {

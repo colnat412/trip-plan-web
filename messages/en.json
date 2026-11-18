@@ -1425,7 +1425,7 @@
     "activity": "What would you like to do today?",
     "suggestions": "Explore {destination}",
     "search": "Find a place or an activity",
-    "manual": "Add your own activity",
+    "manual": "Add manually",
     "choose": "Choose a place",
     "selected": "Selected",
     "optional": "Add time, cost and notes",
@@ -1439,6 +1439,9 @@
     "mascot": "Your otter companion",
     "review": "Review your trip",
     "startHint": "Pick a destination. Let’s plan your next adventure.",
+    "discoveryDestinationRequired": "A trip destination is needed for local suggestions.",
+    "discoverySearchMinLength": "Enter at least 2 characters to find a place.",
+    "discoverySearchRequired": "Search for a place or add an activity yourself.",
     "categoryKeywords": {
       "FOOD_BEVERAGE": "restaurant",
       "VISIT": "tourist attraction",

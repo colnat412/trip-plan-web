@@ -48,6 +48,8 @@ export interface AppDialogProps {
   hasUnsavedChanges?: boolean;
   mobileCloseLabel?: string;
   contentRef?: Ref<HTMLDivElement>;
+  /** Opt in when a child region, rather than the whole dialog body, owns scrolling. */
+  contentScroll?: 'dialog' | 'children';
   showSheetHandle?: boolean;
   hideHeader?: boolean;
   headerActions?: ReactNode;
@@ -73,6 +75,7 @@ const AppDialog = ({
   mobilePresentation = 'sheet',
   mobileCloseLabel,
   contentRef,
+  contentScroll = 'dialog',
   showSheetHandle = false,
   hideHeader = false,
   headerActions,
@@ -321,12 +324,14 @@ const AppDialog = ({
             gap: 2.5,
             minHeight: 0,
             ...(isSheet && { flex: '0 1 auto' }),
-            overflowY: 'auto',
+            ...(contentScroll === 'children' && { flex: '1 1 0' }),
+            overflowY: contentScroll === 'children' ? 'hidden' : 'auto',
             overscrollBehaviorY: 'contain',
           }}
         >
-          <AppPageLoadingProvider scope="section">
-            <Box sx={{ ...contentColumn, gap: 2.5 }}>{children}</Box>
+          <AppPageLoadingProvider scope="section" contained={contentScroll === 'children'}>
+            <Box sx={{ ...contentColumn, gap: 2.5,
+              ...(contentScroll === 'children' && { flex: '1 1 0', overflow: 'hidden' }) }}>{children}</Box>
           </AppPageLoadingProvider>
         </DialogContent>
 

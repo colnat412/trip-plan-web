@@ -9,7 +9,12 @@ export const AppPageLoadingContext = createContext<{
   registerLoading: () => () => void;
 } | null>(null);
 
-const AppPageLoadingProvider = ({ children, scope = 'page' }: { children: ReactNode; scope?: 'page' | 'section' }) => {
+const AppPageLoadingProvider = ({ children, scope = 'page', contained = false }: {
+  children: ReactNode;
+  scope?: 'page' | 'section';
+  /** Keep wrappers within their parent when children own scrolling. */
+  contained?: boolean;
+}) => {
   // Each mounted section owns a token. Keep aggregating after the first load:
   // changing trips, retrying and dependent queries must use the same boundary.
   const [pending, setPending] = useState<Set<symbol>>(() => new Set());
@@ -27,12 +32,13 @@ const AppPageLoadingProvider = ({ children, scope = 'page' }: { children: ReactN
   }, []);
   const context = useMemo(() => ({ registerLoading }), [registerLoading]);
   const isPageLoading = pending.size > 0;
+  const columnSx = { ...contentColumn, ...(contained && { flex: '1 1 0', overflow: 'hidden' }) };
 
   return (
     <AppPageLoadingContext.Provider value={context}>
-      <Box aria-busy={isPageLoading} sx={{ ...contentColumn, pb: isPageLoading && scope === 'page' ? 'var(--app-bottom-navigation-space, 0px)' : 0 }}>
+      <Box aria-busy={isPageLoading} sx={{ ...columnSx, pb: isPageLoading && scope === 'page' ? 'var(--app-bottom-navigation-space, 0px)' : 0 }}>
         {/* Keep queries mounted while their content is hidden. */}
-        <Box hidden={isPageLoading} inert={isPageLoading} sx={{ ...contentColumn, display: isPageLoading ? 'none' : 'flex' }}>
+        <Box hidden={isPageLoading} inert={isPageLoading} sx={{ ...columnSx, display: isPageLoading ? 'none' : 'flex' }}>
           {children}
         </Box>
         <AppLoadingOverlay open={isPageLoading} scope="content" />

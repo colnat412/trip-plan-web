@@ -27,6 +27,7 @@ import TripStatusChip from './TripStatusChip';
 import TripCompactCard from './TripCompactCard';
 import type { Trip } from '../../types';
 import { calculateTripDays } from '../../utils/helper';
+import { getTripCoverUrl } from '../../utils/trip-cover';
 
 export interface TripCardItemProps {
   trip: Trip;
@@ -94,7 +95,7 @@ const TripCardItem = ({
           }}
         >
           <Avatar
-            src={trip.coverUrl ?? undefined}
+            src={getTripCoverUrl(trip)}
             alt={trip.name}
             variant="square"
             sx={{

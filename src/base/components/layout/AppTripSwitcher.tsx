@@ -23,6 +23,7 @@ import { useTranslations } from 'next-intl';
 
 import TripSwitcherResults from '@/features/trip/components/TripSwitcherResults';
 import { useTripContext } from '@/features/trip/context/TripContext';
+import { getTripCoverUrl } from '@/features/trip/utils/trip-cover';
 
 interface AppTripSwitcherProps {
   actions?: ReactNode;
@@ -121,12 +122,13 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
           sx={{ width: '100%', minWidth: 0, alignItems: 'center' }}
         >
           <Avatar
-            src={activeTrip.coverUrl ?? undefined}
+            src={getTripCoverUrl(activeTrip)}
             alt={activeTrip.name}
             variant="rounded"
             sx={{
               width: 32,
               height: 32,
+              borderRadius: 'var(--app-radius-small)',
               bgcolor: 'action.selected',
               color: 'primary.main',
               flexShrink: 0,

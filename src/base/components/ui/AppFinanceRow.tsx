@@ -7,6 +7,7 @@ import { useFinanceStyle } from '@/base/providers/FinanceStyleProvider';
 export interface AppFinanceRowProps {
   icon: ReactNode;
   title: string;
+  titleAdornment?: ReactNode;
   subtitle?: ReactNode;
   amount: ReactNode;
   amountCaption?: ReactNode;
@@ -23,6 +24,7 @@ export interface AppFinanceRowProps {
 const AppFinanceRow = ({
   icon,
   title,
+  titleAdornment,
   subtitle,
   amount,
   amountCaption,
@@ -36,11 +38,11 @@ const AppFinanceRow = ({
 }: AppFinanceRowProps) => {
   const finance = useFinanceStyle();
   const isCompact = compact || finance || dense;
-  const titleContent = (
+  const titleLabel = (
     <Typography
       component="span"
       sx={{
-        flex: isCompact ? undefined : '1 1 96px',
+        flex: isCompact || titleAdornment ? undefined : '1 1 96px',
         minWidth: 0,
         fontSize: finance && !dense ? '15px' : '14px',
         lineHeight: 1.5,
@@ -51,6 +53,13 @@ const AppFinanceRow = ({
       {title}
     </Typography>
   );
+  const titleContent = titleAdornment ? (
+    <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 0.75,
+      minWidth: 0, ...(!isCompact && { flex: '1 1 96px' }) }}>
+      {titleLabel}
+      {titleAdornment}
+    </Box>
+  ) : titleLabel;
   const subtitleContent = subtitle && (
     <Box
       sx={{

@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppDialog } from '@/base/components/ui';
+import { AppButton, AppDialog } from '@/base/components/ui';
 import EditActivityForm from './EditActivityForm';
 import type { PlanActivity, UpdateActivityPayload } from '../types';
 
@@ -26,6 +26,7 @@ const EditActivityDialog = ({
   tripCurrency = 'VND',
 }: EditActivityDialogProps) => {
   const t = useTranslations('plan.dialog');
+  const formId = useId();
   const [saving, setSaving] = useState(false);
 
   if (!activity) return null;
@@ -40,15 +41,25 @@ const EditActivityDialog = ({
       title={t('editTitle')}
       icon={<EditRoundedIcon color="primary" />}
       maxWidth="sm"
+      actions={
+        <>
+          <AppButton data-dialog-action="cancel" intent="secondary" onClick={onClose} disabled={isLoading || saving}>
+            {t('cancelBtn')}
+          </AppButton>
+          <AppButton data-dialog-action="primary" type="submit" form={formId} intent="primary" loading={isLoading || saving}>
+            {t('saveBtn')}
+          </AppButton>
+        </>
+      }
     >
       <EditActivityForm
         key={activity.id}
+        formId={formId}
         activity={activity}
         tripCurrency={tripCurrency}
         isLoading={isLoading}
         onSubmit={onSubmit}
         onSavingChange={setSaving}
-        onCancel={onClose}
       />
     </AppDialog>
   );

@@ -307,16 +307,13 @@ const SplitAllocationSection = ({
                 <Typography variant="body2" color="text.disabled" sx={{ flexShrink: 0 }}>
                   —
                 </Typography>
-              ) : <AppNumberInput data-expense-share-input disabled={disabled} size="small" variant="outlined"
+              ) : <AppNumberInput data-expense-share-input disabled={disabled} emphasis="compact"
                 currencySuffix={currency}
-                value={amount} placeholder="0" allowDecimals={currency !== 'VND' || !Number.isInteger(amount)}
+                value={amount} allowDecimals={currency !== 'VND' || !Number.isInteger(amount)}
                 onValueChange={(value) => handleAmountChange(member.userId, value)}
-                slotProps={{ htmlInput: { 'aria-label': `${t('form.allocatedAmountLabel')} (${currency}) — ${name}`, style: { textAlign: 'right' } } }}
+                slotProps={{ htmlInput: { 'aria-label': `${t('form.allocatedAmountLabel')} (${currency}) — ${name}` } }}
                 sx={{
                   width: { xs: 192, sm: 224 }, flex: '1 1 192px', maxWidth: { xs: '100%', sm: 240 }, minWidth: 0,
-                  '& .MuiInputBase-root': { height: 36, minHeight: 36, gap: 0.5, px: 1, borderRadius: 'var(--app-radius-small)', bgcolor: 'background.paper' },
-                  '& .MuiInputBase-input': { fontSize: '14px', height: '20px', lineHeight: '20px', py: 0, px: 0, minWidth: 0, fontWeight: 600, fontVariantNumeric: 'tabular-nums' },
-                  '& .MuiInputAdornment-root': { ml: 0, flexShrink: 0, '& .MuiTypography-root': { fontSize: '12px' } },
                 }} />}
             </Stack>
           );

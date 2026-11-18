@@ -143,7 +143,7 @@ const SetBudgetForm = ({
       id={formId}
       onSubmit={handleSubmit}
       noValidate
-      sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, flexShrink: 0, '& .MuiOutlinedInput-input': { fontSize: { xs: '16px', sm: '14px' } } }}
+      sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, flexShrink: 0 }}
     >
       <Stack spacing={1} sx={{ minWidth: 0 }}>
         <AppNumberInput
@@ -271,11 +271,9 @@ const SetBudgetForm = ({
             }}
           >
             <AppNumberInput
+              emphasis="compact"
               label={cat.label}
               disabled={isLoading}
-              slotProps={{ inputLabel: { shrink: true } }}
-              size="small"
-              placeholder="0"
               currencySuffix={tripCurrency}
               value={categoryLimits[cat.key] ?? ''}
               onChange={(e) => handleCategoryChange(cat.key, e.target.value)}

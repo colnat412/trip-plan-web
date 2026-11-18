@@ -9,7 +9,7 @@ export default function ExpensePayerBadge() {
     <Typography component="span" sx={(theme) => {
       const palette = theme.vars?.palette ?? theme.palette;
       return {
-        display: 'inline-flex', alignSelf: 'flex-start', alignItems: 'center',
+        display: 'inline-flex', alignSelf: 'center', alignItems: 'center',
         px: 0.75, py: 0.125, borderRadius: 'var(--app-radius-badge)',
         fontSize: '11px', fontWeight: 600, lineHeight: 1.5,
         color: palette.primary.main,

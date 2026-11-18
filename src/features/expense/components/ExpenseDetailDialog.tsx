@@ -115,10 +115,8 @@ const ExpenseDetailDialog = ({ open, expense, onClose, onEdit, onDelete, isDelet
                     dense
                     icon={<Avatar src={expense.payerAvatarUrl || undefined} sx={{ width: 32, height: 32 }}>{getUserInitials(expense.payerName || '')}</Avatar>}
                     title={user?.id != null && String(user.id) === String(expense.payerId) ? t('form.you') : expense.payerName || '—'}
-                    subtitle={<Stack spacing={0.25}>
-                      <ExpensePayerBadge />
-                      {expense.payerEmail && <Box component="span" sx={{ overflowWrap: 'anywhere' }}>{expense.payerEmail}</Box>}
-                    </Stack>}
+                    titleAdornment={<ExpensePayerBadge />}
+                    subtitle={expense.payerEmail ? <Box component="span" sx={{ overflowWrap: 'anywhere' }}>{expense.payerEmail}</Box> : undefined}
                     amount={money(expense.amount)}
                   />
                 )}
@@ -132,18 +130,8 @@ const ExpenseDetailDialog = ({ open, expense, onClose, onEdit, onDelete, isDelet
                     dense
                     icon={<Avatar src={split.userAvatarUrl || (isPayer ? expense.payerAvatarUrl : undefined) || undefined} sx={{ width: 32, height: 32 }}>{getUserInitials(name)}</Avatar>}
                     title={name}
-                    subtitle={
-                      <Stack spacing={0.25}>
-                        {isPayer && <ExpensePayerBadge />}
-                        <Typography component="span" variant="body2" sx={(theme) => ({
-                          color: split.settled ? 'success.dark' : 'warning.dark',
-                          ...theme.applyStyles('dark', { color: split.settled ? 'success.light' : 'warning.light' }),
-                        })}>
-                          {t(split.settled ? 'dialog.settled' : 'dialog.pending')}
-                        </Typography>
-                        {email && <Box component="span" sx={{ overflowWrap: 'anywhere' }}>{email}</Box>}
-                      </Stack>
-                    }
+                    titleAdornment={isPayer ? <ExpensePayerBadge /> : undefined}
+                    subtitle={email ? <Box component="span" sx={{ overflowWrap: 'anywhere' }}>{email}</Box> : undefined}
                     amount={money(split.allocatedAmount)}
                     amountCaption={<Typography variant="caption" color="text.secondary">{expense.amount > 0 ? Math.round(split.allocatedAmount / expense.amount * 100) : 0}%</Typography>}
                   />

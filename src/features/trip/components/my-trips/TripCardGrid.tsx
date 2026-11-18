@@ -13,6 +13,7 @@ import type { Trip } from '../../types';
 export interface TripCardGridProps {
   trips: Trip[];
   isLoading?: boolean;
+  loadingScope?: 'page' | 'local';
   activeTripId?: string | number | null;
   onSelectTrip: (trip: Trip) => void;
   onCreateTrip?: () => void;
@@ -23,6 +24,7 @@ export interface TripCardGridProps {
 const TripCardGrid = ({
   trips,
   isLoading = false,
+  loadingScope = 'page',
   activeTripId,
   onSelectTrip,
   onCreateTrip,
@@ -32,7 +34,7 @@ const TripCardGrid = ({
   const t = useTranslations('myTrips');
 
   if (isLoading) {
-    return <AppLoadingState />;
+    return <AppLoadingState local={loadingScope === 'local'} />;
   }
 
   if (trips.length === 0) {

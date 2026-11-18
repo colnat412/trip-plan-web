@@ -8,6 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { formatNumberInput, parseNumberInput } from '@/base/utils/currency';
+import type { Theme } from '@mui/material/styles';
 
 export interface AppNumberInputProps extends Omit<
   TextFieldProps,
@@ -18,7 +19,8 @@ export interface AppNumberInputProps extends Omit<
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   allowDecimals?: boolean;
   currencySuffix?: string;
-  emphasis?: 'default' | 'primary';
+  /** Primary amount, compact allocation, or a regular numeric field. */
+  emphasis?: 'default' | 'primary' | 'compact';
 }
 
 const AppNumberInput = ({
@@ -30,7 +32,7 @@ const AppNumberInput = ({
   emphasis = 'default',
   sx,
   fullWidth = true,
-  size = 'medium',
+  size = emphasis === 'compact' ? 'small' : 'medium',
   variant = 'outlined',
   slotProps,
   ...restProps
@@ -153,7 +155,7 @@ const AppNumberInput = ({
     <InputAdornment position="end">
       <Typography
         sx={{
-          fontSize: '13px',
+          fontSize: emphasis === 'compact' ? '12px' : '13px',
           color: 'text.secondary',
           fontWeight: 600,
           userSelect: 'none',
@@ -178,21 +180,63 @@ const AppNumberInput = ({
   return (
     <TextField
       {...restProps}
-      placeholder={restProps.placeholder ?? (emphasis === 'primary' ? '0' : undefined)}
+      placeholder={restProps.placeholder ?? (emphasis !== 'default' ? '0' : undefined)}
       fullWidth={fullWidth}
       size={size}
       variant={emphasis === 'primary' ? 'standard' : variant}
       sx={[
-        ...(emphasis === 'primary' ? [{
+        {
           minWidth: 0,
-          '& .MuiInputBase-root': { bgcolor: 'transparent', minHeight: 72 },
-          '& .MuiInputBase-input': {
-            fontSize: displayValue.length > 14 ? { xs: '26px', sm: '32px' } : { xs: '34px', sm: '42px' },
-            fontWeight: 700, lineHeight: 1.25, py: 1.5, minWidth: 0,
-            fontVariantNumeric: 'tabular-nums', letterSpacing: '-0.5px',
-          },
+          '& .MuiInputBase-input': { minWidth: 0, fontVariantNumeric: 'tabular-nums' },
           '& .MuiInputAdornment-root': { flexShrink: 0 },
-          '& .MuiFormHelperText-root': { mx: 0, overflowWrap: 'anywhere' },
+          '& .MuiFormHelperText-root': { overflowWrap: 'anywhere' },
+        },
+        ...(emphasis === 'compact' ? [{
+          '& .MuiInputBase-root': {
+            minHeight: 44, gap: 0.5, px: 1,
+            bgcolor: 'background.paper',
+          },
+          '& .MuiInputBase-input': {
+            fontSize: { xs: '16px', sm: '14px' },
+            lineHeight: '20px', py: 1.25, px: 0,
+            fontWeight: 600, textAlign: 'right',
+          },
+          '& .MuiInputAdornment-root': { ml: 0 },
+        }] : []),
+        ...(emphasis !== 'default' ? [(theme: Theme) => {
+          const palette = theme.vars?.palette ?? theme.palette;
+          return {
+            gap: 0.75,
+            '& .MuiInputLabel-root': {
+              position: 'static', transform: 'none', maxWidth: '100%',
+              fontSize: '14px', fontWeight: 600, lineHeight: 1.5,
+              color: palette.text.primary, pointerEvents: 'auto',
+            },
+            '& .MuiInputLabel-root.Mui-disabled': { color: palette.text.disabled },
+            '& .MuiInputLabel-root.Mui-error': { color: palette.error.main },
+            '& .MuiInputLabel-root + .MuiInputBase-root': { mt: 0 },
+            '& .MuiOutlinedInput-notchedOutline': { top: 0 },
+            '& .MuiOutlinedInput-notchedOutline legend': { display: 'none' },
+            '& .MuiFormHelperText-root': { mx: 0 },
+          };
+        }] : []),
+        ...(emphasis === 'primary' ? [(theme: Theme) => {
+          const palette = theme.vars?.palette ?? theme.palette;
+          return {
+            '& .MuiInput-root': {
+              minHeight: 72, backgroundColor: palette.background.paper,
+              border: `1px solid ${palette.divider}`,
+              borderRadius: 'var(--app-radius-control)', px: 1.5,
+              '&::before, &::after': { display: 'none' },
+              '&.Mui-focused:not(.Mui-error):not(.Mui-disabled)': { borderColor: palette.primary.main },
+              '&.Mui-error': { borderColor: palette.error.main },
+            },
+            '& .MuiInputBase-input': {
+              fontSize: displayValue.length > 14 ? { xs: '26px', sm: '32px' } : { xs: '34px', sm: '42px' },
+              fontWeight: 700, lineHeight: 1.25, py: 1.5, minWidth: 0,
+              letterSpacing: '-0.5px',
+            },
+          };
         }] : []),
         ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
       ]}
@@ -203,7 +247,7 @@ const AppNumberInput = ({
       inputRef={internalInputRef}
       slotProps={{
         ...slotProps,
-        inputLabel: emphasis === 'primary' && typeof slotProps?.inputLabel !== 'function'
+        inputLabel: emphasis !== 'default' && typeof slotProps?.inputLabel !== 'function'
           ? { ...slotProps?.inputLabel, shrink: true }
           : slotProps?.inputLabel,
         htmlInput:

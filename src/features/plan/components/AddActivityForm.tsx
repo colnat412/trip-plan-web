@@ -7,7 +7,6 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Stack } from '@mui/
 import { useTranslations } from 'next-intl';
 
 import {
-  AppButton,
   AppImageUploader,
   AppToast,
   AppTimePicker,
@@ -25,6 +24,7 @@ import ActivityDiscovery from './ActivityDiscovery';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 
 export interface AddActivityFormProps {
+  formId: string;
   destination?: string;
   discovering: boolean;
   onDiscoveringChange: (discovering: boolean) => void;
@@ -32,17 +32,16 @@ export interface AddActivityFormProps {
   isLoading?: boolean;
   onSubmit: (payload: CreateActivityPayload) => void | Promise<unknown>;
   onSavingChange?: (saving: boolean) => void;
-  onCancel: () => void;
 }
 
 const AddActivityForm = ({
+  formId,
   destination = '',
   discovering,
   onDiscoveringChange: setDiscovering,
   tripCurrency = 'VND',
   isLoading = false,
   onSubmit,
-  onCancel,
   onSavingChange,
 }: AddActivityFormProps) => {
   const upload = useUploadFile();
@@ -127,10 +126,11 @@ const AddActivityForm = ({
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
-      <Stack spacing={2.5}>
+    <Box id={formId} component="form" onSubmit={handleSubmit} sx={{ width: '100%',
+      ...(discovering && { display: 'flex', flexDirection: 'column', flex: '1 1 0', minHeight: 0 }) }}>
+      <Stack spacing={2.5} sx={discovering ? { flex: '1 1 0', minHeight: 0 } : undefined}>
         {discovering ? <ActivityDiscovery destination={destination} category={category} disabled={busy}
-          onCategoryChange={setCategory} onManual={() => setDiscovering(false)}
+          onCategoryChange={setCategory}
           onChoose={(place) => { setTitle(place.mainText); setLocation(place.description || place.mainText); setTitleError(''); setDiscovering(false); }} /> : <>
         <AppToast open={imageError} message={tToast('error')} severity="error" onClose={() => setImageError(false)} />
         <AppTextField
@@ -218,21 +218,6 @@ const AddActivityForm = ({
             <AppImageUploader file={imageFile} alt={title} variant="cover" disabled={busy} onChange={setImageFile} />
           </AccordionDetails>
         </Accordion>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            gap: 1.5,
-            pt: 1,
-          }}
-        >
-          <AppButton data-dialog-action="cancel" intent="secondary" onClick={onCancel} disabled={busy}>
-            {tDialog('cancelBtn')}
-          </AppButton>
-          <AppButton data-dialog-action="primary" type="submit" intent="primary" loading={busy}>
-            {tDialog('saveBtn')}
-          </AppButton>
-        </Box>
         </>}
       </Stack>
     </Box>

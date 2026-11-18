@@ -33,6 +33,7 @@ const MyTrips = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [editingTrip, setEditingTrip] = useState<Trip | null>(null);
   const [deletingTrip, setDeletingTrip] = useState<Trip | null>(null);
+  const [hasSettledInitialRequest, setHasSettledInitialRequest] = useState(false);
 
   const [debounceSearch, setDebounceSearch] = useState(false);
   const search = typeof filters.name === 'string' ? filters.name.trim() : '';
@@ -54,7 +55,7 @@ const MyTrips = () => {
         ? filters.status.join(',')
         : undefined;
 
-  const { trips, pagination, isLoading, isFetching, isStale, error, refetch } =
+  const { data, trips, pagination, isLoading, isFetching, isStale, error, refetch } =
     useMyTrips({
       page,
       size: rowsPerPage,
@@ -66,6 +67,13 @@ const MyTrips = () => {
       sortBy: sort?.columnId,
       sortDirection: sort?.direction,
     });
+  // Empty results and errors also finish the first request; later changes stay local.
+  const initialRequestSettled = Boolean(error) || (data !== null && !isStale);
+  if (!hasSettledInitialRequest && initialRequestSettled) {
+    setHasSettledInitialRequest(true);
+  }
+  const loadingScope = hasSettledInitialRequest || initialRequestSettled ? 'local' : 'page';
+  const resultTrips = isStale || isDebouncing ? [] : trips;
   const {
     activeTrip,
     selectTrip,
@@ -195,8 +203,9 @@ const MyTrips = () => {
       ) : viewMode === 'grid' ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, gap: 2.5 }}>
           <TripCardGrid
-            trips={trips}
+            trips={resultTrips}
             isLoading={isLoading || isStale || isDebouncing}
+            loadingScope={loadingScope}
             activeTripId={activeTrip?.id ?? null}
             onSelectTrip={handleSelectTrip}
             onEditTrip={setEditingTrip}
@@ -214,8 +223,9 @@ const MyTrips = () => {
         </Box>
       ) : (
         <TripTable
-          trips={trips}
+          trips={resultTrips}
           isLoading={isLoading || isStale || isDebouncing}
+          loadingScope={loadingScope}
           isFetching={isFetching || isDebouncing}
           activeTripId={activeTrip?.id ?? null}
           onSelectTrip={handleSelectTrip}

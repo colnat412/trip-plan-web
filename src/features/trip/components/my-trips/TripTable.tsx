@@ -31,6 +31,7 @@ export interface TripTableProps {
   trips: Trip[];
   isLoading?: boolean;
   isFetching?: boolean;
+  loadingScope?: 'page' | 'local';
   activeTripId?: string | number | null;
   onSelectTrip: (trip: Trip) => void;
   onCreateTrip?: () => void;
@@ -47,6 +48,7 @@ const TripTable = ({
   trips,
   isLoading,
   isFetching = false,
+  loadingScope = 'page',
   activeTripId,
   onSelectTrip,
   onCreateTrip,
@@ -276,6 +278,7 @@ const TripTable = ({
       data={trips}
       isLoading={isLoading}
       isFetching={isFetching}
+      loadingScope={loadingScope}
       selectedRowId={activeTripId}
       onRowClick={onSelectTrip}
       pagination={pagination}
