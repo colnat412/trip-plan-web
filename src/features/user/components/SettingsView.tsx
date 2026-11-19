@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Avatar, ButtonBase, Stack, Typography } from '@mui/material';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import { AppLoadingIndicator, AppPageContainer, AppPageHeader } from '@/base/components/ui';
-import AppPreferenceRow from '@/base/components/preferences/AppPreferenceRow';
+import AppExitButton from '@/base/components/ui/AppExitButton';
+import { AppPageContainer, AppPageHeader } from '@/base/components/ui';
 import AppPreferences from '@/base/components/preferences/AppPreferences';
 import { useUserContext } from '../context/UserContext';
 import { getUserInitials } from '@/base/utils';
 import useLogout from '@/features/auth/hooks/useLogout';
 import ProfileDialog from './ProfileDialog';
+import NotificationSettings from '@/features/notification/components/NotificationSettings';
 
 export default function SettingsView() {
   const t = useTranslations('preferences');
@@ -48,13 +48,9 @@ export default function SettingsView() {
         <Typography id="settings-application" component="h2" sx={{ fontSize: 12, fontWeight: 500, color: 'text.secondary' }}>{t('applicationGroup')}</Typography>
         <AppPreferences menuLayout dividers />
       </Stack>
-      <ButtonBase disableRipple disabled={logoutMutation.isPending} aria-busy={logoutMutation.isPending || undefined}
-        onClick={() => logoutMutation.mutate({}, { onSuccess: () => { router.push('/login'); router.refresh(); } })}
-        sx={{ width: '100%', justifyContent: 'flex-start', borderRadius: 'var(--app-radius-small)', '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 2 }, '&.Mui-disabled': { opacity: 0.5 } }}>
-        <AppPreferenceRow icon={<LogoutRoundedIcon />} label={u('logout')} color="error.main">
-          {logoutMutation.isPending && <AppLoadingIndicator />}
-        </AppPreferenceRow>
-      </ButtonBase>
+      <NotificationSettings />
+      <AppExitButton fullWidth label={u('logout')} loading={logoutMutation.isPending}
+        onClick={() => logoutMutation.mutate({}, { onSuccess: () => { router.push('/login'); router.refresh(); } })} />
     </Stack>
     <ProfileDialog open={profileOpen} onClose={() => setProfileOpen(false)} user={user ?? undefined} />
   </AppPageContainer>;

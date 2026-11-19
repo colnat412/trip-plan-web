@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Alert, Box, Stack, Typography } from '@mui/material';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import AppExitButton from '@/base/components/ui/AppExitButton';
 import FactCheckRoundedIcon from '@mui/icons-material/FactCheckRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import { AppButton, AppDialog } from '@/base/components/ui';
@@ -151,21 +151,8 @@ const PolicyAcceptanceDialog = () => {
               >
                 {t('continue')}
               </AppButton>
-              <AppButton
-                intent="text"
-                loading={logout.isPending}
-                disabled={busy}
-                onClick={() => void signOut()}
-                startIcon={<LogoutRoundedIcon />}
-                sx={{
-                  color: 'text.secondary',
-                  fontSize: '12px',
-                  px: '12px',
-                  minHeight: '44px',
-                }}
-              >
-                {t('decline')}
-              </AppButton>
+              <AppExitButton label={t('decline')} loading={logout.isPending} disabled={busy}
+                onClick={() => void signOut()} />
             </Box>
           )
         }

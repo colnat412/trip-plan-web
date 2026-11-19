@@ -17,7 +17,6 @@ interface TripMemberListProps {
   currentUserId?: string | number;
   onEditRole: (member: TripMember) => void;
   onRemove: (member: TripMember) => void;
-  onLeave: (member: TripMember) => void;
   onAccept?: (member: TripMember) => void;
 }
 
@@ -29,7 +28,6 @@ const TripMemberList = ({
   currentUserId,
   onEditRole,
   onRemove,
-  onLeave,
   onAccept,
 }: TripMemberListProps) => {
   const t = useTranslations('members');
@@ -58,7 +56,6 @@ const TripMemberList = ({
           currentUserId={currentUserId}
           onEditRole={onEditRole}
           onRemove={onRemove}
-          onLeave={onLeave}
           onAccept={onAccept}
         />
       ))}

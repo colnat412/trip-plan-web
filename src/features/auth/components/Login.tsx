@@ -19,7 +19,7 @@ import {
   VisibilityOutlined,
 } from '@mui/icons-material';
 
-import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
+import { getAuthReturnPath } from '@/base/utils/auth-return-path';
 import { AppButton, AppTextField, AppToast } from '@/base/components/ui';
 import useLogin from '@/features/auth/hooks/useLogin';
 
@@ -84,9 +84,7 @@ const Login = () => {
             'returnTo',
           );
           router.push(
-            returnTo && /^\/templates\/[a-zA-Z0-9]+$/.test(returnTo)
-              ? returnTo
-              : DEFAULT_AUTH_REDIRECT_PATH,
+            getAuthReturnPath(returnTo),
           );
           router.refresh();
         },

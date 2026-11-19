@@ -2,7 +2,7 @@
 
 import { Avatar, Box, Divider, Stack, Typography } from '@mui/material';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import AppExitButton from '../../ui/AppExitButton';
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppPopover } from '@/base/components/ui';
@@ -167,22 +167,8 @@ const SidebarUserMenu = ({
         )}
         <Divider />
         <Box sx={{ px: 0.5, pt: 1.5, pb: 0.5 }}>
-          <AppButton
-            type="button"
-            intent="danger"
-            size="small"
-            loading={isLoggingOut}
-            disabled={isLoggingOut}
-            startIcon={<LogoutRoundedIcon />}
-            onClick={onLogout}
-            sx={{
-              width: '100%',
-              minHeight: 48,
-              justifyContent: 'flex-start',
-            }}
-          >
-            {isLoggingOut ? t('loggingOut') : t('logout')}
-          </AppButton>
+          <AppExitButton fullWidth label={isLoggingOut ? t('loggingOut') : t('logout')}
+            loading={isLoggingOut} onClick={onLogout} />
         </Box>
       </Stack>
     </AppPopover>

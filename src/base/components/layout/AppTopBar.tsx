@@ -6,6 +6,7 @@ import AppTripWorkspaceHeader from './AppTripWorkspaceHeader';
 import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import AppBrand from './AppBrand';
+import NotificationBell from '@/features/notification/components/NotificationBell';
 import { AppButton } from '@/base/components/ui';
 import AppTripBar from './AppTripBar';
 import AppDesktopNavigation from './AppDesktopNavigation';
@@ -75,6 +76,7 @@ const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
           {!guest && <AppTripBar />}</>}
         </Box>
         {!workspace && <AppDesktopNavigation />}
+        {!guest && <NotificationBell />}
         {guest ? (
           <AppButton component={Link} href="/login" intent="secondary" size="small">
             {t('signIn')}

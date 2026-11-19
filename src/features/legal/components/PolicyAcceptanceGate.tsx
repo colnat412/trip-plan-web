@@ -17,6 +17,11 @@ const PolicyAcceptanceGate = ({ children, bypass = false }: { children: ReactNod
   else if (!error && !isFetching && previousError) setPreviousError(null);
   const visibleError = error ?? (isFetching ? previousError : null);
   if (bypass) return <>{children}</>;
+  // The auth interceptor is navigating to login. Never render an error screen
+  // for an expired session while that navigation completes.
+  if (visibleError?.status === 401) {
+    return <AppLoadingState sx={{ minHeight: '100dvh', bgcolor: 'background.paper' }} />;
+  }
   if (visibleError) {
     return (
       <Stack

@@ -736,6 +736,7 @@
     }
   },
   "members": {
+    "awaitingInvitee": "Đã gửi lời mời",
     "viewMembers": "Xem danh sách {count} thành viên",
     "memberActions": "Thao tác với {name}",
     "retry": "Thử lại",
@@ -772,12 +773,14 @@
       "REMOVED": "Đã bị xóa"
     },
     "actions": {
+      "withdrawInvitation": "Thu hồi lời mời",
       "acceptBtn": "Duyệt",
       "acceptMember": "Duyệt tham gia",
       "rejectMember": "Từ chối",
       "changeRole": "Đổi vai trò",
       "removeMember": "Xóa khỏi nhóm",
       "leaveTrip": "Rời chuyến đi",
+      "ownerCannotLeave": "Chủ chuyến đi không thể rời chuyến đi",
       "confirmRemoveTitle": "Xóa Thành Viên Khỏi Chuyến Đi",
       "confirmRemoveDesc": "Bạn có chắc chắn muốn xóa <subject>{name}</subject> ({email}) khỏi chuyến đi này không?",
       "confirmLeaveTitle": "Rời Khỏi Chuyến Đi",
@@ -786,7 +789,7 @@
       "confirmLeaveBtn": "Rời chuyến đi"
     },
     "toasts": {
-      "inviteSuccess": "Đã thêm thành viên vào chuyến đi thành công!",
+      "inviteSuccess": "Đã gửi lời mời. Người nhận cần chấp nhận để tham gia chuyến đi.",
       "inviteError": "Không thể mời thành viên. Vui lòng kiểm tra lại email.",
       "updateRoleSuccess": "Đã cập nhật vai trò thành viên thành công!",
       "updateRoleError": "Không thể cập nhật vai trò. Vui lòng thử lại.",
@@ -1462,5 +1465,133 @@
     "plan": "Lịch trình",
     "expenses": "Chi tiêu",
     "settlement": "Chia tiền"
+  },
+  "notification": {
+    "optIn": {
+      "title": "Bật thông báo?",
+      "description": "Nhận lời mời chuyến đi, cập nhật chi tiêu và lời nhắc. Bạn có thể thay đổi lựa chọn trong Cài đặt.",
+      "enable": "Bật thông báo",
+      "skip": "Để sau"
+    },
+    "invitationError": "Không thể xử lý lời mời. Lời mời có thể đã thay đổi; vui lòng tải lại và thử lại.",
+    "invitation": {
+      "accept": "Chấp nhận",
+      "decline": "Từ chối",
+      "PENDING": {
+        "title": "Lời mời tham gia chuyến đi",
+        "description": "Bạn được mời tham gia “{trip}”. Chấp nhận để bắt đầu xem lịch trình và cùng quản lý chuyến đi."
+      },
+      "ACCEPTED": {
+        "title": "Đã chấp nhận lời mời",
+        "description": "Bạn đã chấp nhận lời mời tham gia “{trip}”. Chuyến đi đã được thêm vào danh sách của bạn."
+      },
+      "DECLINED": {
+        "title": "Đã từ chối lời mời",
+        "description": "Bạn đã từ chối lời mời tham gia “{trip}”. Bạn sẽ không được thêm vào chuyến đi."
+      },
+      "CANCELLED": {
+        "title": "Lời mời không còn hiệu lực",
+        "description": "Lời mời tham gia “{trip}” đã bị thu hồi hoặc chuyến đi không còn khả dụng."
+      }
+    },
+    "roleChangeDetail": " thành {role}",
+    "sentences": {
+      "MEMBER_INVITED": "Bạn được mời tham gia chuyến đi {trip}",
+      "MEMBER_INVITATION_ACCEPTED": "Bạn đã chấp nhận lời mời tham gia chuyến đi {trip}",
+      "MEMBER_INVITATION_DECLINED": "Bạn đã từ chối lời mời tham gia chuyến đi {trip}",
+      "MEMBER_INVITATION_CANCELLED": "Lời mời tham gia chuyến đi {trip} không còn hiệu lực",
+      "MEMBER_ADDED": "Bạn đã được thêm vào chuyến đi {trip}",
+      "MEMBER_APPROVAL_REQUIRED": "Có yêu cầu tham gia chuyến đi {trip} cần bạn duyệt",
+      "MEMBER_PENDING": "Bạn đang chờ duyệt tham gia chuyến đi {trip}",
+      "MEMBER_APPROVED": "Bạn đã được duyệt tham gia chuyến đi {trip}",
+      "MEMBER_ROLE_CHANGED": "Vai trò của bạn trong chuyến đi {trip} đã thay đổi{detail}",
+      "MEMBER_REMOVED": "Bạn đã bị xóa khỏi chuyến đi {trip}",
+      "MEMBER_LEFT": "Có thành viên đã rời chuyến đi {trip}",
+      "ACTIVITY_REMINDER": "Hoạt động{detail} trong chuyến đi {trip} sắp bắt đầu",
+      "TRIP_REMINDER": "Chuyến đi {trip} sẽ khởi hành sau 3 ngày",
+      "TRIP_CANCELLED": "Chuyến đi {trip} đã bị hủy",
+      "EXPENSE_CREATED": "Có khoản chi mới{detail} trong chuyến đi {trip}",
+      "EXPENSE_UPDATED": "Khoản chi{detail} trong chuyến đi {trip} đã được cập nhật",
+      "EXPENSE_DELETED": "Khoản chi{detail} trong chuyến đi {trip} đã bị xóa",
+      "SETTLEMENT_RECORDED": "Đã ghi nhận khoản trả{detail} trong chuyến đi {trip}",
+      "SETTLEMENT_DELETED": "Khoản trả{detail} trong chuyến đi {trip} đã bị xóa"
+    },
+    "justNow": "Vừa xong",
+    "tripFallback": "chuyến đi này",
+    "access": {
+      "LEFT": {
+        "title": "Bạn đã rời chuyến đi",
+        "description": "Bạn đã rời “{name}”. Thông báo này được giữ lại, nhưng bạn không còn quyền mở nội dung chuyến đi."
+      },
+      "REMOVED": {
+        "title": "Bạn đã bị xóa khỏi chuyến đi",
+        "description": "Bạn đã bị xóa khỏi “{name}”. Thông báo này được giữ lại, nhưng bạn không còn quyền mở nội dung chuyến đi."
+      },
+      "TRIP_DELETED": {
+        "title": "Chuyến đi đã bị xóa",
+        "description": "“{name}” đã bị xóa. Thông báo này được giữ lại để bạn xem lịch sử."
+      },
+      "PENDING": {
+        "title": "Bạn đang chờ duyệt tham gia",
+        "description": "Yêu cầu tham gia “{name}” đang chờ duyệt. Bạn chưa thể mở nội dung chuyến đi."
+      },
+      "UNAVAILABLE": {
+        "title": "Bạn không còn quyền truy cập",
+        "description": "Bạn không còn quyền mở “{name}”. Thông báo này vẫn được giữ trong lịch sử của bạn."
+      }
+    },
+    "title": "Thông báo",
+    "bellLabel": "Thông báo, {count} chưa đọc",
+    "newUpdate": "Bạn có thông báo mới.",
+    "all": "Tất cả",
+    "unread": "Chưa đọc",
+    "empty": "Chưa có thông báo",
+    "readAll": "Đánh dấu tất cả đã đọc",
+    "openError": "Nội dung không còn khả dụng hoặc không tải được. Bạn có thể thử mở lại.",
+    "push": "Nhận thông báo",
+    "enablePush": "Bật thông báo",
+    "disablePush": "Tắt thông báo",
+    "saveError": "Không lưu được cài đặt. Vui lòng thử lại.",
+    "unsupported": "Thiết bị chưa hỗ trợ hoặc chưa có cấu hình push. Trên iPhone, hãy mở app đã thêm vào Màn hình chính.",
+    "permissionDenied": "Bạn cần cho phép thông báo trong cài đặt trình duyệt.",
+    "registrationError": "Chưa đồng bộ được đăng ký thiết bị. Kiểm tra kết nối và thử bật lại thông báo.",
+    "types": {
+      "MEMBER_INVITED": "Bạn được mời tham gia chuyến đi",
+      "MEMBER_INVITATION_ACCEPTED": "Bạn đã chấp nhận lời mời",
+      "MEMBER_INVITATION_DECLINED": "Bạn đã từ chối lời mời",
+      "MEMBER_INVITATION_CANCELLED": "Lời mời không còn hiệu lực",
+      "MEMBER_ADDED": "Bạn đã được thêm vào chuyến đi",
+      "MEMBER_APPROVAL_REQUIRED": "Có thành viên đang chờ duyệt",
+      "MEMBER_PENDING": "Bạn đang chờ duyệt vào chuyến đi",
+      "MEMBER_APPROVED": "Bạn đã được duyệt vào chuyến đi",
+      "MEMBER_ROLE_CHANGED": "Vai trò của bạn đã thay đổi",
+      "MEMBER_REMOVED": "Bạn không còn là thành viên của chuyến đi",
+      "MEMBER_LEFT": "Có thành viên đã rời chuyến đi",
+      "ACTIVITY_REMINDER": "Hoạt động sắp bắt đầu",
+      "TRIP_REMINDER": "Chuyến đi khởi hành sau 3 ngày",
+      "TRIP_CANCELLED": "Chuyến đi đã bị hủy",
+      "EXPENSE_CREATED": "Có khoản chi mới liên quan đến bạn",
+      "EXPENSE_UPDATED": "Khoản chi liên quan đến bạn đã thay đổi",
+      "EXPENSE_DELETED": "Khoản chi liên quan đến bạn đã bị xóa",
+      "SETTLEMENT_RECORDED": "Có bản ghi khoản trả mới liên quan đến bạn",
+      "SETTLEMENT_DELETED": "Bản ghi khoản trả liên quan đến bạn đã bị xóa"
+    },
+    "roles": {
+      "OWNER": "Trưởng nhóm",
+      "VICE": "Phó nhóm",
+      "MEMBER": "Thành viên"
+    },
+    "dateGroups": {
+      "today": "Hôm nay",
+      "yesterday": "Hôm qua",
+      "twoDaysAgo": "2 ngày trước",
+      "unknown": "Không rõ ngày"
+    },
+    "delete": "Xóa thông báo",
+    "deleteLabel": "Xóa thông báo: {title}",
+    "deleteError": "Không xóa được thông báo. Vui lòng thử lại.",
+    "loadPrevious": "Xem thông báo trước đó",
+    "loadingPrevious": "Đang tải…",
+    "deleteAction": "Xóa"
   }
 }

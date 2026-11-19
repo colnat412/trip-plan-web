@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
 
 import AppTopBar from './AppTopBar';
+import NotificationProvider from '@/features/notification/context/NotificationProvider';
 import AppDeviceHint from './AppDeviceHint';
 import AppTripWorkspace from './AppTripWorkspace';
 import AppBottomNavigation from './AppBottomNavigation';
@@ -110,7 +111,7 @@ const AppShell = ({
   return (
     <UserProvider>
       <PolicyAcceptanceGate bypass={isLibrary}>
-        {isLibrary || showNavigation ? <TripProvider>{renderFrame(true)}</TripProvider> : children}
+        {isLibrary || showNavigation ? <TripProvider><NotificationProvider>{renderFrame(true)}</NotificationProvider></TripProvider> : children}
       </PolicyAcceptanceGate>
     </UserProvider>
   );

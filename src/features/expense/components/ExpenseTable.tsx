@@ -81,9 +81,23 @@ const ExpenseTable = ({
             }}
           >
             {formatDateTime(expense.expenseTime)}
-            {dailyTotals?.filter(day => day.date === expense.expenseTime.slice(0, 10)).map(day => (
-              <Box component="span" key={day.currency} sx={{ display: 'block', fontSize: '12px', fontWeight: 600 }}>{formatCurrency(day.amount, day.currency, locale)}</Box>
-            ))}
+            {dailyTotals
+              ?.filter((day) => day.date === expense.expenseTime.slice(0, 10))
+              .map((day) => (
+                <Box
+                  component="span"
+                  key={day.currency}
+                  sx={{
+                    display: 'block',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    color: 'text.secondary',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {formatCurrency(day.amount, day.currency, locale)}
+                </Box>
+              ))}
           </Typography>
         ),
       },
@@ -139,7 +153,9 @@ const ExpenseTable = ({
         })),
         getValue: (e) => e.category,
         renderCell: (expense) => (
-          <Typography variant="body2" color="text.secondary">{t(`categories.${expense.category}`)}</Typography>
+          <Typography variant="body2" color="text.secondary">
+            {t(`categories.${expense.category}`)}
+          </Typography>
         ),
       },
       {
@@ -178,7 +194,9 @@ const ExpenseTable = ({
                   whiteSpace: 'nowrap',
                 }}
               >
-                {user?.id != null && String(user.id) === String(expense.payerId) ? t('row.youPaid') : expense.payerName || '—'}
+                {user?.id != null && String(user.id) === String(expense.payerId)
+                  ? t('row.youPaid')
+                  : expense.payerName || '—'}
               </Typography>
               {expense.payerEmail && (
                 <Typography
@@ -258,17 +276,66 @@ const ExpenseTable = ({
     <AppTable<Expense>
       surface="plain"
       sx={{ border: 0 }}
-      columns={onFilterChange ? columns : columns.map(column => ({ ...column, filterable: false, sortable: false }))}
+      columns={
+        onFilterChange
+          ? columns
+          : columns.map((column) => ({
+              ...column,
+              filterable: false,
+              sortable: false,
+            }))
+      }
       renderMobileRow={(expense, index, rows) => (
-        <Box sx={{ px: 0, borderBottom: 1, borderColor: 'divider', '&:last-child': { borderBottom: 0 } }}>
+        <Box
+          sx={{
+            px: 0,
+            borderBottom: 1,
+            borderColor: 'divider',
+            '&:last-child': { borderBottom: 0 },
+          }}
+        >
           {(index === 0 ||
-            rows[index - 1].expenseTime.slice(0, 10) !== expense.expenseTime.slice(0, 10)) && (
-            <Stack direction="row" useFlexGap sx={{ justifyContent: 'space-between', alignItems: 'baseline', gap: 1, pt: 1.5, flexWrap: 'wrap' }}>
-              <Typography sx={{ fontSize: '13px', color: 'text.secondary', fontWeight: 600 }}>{formatDate(expense.expenseTime.slice(0, 10))}</Typography>
-              {dailyTotals?.filter(day => day.date === expense.expenseTime.slice(0, 10)).map(day => (
-                <Typography key={day.currency} aria-label={`${tTable('dayTotal')}: ${formatCurrency(day.amount, day.currency, locale)}`}
-                  sx={{ fontSize: '13px', fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(day.amount, day.currency, locale)}</Typography>
-              ))}
+            rows[index - 1].expenseTime.slice(0, 10) !==
+              expense.expenseTime.slice(0, 10)) && (
+            <Stack
+              direction="row"
+              useFlexGap
+              sx={{
+                justifyContent: 'space-between',
+                alignItems: 'baseline',
+                gap: 1,
+                px: 1,
+                py: 0.75,
+                flexWrap: 'wrap',
+                bgcolor: 'action.hover',
+                borderRadius: 'var(--app-radius-small)',
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: '13px',
+                  color: 'text.secondary',
+                  fontWeight: 600,
+                }}
+              >
+                {formatDate(expense.expenseTime.slice(0, 10))}
+              </Typography>
+              {dailyTotals
+                ?.filter((day) => day.date === expense.expenseTime.slice(0, 10))
+                .map((day) => (
+                  <Typography
+                    key={day.currency}
+                    aria-label={`${tTable('dayTotal')}: ${formatCurrency(day.amount, day.currency, locale)}`}
+                    sx={{
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      color: 'text.secondary',
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
+                  >
+                    {formatCurrency(day.amount, day.currency, locale)}
+                  </Typography>
+                ))}
             </Stack>
           )}
           <AppFinanceRow
@@ -276,9 +343,13 @@ const ExpenseTable = ({
             icon={<AppCategoryIcon category={expense.category} size={32} />}
             title={expense.title}
             subtitle={[
-              user?.id != null && String(user.id) === String(expense.payerId) ? t('row.youPaid') : expense.payerName || '—',
+              user?.id != null && String(user.id) === String(expense.payerId)
+                ? t('row.youPaid')
+                : expense.payerName || '—',
               expense.expenseTime.slice(11, 16),
-            ].filter(Boolean).join(' · ')}
+            ]
+              .filter(Boolean)
+              .join(' · ')}
             amount={formatCurrency(expense.amount, expense.currency)}
             onClick={onViewDetail ? () => onViewDetail(expense) : undefined}
           />
@@ -299,7 +370,8 @@ const ExpenseTable = ({
           count={totalElements}
           stackActionsOnMobile
           sx={{
-            px: 0, py: 2,
+            px: 0,
+            py: 2,
           }}
           actions={
             !readOnly && onAddNew ? (

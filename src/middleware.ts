@@ -11,7 +11,7 @@ import {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === '/manifest.webmanifest') {
+  if ((pathname === '/manifest.webmanifest' || pathname === '/firebase-messaging-sw.js')) {
     return NextResponse.next();
   }
 
@@ -36,6 +36,10 @@ export function middleware(request: NextRequest) {
   // If unauthenticated and accessing a protected route -> redirect to /login
   if (!isAuthenticated && !isPublicAuthPath) {
     const loginUrl = new URL(DEFAULT_UNAUTH_REDIRECT_PATH, request.url);
+    const notificationId = request.nextUrl.searchParams.get('notificationId');
+    if (pathname === '/overview' && notificationId && /^[a-zA-Z0-9]{1,64}$/.test(notificationId)) {
+      loginUrl.searchParams.set('returnTo', `/overview?notificationId=${notificationId}`);
+    }
     return NextResponse.redirect(loginUrl);
   }
 

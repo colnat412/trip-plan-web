@@ -4,7 +4,6 @@ import { Avatar, Chip, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
 import { AppButton } from '@/base/components/ui';
 import AppActionMenu, {
@@ -21,7 +20,6 @@ interface TripMemberRowProps {
   currentUserId?: string | number;
   onEditRole: (member: TripMember) => void;
   onRemove: (member: TripMember) => void;
-  onLeave: (member: TripMember) => void;
   onAccept?: (member: TripMember) => void;
 }
 
@@ -32,7 +30,6 @@ const TripMemberRow = ({
   currentUserId,
   onEditRole,
   onRemove,
-  onLeave,
   onAccept,
 }: TripMemberRowProps) => {
   const t = useTranslations('members');
@@ -43,7 +40,7 @@ const TripMemberRow = ({
   const isTargetOwner = member.role === 'OWNER';
   const isTargetVice = member.role === 'VICE';
   const canAccept =
-    member.status === 'INVITED' &&
+    member.status === 'INVITED' && !member.requiresInviteeResponse &&
     (isCurrentUserOwner ||
       (currentUserRole === 'VICE' && member.role === 'MEMBER'));
   const canEditRole = !isSelf && !isTargetOwner && isCurrentUserOwner;
@@ -68,7 +65,7 @@ const TripMemberRow = ({
       id: 'remove-member',
       label:
         member.status === 'INVITED'
-          ? t('actions.rejectMember')
+          ? t(member.requiresInviteeResponse ? 'actions.withdrawInvitation' : 'actions.rejectMember')
           : t('actions.removeMember'),
       icon: <DeleteOutlineRoundedIcon fontSize="small" />,
       danger: true,
@@ -76,15 +73,6 @@ const TripMemberRow = ({
     });
   }
 
-  if (isSelf && !isCurrentUserOwner) {
-    menuItems.push({
-      id: 'leave-trip',
-      label: t('actions.leaveTrip'),
-      icon: <LogoutRoundedIcon fontSize="small" />,
-      danger: true,
-      onClick: () => onLeave(member),
-    });
-  }
 
   return (
     <Stack
@@ -126,7 +114,7 @@ const TripMemberRow = ({
             {member.status !== 'ACTIVE' && (
               <Chip
                 size="small"
-                label={t(`statuses.${member.status}`)}
+                label={member.requiresInviteeResponse ? t('awaitingInvitee') : t(`statuses.${member.status}`)}
                 color={member.status === 'INVITED' ? 'warning' : 'default'}
                 sx={{ height: 20, fontSize: '11px', fontWeight: 600, borderRadius: 'var(--app-radius-badge)' }}
               />

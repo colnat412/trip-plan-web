@@ -3,6 +3,8 @@
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { useState } from 'react';
+import { Stack } from '@mui/material';
+import AppExitButton from '@/base/components/ui/AppExitButton';
 
 import { useTranslations } from 'next-intl';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
@@ -12,6 +14,7 @@ import AppButton from '@/base/components/ui/AppButton';
 import AppConfirmDialog from '@/base/components/ui/AppConfirmDialog';
 import AppToast, { type AppToastSeverity } from '@/base/components/ui/AppToast';
 import { axiosClient } from '@/base/api';
+import { useTripContext } from '../../context/TripContext';
 import { useUserContext } from '@/features/user/context/UserContext';
 import useCurrentUser from '@/features/user/hooks/useCurrentUser';
 import type { UserProfile } from '@/features/auth/types';
@@ -38,6 +41,7 @@ const TripMembersDialog = ({
   initialShowInvite = false,
 }: TripMembersDialogProps) => {
   const t = useTranslations('members');
+  const { refetchTrips } = useTripContext();
   const { user: userFromContext } = useUserContext();
   const { user: userFromHook } = useCurrentUser();
 
@@ -88,6 +92,7 @@ const TripMembersDialog = ({
   const canManageMembers =
     currentMember?.status === 'ACTIVE' &&
     (currentUserRole === 'OWNER' || currentUserRole === 'VICE');
+  const canLeaveTrip = currentMember?.status === 'ACTIVE' && !isCurrentUserOwner;
   const isInviteVisible = showInviteForm && canManageMembers;
 
   const { inviteMember, isPending: isInviting } = useInviteMember({
@@ -169,6 +174,8 @@ const TripMembersDialog = ({
         });
         setIsLeaving(false);
         onClose();
+        // Membership changed: remove this trip from the switcher and resolve the home state.
+        void refetchTrips().catch(() => undefined);
       },
       onError: (err) => {
         setToast({
@@ -216,6 +223,7 @@ const TripMembersDialog = ({
   };
 
   const handleConfirmLeave = () => {
+    if (!canLeaveTrip || isLeavingTrip) return;
     leaveTrip({});
   };
 
@@ -231,15 +239,22 @@ const TripMembersDialog = ({
         maxWidth="sm"
         fullWidth
         actions={canManageMembers ? (
-          <AppButton
-            intent="primary"
-            fullWidth
-            startIcon={<PersonAddRoundedIcon />}
-            onClick={() => setShowInviteForm(true)}
-            sx={{ borderRadius: 'var(--app-radius-pill)', minHeight: 44 }}
-          >
-            {t('inviteBtn')}
-          </AppButton>
+          <Stack direction="row" spacing={1} sx={{ width: '100%', alignItems: 'center' }}>
+            <AppButton
+              intent="primary"
+              startIcon={<PersonAddRoundedIcon />}
+              disabled={isLeavingTrip}
+              onClick={() => setShowInviteForm(true)}
+              sx={{ flex: 1, minWidth: 0, borderRadius: 'var(--app-radius-pill)', minHeight: 44 }}
+            >
+              {t('inviteBtn')}
+            </AppButton>
+            {canLeaveTrip && <AppExitButton iconOnly label={t('actions.leaveTrip')}
+              loading={isLeavingTrip} onClick={() => setIsLeaving(true)} />}
+          </Stack>
+        ) : canLeaveTrip ? (
+          <AppExitButton fullWidth label={t('actions.leaveTrip')} loading={isLeavingTrip}
+            onClick={() => setIsLeaving(true)} />
         ) : undefined}
       >
         {error ? (
@@ -253,7 +268,6 @@ const TripMembersDialog = ({
             currentUserId={currentMember?.userId}
             onEditRole={(m) => setEditingMember(m)}
             onRemove={(m) => setRemovingMember(m)}
-            onLeave={() => setIsLeaving(true)}
             onAccept={handleAcceptMember}
           />
         )}

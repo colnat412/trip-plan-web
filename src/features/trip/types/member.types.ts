@@ -11,6 +11,7 @@ export interface TripMember {
   avatarUrl: string | null;
   role: TripMemberRole;
   status: TripMemberStatus;
+  requiresInviteeResponse?: boolean;
   joinedAt: string;
   createdAt: string;
 }

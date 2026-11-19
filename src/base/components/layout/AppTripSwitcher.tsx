@@ -43,6 +43,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
     refetchTrips,
   } = useTripContext();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [anchorTripId, setAnchorTripId] = useState(activeTrip?.id);
   const open = Boolean(anchorEl);
   const popoverId = useId();
   const searchInput = useRef<HTMLInputElement>(null);
@@ -56,6 +57,13 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
     handleClose();
     openCreateTrip();
   };
+
+  // Close stale switcher content when access recovery changes the active trip.
+  if (String(anchorTripId) !== String(activeTrip?.id)) {
+    setAnchorTripId(activeTrip?.id);
+    setAnchorEl(null);
+    setSearch('');
+  }
 
   if (isLoading && !activeTrip) {
     return <Box sx={{ display: 'flex', alignItems: 'center', minHeight: 48 }}><AppLoadingIndicator /></Box>;
@@ -92,7 +100,10 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
       <AppButton
         intent="text"
         size="small"
-        onClick={(event) => setAnchorEl(event.currentTarget)}
+        onClick={(event) => {
+          setAnchorEl(event.currentTarget);
+          void refetchTrips().catch(() => undefined);
+        }}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-controls={open ? popoverId : undefined}

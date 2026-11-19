@@ -3,12 +3,16 @@
 import {
   createContext,
   useCallback,
+  useEffect,
   useContext,
   useMemo,
   useRef,
   useState,
   type ReactNode,
 } from 'react';
+import { useRouter } from 'next/navigation';
+import { flushSync } from 'react-dom';
+import { waitForMobileOverlayHistory } from '@/base/hooks/use-mobile-overlay-back';
 import type { ApiError } from '@/base/api';
 import { useUserContext } from '@/features/user/context/UserContext';
 import useSelectedTrip from '../hooks/useSelectedTrip';
@@ -22,10 +26,11 @@ interface TripContextValue {
   trips: Trip[];
   activeTrip: Trip | null;
   selectedTripId: string | number | null;
-  selectTrip: (tripId: string | number) => void;
+  selectTrip: (tripId: string | number | null) => void;
   isLoading: boolean;
   isFetching: boolean;
   error: ApiError | null;
+  selectedTripError: ApiError | null;
   refetchTrips: (event?: TripMutationEvent) => Promise<unknown>;
   subscribeTrips: (listener: (event?: TripMutationEvent) => void) => () => void;
   tripsVersion: number;
@@ -41,6 +46,7 @@ interface TripContextValue {
 const TripContext = createContext<TripContextValue | null>(null);
 
 const TripProvider = ({ children }: { children: ReactNode }) => {
+  const router = useRouter();
   const { trips, isLoading, isFetching, error, refetch } = useMyTrips({
     size: 100,
   });
@@ -80,6 +86,24 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     [refetch],
   );
 
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const refreshOnReturn = () => {
+      if (document.visibilityState !== 'visible') return;
+      clearTimeout(timer);
+      timer = setTimeout(() => { void refetchTrips().catch(() => undefined); }, 0);
+    };
+    window.addEventListener('focus', refreshOnReturn);
+    window.addEventListener('online', refreshOnReturn);
+    document.addEventListener('visibilitychange', refreshOnReturn);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('focus', refreshOnReturn);
+      window.removeEventListener('online', refreshOnReturn);
+      document.removeEventListener('visibilitychange', refreshOnReturn);
+    };
+  }, [refetchTrips]);
+
   const needsSelectedDetail =
     selectedTripId !== null &&
     !trips.some((trip) => String(trip.id) === String(selectedTripId));
@@ -99,12 +123,16 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     (needsSelectedDetail && !selectedTrip && !selectedDetail.error);
   const contextFetching =
     isFetching || (needsSelectedDetail && selectedDetail.isFetching);
-  const contextError =
-    error ?? (needsSelectedDetail ? selectedDetail.error : null);
+  const selectedTripError = needsSelectedDetail ? selectedDetail.error : null;
+  // An old session selection can outlive membership or a deleted trip. It must
+  // not turn a successful trip list (including an empty one) into a page error.
+  // Explicit workspace links still use selectedTripError to report denied access.
+  const unavailableSelection = selectedTripError?.status === 403 || selectedTripError?.status === 404;
+  const contextError = error ?? (unavailableSelection ? null : selectedTripError);
 
   const activeTrip = useMemo(() => {
     if (!user) return null;
-    if (needsSelectedDetail) return selectedTrip;
+    if (needsSelectedDetail && !unavailableSelection) return selectedTrip;
     if (!trips || trips.length === 0) return null;
 
     if (selectedTripId !== null) {
@@ -116,7 +144,22 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     if (inProgressTrip) return inProgressTrip;
 
     return trips[0];
-  }, [trips, selectedTripId, needsSelectedDetail, selectedTrip, user]);
+  }, [trips, selectedTripId, needsSelectedDetail, selectedTrip, unavailableSelection, user]);
+
+  useEffect(() => {
+    if (!unavailableSelection || !user || isLoading || isFetching || error || selectedTripId === null) return;
+    const timer = setTimeout(() => {
+      flushSync(() => {
+        setIsMembersOpen(false);
+        setIsInviteInitial(false);
+        selectTrip(activeTrip?.id ?? null);
+      });
+      void waitForMobileOverlayHistory().then(() => {
+        router.replace(activeTrip ? `/plan?tripId=${encodeURIComponent(String(activeTrip.id))}` : '/overview');
+      });
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [unavailableSelection, user, isLoading, isFetching, error, selectedTripId, activeTrip, selectTrip, router]);
 
   const openCreateTrip = useCallback(() => {
     setIsCreateTripOpen(true);
@@ -148,6 +191,7 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
       isLoading: contextLoading,
       isFetching: contextFetching,
       error: contextError,
+      selectedTripError,
       refetchTrips,
       subscribeTrips,
       tripsVersion,
@@ -167,6 +211,7 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
       contextLoading,
       contextFetching,
       contextError,
+      selectedTripError,
       refetchTrips,
       subscribeTrips,
       tripsVersion,

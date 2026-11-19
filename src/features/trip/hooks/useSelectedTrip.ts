@@ -3,7 +3,7 @@
 import { useCallback, useSyncExternalStore } from 'react';
 
 const selectionChangedEvent = 'tripbudget:trip-selection';
-const memorySelections = new Map<string, string>();
+const memorySelections = new Map<string, string | null>();
 
 function subscribe(onChange: () => void) {
   window.addEventListener(selectionChangedEvent, onChange);
@@ -34,12 +34,13 @@ export default function useSelectedTrip(userId: string | number | undefined) {
     serverSnapshot,
   );
   const selectTrip = useCallback(
-    (tripId: string | number) => {
+    (tripId: string | number | null) => {
       if (!storageKey) return;
-      const value = String(tripId);
+      const value = tripId === null ? null : String(tripId);
       memorySelections.set(storageKey, value);
       try {
-        window.sessionStorage.setItem(storageKey, value);
+        if (value === null) window.sessionStorage.removeItem(storageKey);
+        else window.sessionStorage.setItem(storageKey, value);
       } catch {}
       window.dispatchEvent(new Event(selectionChangedEvent));
     },

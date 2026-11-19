@@ -736,6 +736,7 @@
     }
   },
   "members": {
+    "awaitingInvitee": "Invitation sent",
     "viewMembers": "View {count} trip members",
     "memberActions": "Actions for {name}",
     "retry": "Try again",
@@ -772,12 +773,14 @@
       "REMOVED": "Removed"
     },
     "actions": {
+      "withdrawInvitation": "Withdraw invitation",
       "acceptBtn": "Approve",
       "acceptMember": "Approve member",
       "rejectMember": "Reject request",
       "changeRole": "Change role",
       "removeMember": "Remove from trip",
       "leaveTrip": "Leave trip",
+      "ownerCannotLeave": "The trip owner cannot leave the trip",
       "confirmRemoveTitle": "Remove Member From Trip",
       "confirmRemoveDesc": "Are you sure you want to remove <subject>{name}</subject> ({email}) from this trip?",
       "confirmLeaveTitle": "Leave Trip",
@@ -786,7 +789,7 @@
       "confirmLeaveBtn": "Leave trip"
     },
     "toasts": {
-      "inviteSuccess": "Member added to trip successfully!",
+      "inviteSuccess": "Invitation sent. The recipient must accept before joining the trip.",
       "inviteError": "Could not invite member. Please check the email address.",
       "updateRoleSuccess": "Member role updated successfully!",
       "updateRoleError": "Could not update role. Please try again.",
@@ -1462,5 +1465,133 @@
     "plan": "Itinerary",
     "expenses": "Expenses",
     "settlement": "Split"
+  },
+  "notification": {
+    "optIn": {
+      "title": "Enable notifications?",
+      "description": "Get trip invitations, expense updates and reminders. You can change this choice in Settings.",
+      "enable": "Enable notifications",
+      "skip": "Not now"
+    },
+    "invitationError": "Could not respond to this invitation. It may have changed; reload and try again.",
+    "invitation": {
+      "accept": "Accept",
+      "decline": "Decline",
+      "PENDING": {
+        "title": "Trip invitation",
+        "description": "You were invited to join “{trip}”. Accept to view the itinerary and take part in the trip."
+      },
+      "ACCEPTED": {
+        "title": "Invitation accepted",
+        "description": "You accepted the invitation to join “{trip}”. The trip is now in your list."
+      },
+      "DECLINED": {
+        "title": "Invitation declined",
+        "description": "You declined the invitation to join “{trip}”. You will not be added to the trip."
+      },
+      "CANCELLED": {
+        "title": "Invitation unavailable",
+        "description": "The invitation to join “{trip}” was withdrawn or the trip is no longer available."
+      }
+    },
+    "roleChangeDetail": " to {role}",
+    "sentences": {
+      "MEMBER_INVITED": "You were invited to join {trip}",
+      "MEMBER_INVITATION_ACCEPTED": "You accepted the invitation to join {trip}",
+      "MEMBER_INVITATION_DECLINED": "You declined the invitation to join {trip}",
+      "MEMBER_INVITATION_CANCELLED": "The invitation to join {trip} is no longer available",
+      "MEMBER_ADDED": "You were added to {trip}",
+      "MEMBER_APPROVAL_REQUIRED": "A request to join {trip} needs your approval",
+      "MEMBER_PENDING": "Your request to join {trip} is awaiting approval",
+      "MEMBER_APPROVED": "You were approved to join {trip}",
+      "MEMBER_ROLE_CHANGED": "Your role in {trip} has changed{detail}",
+      "MEMBER_REMOVED": "You were removed from {trip}",
+      "MEMBER_LEFT": "A member left {trip}",
+      "ACTIVITY_REMINDER": "Activity{detail} in {trip} is starting soon",
+      "TRIP_REMINDER": "{trip} departs in 3 days",
+      "TRIP_CANCELLED": "{trip} was cancelled",
+      "EXPENSE_CREATED": "A new expense{detail} was added to {trip}",
+      "EXPENSE_UPDATED": "Expense{detail} in {trip} was updated",
+      "EXPENSE_DELETED": "Expense{detail} in {trip} was deleted",
+      "SETTLEMENT_RECORDED": "A payment{detail} was recorded in {trip}",
+      "SETTLEMENT_DELETED": "Payment{detail} in {trip} was deleted"
+    },
+    "justNow": "Just now",
+    "tripFallback": "this trip",
+    "access": {
+      "LEFT": {
+        "title": "You left this trip",
+        "description": "You left “{name}”. This notification is kept, but you can no longer open the trip."
+      },
+      "REMOVED": {
+        "title": "You were removed from this trip",
+        "description": "You were removed from “{name}”. This notification is kept, but you can no longer open the trip."
+      },
+      "TRIP_DELETED": {
+        "title": "This trip was deleted",
+        "description": "“{name}” was deleted. This notification is kept in your history."
+      },
+      "PENDING": {
+        "title": "Your membership is pending",
+        "description": "Your request to join “{name}” is awaiting approval. You cannot open the trip yet."
+      },
+      "UNAVAILABLE": {
+        "title": "Trip access is unavailable",
+        "description": "You can no longer open “{name}”. This notification is kept in your history."
+      }
+    },
+    "title": "Notifications",
+    "bellLabel": "Notifications, {count} unread",
+    "newUpdate": "You have a new notification.",
+    "all": "All",
+    "unread": "Unread",
+    "empty": "No notifications yet",
+    "readAll": "Mark all as read",
+    "openError": "This content is unavailable or could not be loaded. Try opening it again.",
+    "push": "Receive notifications",
+    "enablePush": "Enable notifications",
+    "disablePush": "Disable notifications",
+    "saveError": "Could not save settings. Please try again.",
+    "unsupported": "Push is unsupported or not configured. On iPhone, open the app added to your Home Screen.",
+    "permissionDenied": "Allow notifications in your browser settings.",
+    "registrationError": "Device registration could not be synchronized. Check your connection and try enabling notifications again.",
+    "types": {
+      "MEMBER_INVITED": "You have a trip invitation",
+      "MEMBER_INVITATION_ACCEPTED": "You accepted the invitation",
+      "MEMBER_INVITATION_DECLINED": "You declined the invitation",
+      "MEMBER_INVITATION_CANCELLED": "This invitation is no longer available",
+      "MEMBER_ADDED": "You were added to a trip",
+      "MEMBER_APPROVAL_REQUIRED": "A member is waiting for approval",
+      "MEMBER_PENDING": "Your trip membership is awaiting approval",
+      "MEMBER_APPROVED": "Your trip membership was approved",
+      "MEMBER_ROLE_CHANGED": "Your role has changed",
+      "MEMBER_REMOVED": "You are no longer a member of this trip",
+      "MEMBER_LEFT": "A member has left the trip",
+      "ACTIVITY_REMINDER": "An activity is starting soon",
+      "TRIP_REMINDER": "Your trip departs in 3 days",
+      "TRIP_CANCELLED": "The trip was cancelled",
+      "EXPENSE_CREATED": "A new expense involves you",
+      "EXPENSE_UPDATED": "An expense involving you has changed",
+      "EXPENSE_DELETED": "An expense involving you was deleted",
+      "SETTLEMENT_RECORDED": "A payment record involving you was added",
+      "SETTLEMENT_DELETED": "A payment record involving you was deleted"
+    },
+    "roles": {
+      "OWNER": "Owner",
+      "VICE": "Vice",
+      "MEMBER": "Member"
+    },
+    "dateGroups": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "twoDaysAgo": "2 days ago",
+      "unknown": "Unknown date"
+    },
+    "delete": "Delete notification",
+    "deleteLabel": "Delete notification: {title}",
+    "deleteError": "Could not delete the notification. Please try again.",
+    "loadPrevious": "View earlier notifications",
+    "loadingPrevious": "Loading…",
+    "deleteAction": "Delete"
   }
 }

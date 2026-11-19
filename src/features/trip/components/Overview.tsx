@@ -31,7 +31,7 @@ const Overview = () => {
         <AppErrorState status={error.status} onRetry={() => refetchTrips()} />
       </AppPageContainer>
     );
-  if (!trips?.length)
+  if (!activeTrip && !trips?.length)
     return (
       <AppPageContainer>
         <OverviewActions onCreateTrip={openCreateTrip} />

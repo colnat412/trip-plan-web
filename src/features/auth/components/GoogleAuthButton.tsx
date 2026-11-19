@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Box, Typography } from '@mui/material';
-import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
+import { getAuthReturnPath } from '@/base/utils/auth-return-path';
 import useGoogleLogin from '../hooks/useGoogleLogin';
 import { AppButton, AppToast } from '@/base/components/ui';
 import { GoogleIcon } from '@/base/components/icons';
@@ -86,9 +86,7 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
                   window.location.search,
                 ).get('returnTo');
                 router.push(
-                  returnTo && /^\/templates\/[a-zA-Z0-9]+$/.test(returnTo)
-                    ? returnTo
-                    : DEFAULT_AUTH_REDIRECT_PATH,
+                  getAuthReturnPath(returnTo),
                 );
                 router.refresh();
               },

@@ -21,6 +21,22 @@ let failedQueue: Array<{
   reject: (reason?: unknown) => void;
 }> = [];
 
+const redirectToLogin = async (clearCookies = false) => {
+  if (typeof window === 'undefined' || isRedirectingToLogin) return;
+  const path = window.location.pathname;
+  if (path === '/login' || path === '/register' || PUBLIC_PATHS.some(page => path === page || path.startsWith(`${page}/`))) return;
+  isRedirectingToLogin = true;
+  try {
+    if (clearCookies) {
+      await axios.post(`${API_URL}/auth/clear-session`, {}, { withCredentials: true, timeout: 3000 });
+    }
+  } catch {
+    // Still leave the rejected session view if the local cleanup request fails.
+  } finally {
+    window.location.replace('/login');
+  }
+};
+
 const processQueue = (error: unknown) => {
   failedQueue.forEach((prom) => {
     if (error) {
@@ -46,6 +62,13 @@ axiosClient.interceptors.response.use(
       url.includes('/auth/login') ||
       url.includes('/auth/refresh') ||
       url.includes('/auth/logout');
+
+    // A second 401 after refresh means the session is unusable. Do not leave
+    // the user on a protected page or repeatedly refresh the same request.
+    if (error.response.status === 401 && !isAuthEndpoint && originalRequest._retry) {
+      await redirectToLogin(true);
+      return Promise.reject(error);
+    }
 
     if (
       error.response.status === 401 &&
@@ -87,26 +110,8 @@ axiosClient.interceptors.response.use(
           axios.isAxiosError(refreshError) &&
           (refreshError.response?.status === 401 ||
             refreshError.response?.status === 403);
-        if (
-          sessionRejected &&
-          !isRedirectingToLogin &&
-          typeof window !== 'undefined'
-        ) {
-          const currentPath = window.location.pathname;
-          const isPublicPage = PUBLIC_PATHS.some(
-            (path) =>
-              currentPath === path || currentPath.startsWith(`${path}/`),
-          );
-          if (
-            currentPath !== '/login' &&
-            currentPath !== '/register' &&
-            !isPublicPage
-          ) {
-            isRedirectingToLogin = true;
-            // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-            window.location.href = '/login';
-          }
-        }
+        // Refresh BFF already clears both cookies when it rejects the session.
+        if (sessionRejected) await redirectToLogin();
 
         return Promise.reject(refreshError);
       }
