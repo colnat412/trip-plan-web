@@ -5,22 +5,31 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Avatar, ButtonBase, Stack, Typography } from '@mui/material';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import AppPreferenceRow from '@/base/components/preferences/AppPreferenceRow';
 import AppExitButton from '@/base/components/ui/AppExitButton';
 import { AppPageContainer, AppPageHeader } from '@/base/components/ui';
 import AppPreferences from '@/base/components/preferences/AppPreferences';
 import { useUserContext } from '../context/UserContext';
 import { getUserInitials } from '@/base/utils';
 import useLogout from '@/features/auth/hooks/useLogout';
+import useLogoutPasswordWarning from '@/features/auth/hooks/useLogoutPasswordWarning';
 import ProfileDialog from './ProfileDialog';
+import PasswordDialog from './PasswordDialog';
 import NotificationSettings from '@/features/notification/components/NotificationSettings';
 
 export default function SettingsView() {
   const t = useTranslations('preferences');
   const u = useTranslations('userMenu');
+  const p = useTranslations('passwordSettings');
   const { user } = useUserContext();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
   const { logoutMutation } = useLogout();
   const router = useRouter();
+  const { requestLogout, logoutWarning } = useLogoutPasswordWarning(() => {
+    logoutMutation.mutate({}, { onSuccess: () => { router.push('/login'); router.refresh(); } });
+  }, { busy: logoutMutation.isPending });
   return <AppPageContainer>
     <Stack spacing={3} sx={{ width: '100%', maxWidth: 640, alignSelf: 'center' }}>
       <AppPageHeader title={t('settings')} />
@@ -44,14 +53,27 @@ export default function SettingsView() {
           <ChevronRightRoundedIcon sx={{ color: 'text.secondary', flexShrink: 0 }} />
         </ButtonBase>
       </Stack>
+      <Stack component="section" aria-labelledby="settings-security" spacing={1} sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <Typography id="settings-security" component="h2" sx={{ fontSize: 12, fontWeight: 500, color: 'text.secondary' }}>{t('securityGroup')}</Typography>
+        <ButtonBase disabled={!user} onClick={() => setPasswordOpen(true)}
+          sx={{ width: '100%', textAlign: 'left', borderRadius: 'var(--app-radius-small)',
+            '&:hover': { bgcolor: 'action.hover' },
+            '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 2 } }}>
+          <AppPreferenceRow icon={<LockOutlinedIcon />} label={p(user?.hasPassword === false ? 'setTitle' : 'changeTitle')}>
+            <ChevronRightRoundedIcon sx={{ color: 'text.secondary', flexShrink: 0 }} />
+          </AppPreferenceRow>
+        </ButtonBase>
+      </Stack>
       <Stack component="section" aria-labelledby="settings-application" spacing={1} sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}>
         <Typography id="settings-application" component="h2" sx={{ fontSize: 12, fontWeight: 500, color: 'text.secondary' }}>{t('applicationGroup')}</Typography>
         <AppPreferences menuLayout dividers />
       </Stack>
       <NotificationSettings />
       <AppExitButton fullWidth label={u('logout')} loading={logoutMutation.isPending}
-        onClick={() => logoutMutation.mutate({}, { onSuccess: () => { router.push('/login'); router.refresh(); } })} />
+        onClick={requestLogout} />
     </Stack>
     <ProfileDialog open={profileOpen} onClose={() => setProfileOpen(false)} user={user ?? undefined} />
+    <PasswordDialog open={passwordOpen} onClose={() => setPasswordOpen(false)} />
+    {logoutWarning}
   </AppPageContainer>;
 }

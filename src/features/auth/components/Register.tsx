@@ -1,6 +1,5 @@
 'use client';
 
-import { alpha } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
@@ -18,12 +17,14 @@ import {
   PersonOutlineOutlined,
   VisibilityOffOutlined,
   VisibilityOutlined,
-  KeyOutlined,
+  MarkEmailReadOutlined,
 } from '@mui/icons-material';
 
 import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
-import { AppBackHeader, AppButton, AppTextField, AppToast } from '@/base/components/ui';
-import AppPreferences from '@/base/components/preferences/AppPreferences';
+import { AppBackHeader, AppButton, AppCard, AppConfirmDialog, AppTextField, AppToast } from '@/base/components/ui';
+import AppPreferencesMenu from '@/base/components/preferences/AppPreferencesMenu';
+import AppBrand from '@/base/components/layout/AppBrand';
+import LoginBrandPanel from './LoginBrandPanel';
 import useRegister from '@/features/auth/hooks/useRegister';
 import useVerifyOtp from '@/features/auth/hooks/useVerifyOtp';
 import useResendOtp from '@/features/auth/hooks/useResendOtp';
@@ -48,7 +49,8 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
   const [formErrors, setFormErrors] = useState<RegisterFormErrors>({});
-  const [countdown, setCountdown] = useState(60);
+  const [countdown, setCountdown] = useState(0);
+  const [resendAvailableAt, setResendAvailableAt] = useState(0);
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -60,20 +62,29 @@ const Register = () => {
   const { verifyOtpMutation } = useVerifyOtp();
   const { resendOtpMutation } = useResendOtp();
 
+  const busy = registerMutation.isPending || verifyOtpMutation.isPending || resendOtpMutation.isPending;
+
   useEffect(() => {
-    let timer: NodeJS.Timeout | undefined;
-    if (step === 'OTP' && countdown > 0) {
-      timer = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => {
-      if (timer) clearInterval(timer);
+    if (step !== 'OTP') return;
+    const updateCountdown = () => {
+      const remaining = Math.max(0, Math.ceil((resendAvailableAt - Date.now()) / 1000));
+      setCountdown(remaining);
+      if (remaining === 0) clearInterval(timer);
     };
-  }, [step, countdown]);
+    const timer = setInterval(updateCountdown, 1000);
+    const onVisible = () => { if (!document.hidden) updateCountdown(); };
+    window.addEventListener('focus', updateCountdown);
+    document.addEventListener('visibilitychange', onVisible);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('focus', updateCountdown);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
+  }, [step, resendAvailableAt]);
 
   const handleRegisterSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (busy) return;
 
     const normalizedName = name.trim();
     const normalizedEmail = email.trim().toLowerCase();
@@ -118,12 +129,13 @@ const Register = () => {
       },
       {
         onSuccess: () => {
+          setEmail(normalizedEmail);
+          setOtp('');
+          setFormErrors({});
           setStep('OTP');
           setCountdown(60);
+          setResendAvailableAt(Date.now() + 60_000);
           setSuccessToast(t('register.otpSentToast'));
-          setTimeout(() => {
-            otpInputRef.current?.focus();
-          }, 200);
         },
       },
     );
@@ -131,9 +143,10 @@ const Register = () => {
 
   const handleVerifyOtpSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (busy) return;
 
     const cleanOtp = otp.trim();
-    if (!cleanOtp || cleanOtp.length < 6) {
+    if (!/^\d{6}$/.test(cleanOtp)) {
       setFormErrors({ otp: t('validation.otpRequired') });
       otpInputRef.current?.focus();
       return;
@@ -154,7 +167,7 @@ const Register = () => {
   };
 
   const handleResendOtp = () => {
-    if (countdown > 0 || resendOtpMutation.isPending) return;
+    if (Date.now() < resendAvailableAt || busy) return;
 
     resendOtpMutation.mutate(
       {
@@ -163,17 +176,23 @@ const Register = () => {
       {
         onSuccess: () => {
           setCountdown(60);
+          setResendAvailableAt(Date.now() + 60_000);
+          setOtp('');
+          setFormErrors({});
+          verifyOtpMutation.clearError();
+          otpInputRef.current?.focus();
           setSuccessToast(t('register.otpResentToast'));
         },
       },
     );
   };
 
-  const activeErrorMessage =
-    registerMutation.error?.message ||
-    verifyOtpMutation.error?.message ||
-    resendOtpMutation.error?.message ||
-    '';
+  const emailAlreadyRegistered = registerMutation.error?.status === 409;
+  const activeErrorMessage = registerMutation.error?.status === 503 || resendOtpMutation.error?.status === 503
+    ? t('register.emailSendError')
+    : verifyOtpMutation.error?.status === 401
+      ? t('register.invalidCode')
+      : registerMutation.error?.message || verifyOtpMutation.error?.message || resendOtpMutation.error?.message || '';
 
   const clearAllErrors = () => {
     registerMutation.clearError();
@@ -188,14 +207,28 @@ const Register = () => {
         minHeight: '100svh',
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
-        bgcolor: 'background.paper',
+        bgcolor: { xs: 'primary.dark', md: 'background.paper' },
       }}
     >
       <AppToast
-        open={Boolean(activeErrorMessage)}
+        open={Boolean(activeErrorMessage) && !emailAlreadyRegistered}
         severity="error"
         message={activeErrorMessage}
         onClose={clearAllErrors}
+      />
+
+      <AppConfirmDialog
+        open={emailAlreadyRegistered}
+        title={t('register.emailAlreadyRegisteredTitle')}
+        description={t('register.emailAlreadyRegistered')}
+        intent="primary"
+        confirmText={t('register.loginNow')}
+        cancelText={t('register.useAnotherEmail')}
+        onConfirm={() => router.push('/login')}
+        onClose={() => {
+          registerMutation.clearError();
+          emailInputRef.current?.focus();
+        }}
       />
 
       <AppToast
@@ -205,40 +238,8 @@ const Register = () => {
         onClose={() => setSuccessToast(null)}
       />
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          flexGrow: 1.15,
-          flexShrink: 1,
-          flexBasis: 0,
-          minWidth: 0,
-          minHeight: { xs: '200px', sm: '240px', md: '100svh' },
-          overflow: 'hidden',
-          bgcolor: (theme) => alpha(theme.palette.common.black, 0.6),
-          justifyContent: 'space-between',
-          p: { xs: 3, md: 4 },
-          color: 'common.white',
-          backgroundImage: 'url("/login-travel.svg")',
-          backgroundBlendMode: 'multiply',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          '& .MuiTypography-root': { color: 'inherit' },
-        }}
-      >
-        <Stack spacing={1} sx={{ maxWidth: 560 }}>
-          <Typography
-            component="p"
-            sx={{
-              fontSize: { xs: '28px', sm: '36px', md: '40px' },
-              lineHeight: 1.3,
-              fontFamily: 'var(--font-display)',
-              fontWeight: 700,
-            }}
-          >
-            {t('login.slogan')}
-          </Typography>
-        </Stack>
+      <Box sx={{ display: step === 'OTP' ? { xs: 'none', md: 'contents' } : 'contents' }}>
+        <LoginBrandPanel />
       </Box>
 
       <Box
@@ -248,9 +249,12 @@ const Register = () => {
           flexShrink: 1,
           flexBasis: 0,
           minWidth: { xs: 0, md: '440px' },
-          alignItems: 'center',
+          alignItems: { xs: step === 'OTP' ? 'center' : 'flex-start', md: 'center' },
           justifyContent: 'center',
-          p: { xs: 3, sm: 5 },
+          p: { xs: '24px 24px max(32px, env(safe-area-inset-bottom))', sm: 5 },
+          minHeight: { xs: step === 'OTP' ? '100svh' : 'calc(100svh - 240px)', sm: step === 'OTP' ? '100svh' : 'calc(100svh - 280px)', md: '100svh' },
+          borderRadius: { xs: step === 'OTP' ? 0 : 'var(--app-radius-dialog) var(--app-radius-dialog) 0 0', md: 0 },
+          bgcolor: 'background.paper',
         }}
       >
         <Box
@@ -262,9 +266,12 @@ const Register = () => {
             gap: '16px',
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <AppPreferences />
-          </Box>
+          {step === 'OTP' && (
+            <Stack direction="row" sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
+              <AppBrand showTag={false} />
+              <AppPreferencesMenu />
+            </Stack>
+          )}
 
           {step === 'REGISTER' ? (
             <>
@@ -282,6 +289,7 @@ const Register = () => {
               <Typography color="text.secondary">
                 {t('register.description')}
               </Typography>
+
 
               <Stack
                 component="form"
@@ -445,105 +453,59 @@ const Register = () => {
             <>
               <AppBackHeader
                 title={t('register.verifyTitle')}
-                backLabel={t('register.back')}
+                titleAlign="left"
+                backLabel={t('register.changeEmail')}
+                backDisabled={busy}
                 onBack={() => {
+                  if (busy) return;
                   setStep('REGISTER');
+                  setOtp('');
+                  setFormErrors({});
+                  setSuccessToast(null);
                   clearAllErrors();
                 }}
               />
-
-              <Typography color="text.secondary">
-                {t('register.verifyDescription')}{' '}
-                <Box
-                  component="span"
-                  sx={{ fontWeight: 700, color: 'text.primary' }}
-                >
-                  {email}
-                </Box>
-                . {t('register.verifyDescriptionSuffix')}
-              </Typography>
-
-              <Stack
-                component="form"
-                spacing={2.5}
-                noValidate
-                onSubmit={handleVerifyOtpSubmit}
-              >
+              <AppCard variant="outlined" sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 'var(--app-radius-control)' }}>
+                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', minWidth: 0 }}>
+                  <MarkEmailReadOutlined aria-hidden sx={{ color: 'primary.main', fontSize: 28, flexShrink: 0 }} />
+                  <Stack spacing={0.5} sx={{ minWidth: 0 }}>
+                    <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('register.verifyDescription')}</Typography>
+                    <Typography sx={{ fontSize: 14, fontWeight: 700, overflowWrap: 'anywhere' }}>{email}</Typography>
+                  </Stack>
+                </Stack>
+              </AppCard>
+              <Stack component="form" spacing={2} noValidate onSubmit={handleVerifyOtpSubmit} aria-label={t('register.verifyTitle')}>
                 <AppTextField
+                  autoFocus
                   label={t('register.otpLabel')}
                   name="otp"
-                  placeholder="123456"
+                  placeholder="000000"
+                  autoComplete="one-time-code"
                   required
                   value={otp}
                   error={Boolean(formErrors.otp)}
-                  helperText={formErrors.otp}
+                  helperText={formErrors.otp || t('register.codeExpiry')}
                   inputRef={otpInputRef}
-                  disabled={verifyOtpMutation.isPending}
+                  disabled={busy}
                   onChange={(event) => {
-                    const value = event.target.value
-                      .replace(/\D/g, '')
-                      .slice(0, 6);
-                    setOtp(value);
-                    setFormErrors((current) => ({
-                      ...current,
-                      otp: undefined,
-                    }));
+                    setOtp(event.target.value.replace(/\D/g, '').slice(0, 6));
+                    setFormErrors(current => ({ ...current, otp: undefined }));
                     verifyOtpMutation.clearError();
                   }}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <KeyOutlined fontSize="small" />
-                        </InputAdornment>
-                      ),
-                    },
-                    htmlInput: {
-                      maxLength: 6,
-                      style: {
-                        letterSpacing: '8px',
-                        fontSize: '22px',
-                        fontWeight: 700,
-                        textAlign: 'center',
-                      },
-                    },
-                  }}
+                  slotProps={{ htmlInput: {
+                    inputMode: 'numeric', pattern: '[0-9]{6}', maxLength: 6,
+                    style: { letterSpacing: '8px', fontSize: '28px', fontWeight: 700, textAlign: 'center', fontVariantNumeric: 'tabular-nums' },
+                  } }}
                 />
-
-                <AppButton
-                  type="submit"
-                  fullWidth
-                  loading={verifyOtpMutation.isPending}
-                  sx={{ minHeight: '54px', height: '54px' }}
-                >
+                <AppButton type="submit" fullWidth loading={verifyOtpMutation.isPending} disabled={busy || otp.length !== 6} sx={{ minHeight: 48 }}>
                   {t('register.verifySubmit')}
                 </AppButton>
-
-                <Stack
-                  direction="row"
-                  sx={{
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="body2" color="text.secondary">
-                    {countdown > 0
-                      ? t('register.resendCountdown', { seconds: countdown })
-                      : t('register.notReceived')}
-                  </Typography>
-
-                  <AppButton
-                    intent="text"
-                    size="small"
-                    disabled={countdown > 0 || resendOtpMutation.isPending}
-                    loading={resendOtpMutation.isPending}
-                    onClick={handleResendOtp}
-                    sx={{ fontWeight: 700, textTransform: 'none' }}
-                  >
-                    {t('register.resendOtp')}
+                <Stack spacing={0.5} sx={{ alignItems: 'center', textAlign: 'center' }}>
+                  <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>{t('register.notReceived')}</Typography>
+                  <AppButton intent="text" size="small" disabled={countdown > 0 || busy} loading={resendOtpMutation.isPending} onClick={handleResendOtp} sx={{ minHeight: 44 }}>
+                    {countdown > 0 ? t('register.resendCountdown', { seconds: countdown }) : t('register.resendOtp')}
                   </AppButton>
+                  <Typography sx={{ fontSize: 12, color: 'text.secondary', lineHeight: 1.6 }}>{t('register.checkSpam')}</Typography>
                 </Stack>
               </Stack>
             </>

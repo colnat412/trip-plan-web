@@ -31,11 +31,19 @@ const AppPreferencesMenu = () => {
         anchorEl={anchorEl}
         onClose={() => setAnchorEl(null)}
         label={t('settings')}
-        width={320}
+        width={360}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        sx={{
+          '& .MuiPopover-paper': {
+            mt: 1,
+            bgcolor: 'background.paper',
+            backgroundImage: 'none',
+            backdropFilter: 'none',
+          },
+        }}
       >
-        <AppPreferences menuLayout />
+        <AppPreferences menuLayout dividers />
       </AppPopover>
     </>
   );

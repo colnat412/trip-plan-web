@@ -14,6 +14,7 @@ import type { ApiResponse } from '@/base/api';
 import type { UserProfile } from '@/features/auth/types';
 import { useUserContext } from '@/features/user/context/UserContext';
 import useLogout from '@/features/auth/hooks/useLogout';
+import useLogoutPasswordWarning from '@/features/auth/hooks/useLogoutPasswordWarning';
 import PolicyDocument from './PolicyDocument';
 import PolicyAcceptanceCard from './PolicyAcceptanceCard';
 import { POLICY_IDS, POLICY_VERSION, type PolicyId } from '../constants';
@@ -78,6 +79,8 @@ const PolicyAcceptanceDialog = () => {
       setError(true);
     }
   };
+
+  const { requestLogout, logoutWarning } = useLogoutPasswordWarning(signOut, { busy, canSetPassword: false });
 
   return (
     <>
@@ -152,7 +155,7 @@ const PolicyAcceptanceDialog = () => {
                 {t('continue')}
               </AppButton>
               <AppExitButton label={t('decline')} loading={logout.isPending} disabled={busy}
-                onClick={() => void signOut()} />
+                onClick={requestLogout} />
             </Box>
           )
         }
@@ -220,6 +223,7 @@ const PolicyAcceptanceDialog = () => {
           </Stack>
         )}
       </AppDialog>
+      {logoutWarning}
     </>
   );
 };

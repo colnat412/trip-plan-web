@@ -15,6 +15,7 @@ import AppButton from './AppButton';
 export interface AppConfirmDialogProps {
   open: boolean;
   onClose: () => void;
+  onCancel?: () => void;
   onConfirm: () => void | Promise<void>;
   title: string;
   description: string | ReactNode;
@@ -28,6 +29,7 @@ export interface AppConfirmDialogProps {
 const AppConfirmDialog = ({
   open,
   onClose,
+  onCancel,
   onConfirm,
   title,
   description,
@@ -70,12 +72,12 @@ const AppConfirmDialog = ({
       }}
     >
       <AppButton
-        data-dialog-action="cancel"
+        data-dialog-action={onCancel ? 'secondary' : 'cancel'}
         intent="secondary"
         fullWidth
         size="medium"
         disabled={loading}
-        onClick={onClose}
+        onClick={onCancel ?? onClose}
       >
         {cancelLabel}
       </AppButton>

@@ -14,6 +14,7 @@ import useEnableNotifications from '../hooks/useEnableNotifications';
 const NotificationSettings = () => {
   const notifications = useNotifications();
   const t = useTranslations('notification');
+  const p = useTranslations('preferences');
   const { enable, isEnabling, error: enableError, clearError: clearEnableError } = useEnableNotifications();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +33,7 @@ const NotificationSettings = () => {
     finally { setSaving(false); }
   };
   return <Stack component="section" aria-labelledby="settings-notifications" spacing={1} sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}>
-    <Typography id="settings-notifications" component="h2" sx={{ fontSize: 12, fontWeight: 500, color: 'text.secondary' }}>{t('title')}</Typography>
+    <Typography id="settings-notifications" component="h2" sx={{ fontSize: 12, fontWeight: 500, color: 'text.secondary' }}>{p('systemGroup')}</Typography>
     {!current && notifications.preferencesLoading ? <AppLoadingIndicator /> : !current ? <AppErrorState compact onRetry={() => notifications.refreshPreferences()} /> : <>
       <AppPreferenceRow icon={<NotificationsNoneRoundedIcon />} label={t('push')}>
         <Switch checked={current.pushEnabled} disabled={saving || isEnabling}

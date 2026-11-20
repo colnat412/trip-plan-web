@@ -7,6 +7,7 @@ export interface UserProfile {
   policiesAcceptedAt?: string | null;
   policiesVersion?: string | null;
   requiredPolicyVersion?: string;
+  hasPassword?: boolean;
 }
 
 export interface LoginPayload {

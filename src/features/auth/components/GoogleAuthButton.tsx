@@ -44,9 +44,11 @@ declare global {
 
 interface GoogleAuthButtonProps {
   text?: 'signin_with' | 'signup_with' | 'continue_with';
+  disabled?: boolean;
+  onPendingChange?: (pending: boolean) => void;
 }
 
-const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
+const GoogleAuthButton = ({ text = 'signin_with', disabled = false, onPendingChange }: GoogleAuthButtonProps) => {
   const router = useRouter();
   const t = useTranslations();
   const { googleLoginMutation } = useGoogleLogin();
@@ -55,6 +57,17 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
       typeof window !== 'undefined' && Boolean(window.google?.accounts?.oauth2),
   );
   const tokenClientRef = useRef<TokenClient | null>(null);
+  const pendingRef = useRef(false);
+  const [authorizing, setAuthorizing] = useState(false);
+  const [oauthError, setOauthError] = useState(false);
+  const releasePending = useCallback(() => {
+    pendingRef.current = false;
+    setAuthorizing(false);
+  }, []);
+
+  useEffect(() => {
+    onPendingChange?.(authorizing || googleLoginMutation.isPending);
+  }, [authorizing, googleLoginMutation.isPending, onPendingChange]);
 
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
@@ -73,7 +86,8 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
       scope: 'openid email profile',
       callback: (response: TokenResponse) => {
         if (response.error) {
-          console.error('Google OAuth error:', response.error);
+          releasePending();
+          setOauthError(true);
           return;
         }
 
@@ -90,15 +104,22 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
                 );
                 router.refresh();
               },
+              onError: releasePending,
             },
           );
+        } else {
+          releasePending();
+          setOauthError(true);
         }
+      },
+      error_callback: () => {
+        releasePending();
       },
     });
 
     tokenClientRef.current = client;
     return client;
-  }, [clientId, googleLoginMutation, router]);
+  }, [clientId, googleLoginMutation, router, releasePending]);
 
   // Load Google Identity Services script once
   useEffect(() => {
@@ -133,9 +154,18 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
   }, [clientId, getOrCreateTokenClient]);
 
   const handleClick = () => {
+    if (disabled || pendingRef.current || googleLoginMutation.isPending || !scriptLoaded) return;
     const client = getOrCreateTokenClient();
     if (client) {
-      client.requestAccessToken();
+      pendingRef.current = true;
+      setAuthorizing(true);
+      setOauthError(false);
+      try {
+        client.requestAccessToken();
+      } catch {
+        releasePending();
+        setOauthError(true);
+      }
     }
   };
 
@@ -168,12 +198,12 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
   return (
     <>
       <AppToast
-        open={Boolean(googleLoginMutation.error)}
+        open={Boolean(googleLoginMutation.error) || oauthError}
         severity="error"
         message={
           googleLoginMutation.error?.message ?? t('login.googleLoginError')
         }
-        onClose={googleLoginMutation.clearError}
+        onClose={() => { googleLoginMutation.clearError(); setOauthError(false); }}
       />
 
       <Box
@@ -185,8 +215,8 @@ const GoogleAuthButton = ({ text = 'signin_with' }: GoogleAuthButtonProps) => {
         <AppButton
           intent="secondary"
           fullWidth
-          disabled={!scriptLoaded || googleLoginMutation.isPending}
-          loading={googleLoginMutation.isPending}
+          disabled={disabled || !scriptLoaded || authorizing || googleLoginMutation.isPending}
+          loading={authorizing || googleLoginMutation.isPending}
           startIcon={<GoogleIcon />}
           onClick={handleClick}
           sx={{

@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 import useLogout from '@/features/auth/hooks/useLogout';
+import useLogoutPasswordWarning from '@/features/auth/hooks/useLogoutPasswordWarning';
 import { useUserContext } from '@/features/user/context/UserContext';
 import { getUserInitials } from '@/base/utils';
 import ProfileDialog from '@/features/user/components/ProfileDialog';
@@ -56,8 +57,7 @@ const SidebarUser = ({
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    handleCloseMenu();
+  const { requestLogout, logoutWarning } = useLogoutPasswordWarning(() => {
     logoutMutation.mutate(
       {},
       {
@@ -67,6 +67,11 @@ const SidebarUser = ({
         },
       },
     );
+  }, { busy: logoutMutation.isPending });
+
+  const handleLogout = () => {
+    handleCloseMenu();
+    requestLogout();
   };
 
   if (isLoading && !currentUser) {
@@ -188,6 +193,7 @@ const SidebarUser = ({
         onClose={() => setProfileOpen(false)}
         user={rawUser ?? undefined}
       />
+      {logoutWarning}
     </>
   );
 };

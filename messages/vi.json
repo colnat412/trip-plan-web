@@ -89,7 +89,9 @@
     "shareTrip": "Chia sẻ",
     "tripLoadError": "Chưa thể tải chuyến đi.",
     "retry": "Thử lại",
-    "signIn": "Đăng nhập"
+    "signIn": "Đăng nhập",
+    "welcomeUser": "Chào, {name}",
+    "welcome": "Chào mừng đến Vi Vu"
   },
   "pwa": {
     "guide": {
@@ -145,7 +147,9 @@
     "system": "Theo hệ thống",
     "changeError": "Không thể đổi ngôn ngữ. Vui lòng thử lại.",
     "accountGroup": "Tài khoản",
-    "applicationGroup": "Ứng dụng"
+    "applicationGroup": "Ứng dụng",
+    "securityGroup": "Bảo mật",
+    "systemGroup": "Hệ thống"
   },
   "topBar": {
     "addExpense": "Thêm khoản chi",
@@ -290,18 +294,26 @@
     "submit": "Đăng ký tài khoản",
     "hasAccount": "Đã có tài khoản?",
     "loginNow": "Đăng nhập ngay",
-    "verifyTitle": "Xác thực mã OTP",
-    "verifyDescription": "Mã xác thực 6 chữ số đã được gửi tới",
+    "verifyTitle": "Xác thực email",
+    "verifyDescription": "Mã xác thực đã được gửi đến",
     "verifyDescriptionSuffix": "Vui lòng nhập mã để kích hoạt tài khoản.",
-    "otpLabel": "Mã OTP",
-    "verifySubmit": "Xác nhận & Bắt đầu",
+    "otpLabel": "Mã xác thực 6 chữ số",
+    "verifySubmit": "Xác thực và tiếp tục",
     "resendCountdown": "Gửi lại mã sau {seconds}s",
-    "notReceived": "Chưa nhận được mã?",
-    "resendOtp": "Gửi lại mã OTP",
+    "notReceived": "Chưa nhận được email?",
+    "resendOtp": "Gửi lại mã",
     "back": "Quay lại",
     "otpSentToast": "Mã OTP 6 số đã được gửi đến email của bạn!",
     "otpResentToast": "Đã gửi lại mã OTP mới!",
-    "googleMissingClientId": "Chưa cấu hình NEXT_PUBLIC_GOOGLE_CLIENT_ID"
+    "googleMissingClientId": "Chưa cấu hình NEXT_PUBLIC_GOOGLE_CLIENT_ID",
+    "changeEmail": "Sửa thông tin đăng ký",
+    "codeExpiry": "Mã có hiệu lực trong 5 phút.",
+    "checkSpam": "Kiểm tra thư mục Spam hoặc Thư rác.",
+    "emailSendError": "Chưa gửi được email xác thực. Vui lòng thử lại sau.",
+    "invalidCode": "Mã không đúng hoặc đã hết hạn. Vui lòng kiểm tra hoặc gửi lại mã.",
+    "emailAlreadyRegistered": "Email này đã có tài khoản. Vui lòng đăng nhập.",
+    "emailAlreadyRegisteredTitle": "Email đã được đăng ký",
+    "useAnotherEmail": "Dùng email khác"
   },
   "validation": {
     "nameRequired": "Vui lòng nhập họ và tên.",
@@ -1598,5 +1610,30 @@
     "loadPrevious": "Xem thông báo trước đó",
     "loadingPrevious": "Đang tải…",
     "deleteAction": "Xóa"
+  },
+  "passwordSettings": {
+    "setTitle": "Đặt mật khẩu",
+    "changeTitle": "Đổi mật khẩu",
+    "setDescription": "Thêm cách đăng nhập bằng email.",
+    "changeDescription": "Cập nhật mật khẩu Vi Vu.",
+    "email": "Email đăng nhập",
+    "currentPassword": "Mật khẩu hiện tại",
+    "newPassword": "Mật khẩu mới",
+    "confirmation": "Nhập lại mật khẩu mới",
+    "currentRequired": "Vui lòng nhập mật khẩu hiện tại.",
+    "tooShort": "Mật khẩu cần ít nhất 8 ký tự.",
+    "tooLong": "Mật khẩu vượt quá giới hạn 72 byte. Hãy rút ngắn nếu dùng ký tự có dấu hoặc emoji.",
+    "mustDiffer": "Mật khẩu mới phải khác mật khẩu hiện tại.",
+    "mismatch": "Mật khẩu nhập lại chưa khớp.",
+    "currentIncorrect": "Mật khẩu hiện tại không đúng. Vui lòng kiểm tra lại.",
+    "saveFailed": "Chưa lưu được mật khẩu. Vui lòng thử lại.",
+    "saveSuccess": "Đã lưu mật khẩu. Bạn có thể đăng nhập bằng email.",
+    "cancel": "Hủy",
+    "save": "Lưu mật khẩu",
+    "logoutTitle": "Bạn chưa đặt mật khẩu",
+    "logoutDescription": "Đặt mật khẩu nếu bạn muốn đăng nhập bằng email.",
+    "logoutAnyway": "Vẫn đăng xuất",
+    "goBack": "Quay lại",
+    "logoutBody": "Lần sau, bạn vẫn có thể đăng nhập bằng Google."
   }
 }

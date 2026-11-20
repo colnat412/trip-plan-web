@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { type FormEvent, useRef, useState } from 'react';
 import {
   Box,
@@ -42,10 +43,15 @@ const Login = () => {
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
   const { loginMutation } = useLogin();
+  const [emailPending, setEmailPending] = useState(false);
+  const [googlePending, setGooglePending] = useState(false);
+  const submitting = useRef(false);
+  const busy = emailPending || googlePending || loginMutation.isPending;
   const t = useTranslations();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (busy || submitting.current) return;
 
     const normalizedEmail = email.trim().toLowerCase();
     const nextErrors: LoginFormErrors = {};
@@ -72,6 +78,8 @@ const Login = () => {
       return;
     }
 
+    submitting.current = true;
+    setEmailPending(true);
     loginMutation.mutate(
       {
         email: normalizedEmail,
@@ -89,6 +97,8 @@ const Login = () => {
           router.refresh();
         },
         onError: () => {
+          submitting.current = false;
+          setEmailPending(false);
           passwordInputRef.current?.focus();
         },
       },
@@ -158,6 +168,7 @@ const Login = () => {
             component="form"
             spacing={2}
             noValidate
+            aria-busy={busy}
             onSubmit={handleSubmit}
           >
             <AppTextField
@@ -171,7 +182,7 @@ const Login = () => {
               error={Boolean(formErrors.email)}
               helperText={formErrors.email}
               inputRef={emailInputRef}
-              disabled={loginMutation.isPending}
+              disabled={busy}
               onChange={(event) => {
                 setEmail(event.target.value);
                 setFormErrors((current) => ({
@@ -202,7 +213,7 @@ const Login = () => {
               error={Boolean(formErrors.password)}
               helperText={formErrors.password}
               inputRef={passwordInputRef}
-              disabled={loginMutation.isPending}
+              disabled={busy}
               onChange={(event) => {
                 setPassword(event.target.value);
                 setFormErrors((current) => ({
@@ -221,6 +232,8 @@ const Login = () => {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
+                        type="button"
+                        disabled={busy}
                         aria-label={
                           showPassword
                             ? t('login.hidePassword')
@@ -250,7 +263,7 @@ const Login = () => {
                   <Checkbox
                     size="small"
                     checked={rememberMe}
-                    disabled={loginMutation.isPending}
+                    disabled={busy}
                     onChange={(event) => setRememberMe(event.target.checked)}
                   />
                 }
@@ -277,6 +290,7 @@ const Login = () => {
               type="submit"
               fullWidth
               loading={loginMutation.isPending}
+              disabled={busy}
               sx={{ minHeight: '54px', height: '54px' }}
             >
               {t('login.submit')}
@@ -289,9 +303,9 @@ const Login = () => {
             </Typography>
           </Divider>
 
-          <GoogleAuthButton text="signin_with" />
+          <GoogleAuthButton text="signin_with" disabled={busy} onPendingChange={setGooglePending} />
 
-          {/* <Stack
+          <Stack
             spacing={'4px'}
             direction={'row'}
             sx={{ justifyContent: 'center' }}
@@ -302,8 +316,11 @@ const Login = () => {
             <Box
               component={Link}
               href="/register"
+              aria-disabled={busy || undefined}
+              tabIndex={busy ? -1 : undefined}
+              onClick={(event: React.MouseEvent<HTMLAnchorElement>) => { if (busy) event.preventDefault(); }}
               sx={{
-                color: 'primary.main',
+                color: busy ? 'text.disabled' : 'primary.main',
                 fontWeight: 700,
                 textDecoration: 'none',
               }}
@@ -311,7 +328,6 @@ const Login = () => {
               {t('login.createAccount')}
             </Box>
           </Stack>
-          temp hide */}
         </Box>
       </Box>
     </Box>

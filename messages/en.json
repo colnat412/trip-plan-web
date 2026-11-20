@@ -89,7 +89,9 @@
     "shareTrip": "Share",
     "tripLoadError": "Could not load your trips.",
     "retry": "Try again",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "welcomeUser": "Hi, {name}",
+    "welcome": "Welcome to Vi Vu"
   },
   "pwa": {
     "guide": {
@@ -145,7 +147,9 @@
     "system": "System mode",
     "changeError": "Unable to change language. Please try again.",
     "accountGroup": "Account",
-    "applicationGroup": "Application"
+    "applicationGroup": "Application",
+    "securityGroup": "Security",
+    "systemGroup": "System"
   },
   "topBar": {
     "addExpense": "Add expense",
@@ -290,18 +294,26 @@
     "submit": "Sign up",
     "hasAccount": "Already have an account?",
     "loginNow": "Sign in now",
-    "verifyTitle": "Verify OTP code",
-    "verifyDescription": "A 6-digit verification code has been sent to",
+    "verifyTitle": "Verify your email",
+    "verifyDescription": "A verification code was sent to",
     "verifyDescriptionSuffix": "Please enter the code to activate your account.",
-    "otpLabel": "OTP Code",
-    "verifySubmit": "Verify & Get Started",
+    "otpLabel": "6-digit verification code",
+    "verifySubmit": "Verify and continue",
     "resendCountdown": "Resend code in {seconds}s",
-    "notReceived": "Didn't receive the code?",
-    "resendOtp": "Resend OTP",
+    "notReceived": "Haven’t received the email?",
+    "resendOtp": "Resend code",
     "back": "Go back",
     "otpSentToast": "A 6-digit OTP code has been sent to your email!",
     "otpResentToast": "A new OTP code has been resent!",
-    "googleMissingClientId": "NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured"
+    "googleMissingClientId": "NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured",
+    "changeEmail": "Edit registration details",
+    "codeExpiry": "The code is valid for 5 minutes.",
+    "checkSpam": "Check your Spam or Junk folder.",
+    "emailSendError": "We couldn’t send the verification email. Please try again later.",
+    "invalidCode": "The code is incorrect or has expired. Check it or request a new code.",
+    "emailAlreadyRegistered": "This email already has an account. Please sign in.",
+    "emailAlreadyRegisteredTitle": "Email already registered",
+    "useAnotherEmail": "Use another email"
   },
   "validation": {
     "nameRequired": "Please enter your name.",
@@ -1598,5 +1610,30 @@
     "loadPrevious": "View earlier notifications",
     "loadingPrevious": "Loading…",
     "deleteAction": "Delete"
+  },
+  "passwordSettings": {
+    "setTitle": "Set password",
+    "changeTitle": "Change password",
+    "setDescription": "Add email sign-in.",
+    "changeDescription": "Update your Vi Vu password.",
+    "email": "Sign-in email",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmation": "Confirm new password",
+    "currentRequired": "Enter your current password.",
+    "tooShort": "Use at least 8 characters.",
+    "tooLong": "Your password exceeds 72 bytes. Shorten it if you use accented characters or emoji.",
+    "mustDiffer": "Your new password must differ from your current password.",
+    "mismatch": "The passwords do not match.",
+    "currentIncorrect": "Your current password is incorrect. Please check it.",
+    "saveFailed": "Could not save your password. Please try again.",
+    "saveSuccess": "Password saved. You can now sign in with your email.",
+    "cancel": "Cancel",
+    "save": "Save password",
+    "logoutTitle": "No password set yet",
+    "logoutDescription": "Set a password if you want to sign in with your email.",
+    "logoutAnyway": "Sign out anyway",
+    "goBack": "Go back",
+    "logoutBody": "You can still sign in with Google next time."
   }
 }
