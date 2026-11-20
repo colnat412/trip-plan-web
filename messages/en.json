@@ -276,7 +276,7 @@
     "submit": "Login",
     "noAccount": "Don't have an account yet?",
     "createAccount": "Create an account",
-    "orContinueWithEmail": "or continue with",
+    "orContinueWithEmail": "or",
     "googleSignIn": "Sign in with Google",
     "googleLoginError": "Google sign-in failed"
   },
@@ -583,7 +583,7 @@
       "edit": "Edit",
       "delete": "Delete expense",
       "membersCount": "{count} members",
-      "youPaid": "You paid"
+      "youPaid": "You"
     },
     "splits": {
       "EQUAL": "Equal",
@@ -709,7 +709,8 @@
       "selectAllMembers": "Select all",
       "deselectAllMembers": "Deselect all",
       "notSharing": "Not included",
-      "iPay": "I pay",
+      "iPay": "You",
+      "youInSentence": "you",
       "you": "You",
       "allocatedTotalLabel": "Allocated {amount}",
       "fillRemainingFor": "Fill remaining for {name}"
@@ -736,6 +737,7 @@
     }
   },
   "members": {
+    "you": "You",
     "awaitingInvitee": "Invitation sent",
     "viewMembers": "View {count} trip members",
     "memberActions": "Actions for {name}",
@@ -903,6 +905,9 @@
       "deleteError": "Could not delete. Please retry."
     },
     "transferTo": "Pay {name}",
+    "transferToYou": "Pay you",
+    "youInSentence": "you",
+    "you": "You",
     "collapseSuggestions": "Show less",
     "showAllSuggestions": "View all {count} transfers"
   },
@@ -940,6 +945,7 @@
     "shareBtn": "Share",
     "activityLogBtn": "History",
     "activityLog": {
+      "you": "You",
       "title": "Itinerary Change History",
       "subtitle": "Log of activities created, updated, or deleted by trip members",
       "close": "Close",
@@ -1542,7 +1548,7 @@
     },
     "title": "Notifications",
     "bellLabel": "Notifications, {count} unread",
-    "newUpdate": "You have a new notification.",
+    "newUpdate": "New notification",
     "all": "All",
     "unread": "Unread",
     "empty": "No notifications yet",

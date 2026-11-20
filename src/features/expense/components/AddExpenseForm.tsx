@@ -230,12 +230,17 @@ const AddExpenseForm = ({
               label={tForm('payerLabel')}
               renderValue={(value) => {
                 const member = members.find((item) => String(item.userId) === String(value));
-                return user?.id != null && String(user.id) === String(value) ? tForm('iPay') : member?.name || member?.email || String(value);
+                const email = member?.email || user?.email;
+                return user?.id != null && String(user.id) === String(value)
+                  ? email ? `${tForm('iPay')} (${email})` : tForm('iPay')
+                  : member?.name || member?.email || String(value);
               }}
               value={selectedPayerId}
               options={members.map((m) => ({
                 value: m.userId,
-                label: user?.id != null && String(user.id) === String(m.userId) ? tForm('iPay') : m.name && m.email ? `${m.name} (${m.email})` : m.name || m.email || String(m.userId),
+                label: user?.id != null && String(user.id) === String(m.userId)
+                  ? (m.email || user.email) ? `${tForm('iPay')} (${m.email || user.email})` : tForm('iPay')
+                  : m.name && m.email ? `${m.name} (${m.email})` : m.name || m.email || String(m.userId),
               }))}
               onChange={(e) => {
                 setPayerId(e.target.value as string | number);

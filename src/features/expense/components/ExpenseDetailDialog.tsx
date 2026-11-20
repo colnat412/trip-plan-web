@@ -129,7 +129,7 @@ const ExpenseDetailDialog = ({ open, expense, onClose, onEdit, onDelete, isDelet
                     key={split.id}
                     dense
                     icon={<Avatar src={split.userAvatarUrl || (isPayer ? expense.payerAvatarUrl : undefined) || undefined} sx={{ width: 32, height: 32 }}>{getUserInitials(name)}</Avatar>}
-                    title={name}
+                    title={user?.id != null && String(user.id) === String(split.userId) ? t('form.you') : name}
                     titleAdornment={isPayer ? <ExpensePayerBadge /> : undefined}
                     subtitle={email ? <Box component="span" sx={{ overflowWrap: 'anywhere' }}>{email}</Box> : undefined}
                     amount={money(split.allocatedAmount)}

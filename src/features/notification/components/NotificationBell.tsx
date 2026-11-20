@@ -48,7 +48,7 @@ const NotificationBell = () => {
           }}
           sx={{ width: 44, height: 44, flexShrink: 0 }}
         >
-          <Badge badgeContent={notifications.count} max={99} color="primary">
+          <Badge badgeContent={notifications.count} max={9} color="primary">
             <NotificationsNoneRoundedIcon />
           </Badge>
         </IconButton>

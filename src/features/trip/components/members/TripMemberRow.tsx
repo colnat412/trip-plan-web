@@ -108,7 +108,7 @@ const TripMemberRow = ({
         <Stack spacing={0.5} sx={{ minWidth: 0, flex: 1 }}>
           <Stack direction="row" useFlexGap spacing={0.75} sx={{ alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}>
             <Typography sx={{ fontWeight: 700, fontSize: '14px', color: 'text.primary', overflowWrap: 'anywhere', minWidth: 0 }}>
-              {member.name || member.email}
+              {isSelf ? t('you') : member.name || member.email}
             </Typography>
             <RoleBadge role={member.role} />
             {member.status !== 'ACTIVE' && (

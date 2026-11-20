@@ -33,6 +33,10 @@ const AppCheckbox = ({
       checked={checked}
       disabled={disabled}
       onChange={(_, value) => onChange(value)}
+      sx={inheritColor && !disabled ? {
+        color: 'inherit',
+        '&.Mui-checked': { color: 'inherit' },
+      } : undefined}
     />
     <Box
       component="span"

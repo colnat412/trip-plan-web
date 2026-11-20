@@ -1,4 +1,3 @@
-import { brandSurface } from '@/base/theme/surfaces';
 import FlightTakeoffRoundedIcon from '@mui/icons-material/FlightTakeoffRounded';
 import { useTranslations } from 'next-intl';
 import { Box, Stack, Typography } from '@mui/material';
@@ -20,8 +19,10 @@ const AppBrand = ({
       sx={{ alignItems: 'center', minWidth: 0 }}
     >
       <Box
-        sx={(theme) => ({
-          ...brandSurface(theme),
+        sx={{
+          // The logo keeps its brand colors independently of the UI color scheme.
+          bgcolor: 'color-mix(in srgb, #1E3A8A 72%, #0EA5E9)',
+          color: '#FFFFFF',
           width: showTag ? 38 : 42,
           height: showTag ? 38 : 42,
           display: 'flex',
@@ -29,7 +30,7 @@ const AppBrand = ({
           justifyContent: 'center',
           flexShrink: 0,
           borderRadius: 'var(--app-radius-control)',
-        })}
+        }}
       >
         <FlightTakeoffRoundedIcon
           sx={{ fontSize: 20, transform: 'rotate(-18deg)' }}

@@ -21,6 +21,7 @@ import SwapVertRoundedIcon from '@mui/icons-material/SwapVertRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import { useTranslations } from 'next-intl';
 
+import { useUserContext } from '@/features/user/context/UserContext';
 import usePlanActivityLogs from '../hooks/usePlanActivityLogs';
 import type { ActivityLogAction, PlanActivityLog } from '../types';
 
@@ -96,6 +97,7 @@ const ActivityLogDialog = ({
   tripId,
 }: ActivityLogDialogProps) => {
   const t = useTranslations('plan');
+  const { user } = useUserContext();
   const {
     logs,
     isLoading,
@@ -230,7 +232,7 @@ const ActivityLogDialog = ({
                             whiteSpace: 'nowrap',
                           }}
                         >
-                          {log.userName}
+                          {user?.id != null && String(user.id) === String(log.userId) ? t('activityLog.you') : log.userName}
                         </Typography>
                         {log.userEmail && (
                           <Typography

@@ -276,7 +276,7 @@
     "submit": "Đăng nhập",
     "noAccount": "Bạn chưa có tài khoản?",
     "createAccount": "Tạo tài khoản",
-    "orContinueWithEmail": "hoặc tiếp tục với",
+    "orContinueWithEmail": "hoặc",
     "googleSignIn": "Đăng nhập bằng Google",
     "googleLoginError": "Đăng nhập Google thất bại"
   },
@@ -583,7 +583,7 @@
       "edit": "Chỉnh sửa",
       "delete": "Xóa khoản chi",
       "membersCount": "{count} thành viên",
-      "youPaid": "Bạn trả"
+      "youPaid": "Bạn"
     },
     "splits": {
       "EQUAL": "Chia đều",
@@ -709,7 +709,8 @@
       "selectAllMembers": "Chọn tất cả",
       "deselectAllMembers": "Bỏ chọn tất cả",
       "notSharing": "Không tham gia",
-      "iPay": "Tôi trả",
+      "iPay": "Bạn",
+      "youInSentence": "bạn",
       "you": "Bạn",
       "allocatedTotalLabel": "Đã chia {amount}",
       "fillRemainingFor": "Điền phần còn lại cho {name}"
@@ -736,6 +737,7 @@
     }
   },
   "members": {
+    "you": "Bạn",
     "awaitingInvitee": "Đã gửi lời mời",
     "viewMembers": "Xem danh sách {count} thành viên",
     "memberActions": "Thao tác với {name}",
@@ -903,6 +905,9 @@
       "deleteError": "Chưa xóa được. Vui lòng thử lại."
     },
     "transferTo": "Trả cho {name}",
+    "transferToYou": "Trả cho bạn",
+    "youInSentence": "bạn",
+    "you": "Bạn",
     "collapseSuggestions": "Thu gọn",
     "showAllSuggestions": "Xem tất cả {count} khoản"
   },
@@ -940,6 +945,7 @@
     "shareBtn": "Chia sẻ",
     "activityLogBtn": "Lịch sử",
     "activityLog": {
+      "you": "Bạn",
       "title": "Lịch sử thay đổi lịch trình",
       "subtitle": "Nhật ký ghi lại các thao tác tạo, chỉnh sửa hoặc xóa hoạt động của các thành viên",
       "close": "Đóng",
@@ -1542,7 +1548,7 @@
     },
     "title": "Thông báo",
     "bellLabel": "Thông báo, {count} chưa đọc",
-    "newUpdate": "Bạn có thông báo mới.",
+    "newUpdate": "Có thông báo mới",
     "all": "Tất cả",
     "unread": "Chưa đọc",
     "empty": "Chưa có thông báo",

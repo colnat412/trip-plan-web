@@ -215,6 +215,10 @@ const SplitAllocationSection = ({
   const hasAmount = Number.isFinite(totalAmount) && totalAmount > 0;
   const allSelected = selectedCount === members.length;
   const canFillRemaining = hasAmount && selectedCount > 0 && remaining >= 0.01 && splitType === 'EXACT_AMOUNT';
+  const remainingMember = selectedMembers[selectedMembers.length - 1]?.member;
+  const remainingMemberName = user?.id != null && remainingMember && String(user.id) === String(remainingMember.userId)
+    ? t('form.youInSentence')
+    : remainingMember?.name || remainingMember?.email || String(remainingMember?.userId ?? '');
 
   const toggleAllMembers = () => {
     setCustomAllocations((previous) => {
@@ -276,9 +280,9 @@ const SplitAllocationSection = ({
                 '&:focus-within': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 2 },
               })}>
                 <Checkbox checked={selected} disabled={disabled} onChange={() => handleToggleMember(member.userId)}
-                  slotProps={{ input: { 'aria-label': name } }} sx={{ width: 44, height: 44, p: 1, flexShrink: 0 }} />
+                  slotProps={{ input: { 'aria-label': label } }} sx={{ width: 44, height: 44, p: 1, flexShrink: 0 }} />
                 <Stack direction="row" useFlexGap sx={{ alignItems: 'center', gap: 0.75, flexWrap: 'wrap', minWidth: 0 }}>
-                  <Typography variant="body2" title={name} sx={{ fontWeight: 600, overflowWrap: 'anywhere', minWidth: 0 }}>{label}</Typography>
+                  <Typography variant="body2" title={label} sx={{ fontWeight: 600, overflowWrap: 'anywhere', minWidth: 0 }}>{label}</Typography>
                   {payerId != null && String(payerId) === String(member.userId) && <ExpensePayerBadge />}
                 </Stack>
               </Box>
@@ -293,9 +297,9 @@ const SplitAllocationSection = ({
             <Stack key={String(member.userId)} direction="row" useFlexGap sx={{ py: 0.5, px: 1, minHeight: 52, alignItems: 'center', minWidth: 0, columnGap: 1, rowGap: 0.5, flexWrap: 'wrap' }}>
               <Box component="label" sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flex: '1 1 104px', minWidth: 0, minHeight: 44, cursor: disabled ? 'default' : 'pointer' }}>
                 <Checkbox checked={selected} disabled={disabled} onChange={() => handleToggleMember(member.userId)}
-                  slotProps={{ input: { 'aria-label': name } }} sx={{ width: 44, height: 44, p: 1, flexShrink: 0 }} />
+                  slotProps={{ input: { 'aria-label': label } }} sx={{ width: 44, height: 44, p: 1, flexShrink: 0 }} />
                 <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography variant="body2" noWrap title={name} sx={{ fontWeight: 600 }}>{label}</Typography>
+                  <Typography variant="body2" noWrap title={label} sx={{ fontWeight: 600 }}>{label}</Typography>
                   <Stack direction="row" useFlexGap sx={{ gap: 0.75, alignItems: 'center', flexWrap: 'wrap', minWidth: 0 }}>
                     {payerId != null && String(payerId) === String(member.userId) && (
                       <ExpensePayerBadge />
@@ -311,7 +315,7 @@ const SplitAllocationSection = ({
                 currencySuffix={currency}
                 value={amount} allowDecimals={currency !== 'VND' || !Number.isInteger(amount)}
                 onValueChange={(value) => handleAmountChange(member.userId, value)}
-                slotProps={{ htmlInput: { 'aria-label': `${t('form.allocatedAmountLabel')} (${currency}) — ${name}` } }}
+                slotProps={{ htmlInput: { 'aria-label': `${t('form.allocatedAmountLabel')} (${currency}) — ${label}` } }}
                 sx={{
                   width: { xs: 192, sm: 224 }, flex: '1 1 192px', maxWidth: { xs: '100%', sm: 240 }, minWidth: 0,
                 }} />}
@@ -328,7 +332,7 @@ const SplitAllocationSection = ({
           <AppButton intent="text" size="small" disabled={disabled}
             onClick={() => handleAutoFillRemaining(selectedMembers[selectedMembers.length - 1].member.userId)}
             sx={{ alignSelf: 'flex-end', minHeight: 44 }}>
-            {t('form.fillRemainingFor', { name: selectedMembers[selectedMembers.length - 1].member.name || selectedMembers[selectedMembers.length - 1].member.email || String(selectedMembers[selectedMembers.length - 1].member.userId) })}
+            {t('form.fillRemainingFor', { name: remainingMemberName })}
           </AppButton>
         )}
       </Stack>

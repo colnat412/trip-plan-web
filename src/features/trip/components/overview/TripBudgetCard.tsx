@@ -168,7 +168,7 @@ const TripBudgetCard = ({
                       >
                         {amount == null
                           ? '—'
-                          : formatCompactCurrency(amount, currency, locale)}
+                          : formatCompactCurrency(amount, currency, locale).replace(/ VND$/, '')}
                       </AppMetricValue>
                     </Box>
                   </Tooltip>

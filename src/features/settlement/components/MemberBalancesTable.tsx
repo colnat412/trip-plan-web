@@ -17,6 +17,7 @@ import { useTranslations } from 'next-intl';
 
 import { AppCard, AppEmptyState, AppFilterChipGroup, AppSectionHeader, AppStatusChip } from '@/base/components/ui';
 import { formatCurrency, getUserInitials } from '@/base/utils';
+import { useUserContext } from '@/features/user/context/UserContext';
 import type { BalanceStatus, MemberBalance } from '../types';
 import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
@@ -30,6 +31,7 @@ const MemberBalancesTable = ({
   currency,
 }: MemberBalancesTableProps) => {
   const t = useTranslations('settlement');
+  const { user } = useUserContext();
   const [balanceFilter, setBalanceFilter] = useState<BalanceStatus | 'ALL'>('ALL');
   const visibleMembers = balanceFilter === 'ALL'
     ? memberBalances
@@ -61,7 +63,7 @@ const MemberBalancesTable = ({
           <>
             <Box role="list" sx={{ display: { xs: 'block', sm: 'none' } }}>
               {visibleMembers.map((member) => {
-                const name = member.name || t('defaultMember');
+                const name = user?.id != null && String(user.id) === String(member.userId) ? t('you') : member.name || t('defaultMember');
                 const status = t(member.status === 'OWED' ? 'statusOwed' : member.status === 'OWES' ? 'statusOwes' : 'statusSettled');
                 const paid = `${t('paid')}: ${formatCurrency(member.totalPaid, currency)}`;
                 const share = `${t('owed')}: ${formatCurrency(member.totalOwed, currency)}`;
@@ -209,7 +211,7 @@ const MemberBalancesTable = ({
                                   lineHeight: 1.2,
                                 }}
                               >
-                                {m.name || t('defaultMember')}
+                                {user?.id != null && String(user.id) === String(m.userId) ? t('you') : m.name || t('defaultMember')}
                               </Typography>
                               {m.email && (
                                 <Typography

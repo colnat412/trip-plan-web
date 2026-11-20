@@ -3,8 +3,8 @@
 import React from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
-import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
-import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
+import SouthWestRoundedIcon from '@mui/icons-material/SouthWestRounded';
+import NorthEastRoundedIcon from '@mui/icons-material/NorthEastRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
@@ -48,9 +48,9 @@ const MyBalanceCard = ({
       : 'text.secondary';
 
   const statusIcon = isOwed ? (
-    <ArrowDownwardRoundedIcon sx={{ fontSize: '18px', color: badgeColor }} />
+    <SouthWestRoundedIcon sx={{ fontSize: '18px', color: badgeColor }} />
   ) : isOwes ? (
-    <ArrowUpwardRoundedIcon sx={{ fontSize: '18px', color: badgeColor }} />
+    <NorthEastRoundedIcon sx={{ fontSize: '18px', color: badgeColor }} />
   ) : (
     <CheckCircleOutlineRoundedIcon
       sx={{ fontSize: '18px', color: badgeColor }}

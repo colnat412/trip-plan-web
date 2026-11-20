@@ -90,7 +90,11 @@ const NotificationListItem = ({ item, disabled, now = null, onOpen, onDelete, on
         }}><Icon sx={{ fontSize: 18 }} /></Box>
         <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
           <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline' }}>
-            <Typography noWrap title={summary} sx={{ flex: 1, minWidth: 0, fontSize: 13, lineHeight: 1.45, fontWeight: unread ? 600 : 400 }}>{summary}</Typography>
+            <Typography title={summary} sx={{
+              flex: 1, minWidth: 0, fontSize: 13, lineHeight: 1.45,
+              fontWeight: unread ? 600 : 400,
+              whiteSpace: 'normal', overflowWrap: 'anywhere',
+            }}>{summary}</Typography>
             {unread && <Box aria-hidden="true" sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'primary.main', flexShrink: 0 }} />}
           </Stack>
           {time && <Typography component="time" dateTime={item.createdAt}

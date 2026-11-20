@@ -22,6 +22,7 @@ import { useTranslations } from 'next-intl';
 
 import { AppCard, AppConfirmDialog, AppEmptyState } from '@/base/components/ui';
 import { formatCurrency, formatDateTime, getUserInitials } from '@/base/utils';
+import { useUserContext } from '@/features/user/context/UserContext';
 import type { Settlement } from '../types';
 import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
@@ -62,6 +63,9 @@ const SettlementHistoryTable = ({
   onDelete,
 }: SettlementHistoryTableProps) => {
   const t = useTranslations('settlement');
+  const { user } = useUserContext();
+  const personName = (id: string, name: string | null, inSentence = false) =>
+    user?.id != null && String(user.id) === String(id) ? t(inSentence ? 'youInSentence' : 'you') : name || '—';
   const [selectedSettlement, setSelectedSettlement] =
     useState<Settlement | null>(null);
 
@@ -88,7 +92,7 @@ const SettlementHistoryTable = ({
       >
         <Box role="list" sx={{ display: { xs: 'block', sm: 'none' }, px: 2.5 }}>
           {settlements.map((settlement) => {
-            const title = `${settlement.payerName || '—'} → ${settlement.payeeName || '—'}`;
+            const title = `${personName(settlement.payerId, settlement.payerName)} → ${personName(settlement.payeeId, settlement.payeeName)}`;
             const date = formatDateTime(settlement.settledAt);
             const method = t(settlement.paymentMethod === 'BANK_TRANSFER' ? 'methodBank' : settlement.paymentMethod === 'CASH' ? 'methodCash' : 'methodOther');
             return (
@@ -243,7 +247,7 @@ const SettlementHistoryTable = ({
                         {getUserInitials(s.payerName || 'Member')}
                       </Avatar>
                       <Typography sx={{ fontSize: '13px', fontWeight: 600 }}>
-                        {s.payerName || '—'}
+                        {personName(s.payerId, s.payerName)}
                       </Typography>
                     </Stack>
                   </TableCell>
@@ -268,7 +272,7 @@ const SettlementHistoryTable = ({
                         {getUserInitials(s.payeeName || 'Member')}
                       </Avatar>
                       <Typography sx={{ fontSize: '13px', fontWeight: 600 }}>
-                        {s.payeeName || '—'}
+                        {personName(s.payeeId, s.payeeName)}
                       </Typography>
                     </Stack>
                   </TableCell>
@@ -343,8 +347,8 @@ const SettlementHistoryTable = ({
           title={t('deleteConfirm.title')}
           description={t.rich('deleteConfirm.desc', {
             amount: formatCurrency(selectedSettlement.amount, selectedSettlement.currency),
-            payer: selectedSettlement.payerName || '—',
-            payee: selectedSettlement.payeeName || '—',
+            payer: personName(selectedSettlement.payerId, selectedSettlement.payerName, true),
+            payee: personName(selectedSettlement.payeeId, selectedSettlement.payeeName, true),
             subject: (chunks) => <strong>{chunks}</strong>,
           })}
           confirmText={t('deleteConfirm.confirmBtn')}

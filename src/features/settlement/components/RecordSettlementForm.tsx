@@ -17,6 +17,7 @@ import {
   AppTextField,
 } from '@/base/components/ui';
 import type { CreateSettlementRequest, PaymentMethod } from '../types';
+import { useUserContext } from '@/features/user/context/UserContext';
 import { getZonedDateTime } from '@/base/utils';
 
 export interface RecordSettlementFormProps {
@@ -39,6 +40,7 @@ const RecordSettlementForm = ({
   onCancel,
 }: RecordSettlementFormProps) => {
   const t = useTranslations('settlement');
+  const { user } = useUserContext();
   const tDialog = useTranslations('settlement.dialog');
 
   const [payerId, setPayerId] = useState(
@@ -62,7 +64,7 @@ const RecordSettlementForm = ({
 
   const memberOptions = members.map((m) => ({
     value: m.userId,
-    label: m.name,
+    label: user?.id != null && String(user.id) === String(m.userId) ? t('you') : m.name,
   }));
 
   const methodOptions = [

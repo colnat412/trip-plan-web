@@ -4,6 +4,7 @@ import { Avatar, Box, ButtonBase, IconButton, Stack, Tooltip, Typography } from 
 import PaymentRoundedIcon from '@mui/icons-material/PaymentRounded';
 import { useLocale, useTranslations } from 'next-intl';
 import { formatCurrency, getUserInitials } from '@/base/utils';
+import { useUserContext } from '@/features/user/context/UserContext';
 import type { SuggestedSettlement } from '../types';
 import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
@@ -15,7 +16,13 @@ export interface SuggestedSettlementCardProps {
 const SuggestedSettlementCard = ({ settlement, onSettle }: SuggestedSettlementCardProps) => {
   const t = useTranslations('settlement');
   const locale = useLocale();
-  const actionLabel = `${t('settleBtn')}: ${settlement.fromUserName} → ${settlement.toUserName}`;
+  const { user } = useUserContext();
+  const isPayer = user?.id != null && String(user.id) === String(settlement.fromUserId);
+  const isRecipient = user?.id != null && String(user.id) === String(settlement.toUserId);
+  const payerName = isPayer ? t('you') : settlement.fromUserName;
+  const recipientName = isRecipient ? t('you') : settlement.toUserName;
+  const transferLabel = isRecipient ? t('transferToYou') : t('transferTo', { name: settlement.toUserName });
+  const actionLabel = `${t('settleBtn')}: ${payerName} → ${recipientName}`;
 
   return (
     <Stack role="listitem" direction="row" spacing={0.5} sx={{ alignItems: 'center', minWidth: 0 }}>
@@ -28,9 +35,9 @@ const SuggestedSettlementCard = ({ settlement, onSettle }: SuggestedSettlementCa
           '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: -2 } }}>
         <Avatar sx={rowStyles.avatar}>{getUserInitials(settlement.fromUserName)}</Avatar>
         <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-          <Typography noWrap title={settlement.fromUserName} sx={rowStyles.primary}>{settlement.fromUserName}</Typography>
-          <Typography noWrap title={t('transferTo', { name: settlement.toUserName })} sx={rowStyles.secondary}>
-            {t('transferTo', { name: settlement.toUserName })}
+          <Typography noWrap title={payerName} sx={rowStyles.primary}>{payerName}</Typography>
+          <Typography noWrap title={transferLabel} sx={rowStyles.secondary}>
+            {transferLabel}
           </Typography>
         </Stack>
         <Typography sx={{ ...rowStyles.amount, textAlign: 'right' }}>
