@@ -32,6 +32,7 @@ interface TripContextValue {
   error: ApiError | null;
   selectedTripError: ApiError | null;
   refetchTrips: (event?: TripMutationEvent) => Promise<unknown>;
+  refreshTripList: () => Promise<unknown>;
   subscribeTrips: (listener: (event?: TripMutationEvent) => void) => () => void;
   tripsVersion: number;
   isCreateTripOpen: boolean;
@@ -112,6 +113,14 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     enabled: needsSelectedDetail,
     refreshKey: tripsVersion,
   });
+  // Opening the switcher refreshes membership without invalidating workspace data.
+  // A selected trip outside the first 100 still needs its access checked separately.
+  const refetchSelectedTrip = selectedDetail.refetch;
+  const refreshTripList = useCallback(async () => {
+    const requests: Promise<unknown>[] = [refetch()];
+    if (needsSelectedDetail) requests.push(refetchSelectedTrip());
+    return Promise.all(requests);
+  }, [refetch, needsSelectedDetail, refetchSelectedTrip]);
   const selectedTrip =
     !selectedDetail.error &&
     selectedDetail.trip &&
@@ -193,6 +202,7 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
       error: contextError,
       selectedTripError,
       refetchTrips,
+      refreshTripList,
       subscribeTrips,
       tripsVersion,
       isCreateTripOpen,
@@ -213,6 +223,7 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
       contextError,
       selectedTripError,
       refetchTrips,
+      refreshTripList,
       subscribeTrips,
       tripsVersion,
       isCreateTripOpen,

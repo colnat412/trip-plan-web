@@ -1463,8 +1463,7 @@
       "SIGHTSEEING": "amusement attraction",
       "SHOPPING": "shop",
       "OTHER": "place"
-    },
-    "photoCredits": "Photo credits"
+    }
   },
   "tripWorkspace": {
     "navigation": "Trip",

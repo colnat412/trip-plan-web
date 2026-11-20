@@ -10,11 +10,9 @@ import {
 
 import Image from 'next/image';
 import { getDestinationPhoto } from '../data/destination-photos';
-import DestinationPhotoCredits from './DestinationPhotoCredits';
 import React, { useMemo, useState } from 'react';
 import {
   Autocomplete,
-  type PaperProps,
   type AutocompleteInputChangeReason,
   Box,
   Stack,
@@ -26,10 +24,6 @@ import { useTranslations } from 'next-intl';
 
 import useDestinationSearch from '../hooks/useDestinationSearch';
 import type { DestinationItem } from '@/app/api/trip/destinations/route';
-
-const DestinationSearchPaper = ({ children, ...props }: PaperProps) => (
-  <AppMapSearchPaper {...props}>{children}<DestinationPhotoCredits /></AppMapSearchPaper>
-);
 
 export interface DestinationAutocompleteProps {
   value: string;
@@ -90,7 +84,7 @@ const DestinationAutocomplete = ({
       value={options.map((option) => option.source)}
     >
       <Autocomplete<DestinationItem, false, false, false>
-        slots={{ paper: DestinationSearchPaper }}
+        slots={{ paper: AppMapSearchPaper }}
         disabled={disabled}
         options={options}
         filterOptions={(items) => items}

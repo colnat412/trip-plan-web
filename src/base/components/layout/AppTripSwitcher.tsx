@@ -41,6 +41,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
     isLoading,
     error,
     refetchTrips,
+    refreshTripList,
   } = useTripContext();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [anchorTripId, setAnchorTripId] = useState(activeTrip?.id);
@@ -102,7 +103,7 @@ const AppTripSwitcher = ({ actions }: AppTripSwitcherProps) => {
         size="small"
         onClick={(event) => {
           setAnchorEl(event.currentTarget);
-          void refetchTrips().catch(() => undefined);
+          void refreshTripList().catch(() => undefined);
         }}
         aria-haspopup="dialog"
         aria-expanded={open}

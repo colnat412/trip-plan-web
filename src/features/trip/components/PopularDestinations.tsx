@@ -5,7 +5,6 @@ import { ButtonBase, Stack, Typography } from '@mui/material';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import { POPULAR_DESTINATIONS, getDestinationPhoto } from '../data/destination-photos';
-import DestinationPhotoCredits from './DestinationPhotoCredits';
 
 export default function PopularDestinations({ value, onChange, disabled = false }: {
   value: string;
@@ -30,6 +29,5 @@ export default function PopularDestinations({ value, onChange, disabled = false 
         </Stack>;
       })}
     </Stack>
-    <DestinationPhotoCredits />
   </Stack>;
 }
