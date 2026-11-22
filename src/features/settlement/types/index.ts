@@ -22,7 +22,12 @@ export interface SuggestedSettlement {
   currency: string;
 }
 
+export type SettlementStatus = 'PENDING' | 'CONFIRMED' | 'REJECTED' | 'CANCELLED' | 'DELETE_PENDING' | 'DELETED';
+export type SettlementAction = 'APPROVE' | 'REJECT' | 'CANCEL';
+
 export interface Settlement {
+  status: SettlementStatus;
+  confirmationUserId: string;
   createdBy: string | null;
   id: string;
   tripId: string;

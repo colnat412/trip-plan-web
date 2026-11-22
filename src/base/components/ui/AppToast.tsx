@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useEffect, useEffectEvent, type ReactNode } from 'react';
 import AppMascot from './AppMascot';
 import { Alert, Portal, Snackbar } from '@mui/material';
 
@@ -25,14 +25,20 @@ const AppToast = ({
   message,
   onClose,
   severity = 'info',
-  autoHideDuration = 3_000,
   position = { vertical: 'top', horizontal: 'right' },
 }: AppToastProps) => {
+  const dismiss = useEffectEvent(onClose);
+  useEffect(() => {
+    if (!open) return;
+    const timer = window.setTimeout(() => dismiss(), 5_000);
+    return () => window.clearTimeout(timer);
+  }, [open, message]);
   return (
     <Portal>
       <Snackbar
         open={open}
-        autoHideDuration={autoHideDuration}
+        autoHideDuration={5_000}
+        resumeHideDuration={5_000}
         anchorOrigin={position}
         sx={{
           zIndex: (theme) => theme.zIndex.snackbar + 1000,

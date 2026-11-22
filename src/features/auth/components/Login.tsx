@@ -187,7 +187,7 @@ const Login = () => {
                 setEmail(event.target.value);
                 setFormErrors((current) => ({
                   ...current,
-                  email: undefined,
+                  email: event.target.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(event.target.value.trim()) ? t('validation.emailInvalid') : undefined,
                 }));
                 loginMutation.clearError();
               }}

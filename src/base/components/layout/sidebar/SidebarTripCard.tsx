@@ -26,8 +26,6 @@ import {
 } from '@/base/utils';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
-import TripStatusBadge from '@/features/trip/components/TripStatusBadge';
-import TripStatusChip from '@/features/trip/components/my-trips/TripStatusChip';
 import type { Trip } from '@/features/trip/types';
 
 const SidebarTripCard = () => {
@@ -135,7 +133,7 @@ const SidebarTripCard = () => {
               gap: 1,
             }}
           >
-            <TripStatusBadge status={currentTrip.status} size="small" />
+
 
             <IconButton
               size="small"
@@ -252,7 +250,7 @@ const SidebarTripCard = () => {
                   >
                     {item.destination}
                   </Typography>
-                  <TripStatusChip status={item.status} />
+
                 </Stack>
               </Box>
 

@@ -6,7 +6,8 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { AppLoadingState, AppDialog, AppButton, AppTextField, AppImageUploader, AppToast } from '@/base/components/ui';
 import { useEffect, useId, useRef, useState } from 'react';
-import { Alert, Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import { useTranslations } from 'next-intl';
 import { useAppToast } from '@/base/providers/AppToastProvider';
 

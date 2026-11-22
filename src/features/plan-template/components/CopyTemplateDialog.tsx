@@ -1,7 +1,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Alert, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import { useTranslations } from 'next-intl';
 import { useAppToast } from '@/base/providers/AppToastProvider';
 import { AppDatePicker, AppDialog, AppButton, AppTextField } from '@/base/components/ui';

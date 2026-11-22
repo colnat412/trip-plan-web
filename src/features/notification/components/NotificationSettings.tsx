@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Alert, Stack, Switch, Typography } from '@mui/material';
+import { Stack, Switch, Typography } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
 import { useTranslations } from 'next-intl';
 import { axiosDelete, axiosPut } from '@/base/api';

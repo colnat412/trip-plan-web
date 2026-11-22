@@ -12,7 +12,8 @@ import {
   type ColumnFilterValue,
   type TableSortState,
 } from '@/base/components/ui';
-import { useDebouncedValue } from '@/base/hooks';
+import { useDebouncedValue, useQueryGet } from '@/base/hooks';
+import type { ApiResponse } from '@/base/api';
 import useMyTrips from '../hooks/useMyTrips';
 import { useTripContext } from '../context/TripContext';
 import MyTripsHeader from './my-trips/MyTripsHeader';
@@ -26,6 +27,9 @@ import type { Trip } from '../types';
 
 const MyTrips = () => {
   const router = useRouter();
+  const { data: filterOptions, refetch: refetchFilterOptions } = useQueryGet<ApiResponse<{ destinations: string[]; currencies: string[]; visitedDestinations: string[] }>>({
+    queryKey: ['trip', 'filter-options'], endPoint: '/trip/my-trips/filter-options',
+  });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(12);
   const [sort, setSort] = useState<TableSortState | null>(null);
@@ -48,12 +52,6 @@ const MyTrips = () => {
       : Array.isArray(filters.baseCurrency)
         ? filters.baseCurrency.join(',')
         : undefined;
-  const status =
-    typeof filters.status === 'string'
-      ? filters.status
-      : Array.isArray(filters.status)
-        ? filters.status.join(',')
-        : undefined;
 
   const { data, trips, pagination, isLoading, isFetching, isStale, error, refetch } =
     useMyTrips({
@@ -63,7 +61,6 @@ const MyTrips = () => {
       enabled: !isDebouncing,
       destination,
       currency,
-      status,
       sortBy: sort?.columnId,
       sortDirection: sort?.direction,
     });
@@ -83,6 +80,7 @@ const MyTrips = () => {
 
   useEffect(() => {
     return subscribeTrips((event) => {
+      void refetchFilterOptions().catch(() => undefined);
       if (event === 'created') {
         const hasCustomState =
           page !== 0 || Object.keys(filters).length > 0 || sort !== null;
@@ -98,7 +96,7 @@ const MyTrips = () => {
         if (!isDebouncing) void refetch().catch(() => undefined);
       }
     });
-  }, [subscribeTrips, page, filters, sort, refetch, isDebouncing]);
+  }, [subscribeTrips, page, filters, sort, refetch, isDebouncing, refetchFilterOptions]);
 
   const handleSelectTrip = useCallback(
     (trip: Trip) => {
@@ -185,6 +183,9 @@ const MyTrips = () => {
 
       <TripFilterBar
         filters={filterValues}
+        destinations={filterOptions?.data?.destinations ?? []}
+        currencies={filterOptions?.data?.currencies ?? []}
+        visitedDestinations={filterOptions?.data?.visitedDestinations ?? []}
         onFilterChange={handleFilterUpdate}
         sort={sort}
         onSortChange={handleSortChange}
@@ -223,6 +224,7 @@ const MyTrips = () => {
         </Box>
       ) : (
         <TripTable
+          currencies={filterOptions?.data?.currencies ?? []}
           trips={resultTrips}
           isLoading={isLoading || isStale || isDebouncing}
           loadingScope={loadingScope}

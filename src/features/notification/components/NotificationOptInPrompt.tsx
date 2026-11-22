@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Alert, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import { useTranslations } from 'next-intl';
 import AppConfirmDialog from '@/base/components/ui/AppConfirmDialog';
 import { useNotifications } from '../context/NotificationContext';

@@ -23,12 +23,11 @@ import {
 } from '@/base/components/ui';
 import { formatDateRange } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
-import TripStatusChip from './TripStatusChip';
-import { TRIP_STATUS_OPTIONS } from '../../constants/trip-status';
 import type { Trip } from '../../types';
 
 export interface TripTableProps {
   trips: Trip[];
+  currencies: string[];
   isLoading?: boolean;
   isFetching?: boolean;
   loadingScope?: 'page' | 'local';
@@ -46,6 +45,7 @@ export interface TripTableProps {
 
 const TripTable = ({
   trips,
+  currencies,
   isLoading,
   isFetching = false,
   loadingScope = 'page',
@@ -61,7 +61,6 @@ const TripTable = ({
   onFilterChange,
 }: TripTableProps) => {
   const t = useTranslations('myTrips');
-  const tTrip = useTranslations('trip');
   const { user } = useUserContext();
 
   const columns: AppTableColumn<Trip>[] = useMemo(
@@ -161,14 +160,7 @@ const TripTable = ({
         label: t('colCurrency'),
         filterable: true,
         filterType: 'select',
-        filterOptions: [
-          { label: 'VND', value: 'VND' },
-          { label: 'USD', value: 'USD' },
-          { label: 'EUR', value: 'EUR' },
-          { label: 'JPY', value: 'JPY' },
-          { label: 'THB', value: 'THB' },
-          { label: 'SGD', value: 'SGD' },
-        ],
+        filterOptions: currencies.map(value => ({ label: value, value })),
         getValue: (trip) => trip.baseCurrency || 'VND',
         renderCell: (trip) => (
           <Typography
@@ -182,18 +174,6 @@ const TripTable = ({
             {trip.baseCurrency || 'VND'}
           </Typography>
         ),
-      },
-      {
-        id: 'status',
-        label: t('colStatus'),
-        // sortable: true,
-        filterable: true,
-        filterType: 'select',
-        filterOptions: TRIP_STATUS_OPTIONS.map((option) => ({
-          label: tTrip(option.labelKey), value: option.filterValue,
-        })),
-        getValue: (trip) => trip.status,
-        renderCell: (trip) => <TripStatusChip status={trip.status} />,
       },
       {
         id: 'actions',
@@ -269,7 +249,7 @@ const TripTable = ({
         },
       },
     ],
-    [activeTripId, onSelectTrip, onEditTrip, onDeleteTrip, t, tTrip, user],
+    [activeTripId, onSelectTrip, onEditTrip, onDeleteTrip, t, user, currencies],
   );
 
   return (

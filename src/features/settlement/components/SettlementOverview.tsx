@@ -2,22 +2,22 @@
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppLoadingState, AppEmptyState, AppButton, AppFloatingActionButton, AppCard, AppPageContainer, AppPageHeader, AppSectionHeader, AppToast, type AppToastSeverity } from '@/base/components/ui';
+import { AppLoadingState, AppEmptyState, AppButton, AppFloatingActionButton, AppCard, AppPageContainer, AppPageHeader, AppSectionHeader, AppFilterChipGroup, AppToast, type AppToastSeverity } from '@/base/components/ui';
 
 
 import { useState } from 'react';
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import { useTripPermissions } from '@/features/trip/hooks/useTripPermissions';
 import { useTripContext } from '@/features/trip/context/TripContext';
-import { useCreateSettlement, useDeleteSettlement, useTripSettlementSummary } from '../hooks/useTripSettlement';
+import { useCreateSettlement, useDeleteSettlement, useRespondSettlement, useTripSettlementSummary } from '../hooks/useTripSettlement';
 import MemberBalancesTable from './MemberBalancesTable';
 import MyBalanceCard from './MyBalanceCard';
 import RecordSettlementDialog from './RecordSettlementDialog';
 import SettlementHistoryTable from './SettlementHistoryTable';
 import SuggestedSettlementsList from './SuggestedSettlementsList';
-import type { CreateSettlementRequest, Settlement, SuggestedSettlement } from '../types';
+import type { CreateSettlementRequest, Settlement, SettlementAction, SuggestedSettlement } from '../types';
 
 const SettlementOverview = () => {
   const t = useTranslations('settlement');
@@ -33,7 +33,7 @@ const SettlementOverview = () => {
 
   const currentTrip = activeTrip || trips[0];
   const tripId = currentTrip?.id;
-  const { actorId, canWrite, canManage, canManageRecord } =
+  const { actorId, canWrite, canManage } =
     useTripPermissions(tripId);
 
   const {
@@ -46,6 +46,7 @@ const SettlementOverview = () => {
     enabled: Boolean(tripId),
   });
 
+  const [historyFilter, setHistoryFilter] = useState('ALL');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogInitialData, setDialogInitialData] = useState<
     Partial<CreateSettlementRequest> | undefined
@@ -72,7 +73,8 @@ const SettlementOverview = () => {
     tripId: tripId ?? '',
   });
 
-  const { deleteSettlementAsync } = useDeleteSettlement({
+  const { mutateAsync: respondAsync, isPending: isResponding } = useRespondSettlement(tripId ?? '');
+  const { deleteSettlementAsync, isPending: isDeleting } = useDeleteSettlement({
     tripId: tripId ?? '',
   });
 
@@ -115,6 +117,18 @@ const SettlementOverview = () => {
       showToast(t('toasts.deleteError'), 'error');
     }
   };
+
+  const handleRespond = async (settlement: Settlement, action: SettlementAction) => {
+    try {
+      await respondAsync({ settlementId: settlement.id, action });
+      showToast(t('toasts.responseSuccess'));
+      void refetch();
+    } catch { showToast(t('toasts.responseError'), 'error'); }
+  };
+  const history = (summary?.settlementHistory ?? []).filter(item =>
+    historyFilter === 'ALL' || (historyFilter === 'PENDING'
+      ? item.status === 'PENDING' || item.status === 'DELETE_PENDING'
+      : item.status === 'CONFIRMED'));
 
   if (isTripLoading || (tripId && isSummaryLoading)) {
     return <AppPageContainer embedded><AppLoadingState /></AppPageContainer>;
@@ -189,19 +203,31 @@ const SettlementOverview = () => {
         currency={currency}
       />
 
-      <Stack spacing={1.5} sx={{ width: '100%', minWidth: 0, flexShrink: 0 }}>
+      <AppCard component="section" sx={{ p: { xs: 2.5, sm: 3 }, minWidth: 0, flexShrink: 0 }}>
+      <Stack spacing={2} sx={{ width: '100%', minWidth: 0 }}>
         <AppSectionHeader
           title={t('historyTitle')}
           count={summary?.settlementHistory.length ?? 0}
         />
+        <Box role="group" aria-label={t('historyTitle')}>
+        <AppFilterChipGroup showAll={false} value={historyFilter} onChange={setHistoryFilter}
+          options={[
+            { value: 'ALL', label: t('historyFilters.all') },
+            { value: 'PENDING', label: t('historyFilters.pending') },
+            { value: 'CONFIRMED', label: t('historyFilters.confirmed') },
+          ]} />
+        </Box>
         <SettlementHistoryTable
-          settlements={summary?.settlementHistory ?? []}
+          settlements={history}
           canDelete={(item) =>
-            canManageRecord(item.createdBy) && (canManage || item.payerId === actorId)
+            item.status === 'CONFIRMED' && item.createdBy === actorId
           }
           onDelete={handleDeleteSettlement}
+          onRespond={handleRespond}
+          busy={isResponding || isDeleting}
         />
       </Stack>
+      </AppCard>
 
       {dialogOpen && (
         <RecordSettlementDialog

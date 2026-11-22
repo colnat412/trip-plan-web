@@ -7,3 +7,4 @@ export const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 export const publicVapidKey = process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY;
+

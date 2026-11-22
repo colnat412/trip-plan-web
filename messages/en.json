@@ -841,6 +841,24 @@
     "resetControls": "Reset"
   },
   "settlement": {
+    "historyFilters": {
+      "all": "All",
+      "pending": "Awaiting confirmation",
+      "confirmed": "Confirmed"
+    },
+    "statuses": {
+      "PENDING": "Awaiting confirmation",
+      "CONFIRMED": "Confirmed",
+      "REJECTED": "Rejected",
+      "CANCELLED": "Cancelled",
+      "DELETE_PENDING": "Awaiting deletion confirmation",
+      "DELETED": "Deleted"
+    },
+    "actions": {
+      "approve": "Confirm",
+      "reject": "Reject",
+      "cancel": "Cancel request"
+    },
     "pageTitle": "Split costs",
     "pageSubtitle": "See who pays and who gets paid.",
     "recordPayment": "Record a payment",
@@ -905,16 +923,18 @@
       }
     },
     "deleteConfirm": {
-      "title": "Delete this payment?",
-      "desc": "Are you sure you want to delete the payment of <subject>{amount} from {payer} to {payee}</subject>?",
-      "confirmBtn": "Delete payment",
+      "title": "Request payment deletion?",
+      "desc": "Ask the other party to delete <subject>{amount} from {payer} to {payee}</subject>? The payment stays in the balance until they confirm.",
+      "confirmBtn": "Request deletion",
       "cancelBtn": "Keep it"
     },
     "toasts": {
-      "createSuccess": "Payment saved.",
+      "createSuccess": "Payment sent for confirmation.",
       "createError": "Could not save. Please retry.",
-      "deleteSuccess": "Payment record deleted.",
-      "deleteError": "Could not delete. Please retry."
+      "deleteSuccess": "Deletion sent for confirmation.",
+      "deleteError": "Could not delete. Please retry.",
+      "responseSuccess": "Response saved.",
+      "responseError": "Could not save response. Please retry."
     },
     "transferTo": "Pay {name}",
     "transferToYou": "Pay you",
@@ -1204,6 +1224,8 @@
     "cancel": "Cancel"
   },
   "legal": {
+    "acceptAll": "I agree to the Terms of Use, Content Policy and Privacy Policy.",
+    "scrollToAccept": "Scroll to the end to agree.",
     "title": "Before your journey begins",
     "description": "Please read and acknowledge all three policies to continue using Vi Vu. Open each document before making your decision.",
     "version": "Version {version}",
@@ -1531,7 +1553,9 @@
       "EXPENSE_UPDATED": "Expense{detail} in {trip} was updated",
       "EXPENSE_DELETED": "Expense{detail} in {trip} was deleted",
       "SETTLEMENT_RECORDED": "A payment{detail} was recorded in {trip}",
-      "SETTLEMENT_DELETED": "Payment{detail} in {trip} was deleted"
+      "SETTLEMENT_DELETED": "Payment{detail} in {trip} was deleted",
+      "SETTLEMENT_CONFIRMATION_REQUIRED": "A request for payment{detail} in {trip} needs your confirmation",
+      "SETTLEMENT_UPDATED": "A request for payment{detail} in {trip} was updated"
     },
     "justNow": "Just now",
     "tripFallback": "this trip",
@@ -1591,7 +1615,9 @@
       "EXPENSE_UPDATED": "An expense involving you has changed",
       "EXPENSE_DELETED": "An expense involving you was deleted",
       "SETTLEMENT_RECORDED": "A payment record involving you was added",
-      "SETTLEMENT_DELETED": "A payment record involving you was deleted"
+      "SETTLEMENT_DELETED": "A payment record involving you was deleted",
+      "SETTLEMENT_CONFIRMATION_REQUIRED": "Payment confirmation required",
+      "SETTLEMENT_UPDATED": "Payment request updated"
     },
     "roles": {
       "OWNER": "Owner",

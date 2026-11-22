@@ -841,6 +841,24 @@
     "resetControls": "Đặt lại"
   },
   "settlement": {
+    "historyFilters": {
+      "all": "Tất cả",
+      "pending": "Chờ xác nhận",
+      "confirmed": "Đã xác nhận"
+    },
+    "statuses": {
+      "PENDING": "Chờ xác nhận",
+      "CONFIRMED": "Đã xác nhận",
+      "REJECTED": "Đã từ chối",
+      "CANCELLED": "Đã hủy",
+      "DELETE_PENDING": "Chờ xác nhận xóa",
+      "DELETED": "Đã xóa"
+    },
+    "actions": {
+      "approve": "Xác nhận",
+      "reject": "Từ chối",
+      "cancel": "Hủy yêu cầu"
+    },
     "pageTitle": "Chia tiền",
     "pageSubtitle": "Xem ai cần trả, ai được nhận.",
     "recordPayment": "Ghi nhận đã trả",
@@ -905,16 +923,18 @@
       }
     },
     "deleteConfirm": {
-      "title": "Xóa khoản đã trả?",
-      "desc": "Bạn có chắc chắn muốn xóa khoản đã trả <subject>{amount} từ {payer} cho {payee}</subject> không?",
-      "confirmBtn": "Xóa khoản này",
+      "title": "Yêu cầu xóa khoản trả?",
+      "desc": "Yêu cầu bên còn lại xóa <subject>{amount} từ {payer} cho {payee}</subject>? Khoản trả vẫn được tính đến khi họ xác nhận.",
+      "confirmBtn": "Yêu cầu xóa",
       "cancelBtn": "Giữ lại"
     },
     "toasts": {
-      "createSuccess": "Đã lưu khoản trả tiền.",
+      "createSuccess": "Đã gửi khoản trả tiền chờ xác nhận.",
       "createError": "Chưa lưu được. Vui lòng thử lại.",
-      "deleteSuccess": "Đã xóa khoản ghi nhận.",
-      "deleteError": "Chưa xóa được. Vui lòng thử lại."
+      "deleteSuccess": "Đã gửi yêu cầu xóa chờ xác nhận.",
+      "deleteError": "Chưa xóa được. Vui lòng thử lại.",
+      "responseSuccess": "Đã lưu phản hồi.",
+      "responseError": "Chưa lưu được phản hồi. Vui lòng thử lại."
     },
     "transferTo": "Trả cho {name}",
     "transferToYou": "Trả cho bạn",
@@ -1204,6 +1224,8 @@
     "cancel": "Hủy"
   },
   "legal": {
+    "acceptAll": "Tôi đồng ý với Điều khoản sử dụng, Chính sách nội dung và Chính sách quyền riêng tư.",
+    "scrollToAccept": "Cuộn đến cuối để đồng ý.",
     "title": "Trước khi bắt đầu chuyến đi",
     "description": "Vui lòng đọc và xác nhận cả ba chính sách để tiếp tục sử dụng Vi Vu. Bạn có thể mở từng tài liệu trước khi quyết định.",
     "version": "Phiên bản {version}",
@@ -1531,7 +1553,9 @@
       "EXPENSE_UPDATED": "Khoản chi{detail} trong chuyến đi {trip} đã được cập nhật",
       "EXPENSE_DELETED": "Khoản chi{detail} trong chuyến đi {trip} đã bị xóa",
       "SETTLEMENT_RECORDED": "Đã ghi nhận khoản trả{detail} trong chuyến đi {trip}",
-      "SETTLEMENT_DELETED": "Khoản trả{detail} trong chuyến đi {trip} đã bị xóa"
+      "SETTLEMENT_DELETED": "Khoản trả{detail} trong chuyến đi {trip} đã bị xóa",
+      "SETTLEMENT_CONFIRMATION_REQUIRED": "Yêu cầu về khoản trả{detail} trong chuyến đi {trip} đang chờ bạn xác nhận",
+      "SETTLEMENT_UPDATED": "Yêu cầu về khoản trả{detail} trong chuyến đi {trip} đã được cập nhật"
     },
     "justNow": "Vừa xong",
     "tripFallback": "chuyến đi này",
@@ -1591,7 +1615,9 @@
       "EXPENSE_UPDATED": "Khoản chi liên quan đến bạn đã thay đổi",
       "EXPENSE_DELETED": "Khoản chi liên quan đến bạn đã bị xóa",
       "SETTLEMENT_RECORDED": "Có bản ghi khoản trả mới liên quan đến bạn",
-      "SETTLEMENT_DELETED": "Bản ghi khoản trả liên quan đến bạn đã bị xóa"
+      "SETTLEMENT_DELETED": "Bản ghi khoản trả liên quan đến bạn đã bị xóa",
+      "SETTLEMENT_CONFIRMATION_REQUIRED": "Khoản trả tiền cần xác nhận",
+      "SETTLEMENT_UPDATED": "Khoản trả tiền được cập nhật"
     },
     "roles": {
       "OWNER": "Trưởng nhóm",

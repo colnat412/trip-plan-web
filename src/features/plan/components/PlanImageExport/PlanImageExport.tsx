@@ -6,7 +6,8 @@ import AppEmptyState from '@/base/components/ui/AppEmptyState';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { useEffect, useState } from 'react';
-import { Alert, Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import { useTheme } from '@mui/material/styles';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import { useLocale, useTranslations } from 'next-intl';

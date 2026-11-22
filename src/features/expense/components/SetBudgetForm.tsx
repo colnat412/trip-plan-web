@@ -62,6 +62,7 @@ const SetBudgetForm = ({
   const [categoryLimits, setCategoryLimits] = useState<
     Partial<Record<ExpenseCategory, string>>
   >(initialCategoryLimits);
+  const [manualTotal, setManualTotal] = useState(Boolean(summary && summary.totalBudget > 0));
 
   useDialogDraft(() => ({ totalBudget, categoryLimits }));
 
@@ -83,7 +84,7 @@ const SetBudgetForm = ({
       0,
     );
 
-    setTotalBudget(calculatedTotal > 0 ? String(calculatedTotal) : '');
+    if (!manualTotal) setTotalBudget(calculatedTotal > 0 ? String(calculatedTotal) : '');
     if (error) setError(undefined);
   };
 
@@ -101,13 +102,17 @@ const SetBudgetForm = ({
   }, [categoryLimits]);
 
   const isOverAllocated =
-    numericTotalBudget > 0 && allocatedTotal > numericTotalBudget;
+    allocatedTotal > numericTotalBudget;
   const diffAmount = Math.abs(allocatedTotal - numericTotalBudget);
   const remainingToAllocate = numericTotalBudget - allocatedTotal;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isLoading) return;
+    if (isOverAllocated) {
+      setError(tDialog('warningOverAllocated', { amount: formatCurrency(diffAmount, tripCurrency) }));
+      return;
+    }
     if (
       totalBudget.trim() === '' ||
       isNaN(Number(totalBudget)) ||
@@ -154,10 +159,11 @@ const SetBudgetForm = ({
           value={totalBudget}
           onChange={(e) => {
             setTotalBudget(e.target.value);
+            setManualTotal(e.target.value.trim() !== '');
             if (error) setError(undefined);
           }}
-          error={Boolean(error)}
-          helperText={error}
+          error={Boolean(error) || isOverAllocated}
+          helperText={error || (isOverAllocated ? tDialog('warningOverAllocated', { amount: formatCurrency(diffAmount, tripCurrency) }) : undefined)}
           disabled={isLoading}
         />
 

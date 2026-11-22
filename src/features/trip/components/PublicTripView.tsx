@@ -5,7 +5,8 @@ import AppEmptyState from '@/base/components/ui/AppEmptyState';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import React, { useState, useEffect } from 'react';
-import { Alert, Box, Card, Chip, Container, Stack, Typography } from '@mui/material';
+import { Box, Card, Chip, Container, Stack, Typography } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import { alpha, useTheme } from '@mui/material/styles';
 
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';

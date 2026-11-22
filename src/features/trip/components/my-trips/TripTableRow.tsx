@@ -21,7 +21,6 @@ import { useTranslations } from 'next-intl';
 import { AppActionMenu, AppButton } from '@/base/components/ui';
 import { formatDateRange } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
-import TripStatusChip from './TripStatusChip';
 import type { Trip } from '../../types';
 
 interface TripTableRowProps {
@@ -168,9 +167,6 @@ const TripTableRow = ({
         </Typography>
       </TableCell>
 
-      <TableCell sx={{ py: 2 }}>
-        <TripStatusChip status={trip.status} />
-      </TableCell>
 
       <TableCell align="right" sx={{ py: 2 }}>
         <Stack

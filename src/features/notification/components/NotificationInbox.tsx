@@ -28,6 +28,7 @@ import type { NotificationItem } from '../types';
 import NotificationNotice from './NotificationNotice';
 import NotificationList from './NotificationList';
 import AppSegmentedControl from '@/base/components/ui/AppSegmentedControl';
+import { getNotificationDestination } from '../lib/notification-navigation';
 
 const NotificationInbox = ({
   onClose,
@@ -83,15 +84,7 @@ const NotificationInbox = ({
           await notifications.refresh();
           return;
         }
-        // Detail authorizes the target. Existing event types navigate to their feature page.
-        const path = item.type.startsWith('EXPENSE_')
-          ? '/expenses'
-          : item.type.startsWith('SETTLEMENT_')
-            ? '/settlement'
-            : item.type.startsWith('MEMBER_')
-              ? '/overview'
-              : '/plan';
-        const destination = `${path}?tripId=${encodeURIComponent(item.tripId)}${item.dayId ? `&dayId=${encodeURIComponent(item.dayId)}` : ''}`;
+        const destination = getNotificationDestination(item, crypto.randomUUID());
         await axiosPatch(
           `/notifications/${encodeURIComponent(id)}/read`,
           {},

@@ -1,14 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { Alert, Box, Stack, Typography } from '@mui/material';
-import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
+import { Box, Stack, Typography } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import AppExitButton from '@/base/components/ui/AppExitButton';
 import FactCheckRoundedIcon from '@mui/icons-material/FactCheckRounded';
-import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
-import { AppButton, AppDialog } from '@/base/components/ui';
-import AppBrand from '@/base/components/layout/AppBrand';
+import { AppButton, AppCheckbox, AppDialog } from '@/base/components/ui';
 import { useMutationPost } from '@/base/hooks';
 import type { ApiResponse } from '@/base/api';
 import type { UserProfile } from '@/features/auth/types';
@@ -16,8 +14,7 @@ import { useUserContext } from '@/features/user/context/UserContext';
 import useLogout from '@/features/auth/hooks/useLogout';
 import useLogoutPasswordWarning from '@/features/auth/hooks/useLogoutPasswordWarning';
 import PolicyDocument from './PolicyDocument';
-import PolicyAcceptanceCard from './PolicyAcceptanceCard';
-import { POLICY_IDS, POLICY_VERSION, type PolicyId } from '../constants';
+import { POLICY_IDS, POLICY_VERSION } from '../constants';
 
 interface AcceptancePayload {
   termsAccepted: boolean;
@@ -27,205 +24,85 @@ interface AcceptancePayload {
   locale: string;
 }
 
-const PolicyAcceptanceDialog = () => {
+// Locale changes remount the reader so a translated document must be read again.
+export default function PolicyAcceptanceDialog() {
+  const locale = useLocale();
+  return <PolicyReader key={locale} />;
+}
+
+function PolicyReader() {
   const t = useTranslations('legal');
   const locale = useLocale();
   const { user, updateUser } = useUserContext();
-  const [checked, setChecked] = useState({
-    terms: false,
-    content: false,
-    privacy: false,
-  });
-  const [document, setDocument] = useState<PolicyId | null>(null);
+  const [checked, setChecked] = useState(false);
+  const [readToEnd, setReadToEnd] = useState(false);
   const [error, setError] = useState(false);
-  const acceptance = useMutationPost<
-    ApiResponse<UserProfile>,
-    AcceptancePayload
-  >({
+  const [reader, setReader] = useState<HTMLDivElement | null>(null);
+  const acceptance = useMutationPost<ApiResponse<UserProfile>, AcceptancePayload>({
     mutationKey: ['user', 'policies', 'accept'],
     endPoint: '/users/me/policies/accept',
   });
   const logout = useLogout();
   const busy = acceptance.isPending || logout.isPending;
-  const allChecked = POLICY_IDS.every((id) => checked[id]);
-  const acceptedCount = POLICY_IDS.filter((id) => checked[id]).length;
   const versionMatches = user?.requiredPolicyVersion === POLICY_VERSION;
 
+  useEffect(() => {
+    const element = reader;
+    if (!element) return;
+    const check = () => {
+      if (element.clientHeight > 0 && element.scrollHeight - element.clientHeight - element.scrollTop <= 4) setReadToEnd(true);
+    };
+    element.addEventListener('scroll', check, { passive: true });
+    const observer = new ResizeObserver(check);
+    observer.observe(element);
+    if (element.firstElementChild) observer.observe(element.firstElementChild);
+    check();
+    return () => { element.removeEventListener('scroll', check); observer.disconnect(); };
+  }, [reader]);
+
   const accept = async () => {
-    if (!allChecked || busy || !versionMatches) return;
+    if (!checked || !readToEnd || busy || !versionMatches) return;
     setError(false);
     try {
       const response = await acceptance.mutateAsync({
-        termsAccepted: checked.terms,
-        contentAccepted: checked.content,
-        privacyAccepted: checked.privacy,
-        version: POLICY_VERSION,
-        locale: locale === 'en' ? 'en' : 'vi',
+        termsAccepted: true, contentAccepted: true, privacyAccepted: true,
+        version: POLICY_VERSION, locale: locale === 'en' ? 'en' : 'vi',
       });
-      if (!response.data?.policiesAcceptedAt || !response.data.policiesVersion)
-        throw new Error('Invalid acceptance response');
+      if (!response.data?.policiesAcceptedAt || !response.data.policiesVersion) throw new Error('Invalid acceptance response');
       updateUser(response.data);
-    } catch {
-      setError(true);
-    }
+    } catch { setError(true); }
   };
-
   const signOut = async () => {
     setError(false);
     try {
       await logout.mutateAsync({});
       window.location.assign(new URL('/login', window.location.origin).href);
-    } catch {
-      setError(true);
-    }
+    } catch { setError(true); }
   };
-
   const { requestLogout, logoutWarning } = useLogoutPasswordWarning(signOut, { busy, canSetPassword: false });
 
-  return (
-    <>
-      <Box
-        component="main"
-        sx={{
-          minHeight: '100dvh',
-          bgcolor: 'background.default',
-          color: 'text.primary',
-        }}
-      >
-        <Box
-          component="header"
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '12px',
-            p: { xs: '12px', sm: '16px' },
-            bgcolor: 'background.paper',
-            borderBottom: 1,
-            borderColor: 'divider',
-          }}
-        >
-          <AppBrand />
+  return <>
+    <AppDialog open hideCloseButton closeDisabled onClose={() => undefined}
+      title={t('title')} icon={<FactCheckRoundedIcon />} maxWidth="sm"
+      contentRef={setReader}
+      actions={<Stack spacing={1} sx={{ width: '100%', minWidth: 0 }}>
+        <AppCheckbox checked={checked} disabled={!readToEnd || busy} onChange={setChecked} label={t('acceptAll')} />
+        {!readToEnd && <Typography role="status" sx={{ fontSize: 12, color: 'text.secondary' }}>{t('scrollToAccept')}</Typography>}
+        {!versionMatches && <Alert severity="warning">{t('versionMismatch')}</Alert>}
+        {error && <Alert severity="error" onClose={() => setError(false)}>{t('saveError')}</Alert>}
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1, width: '100%' }}>
+          <AppButton loading={acceptance.isPending} disabled={!checked || !readToEnd || busy || !versionMatches}
+            onClick={() => void accept()} sx={{ flex: 1, minHeight: 44 }}>{t('continue')}</AppButton>
+          <AppExitButton label={t('decline')} loading={logout.isPending} disabled={busy} onClick={requestLogout} />
         </Box>
-      </Box>
-      <AppDialog
-        open
-        closeDisabled={document === null || busy}
-        hideCloseButton={document === null}
-        onClose={() => setDocument(null)}
-        title={document ? t(`documents.${document}.title`) : t('title')}
-        description={document ? undefined : t('compactDescription')}
-        icon={<FactCheckRoundedIcon />}
-        maxWidth="sm"
-        actions={
-          document ? (
-            <AppButton
-              intent="secondary"
-              startIcon={<ChevronLeftRoundedIcon />}
-              onClick={() => setDocument(null)}
-            >
-              {t('backToAcceptance')}
-            </AppButton>
-          ) : (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: { xs: 'column', sm: 'row' },
-                gap: '8px',
-                width: '100%',
-              }}
-            >
-              <AppButton
-                loading={acceptance.isPending}
-                disabled={!allChecked || busy || !versionMatches}
-                onClick={() => void accept()}
-                endIcon={<ChevronRightRoundedIcon />}
-                sx={{
-                  flex: 1,
-                  minHeight: '48px',
-                  fontSize: '14px',
-                  '&.Mui-disabled': {
-                    color: 'text.disabled',
-                    background: 'none',
-                    bgcolor: 'action.disabledBackground',
-                  },
-                }}
-              >
-                {t('continue')}
-              </AppButton>
-              <AppExitButton label={t('decline')} loading={logout.isPending} disabled={busy}
-                onClick={requestLogout} />
-            </Box>
-          )
-        }
-      >
-        {document ? (
-          <PolicyDocument policy={document} />
-        ) : (
-          <Stack spacing={1.5}>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '8px',
-              }}
-            >
-              <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
-                {/* {t('version', { version: POLICY_VERSION })} */}
-              </Typography>
-              <Typography
-                role="status"
-                aria-live="polite"
-                sx={{
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  color: allChecked ? 'success.main' : 'text.secondary',
-                }}
-              >
-                {t('acceptedCount', {
-                  count: acceptedCount,
-                  total: POLICY_IDS.length,
-                })}
-              </Typography>
-            </Box>
-            {POLICY_IDS.map((id) => (
-              <PolicyAcceptanceCard
-                key={id}
-                policy={id}
-                checked={checked[id]}
-                disabled={busy}
-                onRead={() => setDocument(id)}
-                onChange={(value) =>
-                  setChecked((previous) => ({ ...previous, [id]: value }))
-                }
-              />
-            ))}
-            {!versionMatches && (
-              <Alert severity="warning">{t('versionMismatch')}</Alert>
-            )}
-            {error && (
-              <Alert severity="error" role="alert">
-                {t('saveError')}
-              </Alert>
-            )}
-            {/* <Typography
-              sx={{
-                fontSize: '12px',
-                color: 'text.secondary',
-                lineHeight: 1.6,
-              }}
-            >
-              {t('compactRecordNotice')}
-            </Typography> */}
-          </Stack>
-        )}
-      </AppDialog>
-      {logoutWarning}
-    </>
-  );
-};
-
-export default PolicyAcceptanceDialog;
+      </Stack>}>
+      <Stack spacing={3} tabIndex={0} role="region" aria-label={t('title')} sx={{ flexShrink: 0 }}>
+        {POLICY_IDS.map(id => <Stack key={id} spacing={1.5}>
+          <Typography component="h2" sx={{ fontSize: 18, fontWeight: 700 }}>{t(`documents.${id}.title`)}</Typography>
+          <PolicyDocument policy={id} />
+        </Stack>)}
+      </Stack>
+    </AppDialog>
+    {logoutWarning}
+  </>;
+}

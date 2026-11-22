@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { TRIP_STATUS_OPTIONS } from '../../constants/trip-status';
 import {
   Box,
   IconButton,
@@ -34,6 +33,9 @@ export interface TripFilterValues {
 
 export interface TripFilterBarProps {
   filters: TripFilterValues;
+  destinations: string[];
+  currencies: string[];
+  visitedDestinations: string[];
   onFilterChange: (patch: Partial<TripFilterValues>) => void;
   sort: TableSortState | null;
   onSortChange: (sort: TableSortState | null) => void;
@@ -44,27 +46,9 @@ export interface TripFilterBarProps {
   onRowsPerPageChange: (size: number) => void;
 }
 
-const POPULAR_DESTINATIONS = [
-  'Đà Nẵng',
-  'Đà Lạt',
-  'Hà Nội',
-  'Phú Quốc',
-  'Sapa',
-  'Hồ Chí Minh',
-  'Hội An',
-  'Nha Trang',
-];
-
-const CURRENCIES = [
-  { code: 'VND', label: 'VND' },
-  { code: 'USD', label: 'USD ($)' },
-  { code: 'EUR', label: 'EUR (€)' },
-  { code: 'JPY', label: 'JPY (¥)' },
-  { code: 'KRW', label: 'KRW (₩)' },
-];
-
 const TripFilterBar = ({
   filters,
+  destinations, currencies, visitedDestinations,
   onFilterChange,
   sort,
   onSortChange,
@@ -75,23 +59,18 @@ const TripFilterBar = ({
   onRowsPerPageChange,
 }: TripFilterBarProps) => {
   const t = useTranslations('myTrips');
-  const tTrip = useTranslations('trip');
 
-  const { search, destination, status, currency } = filters;
+
+  const { search, destination, currency } = filters;
 
   const destinationOptions: AppSelectOption[] = [
     { value: '', label: t('all') },
-    ...POPULAR_DESTINATIONS.map((d) => ({ value: d, label: d })),
+    ...destinations.map((d) => ({ value: d, label: d })),
   ];
 
-  const statusOptions: AppSelectOption[] = [
-    { value: '', label: tTrip('allTrips') },
-    ...TRIP_STATUS_OPTIONS.map((option) => ({ value: option.filterValue, label: tTrip(option.labelKey) })),
-  ];
-
-  const currencyOptions: AppSelectOption[] = [
+const currencyOptions: AppSelectOption[] = [
     { value: '', label: t('all') },
-    ...CURRENCIES.map((c) => ({ value: c.code, label: c.label })),
+    ...currencies.map((code) => ({ value: code, label: code })),
   ];
 
   const sortOptions: AppSelectOption[] = [
@@ -102,7 +81,7 @@ const TripFilterBar = ({
   ];
 
   const quickTagOptions: AppFilterChipOption<string>[] =
-    POPULAR_DESTINATIONS.map((dest) => ({
+    visitedDestinations.map((dest) => ({
       value: dest,
       label: dest,
     }));
@@ -196,18 +175,7 @@ const TripFilterBar = ({
             sx={filterSelectSx}
           />
 
-          <AppSelect
-            variantType="filter"
-            label={tTrip('statusLabel')}
-            value={status}
-            options={statusOptions}
-            onChange={(e) =>
-              onFilterChange({ status: String(e.target.value ?? '') })
-            }
-            sx={filterSelectSx}
-          />
-
-          <AppSelect
+<AppSelect
             variantType="filter"
             label={t('allCurrencies')}
             value={currency}
@@ -220,14 +188,14 @@ const TripFilterBar = ({
         </Box>
       </Box>
 
-      <AppFilterChipGroup
+      {quickTagOptions.length > 0 && <AppFilterChipGroup
         label={t('popularKeywords')}
         options={quickTagOptions}
         value={destination}
         onChange={(dest) => onFilterChange({ destination: dest })}
         allLabel={t('all') || 'Tất cả'}
         showAll
-      />
+      />}
 
       <Box
         sx={{

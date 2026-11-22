@@ -8,7 +8,8 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { createContext, useContext, type ReactNode } from 'react';
 import Link from 'next/link';
-import { Alert, Box, Stack, IconButton, Tooltip } from '@mui/material';
+import { Box, Stack, IconButton, Tooltip } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import BookmarkBorderRoundedIcon from '@mui/icons-material/BookmarkBorderRounded';
 import BookmarkRoundedIcon from '@mui/icons-material/BookmarkRounded';
 import { useTranslations } from 'next-intl';

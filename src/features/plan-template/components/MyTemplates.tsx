@@ -6,7 +6,8 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 import { AppPagination, AppLoadingState, AppEmptyState, AppPageHeader, AppButton } from '@/base/components/ui';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Alert, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import { useTranslations } from 'next-intl';
 

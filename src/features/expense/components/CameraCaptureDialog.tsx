@@ -3,14 +3,8 @@
 import { AppLoadingIndicator, AppButton, AppDialog } from '@/base/components/ui';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Alert,
-  Box,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import CameraswitchOutlinedIcon from '@mui/icons-material/CameraswitchOutlined';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';

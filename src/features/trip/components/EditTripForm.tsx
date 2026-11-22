@@ -16,8 +16,7 @@ import {
 } from '@/base/components/ui';
 import DestinationAutocomplete from './DestinationAutocomplete';
 import { useUpdateTrip } from '../hooks/useTripMutation';
-import type { Trip, TripStatus } from '../types';
-import { TRIP_STATUS_OPTIONS, TRIP_STATUS_PRESENTATION } from '../constants/trip-status';
+import type { Trip } from '../types';
 
 interface EditTripFormProps {
   trip: Trip;
@@ -52,7 +51,7 @@ const EditTripForm = ({
   const [startDate, setStartDate] = useState(trip.startDate);
   const [endDate, setEndDate] = useState(trip.endDate);
   const [baseCurrency, setBaseCurrency] = useState(trip.baseCurrency || 'VND');
-  const [status, setStatus] = useState<TripStatus>(trip.status || 'DRAFT');
+  const status = trip.status;
   const [description, setDescription] = useState(trip.description || '');
   useDialogDraft(() => ({
     name, destination, startDate, endDate, baseCurrency, status, description,
@@ -227,22 +226,7 @@ const EditTripForm = ({
               </AppTextField>
             </Box>
 
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <AppTextField
-                disabled={isPending}
-                select
-                label={t('statusLabel')}
-                value={TRIP_STATUS_PRESENTATION[status].value}
-                slotProps={{ inputLabel: { shrink: true } }}
-                onChange={(e) => setStatus(e.target.value as TripStatus)}
-              >
-                {TRIP_STATUS_OPTIONS.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {t(option.labelKey)}
-                  </MenuItem>
-                ))}
-              </AppTextField>
-            </Box>
+
           </Stack>
 
           <AppTextArea

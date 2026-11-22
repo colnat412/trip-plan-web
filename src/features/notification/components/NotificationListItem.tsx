@@ -32,6 +32,8 @@ const NOTIFICATION_ICONS: Record<NotificationType, typeof GroupRoundedIcon> = {
   EXPENSE_DELETED: ReceiptLongRoundedIcon,
   SETTLEMENT_RECORDED: HandshakeRoundedIcon,
   SETTLEMENT_DELETED: HandshakeRoundedIcon,
+  SETTLEMENT_CONFIRMATION_REQUIRED: HandshakeRoundedIcon,
+  SETTLEMENT_UPDATED: HandshakeRoundedIcon,
   ACTIVITY_REMINDER: AccessTimeRoundedIcon,
   TRIP_REMINDER: EventAvailableRoundedIcon,
   TRIP_CANCELLED: EventAvailableRoundedIcon,

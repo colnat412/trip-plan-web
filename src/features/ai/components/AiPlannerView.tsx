@@ -4,16 +4,8 @@ import { AppLoadingIndicator, AppPageContainer, AppPageHeader, AppCard, AppButto
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Box,
-  Stack,
-  Typography,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Alert,
-} from '@mui/material';
+import { Box, Stack, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';

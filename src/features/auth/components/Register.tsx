@@ -21,7 +21,7 @@ import {
 } from '@mui/icons-material';
 
 import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
-import { AppBackHeader, AppButton, AppCard, AppConfirmDialog, AppTextField, AppToast } from '@/base/components/ui';
+import { AppBackHeader, AppButton, AppCard, AppTextField, AppToast } from '@/base/components/ui';
 import AppPreferencesMenu from '@/base/components/preferences/AppPreferencesMenu';
 import AppBrand from '@/base/components/layout/AppBrand';
 import LoginBrandPanel from './LoginBrandPanel';
@@ -217,20 +217,6 @@ const Register = () => {
         onClose={clearAllErrors}
       />
 
-      <AppConfirmDialog
-        open={emailAlreadyRegistered}
-        title={t('register.emailAlreadyRegisteredTitle')}
-        description={t('register.emailAlreadyRegistered')}
-        intent="primary"
-        confirmText={t('register.loginNow')}
-        cancelText={t('register.useAnotherEmail')}
-        onConfirm={() => router.push('/login')}
-        onClose={() => {
-          registerMutation.clearError();
-          emailInputRef.current?.focus();
-        }}
-      />
-
       <AppToast
         open={Boolean(successToast)}
         severity="success"
@@ -335,15 +321,15 @@ const Register = () => {
                   autoComplete="email"
                   required
                   value={email}
-                  error={Boolean(formErrors.email)}
-                  helperText={formErrors.email}
+                  error={Boolean(formErrors.email) || emailAlreadyRegistered}
+                  helperText={formErrors.email || (emailAlreadyRegistered ? t('register.emailAlreadyRegistered') : undefined)}
                   inputRef={emailInputRef}
                   disabled={registerMutation.isPending}
                   onChange={(event) => {
                     setEmail(event.target.value);
                     setFormErrors((current) => ({
                       ...current,
-                      email: undefined,
+                      email: event.target.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(event.target.value.trim()) ? t('validation.emailInvalid') : undefined,
                     }));
                     registerMutation.clearError();
                   }}

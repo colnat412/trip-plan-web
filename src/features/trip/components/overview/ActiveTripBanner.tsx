@@ -13,7 +13,6 @@ import { formatDateRange } from '@/base/utils';
 import { useTripContext } from '../../context/TripContext';
 import { useTripMembers } from '../../hooks/useTripMembers';
 import type { Trip } from '../../types';
-import TripStatusBadge from '../TripStatusBadge';
 import TripWeatherText from './TripWeatherText';
 
 // Only the decorative seam is masked; text and member controls remain untouched.
@@ -77,7 +76,7 @@ const ActiveTripBanner = ({
             justifyContent: 'space-between',
           }}
         >
-          <TripStatusBadge status={trip.status} />
+
           <AppAvatarStack
             items={!isStale && !error ? activeMembers : []}
             loading={isLoading || (isStale && !error)}

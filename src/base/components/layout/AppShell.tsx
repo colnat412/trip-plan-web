@@ -6,6 +6,7 @@ import { useLayoutEffect, useRef, type ReactNode } from 'react';
 
 import AppTopBar from './AppTopBar';
 import NotificationProvider from '@/features/notification/context/NotificationProvider';
+import NotificationTargetContent from '@/features/notification/components/NotificationTargetContent';
 import AppDeviceHint from './AppDeviceHint';
 import AppTripWorkspace from './AppTripWorkspace';
 import AppBottomNavigation from './AppBottomNavigation';
@@ -92,7 +93,9 @@ const AppShell = ({
         })}
       >
         <AppPageLoadingProvider>
-          {tripWorkspace && withAccount ? <AppTripWorkspace>{children}</AppTripWorkspace> : children}
+          <NotificationTargetContent>
+            {tripWorkspace && withAccount ? <AppTripWorkspace>{children}</AppTripWorkspace> : children}
+          </NotificationTargetContent>
           {withAccount && !tabSection && <GlobalLoadingHost />}
         </AppPageLoadingProvider>
       </Box>

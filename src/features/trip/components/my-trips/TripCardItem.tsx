@@ -21,7 +21,6 @@ import { useTranslations } from 'next-intl';
 import { AppActionMenu, AppButton } from '@/base/components/ui';
 import { formatDateRange } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
-import TripStatusChip from './TripStatusChip';
 import TripCompactCard from './TripCompactCard';
 import type { Trip } from '../../types';
 import { calculateTripDays } from '../../utils/helper';
@@ -111,7 +110,7 @@ const TripCardItem = ({
           </Avatar>
 
           <Box sx={{ position: 'absolute', top: 8, left: 8, zIndex: 1 }}>
-            <TripStatusChip status={trip.status} />
+
           </Box>
 
           <Box

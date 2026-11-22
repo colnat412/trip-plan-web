@@ -1,0 +1,37 @@
+.mascot {
+  animation: mascot-breathe 4.8s ease-in-out infinite;
+  transform-origin: 50% 85%;
+}
+
+.mascot[data-mood='success'],
+.mascot[data-mood='celebration'],
+.mascot[data-mood='finish'],
+.mascot[data-mood='welcome'] {
+  animation-name: mascot-sway;
+  animation-duration: 5.6s;
+}
+
+.mascot[data-mood='thinking'],
+.mascot[data-mood='processing'],
+.mascot[data-mood='loading'] {
+  animation-name: mascot-think;
+}
+
+@keyframes mascot-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.025); }
+}
+
+@keyframes mascot-sway {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-3px) rotate(1deg); }
+}
+
+@keyframes mascot-think {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot { animation: none; }
+}

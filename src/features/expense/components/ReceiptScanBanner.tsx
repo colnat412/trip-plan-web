@@ -4,7 +4,8 @@ import { AppLoadingIndicator, AppButton } from '@/base/components/ui';
 
 import React, { useRef, useState } from 'react';
 import axios from 'axios';
-import { Alert, Box, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import Alert from '@/base/components/ui/AppAlert';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import CameraAltOutlinedIcon from '@mui/icons-material/CameraAltOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';

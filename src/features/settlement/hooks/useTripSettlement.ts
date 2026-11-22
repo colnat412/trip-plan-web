@@ -11,6 +11,7 @@ import { settlementQueryKeys } from '../constants/settlement-keys';
 import type {
   CreateSettlementRequest,
   Settlement,
+  SettlementAction,
   TripSettlementSummary,
 } from '../types';
 
@@ -90,4 +91,12 @@ export function useDeleteSettlement({
     deleteSettlement: mutation.mutate,
     deleteSettlementAsync: mutation.mutateAsync,
   };
+}
+
+export function useRespondSettlement(tripId: number | string) {
+  return useMutationPost<ApiResponse<Settlement>, { settlementId: string; action: SettlementAction }>({
+    mutationKey: ['settlement', 'respond', tripId],
+    endPoint: `/trip/${tripId}/settlement`,
+    getEndPoint: (endPoint, payload) => `${endPoint}/${payload.settlementId}/respond`,
+  });
 }

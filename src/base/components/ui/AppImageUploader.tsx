@@ -226,7 +226,7 @@ const AppImageUploader = ({
             {!compact && <Typography component="span" sx={{ fontSize: '11px', fontWeight: 600, textAlign: 'center' }}>{t('saving')}</Typography>}
           </Box>
         )}
-        {error && compact && <AppToast open message={error} severity="error" autoHideDuration={null} onClose={() => setValidationError(null)} />}
+        {error && compact && <AppToast open message={error} severity="error" onClose={() => setValidationError(null)} />}
         {error && !compact && (
           <Typography
             role="alert"

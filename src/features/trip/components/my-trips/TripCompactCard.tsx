@@ -14,7 +14,6 @@ import { formatDateRange } from '@/base/utils';
 import { calculateTripDays } from '../../utils/helper';
 import { getTripCoverUrl } from '../../utils/trip-cover';
 import type { TripCardItemProps } from './TripCardItem';
-import TripStatusChip from './TripStatusChip';
 
 interface TripCompactCardProps extends TripCardItemProps {
   isOwner: boolean;
@@ -81,7 +80,7 @@ const TripCompactCard = ({ trip, isActive = false, isOwner, onSelect, onEdit, on
           </Typography>
         )}
         <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 0.75 }}>
-          <TripStatusChip status={trip.status} />
+
           <Typography component="span" sx={{ fontSize: '11px' }}>
             {durationDays} {t('daysLabel')}{' '}
             {Math.max(1, durationDays - 1)} {t('nightsLabel')} · {trip.baseCurrency}
