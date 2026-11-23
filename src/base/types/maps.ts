@@ -1,4 +1,4 @@
-export type MapsSource = 'vietmap' | 'osm';
+export type MapsSource = 'vietmap';
 
 export interface MapCoordinates {
   latitude: number;

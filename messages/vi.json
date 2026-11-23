@@ -39,9 +39,8 @@
   },
   "locationMap": {
     "title": "Bản đồ: {location}",
-    "open": "Mở trong Google Maps",
     "empty": "Chưa có địa điểm để hiển thị bản đồ.",
-    "unavailable": "Chưa thể hiển thị bản đồ. Bạn có thể mở địa điểm trên Google Maps."
+    "unavailable": "Chưa thể hiển thị bản đồ Vietmap. Vui lòng thử lại."
   },
   "navigation": {
     "searchingTrips": "Đang tìm chuyến đi…",
@@ -237,6 +236,20 @@
       "completed": "Chuyến đi đã kết thúc",
       "cancelled": "Chuyến đi đã hủy",
       "viewSettlement": "Xem chia tiền"
+    },
+    "places": {
+      "title": "Điểm đến quanh {destination}",
+      "empty": "Chưa có gợi ý cho điểm đến này.",
+      "add": "Thêm vào lịch trình",
+      "added": "Đã thêm",
+      "addLabel": "Thêm {place} vào lịch trình",
+      "addedLabel": "{place} đã có trong lịch trình",
+      "chooseDay": "Chọn ngày tham quan",
+      "day": "Ngày trong chuyến đi",
+      "dayOption": "Ngày {number} · {date}",
+      "cancel": "Hủy",
+      "continue": "Tiếp tục",
+      "createDay": "Mở lịch trình để thêm ngày"
     }
   },
   "sidebar": {
@@ -298,6 +311,7 @@
     "verifyDescription": "Mã xác thực đã được gửi đến",
     "verifyDescriptionSuffix": "Vui lòng nhập mã để kích hoạt tài khoản.",
     "otpLabel": "Mã xác thực 6 chữ số",
+    "otpDigit": "Chữ số thứ {position} trong 6 chữ số",
     "verifySubmit": "Xác thực và tiếp tục",
     "resendCountdown": "Gửi lại mã sau {seconds}s",
     "notReceived": "Chưa nhận được email?",
@@ -954,8 +968,6 @@
       "chooseStop": "Địa điểm",
       "fitAll": "Toàn tuyến",
       "lineNote": "Đường nối thể hiện thứ tự ghé thăm, không phải đường đi thực tế.",
-      "openLocation": "Mở Google Maps",
-      "openRoute": "Google Maps",
       "missingStops": "Chưa xác định được vị trí của {count} điểm.",
       "retry": "Thử lại",
       "loadMoreStops": "Tải thêm điểm trên bản đồ"
@@ -1092,10 +1104,10 @@
       "dayTotalTitle": "Lộ trình di chuyển trong ngày: {dist} ({time})",
       "dayTotalSub": "{count} chặng di chuyển giữa các địa điểm",
       "optimizeBtn": "Tối ưu lộ trình",
-      "openInGoogleMaps": "Xem chỉ đường trên Google Maps",
       "fixMap": "Sửa bản đồ",
       "estimatedLabel": "Ước tính",
-      "estimatedTooltip": "Khoảng cách ước tính. Không tìm thấy tọa độ đường đi trên bản đồ."
+      "estimatedTooltip": "Khoảng cách ước tính. Không tìm thấy tọa độ đường đi trên bản đồ.",
+      "routeLabel": "Tuyến từ {origin} đến {destination}"
     },
     "optimize": {
       "title": "Tối ưu lộ trình di chuyển (Ngày {day})",
@@ -1111,7 +1123,7 @@
       "timeSavingsText": "Tiết kiệm {time} di chuyển",
       "alreadyOptimal": "Chưa tìm thấy lộ trình tiết kiệm hơn 200 m.",
       "optimizedSequenceTitle": "Thứ tự di chuyển đề xuất:",
-      "footerNote": "Khoảng cách và thời gian lấy từ Vietmap hoặc OpenStreetMap/OSRM. Áp dụng chỉ đổi thứ tự; giờ hoạt động giữ nguyên, chưa xét giờ mở cửa.",
+      "footerNote": "Khoảng cách và thời gian lấy từ Vietmap. Áp dụng chỉ đổi thứ tự; giờ hoạt động giữ nguyên, chưa xét giờ mở cửa.",
       "cancel": "Đóng",
       "applyBtn": "Áp dụng lộ trình tối ưu",
       "applying": "Đang cập nhật...",
@@ -1295,7 +1307,7 @@
         },
         "handling": {
           "title": "Nhà cung cấp và tính năng tùy chọn",
-          "body": "Ảnh tải lên được xử lý qua Cloudinary. Khi bạn dùng AI, nội dung yêu cầu hoặc hóa đơn được gửi đến dịch vụ AI và Google Gemini để xử lý. Tìm địa điểm và tính khoảng cách có thể gửi địa điểm đến Vietmap hoặc dịch vụ dùng dữ liệu OpenStreetMap (Photon, OSRM). Bản đồ có thể tải dữ liệu từ Vietmap hoặc OpenStreetMap. Đăng nhập Google sử dụng thông tin hồ sơ do Google cung cấp. Quyền truy cập camera chỉ được yêu cầu khi bạn chọn chụp ảnh."
+          "body": "Ảnh tải lên được xử lý qua Cloudinary. Khi bạn dùng AI, nội dung yêu cầu hoặc hóa đơn được gửi đến dịch vụ AI và Google Gemini để xử lý. Tìm địa điểm, xác định tọa độ, tính khoảng cách và hiển thị bản đồ sử dụng Vietmap. Đăng nhập Google sử dụng thông tin hồ sơ do Google cung cấp. Quyền truy cập camera chỉ được yêu cầu khi bạn chọn chụp ảnh."
         },
         "choices": {
           "title": "Lựa chọn của bạn",
@@ -1312,7 +1324,7 @@
     "backToAcceptance": "Quay lại xác nhận"
   },
   "planTemplate": {
-    "homeLibrary": "Địa điểm phổ biến",
+    "homeLibrary": "Lịch trình nổi bật",
     "durationLabel": "{days} ngày",
     "activityLabel": "{count} hoạt động",
     "allStyles": "Tất cả",

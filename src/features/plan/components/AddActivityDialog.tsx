@@ -17,6 +17,7 @@ export interface AddActivityDialogProps {
   tripCurrency?: string;
   planDate?: string | null;
   destination?: string;
+  initialValues?: Pick<CreateActivityPayload, 'title' | 'location' | 'category'>;
 }
 
 const AddActivityDialog = ({
@@ -27,14 +28,15 @@ const AddActivityDialog = ({
   tripCurrency = 'VND',
   planDate,
   destination,
+  initialValues,
 }: AddActivityDialogProps) => {
   const t = useTranslations('plan.dialog');
   const j = useTranslations('journey');
   const formId = useId();
   const [saving, setSaving] = useState(false);
-  const [step, setStep] = useState({ open, discovering: true });
+  const [step, setStep] = useState({ open, discovering: !initialValues });
   if (step.open !== open) {
-    setStep({ open, discovering: true });
+    setStep({ open, discovering: !initialValues });
   }
 
   return (
@@ -44,7 +46,7 @@ const AddActivityDialog = ({
       open={open}
       closeDisabled={isLoading || saving}
       onClose={onClose}
-      onBack={step.discovering ? undefined : () => setStep(current => ({ ...current, discovering: true }))}
+      onBack={step.discovering || initialValues ? undefined : () => setStep(current => ({ ...current, discovering: true }))}
       title={t('addTitle')}
       description={planDate ? formatDate(planDate) : undefined}
       icon={<AddCircleOutlineRoundedIcon />}
@@ -69,6 +71,7 @@ const AddActivityDialog = ({
     >
       <AddActivityForm
         formId={formId}
+        initialValues={initialValues}
         discovering={step.discovering}
         onDiscoveringChange={(discovering) => setStep(current => ({ ...current, discovering }))}
         destination={destination}

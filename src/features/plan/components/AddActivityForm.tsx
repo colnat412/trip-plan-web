@@ -26,6 +26,7 @@ import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 export interface AddActivityFormProps {
   formId: string;
   destination?: string;
+  initialValues?: Pick<CreateActivityPayload, 'title' | 'location' | 'category'>;
   discovering: boolean;
   onDiscoveringChange: (discovering: boolean) => void;
   tripCurrency?: string;
@@ -37,6 +38,7 @@ export interface AddActivityFormProps {
 const AddActivityForm = ({
   formId,
   destination = '',
+  initialValues,
   discovering,
   onDiscoveringChange: setDiscovering,
   tripCurrency = 'VND',
@@ -57,11 +59,11 @@ const AddActivityForm = ({
   const tCat = useTranslations('plan.categories');
   const tDialog = useTranslations('plan.dialog');
 
-  const [title, setTitle] = useState('');
-  const [category, setCategory] = useState<ActivityCategory>('FOOD_BEVERAGE');
+  const [title, setTitle] = useState(initialValues?.title ?? '');
+  const [category, setCategory] = useState<ActivityCategory>(initialValues?.category ?? 'FOOD_BEVERAGE');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(initialValues?.location ?? '');
   const [estimatedCost, setEstimatedCost] = useState<number | undefined>(
     undefined,
   );
@@ -150,6 +152,7 @@ const AddActivityForm = ({
         />
 
         <LocationAutocompleteInput
+          destination={destination}
           disabled={busy}
           label={tDialog('locationLabel')}
           placeholder={tDialog('locationPlaceholder')}

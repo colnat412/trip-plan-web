@@ -493,6 +493,7 @@ const PlanOverview = ({
       />
 
       <EditActivityDialog
+        destination={activeTrip?.destination}
         open={!!editingActivity}
         onClose={() => setEditingActivity(null)}
         activity={editingActivity}

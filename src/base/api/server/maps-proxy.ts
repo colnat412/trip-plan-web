@@ -36,7 +36,7 @@ export async function forwardMaps(
             q: query.get('q') || '',
             lang: query.get('lang') || 'vi',
             regionsOnly,
-            ...(path === '/maps/discovery' ? {
+            ...(path === '/maps/discovery' || path === '/maps/places' ? {
               destination: query.get('destination') || '',
               category: query.get('category') || '',
             } : {}),

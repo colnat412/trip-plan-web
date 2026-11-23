@@ -3,7 +3,7 @@
 import { contentColumn } from '@/base/theme/content-layout';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppPagination, AppLoadingState, AppButton, AppCard, AppEmptyState, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
+import { AppPagination, AppLoadingState, AppButton, AppEmptyState, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -29,11 +29,11 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
   const [sort, setSort] = useState('recent');
   const [page, setPage] = useState(1);
   const query = useTemplateLibrary({
-    savedOnly, search, duration, tag, sort, page, size: compact ? 3 : 12, initialData,
+    savedOnly, search, duration, tag, sort, page, size: compact ? 6 : 12, initialData,
   });
   const data = query.error ? null : query.listing;
   const content = (
-    <Stack spacing={2} sx={{ ...(!compact ? contentColumn : {}), width: '100%', minWidth: 0 }}>
+    <Stack component={compact ? 'section' : 'div'} spacing={2} sx={{ ...(!compact ? contentColumn : {}), width: '100%', minWidth: 0 }}>
       {compact ? (
         <AppSectionHeader title={t('homeLibrary')} actions={
           <AppSectionLink href="/templates">
@@ -83,13 +83,14 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
           aria-label={compact ? t('homeLibrary') : undefined}
           tabIndex={compact ? 0 : undefined}
           sx={{
-            display: compact ? { xs: 'flex', md: 'grid' } : 'grid',
+            display: compact ? 'flex' : 'grid',
             gridTemplateColumns: compact
-              ? { md: `repeat(${Math.min(data?.content.length || 1, 3)}, minmax(0, 1fr))` }
+              ? undefined
               : { xs: 'minmax(0, 1fr)', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))', xl: 'repeat(4, minmax(0, 1fr))' },
-            gap: 2,
+            gap: compact ? { xs: 1.5, sm: 2 } : 2,
             minWidth: 0,
-            overflowX: compact ? { xs: 'auto', md: 'visible' } : undefined,
+            overflowX: compact ? 'auto' : undefined,
+            overscrollBehaviorX: compact ? 'contain' : undefined,
             scrollSnapType: compact ? 'x proximity' : undefined,
             // Chừa chỗ cho viền focus của card đầu/cuối trong vùng cuộn.
             p: compact ? 0.5 : 0,
@@ -99,10 +100,10 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
         >
           {data?.content.map((item) => (
             <Box key={item.id} sx={{
-              flex: compact ? '0 0 200px' : undefined,
+              flex: compact ? { xs: '0 0 152px', sm: '0 0 192px' } : undefined,
               scrollSnapAlign: compact ? 'start' : undefined,
               minWidth: 0,
-              maxWidth: compact ? { xs: '78%', md: 'none' } : undefined,
+              maxWidth: compact ? '75%' : undefined,
             }}>
               {!compact ? <TemplateLibraryCard template={item} /> : <TemplateCard template={item} compact={compact} />}
             </Box>
@@ -114,10 +115,6 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
       )}
     </Stack>
   );
-  return compact ? (
-    <AppCard component="section" sx={{ minWidth: 0, p: { xs: 2, md: 3 }, borderRadius: 'var(--app-radius-card)' }}>
-      {content}
-    </AppCard>
-  ) : content;
+  return content;
 };
 export default TemplateLibrary;

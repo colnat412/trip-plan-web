@@ -104,7 +104,7 @@ async function requestDistanceMatrix(
           row.elements.forEach((element, destinationIndex) => {
             if (
               element.status === 'OK' &&
-              (element.source === 'vietmap' || element.source === 'osm') &&
+              element.source === 'vietmap' &&
               Number.isFinite(element.distance?.value) &&
               element.distance.value >= 0 &&
               Number.isFinite(element.duration?.value) &&
@@ -463,12 +463,3 @@ export async function solveOptimalRoute(
     segments,
   };
 }
-
-export const getGoogleMapsDirectionsUrl = (
-  origin: string,
-  destination: string,
-): string => {
-  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-    origin,
-  )}&destination=${encodeURIComponent(destination)}&travelmode=driving`;
-};

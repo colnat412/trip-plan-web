@@ -13,6 +13,7 @@ import { useTranslations } from 'next-intl';
 import { formatDateRange } from '@/base/utils';
 import useTripSwitcherSearch from '../hooks/useTripSwitcherSearch';
 import type { Trip } from '../types';
+import { getTripCoverUrl } from '../utils/trip-cover';
 
 interface TripSwitcherResultsProps {
   search: string;
@@ -93,7 +94,7 @@ const TripSwitcherResults = ({
                 sx={{ alignItems: 'center', width: '100%', minWidth: 0 }}
               >
                 <Avatar
-                  src={trip.coverUrl ?? undefined}
+                  src={getTripCoverUrl(trip)}
                   alt={trip.name}
                   variant="rounded"
                   sx={{

@@ -39,9 +39,8 @@
   },
   "locationMap": {
     "title": "Map: {location}",
-    "open": "Open in Google Maps",
     "empty": "Add a location to see it on the map.",
-    "unavailable": "The map is unavailable. You can open this location in Google Maps."
+    "unavailable": "The Vietmap map is unavailable. Please try again."
   },
   "navigation": {
     "searchingTrips": "Searching trips…",
@@ -237,6 +236,20 @@
       "completed": "Your trip has ended",
       "cancelled": "Your trip is cancelled",
       "viewSettlement": "View settlements"
+    },
+    "places": {
+      "title": "Places around {destination}",
+      "empty": "No suggestions for this destination yet.",
+      "add": "Add to itinerary",
+      "added": "Added",
+      "addLabel": "Add {place} to itinerary",
+      "addedLabel": "{place} is already in your itinerary",
+      "chooseDay": "Choose a day to visit",
+      "day": "Trip day",
+      "dayOption": "Day {number} · {date}",
+      "cancel": "Cancel",
+      "continue": "Continue",
+      "createDay": "Open itinerary to add a day"
     }
   },
   "sidebar": {
@@ -298,6 +311,7 @@
     "verifyDescription": "A verification code was sent to",
     "verifyDescriptionSuffix": "Please enter the code to activate your account.",
     "otpLabel": "6-digit verification code",
+    "otpDigit": "Digit {position} of 6",
     "verifySubmit": "Verify and continue",
     "resendCountdown": "Resend code in {seconds}s",
     "notReceived": "Haven’t received the email?",
@@ -954,8 +968,6 @@
       "chooseStop": "Location",
       "fitAll": "Fit all stops",
       "lineNote": "Lines show visit order, not road directions.",
-      "openLocation": "Open Google Maps",
-      "openRoute": "Google Maps",
       "missingStops": "Could not locate {count} stops.",
       "retry": "Retry",
       "loadMoreStops": "Load more map stops"
@@ -1092,10 +1104,10 @@
       "dayTotalTitle": "Day Travel Route: {dist} ({time})",
       "dayTotalSub": "{count} travel legs between activities",
       "optimizeBtn": "Optimize Route",
-      "openInGoogleMaps": "Get directions on Google Maps",
       "fixMap": "Fix the map",
       "estimatedLabel": "Estimated",
-      "estimatedTooltip": "Estimated distance. Location could not be mapped to exact roads."
+      "estimatedTooltip": "Estimated distance. Location could not be mapped to exact roads.",
+      "routeLabel": "Route from {origin} to {destination}"
     },
     "optimize": {
       "title": "Optimize Travel Route (Day {day})",
@@ -1111,7 +1123,7 @@
       "timeSavingsText": "Save {time} travel time",
       "alreadyOptimal": "No route saving more than 200 m was found.",
       "optimizedSequenceTitle": "Proposed Itinerary Sequence:",
-      "footerNote": "Distances and durations come from Vietmap or OpenStreetMap/OSRM. Applying changes only the order; activity times stay unchanged and opening hours are not considered.",
+      "footerNote": "Distances and durations come from Vietmap. Applying changes only the order; activity times stay unchanged and opening hours are not considered.",
       "cancel": "Close",
       "applyBtn": "Apply Optimized Route",
       "applying": "Updating...",
@@ -1295,7 +1307,7 @@
         },
         "handling": {
           "title": "Providers and optional features",
-          "body": "Uploaded images are processed through Cloudinary. When you use AI, request content or receipts are sent to the AI service and Google Gemini for processing. Place search and distance calculations may send locations to Vietmap or services using OpenStreetMap data (Photon, OSRM). Maps may load data from Vietmap or OpenStreetMap. Google sign-in uses profile information supplied by Google. Camera permission is requested only when you choose to take a photo."
+          "body": "Uploaded images are processed through Cloudinary. When you use AI, request content or receipts are sent to the AI service and Google Gemini for processing. Place search, geocoding, distance calculations and map display use Vietmap. Google sign-in uses profile information supplied by Google. Camera permission is requested only when you choose to take a photo."
         },
         "choices": {
           "title": "Your choices",
@@ -1312,7 +1324,7 @@
     "backToAcceptance": "Back to acknowledgement"
   },
   "planTemplate": {
-    "homeLibrary": "Popular Destinations",
+    "homeLibrary": "Featured itineraries",
     "durationLabel": "{days} days",
     "activityLabel": "{count} activities",
     "allStyles": "All",

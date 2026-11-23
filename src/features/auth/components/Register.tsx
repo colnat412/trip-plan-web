@@ -17,13 +17,17 @@ import {
   PersonOutlineOutlined,
   VisibilityOffOutlined,
   VisibilityOutlined,
-  MarkEmailReadOutlined,
+  ChevronLeftRounded,
 } from '@mui/icons-material';
 
 import { DEFAULT_AUTH_REDIRECT_PATH } from '@/base/constants';
-import { AppBackHeader, AppButton, AppCard, AppTextField, AppToast } from '@/base/components/ui';
+import {
+  AppButton,
+  AppTextField,
+  AppToast,
+} from '@/base/components/ui';
 import AppPreferencesMenu from '@/base/components/preferences/AppPreferencesMenu';
-import AppBrand from '@/base/components/layout/AppBrand';
+import OtpCodeInput from './OtpCodeInput';
 import LoginBrandPanel from './LoginBrandPanel';
 import useRegister from '@/features/auth/hooks/useRegister';
 import useVerifyOtp from '@/features/auth/hooks/useVerifyOtp';
@@ -62,17 +66,25 @@ const Register = () => {
   const { verifyOtpMutation } = useVerifyOtp();
   const { resendOtpMutation } = useResendOtp();
 
-  const busy = registerMutation.isPending || verifyOtpMutation.isPending || resendOtpMutation.isPending;
+  const busy =
+    registerMutation.isPending ||
+    verifyOtpMutation.isPending ||
+    resendOtpMutation.isPending;
 
   useEffect(() => {
     if (step !== 'OTP') return;
     const updateCountdown = () => {
-      const remaining = Math.max(0, Math.ceil((resendAvailableAt - Date.now()) / 1000));
+      const remaining = Math.max(
+        0,
+        Math.ceil((resendAvailableAt - Date.now()) / 1000),
+      );
       setCountdown(remaining);
       if (remaining === 0) clearInterval(timer);
     };
     const timer = setInterval(updateCountdown, 1000);
-    const onVisible = () => { if (!document.hidden) updateCountdown(); };
+    const onVisible = () => {
+      if (!document.hidden) updateCountdown();
+    };
     window.addEventListener('focus', updateCountdown);
     document.addEventListener('visibilitychange', onVisible);
     return () => {
@@ -188,11 +200,16 @@ const Register = () => {
   };
 
   const emailAlreadyRegistered = registerMutation.error?.status === 409;
-  const activeErrorMessage = registerMutation.error?.status === 503 || resendOtpMutation.error?.status === 503
-    ? t('register.emailSendError')
-    : verifyOtpMutation.error?.status === 401
-      ? t('register.invalidCode')
-      : registerMutation.error?.message || verifyOtpMutation.error?.message || resendOtpMutation.error?.message || '';
+  const activeErrorMessage =
+    registerMutation.error?.status === 503 ||
+    resendOtpMutation.error?.status === 503
+      ? t('register.emailSendError')
+      : verifyOtpMutation.error?.status === 401
+        ? t('register.invalidCode')
+        : registerMutation.error?.message ||
+          verifyOtpMutation.error?.message ||
+          resendOtpMutation.error?.message ||
+          '';
 
   const clearAllErrors = () => {
     registerMutation.clearError();
@@ -224,7 +241,11 @@ const Register = () => {
         onClose={() => setSuccessToast(null)}
       />
 
-      <Box sx={{ display: step === 'OTP' ? { xs: 'none', md: 'contents' } : 'contents' }}>
+      <Box
+        sx={{
+          display: step === 'OTP' ? { xs: 'none', md: 'contents' } : 'contents',
+        }}
+      >
         <LoginBrandPanel />
       </Box>
 
@@ -235,30 +256,36 @@ const Register = () => {
           flexShrink: 1,
           flexBasis: 0,
           minWidth: { xs: 0, md: '440px' },
-          alignItems: { xs: step === 'OTP' ? 'center' : 'flex-start', md: 'center' },
+          alignItems: {
+            xs: 'flex-start',
+            md: 'center',
+          },
           justifyContent: 'center',
           p: { xs: '24px 24px max(32px, env(safe-area-inset-bottom))', sm: 5 },
-          minHeight: { xs: step === 'OTP' ? '100svh' : 'calc(100svh - 240px)', sm: step === 'OTP' ? '100svh' : 'calc(100svh - 280px)', md: '100svh' },
-          borderRadius: { xs: step === 'OTP' ? 0 : 'var(--app-radius-dialog) var(--app-radius-dialog) 0 0', md: 0 },
+          minHeight: {
+            xs: step === 'OTP' ? '100svh' : 'calc(100svh - 240px)',
+            sm: step === 'OTP' ? '100svh' : 'calc(100svh - 280px)',
+            md: '100svh',
+          },
+          borderRadius: {
+            xs:
+              step === 'OTP'
+                ? 0
+                : 'var(--app-radius-dialog) var(--app-radius-dialog) 0 0',
+            md: 0,
+          },
           bgcolor: 'background.paper',
         }}
       >
         <Box
           sx={{
             width: '100%',
-            maxWidth: 480,
+            maxWidth: step === 'OTP' ? 400 : 480,
             display: 'flex',
             flexDirection: 'column',
-            gap: '16px',
+            gap: step === 'OTP' ? '24px' : '16px',
           }}
         >
-          {step === 'OTP' && (
-            <Stack direction="row" sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'space-between', alignItems: 'center', gap: 1 }}>
-              <AppBrand showTag={false} />
-              <AppPreferencesMenu />
-            </Stack>
-          )}
-
           {step === 'REGISTER' ? (
             <>
               <Typography
@@ -275,7 +302,6 @@ const Register = () => {
               <Typography color="text.secondary">
                 {t('register.description')}
               </Typography>
-
 
               <Stack
                 component="form"
@@ -322,14 +348,25 @@ const Register = () => {
                   required
                   value={email}
                   error={Boolean(formErrors.email) || emailAlreadyRegistered}
-                  helperText={formErrors.email || (emailAlreadyRegistered ? t('register.emailAlreadyRegistered') : undefined)}
+                  helperText={
+                    formErrors.email ||
+                    (emailAlreadyRegistered
+                      ? t('register.emailAlreadyRegistered')
+                      : undefined)
+                  }
                   inputRef={emailInputRef}
                   disabled={registerMutation.isPending}
                   onChange={(event) => {
                     setEmail(event.target.value);
                     setFormErrors((current) => ({
                       ...current,
-                      email: event.target.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(event.target.value.trim()) ? t('validation.emailInvalid') : undefined,
+                      email:
+                        event.target.value.trim() &&
+                        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                          event.target.value.trim(),
+                        )
+                          ? t('validation.emailInvalid')
+                          : undefined,
                     }));
                     registerMutation.clearError();
                   }}
@@ -437,61 +474,76 @@ const Register = () => {
             </>
           ) : (
             <>
-              <AppBackHeader
-                title={t('register.verifyTitle')}
-                titleAlign="left"
-                backLabel={t('register.changeEmail')}
-                backDisabled={busy}
-                onBack={() => {
-                  if (busy) return;
-                  setStep('REGISTER');
-                  setOtp('');
-                  setFormErrors({});
-                  setSuccessToast(null);
-                  clearAllErrors();
-                }}
-              />
-              <AppCard variant="outlined" sx={{ p: { xs: 1.5, sm: 2 }, borderRadius: 'var(--app-radius-control)' }}>
-                <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', minWidth: 0 }}>
-                  <MarkEmailReadOutlined aria-hidden sx={{ color: 'primary.main', fontSize: 28, flexShrink: 0 }} />
-                  <Stack spacing={0.5} sx={{ minWidth: 0 }}>
-                    <Typography sx={{ color: 'text.secondary', fontSize: 12 }}>{t('register.verifyDescription')}</Typography>
-                    <Typography sx={{ fontSize: 14, fontWeight: 700, overflowWrap: 'anywhere' }}>{email}</Typography>
-                  </Stack>
-                </Stack>
-              </AppCard>
-              <Stack component="form" spacing={2} noValidate onSubmit={handleVerifyOtpSubmit} aria-label={t('register.verifyTitle')}>
-                <AppTextField
-                  autoFocus
-                  label={t('register.otpLabel')}
-                  name="otp"
-                  placeholder="000000"
-                  autoComplete="one-time-code"
-                  required
+              <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+                <IconButton aria-label={t('register.changeEmail')} disabled={busy}
+                  sx={{ width: 44, height: 44, color: 'text.secondary' }}
+                  onClick={() => {
+                    if (busy) return;
+                    setStep('REGISTER');
+                    setOtp('');
+                    setFormErrors({});
+                    setSuccessToast(null);
+                    clearAllErrors();
+                  }}>
+                  <ChevronLeftRounded />
+                </IconButton>
+                <Box sx={{ display: { xs: 'flex', md: 'none' } }}><AppPreferencesMenu /></Box>
+              </Stack>
+              <Stack spacing={1}>
+                <Typography component="h1" sx={{ fontSize: { xs: 22, sm: 24 }, fontWeight: 600, color: 'text.primary' }}>
+                  {t('register.verifyTitle')}
+                </Typography>
+                <Typography sx={{ fontSize: 14, color: 'text.secondary', lineHeight: 1.6 }}>
+                  {t('register.verifyDescription')}
+                  <Box component="span" sx={{ display: 'block', fontWeight: 600, color: 'text.primary', overflowWrap: 'anywhere' }}>{email}</Box>
+                </Typography>
+              </Stack>
+              <Stack
+                component="form"
+                spacing={2}
+                noValidate
+                onSubmit={handleVerifyOtpSubmit}
+                aria-label={t('register.verifyTitle')}
+              >
+                <OtpCodeInput
                   value={otp}
-                  error={Boolean(formErrors.otp)}
-                  helperText={formErrors.otp || t('register.codeExpiry')}
-                  inputRef={otpInputRef}
+                  error={formErrors.otp}
+                  firstInputRef={otpInputRef}
                   disabled={busy}
-                  onChange={(event) => {
-                    setOtp(event.target.value.replace(/\D/g, '').slice(0, 6));
+                  onChange={(value) => {
+                    setOtp(value);
                     setFormErrors(current => ({ ...current, otp: undefined }));
                     verifyOtpMutation.clearError();
                   }}
-                  slotProps={{ htmlInput: {
-                    inputMode: 'numeric', pattern: '[0-9]{6}', maxLength: 6,
-                    style: { letterSpacing: '8px', fontSize: '28px', fontWeight: 700, textAlign: 'center', fontVariantNumeric: 'tabular-nums' },
-                  } }}
                 />
-                <AppButton type="submit" fullWidth loading={verifyOtpMutation.isPending} disabled={busy || otp.length !== 6} sx={{ minHeight: 48 }}>
+                <AppButton
+                  type="submit"
+                  fullWidth
+                  loading={verifyOtpMutation.isPending}
+                  disabled={busy || !/^\d{6}$/.test(otp)}
+                  sx={{ minHeight: 48 }}
+                >
                   {t('register.verifySubmit')}
                 </AppButton>
-                <Stack spacing={0.5} sx={{ alignItems: 'center', textAlign: 'center' }}>
-                  <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>{t('register.notReceived')}</Typography>
-                  <AppButton intent="text" size="small" disabled={countdown > 0 || busy} loading={resendOtpMutation.isPending} onClick={handleResendOtp} sx={{ minHeight: 44 }}>
-                    {countdown > 0 ? t('register.resendCountdown', { seconds: countdown }) : t('register.resendOtp')}
+                <Stack
+                  spacing={0.5}
+                  sx={{ alignItems: 'center', textAlign: 'center' }}
+                >
+                  <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
+                    {t('register.notReceived')}
+                  </Typography>
+                  <AppButton
+                    intent="text"
+                    size="small"
+                    disabled={countdown > 0 || busy}
+                    loading={resendOtpMutation.isPending}
+                    onClick={handleResendOtp}
+                    sx={{ minHeight: 44 }}
+                  >
+                    {countdown > 0
+                      ? t('register.resendCountdown', { seconds: countdown })
+                      : t('register.resendOtp')}
                   </AppButton>
-                  <Typography sx={{ fontSize: 12, color: 'text.secondary', lineHeight: 1.6 }}>{t('register.checkSpam')}</Typography>
                 </Stack>
               </Stack>
             </>

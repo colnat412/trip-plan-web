@@ -34,6 +34,7 @@ export interface EditActivityFormProps {
   formId: string;
   activity: PlanActivity;
   tripCurrency?: string;
+  destination?: string;
   isLoading?: boolean;
   onSubmit: (payload: UpdateActivityPayload) => void | Promise<unknown>;
   onSavingChange?: (saving: boolean) => void;
@@ -43,6 +44,7 @@ const EditActivityForm = ({
   formId,
   activity,
   tripCurrency = 'VND',
+  destination,
   isLoading = false,
   onSubmit,
   onSavingChange,
@@ -231,6 +233,7 @@ const EditActivityForm = ({
         >
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <LocationAutocompleteInput
+              destination={destination}
               disabled={busy}
               label={tDialog('locationLabel')}
               placeholder={tDialog('locationPlaceholder')}

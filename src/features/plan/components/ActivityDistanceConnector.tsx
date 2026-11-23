@@ -5,8 +5,7 @@ import { Box, Typography } from '@mui/material';
 import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppTimelineRail, AppIconText } from '@/base/components/ui';
-import { getGoogleMapsDirectionsUrl } from '../services/mapService';
+import { AppTimelineRail, AppIconText } from '@/base/components/ui';
 import type { DistanceInfo, DurationInfo } from '../types';
 
 export interface ActivityDistanceConnectorProps {
@@ -37,17 +36,12 @@ const ActivityDistanceConnector = ({
       }}
     >
       <AppTimelineRail />
-      <AppButton
-        component="a"
-        href={getGoogleMapsDirectionsUrl(originLocation, destinationLocation)}
-        target="_blank"
-        rel="noopener noreferrer"
-        intent="text"
-        size="small"
-        wrapLabel
-        aria-label={`${t('openInGoogleMaps')}: ${originLocation} → ${destinationLocation}`}
-        title={isEstimated ? t('estimatedTooltip') : t('openInGoogleMaps')}
+      <Box
+        role="group"
+        aria-label={t('routeLabel', { origin: originLocation, destination: destinationLocation })}
+        title={isEstimated ? t('estimatedTooltip') : undefined}
         sx={{
+          display: 'flex',
           flex: 1,
           minWidth: 0,
           minHeight: 44,
@@ -59,8 +53,6 @@ const ActivityDistanceConnector = ({
           alignItems: 'center',
           color: 'text.secondary',
           borderRadius: 'var(--app-radius-small)',
-          '&:hover': { color: 'primary.main', bgcolor: 'action.hover' },
-          '&.Mui-focusVisible': { outlineOffset: -2 },
         }}
       >
         <AppIconText icon={<RouteRoundedIcon />} sx={{ flex: '1 1 100px' }}>
@@ -84,7 +76,7 @@ const ActivityDistanceConnector = ({
             {t('estimatedLabel')}
           </Typography>
         )}
-      </AppButton>
+      </Box>
     </Box>
   );
 };

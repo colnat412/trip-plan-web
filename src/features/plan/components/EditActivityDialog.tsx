@@ -15,6 +15,7 @@ export interface EditActivityDialogProps {
   onSubmit: (payload: UpdateActivityPayload) => void | Promise<unknown>;
   isLoading?: boolean;
   tripCurrency?: string;
+  destination?: string;
 }
 
 const EditActivityDialog = ({
@@ -24,6 +25,7 @@ const EditActivityDialog = ({
   onSubmit,
   isLoading = false,
   tripCurrency = 'VND',
+  destination,
 }: EditActivityDialogProps) => {
   const t = useTranslations('plan.dialog');
   const formId = useId();
@@ -57,6 +59,7 @@ const EditActivityDialog = ({
         formId={formId}
         activity={activity}
         tripCurrency={tripCurrency}
+        destination={destination}
         isLoading={isLoading}
         onSubmit={onSubmit}
         onSavingChange={setSaving}

@@ -81,10 +81,12 @@ export function TemplateSaveButton({
   id,
   iconOnly = false,
   onImage = false,
+  compact = false,
 }: {
   id: string;
   iconOnly?: boolean;
   onImage?: boolean;
+  compact?: boolean;
 }) {
   const state = useContext(SaveContext);
   const t = useTranslations('planTemplate');
@@ -99,8 +101,9 @@ export function TemplateSaveButton({
     '&.Mui-focusVisible': { outline: '2px solid', outlineColor: onImage ? 'common.white' : 'primary.main', outlineOffset: 2 },
     '& .template-save-icon': {
       ...saveHighlight(theme, saved),
-      width: 32,
-      height: 32,
+      width: compact ? 28 : 32,
+      height: compact ? 28 : 32,
+      flexShrink: 0,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -109,7 +112,7 @@ export function TemplateSaveButton({
         backgroundColor: onImage ? 'rgba(0, 0, 0, 0.56)' : 'background.paper',
         color: onImage ? 'common.white' : 'text.secondary',
       }),
-      '& .MuiSvgIcon-root': { fontSize: 20 },
+      '& .MuiSvgIcon-root': { fontSize: compact ? 17 : 20 },
     },
     '&:hover .template-save-icon': saveHighlight(theme, saved)['&:hover'],
     '&:active .template-save-icon': saveHighlight(theme, saved)['&:active'],

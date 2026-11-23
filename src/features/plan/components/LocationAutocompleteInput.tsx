@@ -28,6 +28,7 @@ export interface PlacePrediction {
 
 export interface LocationAutocompleteInputProps {
   value: string;
+  destination?: string;
   onChange: (value: string) => void;
   label?: string;
   placeholder?: string;
@@ -40,6 +41,7 @@ export interface LocationAutocompleteInputProps {
 
 const LocationAutocompleteInput = ({
   value,
+  destination = '',
   onChange,
   label,
   placeholder,
@@ -57,7 +59,7 @@ const LocationAutocompleteInput = ({
   const [inputValue, setInputValue] = useState<string>(value || '');
   const [searchQuery, setSearchQuery] = useState('');
   const { options: displayOptions, loading: isLoading, error: searchError } =
-    usePlacesSearch(searchQuery);
+    usePlacesSearch(searchQuery, destination);
 
   if ((value || '') !== prevValue) {
     setPrevValue(value || '');

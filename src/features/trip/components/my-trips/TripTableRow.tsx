@@ -22,6 +22,7 @@ import { AppActionMenu, AppButton } from '@/base/components/ui';
 import { formatDateRange } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
 import type { Trip } from '../../types';
+import { getTripCoverUrl } from '../../utils/trip-cover';
 
 interface TripTableRowProps {
   trip: Trip;
@@ -88,7 +89,7 @@ const TripTableRow = ({
       <TableCell sx={{ py: 2 }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
           <Avatar
-            src={trip.coverUrl ?? undefined}
+            src={getTripCoverUrl(trip)}
             alt={trip.name}
             variant="rounded"
             sx={{

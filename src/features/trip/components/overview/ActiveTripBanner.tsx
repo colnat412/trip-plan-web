@@ -14,6 +14,7 @@ import { useTripContext } from '../../context/TripContext';
 import { useTripMembers } from '../../hooks/useTripMembers';
 import type { Trip } from '../../types';
 import TripWeatherText from './TripWeatherText';
+import { getTripCoverUrl } from '../../utils/trip-cover';
 
 // Only the decorative seam is masked; text and member controls remain untouched.
 const TICKET_EDGE_MASK = 'radial-gradient(circle 10px at left center, transparent 98%, #000) left / 51% 100% no-repeat, radial-gradient(circle 10px at right center, transparent 98%, #000) right / 51% 100% no-repeat';
@@ -30,6 +31,7 @@ const ActiveTripBanner = ({
   notice,
 }: ActiveTripBannerProps) => {
   const tMembers = useTranslations('members');
+  const coverUrl = getTripCoverUrl(trip);
   const { openMembers, isMembersOpen } = useTripContext();
   const { activeMembers, isLoading, isStale, error } = useTripMembers({
     tripId: trip.id,
@@ -56,11 +58,9 @@ const ActiveTripBanner = ({
           gap: compact ? 2 : 5,
           p: compact ? { xs: 2, sm: 2.5 } : { xs: 2.5, sm: 4, md: 5 },
           ...tonalSurface(theme, 22),
-          color: trip.coverUrl ? theme.palette.common.white : tonalSurface(theme).color,
-          backgroundColor: trip.coverUrl
-            ? alpha(theme.palette.common.black, 0.64)
-            : tonalSurface(theme, 22).backgroundColor,
-          backgroundImage: trip.coverUrl ? `url(${JSON.stringify(trip.coverUrl)})` : 'none',
+          color: theme.palette.common.white,
+          backgroundColor: alpha(theme.palette.common.black, 0.64),
+          backgroundImage: `url(${JSON.stringify(coverUrl)})`,
           backgroundBlendMode: 'multiply',
           backgroundSize: 'cover',
           backgroundPosition: 'center',

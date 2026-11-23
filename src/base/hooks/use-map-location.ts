@@ -15,6 +15,8 @@ const useMapLocation = (location: string) => {
     enabled: !!location,
   });
   return {
+    error: query.error,
+    refetch: query.refetch,
     location: query.isStale || query.error ? null : query.data?.location,
     loading: !!location && !query.error && (query.isStale || query.isFetching),
   };

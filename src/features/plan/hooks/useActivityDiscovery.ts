@@ -36,6 +36,7 @@ const useActivityDiscovery = (
     enabled,
   });
   return {
+    refetch: query.refetch,
     options: !enabled || query.isStale ? [] : (query.data?.predictions ?? []),
     error: enabled ? query.error : null,
     loading:

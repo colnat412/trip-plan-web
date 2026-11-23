@@ -5,29 +5,14 @@ import { selectedSurface } from '@/base/theme/surfaces';
 import { useEffect, useRef, useState } from 'react';
 import { Box, Stack, Typography, useTheme } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import type { Map as MapInstance, Marker, StyleSpecification } from 'maplibre-gl';
+import type { Map as MapInstance, Marker } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 import type { MapCoordinates, MapStop } from '@/base/types/maps';
-import { getMapRouteSegments, getOsmEmbedUrl, getVietmapStyle } from '@/base/utils/maps';
+import { getMapRouteSegments, getVietmapStyle } from '@/base/utils/maps';
 import AppButton from './AppButton';
 
 const MAP_LOAD_TIMEOUT_MS = 10_000;
-const osmStyle: StyleSpecification = {
-  version: 8,
-  sources: {
-    osm: {
-      type: 'raster',
-      tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-      tileSize: 256,
-      maxzoom: 19,
-      attribution:
-        '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>',
-    },
-  },
-  layers: [{ id: 'osm', type: 'raster', source: 'osm' }],
-};
-
 export interface AppInteractiveMapProps {
   coordinates: MapCoordinates;
   title: string;
@@ -51,7 +36,7 @@ const AppInteractiveMap = ({
   const initialCenterRef = useRef(coordinates);
   const markersRef = useRef<Array<{ id: string; marker: Marker }>>([]);
   const selectRef = useRef(onSelectStop);
-  const [useFallback, setUseFallback] = useState(false);
+  const [unavailable, setUnavailable] = useState(false);
   const [styleVersion, setStyleVersion] = useState(0);
   const pointsKey = JSON.stringify(stops ?? []);
   // Khung nhìn chỉ phụ thuộc vị trí các điểm, không phụ thuộc ngày nào đang được chọn.
@@ -61,41 +46,34 @@ const AppInteractiveMap = ({
   useEffect(() => { selectRef.current = onSelectStop; }, [onSelectStop]);
 
   useEffect(() => {
-    if (useFallback) return;
+    if (unavailable) return;
     let active = true;
     let map: MapInstance | undefined;
     let observer: ResizeObserver | undefined;
-    let usingVietmap = false;
     let ready = false;
     const timers: Array<ReturnType<typeof setTimeout>> = [];
 
     const watchTimeout = () => timers.push(setTimeout(() => {
-      if (active && !ready) showFallback();
+      if (active && !ready) showUnavailable();
     }, MAP_LOAD_TIMEOUT_MS));
-    const showFallback = () => {
-      if (!active || !map) return;
-      if (usingVietmap) {
-        usingVietmap = false;
-        ready = false;
-        styleReadyRef.current = false;
-        map.setStyle(osmStyle);
-        watchTimeout();
-      } else {
-        setUseFallback(true);
-      }
+    const showUnavailable = () => {
+      if (active) setUnavailable(true);
     };
 
     const initialize = async () => {
       try {
+        const style = getVietmapStyle();
+        if (!style) {
+          if (active) setUnavailable(true);
+          return;
+        }
         const library = await import('maplibre-gl');
         if (!active || !containerRef.current) return;
         libraryRef.current = library;
         library.setWorkerUrl(`${window.location.origin}/maplibre/maplibre-gl-worker.mjs`);
-        const style = getVietmapStyle();
-        usingVietmap = Boolean(style);
         map = new library.Map({
           container: containerRef.current,
-          style: style || osmStyle,
+          style,
           center: [initialCenterRef.current.longitude, initialCenterRef.current.latitude],
           zoom: 12,
           attributionControl: false,
@@ -108,17 +86,16 @@ const AppInteractiveMap = ({
           styleReadyRef.current = true;
           if (active) setStyleVersion((value) => value + 1);
         });
-        // Tile trống (404) là bình thường với vector tile; chỉ chuyển nền khi style chưa tải
-        // được hoặc key bị từ chối, nếu không một ô trống cũng làm mất nền Vietmap.
+        // Chỉ báo lỗi tải bản đồ khi style chưa sẵn sàng hoặc key bị từ chối.
         map.on('error', (event) => {
           const status = (event.error as { status?: number } | undefined)?.status;
-          if (!ready || status === 401 || status === 403) showFallback();
+          if (!ready || status === 401 || status === 403) showUnavailable();
         });
         watchTimeout();
         observer = new ResizeObserver(() => map?.resize());
         observer.observe(containerRef.current);
       } catch {
-        if (active) setUseFallback(true);
+        if (active) setUnavailable(true);
       }
     };
     void initialize();
@@ -132,12 +109,12 @@ const AppInteractiveMap = ({
       styleReadyRef.current = false;
       map?.remove();
     };
-  }, [useFallback]);
+  }, [unavailable]);
 
   useEffect(() => {
     const map = mapRef.current;
     const library = libraryRef.current;
-    if (!map || !library || !styleReadyRef.current || useFallback) return;
+    if (!map || !library || !styleReadyRef.current || unavailable) return;
     const drawStops = () => {
       markersRef.current.forEach(({ marker }) => marker.remove());
       const points: MapStop[] = JSON.parse(pointsKey);
@@ -179,12 +156,12 @@ const AppInteractiveMap = ({
       });
     };
     drawStops();
-  }, [pointsKey, styleVersion, routeColor, fitVersion, useFallback]);
+  }, [pointsKey, styleVersion, routeColor, fitVersion, unavailable]);
 
   useEffect(() => {
     const map = mapRef.current;
     const library = libraryRef.current;
-    if (!map || !library || !styleReadyRef.current || useFallback) return;
+    if (!map || !library || !styleReadyRef.current || unavailable) return;
     const points: Array<[string, number, number]> = JSON.parse(fitKey);
     if (!points.length) return;
     const bounds = new library.LngLatBounds();
@@ -192,7 +169,7 @@ const AppInteractiveMap = ({
     const padding = bottomInset > 0 ? { top: 24, right: 48, left: 48,
       bottom: Math.min(bottomInset + 24, Math.max(24, map.getCanvas().clientHeight - 120)) } : 64;
     map.fitBounds(bounds, { padding, maxZoom: 14, duration: 0 });
-  }, [fitKey, styleVersion, fitVersion, useFallback, bottomInset]);
+  }, [fitKey, styleVersion, fitVersion, unavailable, bottomInset]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -203,16 +180,12 @@ const AppInteractiveMap = ({
     });
   }, [selectedId, pointsKey, styleVersion, fitVersion]);
 
-  if (useFallback) {
-    if (!stops) return (
-      <Box component="iframe" src={getOsmEmbedUrl(coordinates.latitude, coordinates.longitude)}
-        title={title} loading="lazy" sx={{ width: '100%', height: '100%', border: 0 }} />
-    );
+  if (unavailable) {
     return (
       <Stack spacing={2} role="status" sx={{ height: bottomInset > 0 ? `calc(100% - ${bottomInset}px)` : '100%',
         overflow: 'auto', alignItems: 'center', justifyContent: 'center', p: 2 }}>
         <Typography>{t('unavailable')}</Typography>
-        <AppButton intent="secondary" onClick={() => setUseFallback(false)}>{t('retry')}</AppButton>
+        <AppButton intent="secondary" onClick={() => setUnavailable(false)}>{t('retry')}</AppButton>
       </Stack>
     );
   }
