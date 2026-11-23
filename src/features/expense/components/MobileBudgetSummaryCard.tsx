@@ -72,7 +72,6 @@ const MobileBudgetSummaryCard = ({
       sx={{
         display: { xs: 'block', sm: 'none' },
         minWidth: 0,
-        py: 2,
         overflowWrap: 'anywhere',
       }}
     >

@@ -51,7 +51,7 @@ const appTheme = createTheme({
       palette: {
         ...brandPalette,
         mode: 'light',
-        background: { default: '#FFFFFF', paper: '#FFFFFF' },
+        background: { default: '#EFF6FF', paper: '#FFFFFF' },
         text: { primary: '#0F172A', secondary: '#475569' },
         divider: 'rgba(30, 58, 138, 0.12)',
       },

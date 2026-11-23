@@ -37,7 +37,7 @@ const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
         sx={{
           width: '100%',
           minWidth: 0,
-          minHeight: 72,
+          minHeight: workspace ? 64 : 72,
           px: { xs: 1.5, sm: 2, md: 3, xl: 4 },
           py: 0.5,
           display: 'flex',

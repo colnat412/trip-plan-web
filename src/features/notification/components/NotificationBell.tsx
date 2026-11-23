@@ -49,7 +49,7 @@ const NotificationBell = () => {
           sx={{ width: 44, height: 44, flexShrink: 0 }}
         >
           <Badge badgeContent={notifications.count} max={9} color="primary">
-            <NotificationsNoneRoundedIcon />
+            <NotificationsNoneRoundedIcon sx={{ fontSize: 20 }} />
           </Badge>
         </IconButton>
       </Tooltip>

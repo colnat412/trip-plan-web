@@ -16,6 +16,7 @@ export interface AppPageHeaderProps {
   badge?: React.ReactNode;
   subtitle?: React.ReactNode;
   actions?: React.ReactNode;
+  actionsSx?: SxProps<Theme>;
   titleActions?: React.ReactNode;
   sx?: SxProps<Theme>;
 }
@@ -26,6 +27,7 @@ const AppPageHeader = ({
   badge,
   subtitle,
   actions,
+  actionsSx,
   titleActions,
   sx,
 }: AppPageHeaderProps) => {
@@ -170,15 +172,18 @@ const AppPageHeader = ({
           direction="row"
           spacing={1}
           useFlexGap
-          sx={{
-            alignItems: 'center',
-            flexShrink: 0,
-            flexWrap: 'wrap',
-            '& > .MuiButton-root': { flex: { xs: '1 0 auto', sm: '0 0 auto' } },
-            minWidth: 0,
-            maxWidth: '100%',
-            alignSelf: { xs: 'stretch', sm: 'auto' },
-          }}
+          sx={[
+            {
+              alignItems: 'center',
+              flexShrink: 0,
+              flexWrap: 'wrap',
+              '& > .MuiButton-root': { flex: { xs: '1 0 auto', sm: '0 0 auto' } },
+              minWidth: 0,
+              maxWidth: '100%',
+              alignSelf: { xs: 'stretch', sm: 'auto' },
+            },
+            ...(Array.isArray(actionsSx) ? actionsSx : actionsSx ? [actionsSx] : []),
+          ]}
         >
           {actions}
         </Stack>

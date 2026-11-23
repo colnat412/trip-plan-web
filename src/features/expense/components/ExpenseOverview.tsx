@@ -6,11 +6,11 @@ import AppLoadingState from '@/base/components/ui/AppLoadingState';
 import { useState } from 'react';
 import { Box, Typography, Stack } from '@mui/material';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
-import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceWalletRounded';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import {
   AppButton,
+  AppCard,
   AppEmptyState,
   AppFloatingActionButton,
   AppPageContainer,
@@ -275,15 +275,14 @@ const ExpenseOverview = () => {
       ) : undefined}
     >
       <AppPageHeader
-        icon={<AccountBalanceWalletRoundedIcon sx={{ fontSize: '24px' }} />}
         title={t('pageTitle')}
         titleActions={<Typography variant="body2" color="text.secondary">{activeTrip.baseCurrency}</Typography>}
+        actionsSx={{ display: { xs: 'none', sm: 'flex' } }}
         actions={canWrite && canManage ? (
           <AppButton
             intent="secondary"
             size="medium"
             startIcon={<TuneRoundedIcon fontSize="small" />}
-            sx={{ display: { xs: 'none', sm: 'inline-flex' } }}
             onClick={() => setSetBudgetOpen(true)}
           >
             {t('setBudget')}
@@ -291,77 +290,84 @@ const ExpenseOverview = () => {
         ) : undefined}
       />
 
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: {
-            xs: '1fr',
-            sm: 'repeat(3, 1fr)',
-          },
-          gap: 2,
-          alignItems: 'stretch',
-        }}
+      <AppCard component="section"
+        sx={{ width: '100%', minWidth: 0, flexShrink: 0, p: { xs: 2, sm: 2.5 } }}
+        contentSx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
       >
-        <BudgetMetricsCards
-          summary={summary}
-          isLoading={isSummaryLoading || isSummaryStale}
-          onRetry={() => refetchSummary()}
-          currency={activeTrip.baseCurrency}
-          onOpenSetBudget={canManage ? () => setSetBudgetOpen(true) : undefined}
-        />
-      </Box>
-
-      {summary?.categoryBreakdown && (
-        <Stack spacing={1.5} sx={{ minWidth: 0 }}>
-          <CategorySpendingChart
-            compact
-            key={String(tripId)}
-            breakdown={summary.categoryBreakdown}
-            currency={summary.currency || activeTrip.baseCurrency}
-            totalBudget={summary.totalBudget}
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(3, 1fr)',
+            },
+            gap: 2,
+            alignItems: 'stretch',
+          }}
+        >
+          <BudgetMetricsCards
+            summary={summary}
+            isLoading={isSummaryLoading || isSummaryStale}
+            onRetry={() => refetchSummary()}
+            currency={activeTrip.baseCurrency}
+            onOpenSetBudget={canManage ? () => setSetBudgetOpen(true) : undefined}
           />
-          {SHOW_CATEGORY_BUDGET_DETAILS && summary.categoryBreakdown.some(
-            (item) => item.spentAmount > 0 || item.limitAmount > 0,
-          ) && (
-            <Box component="details">
-              <Box
-                component="summary"
-                sx={{
-                  cursor: 'pointer',
-                  color: 'primary.main',
-                  py: 1.5,
-                  fontSize: '14px',
-                  fontWeight: 600,
-                }}
-              >
-                {t('spendingChart.budgetDetails')}
-              </Box>
-              <CategorySpendingList
-                breakdown={summary.categoryBreakdown}
-                currency={summary.currency || activeTrip.baseCurrency}
-                onOpenSetBudget={
-                  canManage ? () => setSetBudgetOpen(true) : undefined
-                }
-              />
-            </Box>
-          )}
-        </Stack>
-      )}
+        </Box>
 
-      <ExpenseTable
-        expenses={expenses}
-        dailyTotals={summary?.dailyTotals}
-        isLoading={isExpensesLoading || isSummaryLoading}
-        isFetching={isExpensesFetching}
-        pagination={pagination}
-        onPageChange={(newPage) => setPage(newPage)}
-        onViewDetail={(expense) => setDetailExpense(expense)}
-        sort={sort}
-        onSortChange={handleSortChange}
-        filters={activeFilters}
-        onFilterChange={SHOW_EXPENSE_FILTERS ? handleFilterChange : undefined}
-        readOnly={!canWrite}
-      />
+        {summary?.categoryBreakdown && (
+          <Stack spacing={1.5} sx={{ minWidth: 0 }}>
+            <CategorySpendingChart
+              compact
+              key={String(tripId)}
+              breakdown={summary.categoryBreakdown}
+              currency={summary.currency || activeTrip.baseCurrency}
+              totalBudget={summary.totalBudget}
+            />
+            {SHOW_CATEGORY_BUDGET_DETAILS && summary.categoryBreakdown.some(
+              (item) => item.spentAmount > 0 || item.limitAmount > 0,
+            ) && (
+              <Box component="details">
+                <Box
+                  component="summary"
+                  sx={{
+                    cursor: 'pointer',
+                    color: 'primary.main',
+                    py: 1.5,
+                    fontSize: '14px',
+                    fontWeight: 600,
+                  }}
+                >
+                  {t('spendingChart.budgetDetails')}
+                </Box>
+                <CategorySpendingList
+                  breakdown={summary.categoryBreakdown}
+                  currency={summary.currency || activeTrip.baseCurrency}
+                  onOpenSetBudget={
+                    canManage ? () => setSetBudgetOpen(true) : undefined
+                  }
+                />
+              </Box>
+            )}
+          </Stack>
+        )}
+      </AppCard>
+
+      <AppCard component="section" sx={{ width: '100%', minWidth: 0, flexShrink: 0, p: { xs: 2, sm: 2.5 } }}>
+        <ExpenseTable
+          expenses={expenses}
+          dailyTotals={summary?.dailyTotals}
+          isLoading={isExpensesLoading || isSummaryLoading}
+          isFetching={isExpensesFetching}
+          pagination={pagination}
+          onPageChange={(newPage) => setPage(newPage)}
+          onViewDetail={(expense) => setDetailExpense(expense)}
+          sort={sort}
+          onSortChange={handleSortChange}
+          filters={activeFilters}
+          onFilterChange={SHOW_EXPENSE_FILTERS ? handleFilterChange : undefined}
+          readOnly={!canWrite}
+        />
+      </AppCard>
 
       <ExpenseDetailDialog
         open={Boolean(detailExpense)}

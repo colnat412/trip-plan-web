@@ -371,7 +371,7 @@ const ExpenseTable = ({
           stackActionsOnMobile
           sx={{
             px: 0,
-            py: 2,
+            py: 0,
           }}
           actions={
             !readOnly && onAddNew ? (
