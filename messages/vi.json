@@ -1698,5 +1698,31 @@
     "confirm": "Đồng ý xóa",
     "cancel": "Hủy",
     "failed": "Chưa thể xóa tài khoản. Vui lòng thử lại."
+  },
+  "forgotPassword": {
+    "title": "Quên mật khẩu?",
+    "description": "Nhập email để nhận mã đặt lại mật khẩu.",
+    "sendCode": "Gửi mã xác thực",
+    "resetTitle": "Đặt lại mật khẩu",
+    "codeDescription": "Nếu email có tài khoản đang hoạt động, bạn sẽ nhận được mã 6 số. Mã có hiệu lực 5 phút.",
+    "newPassword": "Mật khẩu mới",
+    "confirmPassword": "Nhập lại mật khẩu mới",
+    "submit": "Đổi mật khẩu",
+    "resend": "Gửi lại mã",
+    "resendCountdown": "Gửi lại sau {seconds}s",
+    "changeEmail": "Đổi email",
+    "backToLogin": "Quay lại đăng nhập",
+    "successTitle": "Đã đổi mật khẩu",
+    "successDescription": "Vui lòng đăng nhập lại bằng mật khẩu mới.",
+    "mismatch": "Mật khẩu nhập lại chưa khớp.",
+    "passwordTooLong": "Mật khẩu tối đa 72 byte UTF-8.",
+    "invalidCode": "Mã không đúng, đã hết hạn hoặc đã được sử dụng. Vui lòng gửi lại mã nếu cần.",
+    "sendFailed": "Chưa thể gửi yêu cầu. Vui lòng thử lại.",
+    "resetFailed": "Chưa thể đổi mật khẩu. Vui lòng thử lại.",
+    "continue": "Tiếp tục",
+    "otpTitle": "Nhập mã xác thực",
+    "passwordDescription": "Tạo mật khẩu mới cho tài khoản của bạn.",
+    "verifyFailed": "Chưa thể xác thực mã. Vui lòng thử lại.",
+    "verificationExpired": "Phiên đặt lại mật khẩu đã hết hạn. Vui lòng xác thực lại."
   }
 }

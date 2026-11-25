@@ -1698,5 +1698,31 @@
     "confirm": "Delete account",
     "cancel": "Cancel",
     "failed": "Could not delete your account. Please try again."
+  },
+  "forgotPassword": {
+    "title": "Forgot password?",
+    "description": "Enter your email to receive a password reset code.",
+    "sendCode": "Send reset code",
+    "resetTitle": "Reset password",
+    "codeDescription": "If your email belongs to an active account, you will receive a six-digit code. It expires in 5 minutes.",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "submit": "Reset password",
+    "resend": "Resend code",
+    "resendCountdown": "Resend in {seconds}s",
+    "changeEmail": "Change email",
+    "backToLogin": "Back to sign in",
+    "successTitle": "Password updated",
+    "successDescription": "Please sign in again with your new password.",
+    "mismatch": "Passwords do not match.",
+    "passwordTooLong": "Password must not exceed 72 UTF-8 bytes.",
+    "invalidCode": "The code is invalid, expired or already used. Request another code if needed.",
+    "sendFailed": "Could not send the request. Please try again.",
+    "resetFailed": "Could not reset your password. Please try again.",
+    "continue": "Continue",
+    "otpTitle": "Enter verification code",
+    "passwordDescription": "Create a new password for your account.",
+    "verifyFailed": "Could not verify your code. Please try again.",
+    "verificationExpired": "Your reset session has expired. Please verify again."
   }
 }

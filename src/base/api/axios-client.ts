@@ -61,7 +61,10 @@ axiosClient.interceptors.response.use(
     const isAuthEndpoint =
       url.includes('/auth/login') ||
       url.includes('/auth/refresh') ||
-      url.includes('/auth/logout');
+      url.includes('/auth/logout') ||
+      url.includes('/auth/forgot-password') ||
+      url.includes('/auth/reset-password') ||
+      url.includes('/auth/verify-reset-code');
 
     // A second 401 after refresh means the session is unusable. Do not leave
     // the user on a protected page or repeatedly refresh the same request.

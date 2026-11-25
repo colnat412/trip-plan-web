@@ -238,18 +238,25 @@ const Login = () => {
               '& .MuiFormControlLabel-label': { fontSize: '14px' },
             }}
           />
-          {/* <Typography
+          <Typography
             component={Link}
-            href="#"
+            href="/forgot-password"
+            aria-disabled={busy || undefined}
+            tabIndex={busy ? -1 : undefined}
+            onClick={(event: React.MouseEvent<HTMLAnchorElement>) => { if (busy) event.preventDefault(); }}
             sx={{
-              color: 'primary.main',
-              fontSize: '14px',
-              fontWeight: 700,
+              color: busy ? 'text.disabled' : 'primary.main',
+              fontSize: '13px',
+              fontWeight: 500,
               whiteSpace: 'nowrap',
+              textDecoration: 'none',
+              minHeight: 44,
+              display: 'inline-flex',
+              alignItems: 'center',
             }}
           >
             {t('login.forgotPassword')}
-          </Typography> */}
+          </Typography>
         </Stack>
 
         <AppButton
