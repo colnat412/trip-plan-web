@@ -135,6 +135,12 @@
     "label": "Loading",
     "startup": "Opening Vi Vu…"
   },
+  "logoutConfirmation": {
+    "title": "Sign out?",
+    "description": "Do you want to sign out of your account?",
+    "cancel": "Cancel",
+    "confirm": "Sign out"
+  },
   "preferences": {
     "settings": "Settings",
     "language": "Language",
@@ -147,8 +153,9 @@
     "changeError": "Unable to change language. Please try again.",
     "accountGroup": "Account",
     "applicationGroup": "Application",
-    "securityGroup": "Security",
-    "systemGroup": "System"
+    "securityGroup": "Privacy",
+    "systemGroup": "System",
+    "deleteAccount": "Delete account"
   },
   "topBar": {
     "addExpense": "Add expense",
@@ -1115,7 +1122,9 @@
       "fixMap": "Fix the map",
       "estimatedLabel": "Estimated",
       "estimatedTooltip": "Estimated distance. Location could not be mapped to exact roads.",
-      "routeLabel": "Route from {origin} to {destination}"
+      "routeLabel": "Route from {origin} to {destination}",
+      "openGoogleMaps": "Open directions in Google Maps",
+      "openGoogleMapsRoute": "Open Google Maps: from {origin} to {destination} (new tab)"
     },
     "optimize": {
       "title": "Optimize Travel Route (Day {day})",
@@ -1682,5 +1691,12 @@
     "logoutAnyway": "Sign out anyway",
     "goBack": "Go back",
     "logoutBody": "You can still sign in with Google next time."
+  },
+  "deleteAccount": {
+    "title": "Delete account?",
+    "description": "Your account and related data will be permanently deleted. This cannot be undone.",
+    "confirm": "Delete account",
+    "cancel": "Cancel",
+    "failed": "Could not delete your account. Please try again."
   }
 }

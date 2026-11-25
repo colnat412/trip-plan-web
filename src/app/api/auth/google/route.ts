@@ -1,6 +1,7 @@
 import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
+import { sessionClientHeaders } from '@/base/api/server/session-client';
 
 interface GoogleRequestBody {
   credential?: string;
@@ -31,6 +32,7 @@ export async function POST(request: NextRequest) {
         },
         {
           headers: {
+            ...sessionClientHeaders(request),
             'Content-Type': 'application/json',
             Accept: 'application/json',
           },

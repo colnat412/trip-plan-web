@@ -7,32 +7,33 @@ import { AppConfirmDialog } from '@/base/components/ui';
 import { useUserContext } from '@/features/user/context/UserContext';
 import PasswordDialog from '@/features/user/components/PasswordDialog';
 
-/** Warn before logging out an account which still depends on Google sign-in. */
+/** Confirm logout everywhere and retain the setup option for Google-only accounts. */
 export default function useLogoutPasswordWarning(onLogout: () => void | Promise<void>, {
   busy = false, canSetPassword = true,
 }: { busy?: boolean; canSetPassword?: boolean } = {}) {
   const t = useTranslations('passwordSettings');
+  const c = useTranslations('logoutConfirmation');
   const { user } = useUserContext();
   const [warningOpen, setWarningOpen] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
+  const passwordless = user?.hasPassword === false;
   const requestLogout = () => {
     if (busy) return;
-    if (user?.hasPassword === false) setWarningOpen(true);
-    else void onLogout();
+    setWarningOpen(true);
   };
   const logoutWarning = <>
     <AppConfirmDialog open={warningOpen} onClose={() => { if (!busy) setWarningOpen(false); }}
-      title={t('logoutTitle')}
-      description={<Stack spacing={1}>
+      title={passwordless ? t('logoutTitle') : c('title')}
+      description={passwordless ? <Stack spacing={1}>
         <Typography component="p" sx={{ fontSize: 14, fontWeight: 600, color: 'text.primary', lineHeight: 1.6 }}>{t('logoutBody')}</Typography>
         <Typography component="p" sx={{ fontSize: 13, color: 'text.secondary', lineHeight: 1.6 }}>{t('logoutDescription')}</Typography>
-      </Stack>}
-      intent="danger" loading={busy} confirmText={t('logoutAnyway')}
-      cancelText={t(canSetPassword ? 'setTitle' : 'goBack')}
+      </Stack> : c('description')}
+      intent="danger" loading={busy} confirmText={passwordless ? t('logoutAnyway') : c('confirm')}
+      cancelText={passwordless ? t(canSetPassword ? 'setTitle' : 'goBack') : c('cancel')}
       onCancel={() => {
         if (busy) return;
         setWarningOpen(false);
-        if (canSetPassword) setPasswordOpen(true);
+        if (passwordless && canSetPassword) setPasswordOpen(true);
       }}
       onConfirm={() => { if (!busy) void onLogout(); }}
     />

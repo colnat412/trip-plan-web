@@ -12,7 +12,7 @@ import { useNotifications } from '../context/NotificationContext';
 import { getRegisteredDeviceId, revokeLocalPush } from '../lib/firebase.client';
 import useEnableNotifications from '../hooks/useEnableNotifications';
 
-const NotificationSettings = () => {
+const NotificationSettings = ({ compact = false }: { compact?: boolean }) => {
   const notifications = useNotifications();
   const t = useTranslations('notification');
   const p = useTranslations('preferences');
@@ -33,10 +33,10 @@ const NotificationSettings = () => {
     } catch { setError(t('saveError')); }
     finally { setSaving(false); }
   };
-  return <Stack component="section" aria-labelledby="settings-notifications" spacing={1} sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}>
+  return <Stack component="section" aria-labelledby="settings-notifications" spacing={compact ? 0.5 : 1} sx={{ pb: compact ? 1.5 : 2, borderBottom: 1, borderColor: 'divider' }}>
     <Typography id="settings-notifications" component="h2" sx={{ fontSize: 12, fontWeight: 500, color: 'text.secondary' }}>{p('systemGroup')}</Typography>
     {!current && notifications.preferencesLoading ? <AppLoadingIndicator /> : !current ? <AppErrorState compact onRetry={() => notifications.refreshPreferences()} /> : <>
-      <AppPreferenceRow icon={<NotificationsNoneRoundedIcon />} label={t('push')}>
+      <AppPreferenceRow compact={compact} icon={<NotificationsNoneRoundedIcon />} label={t('push')}>
         <Switch checked={current.pushEnabled} disabled={saving || isEnabling}
           onChange={(_, checked) => { setError(null); void (checked ? enable() : disable()); }}
           slotProps={{ input: { 'aria-label': t('push') } }} />

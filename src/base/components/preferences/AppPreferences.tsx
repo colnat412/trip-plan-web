@@ -1,14 +1,13 @@
 'use client';
 
-import AppSegmentedControl from '../ui/AppSegmentedControl';
+import AppLanguageSelect from './AppLanguageSelect';
 import AppPreferenceRow from './AppPreferenceRow';
+import AppThemeToggle from './AppThemeToggle';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import DesktopWindowsOutlinedIcon from '@mui/icons-material/DesktopWindowsOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
 import TranslateRoundedIcon from '@mui/icons-material/TranslateRounded';
 import {
-  Box,
   Divider,
   IconButton,
   Stack,
@@ -29,26 +28,23 @@ interface AppPreferencesProps {
   sx?: SxProps<Theme>;
   menuLayout?: boolean;
   dividers?: boolean;
+  compact?: boolean;
 }
 
-const AppPreferences = ({ sx, menuLayout = false, dividers = false }: AppPreferencesProps) => {
+const AppPreferences = ({ sx, menuLayout = false, dividers = false, compact = false }: AppPreferencesProps) => {
   const t = useTranslations('preferences');
   const locale = useLocale();
   const router = useRouter();
   const [isChangingLocale, startLocaleTransition] = useTransition();
   const [showLocaleError, setShowLocaleError] = useState(false);
-  const { mode, setMode } = useColorScheme();
-  const isDarkMode = mode === 'dark';
+  const { mode, systemMode, setMode } = useColorScheme();
+  const isDarkMode = mode === 'dark' || (mode === 'system' && systemMode === 'dark');
 
   const languageControl = (
-    <AppSegmentedControl<AppLocale>
-      label={t('language')}
+    <AppLanguageSelect
       value={locale as AppLocale}
-      disabled={isChangingLocale}
-      options={[
-        { value: 'vi', label: <Box component="span" sx={{ fontSize: 18 }}>🇻🇳</Box>, ariaLabel: t('vietnamese') },
-        { value: 'en', label: <Box component="span" sx={{ fontSize: 18 }}>🇬🇧</Box>, ariaLabel: t('english') },
-      ]}
+      busy={isChangingLocale}
+      fullLabel={menuLayout}
       onChange={(value) => {
         if (!value || value === locale) return;
 
@@ -68,7 +64,6 @@ const AppPreferences = ({ sx, menuLayout = false, dividers = false }: AppPrefere
           }
         });
       }}
-      sx={{ width: 104, flexShrink: 0 }}
     />
   );
 
@@ -92,17 +87,8 @@ const AppPreferences = ({ sx, menuLayout = false, dividers = false }: AppPrefere
   );
 
   const themeModeControl = (
-    <AppSegmentedControl<'light' | 'dark' | 'system'>
-      label={t('theme')}
-      value={mode ?? 'system'}
-      onChange={setMode}
-      options={[
-        { value: 'light', label: <LightModeOutlinedIcon sx={{ fontSize: 18 }} />, ariaLabel: t('light') },
-        { value: 'dark', label: <DarkModeOutlinedIcon sx={{ fontSize: 18 }} />, ariaLabel: t('dark') },
-        { value: 'system', label: <DesktopWindowsOutlinedIcon sx={{ fontSize: 18 }} />, ariaLabel: t('system') },
-      ]}
-      sx={{ width: 150, flexShrink: 0 }}
-    />
+    <AppThemeToggle dark={isDarkMode} label={t('dark')} disabled={!mode}
+      onChange={dark => setMode(dark ? 'dark' : 'light')} />
   );
 
   if (menuLayout) {
@@ -116,14 +102,14 @@ const AppPreferences = ({ sx, menuLayout = false, dividers = false }: AppPrefere
             onClose={() => setShowLocaleError(false)}
           />
         )}
-        <AppPreferenceRow icon={<TranslateRoundedIcon />} label={t('language')}>
+        <AppPreferenceRow compact={compact} icon={<TranslateRoundedIcon />} label={t('language')}>
           {languageControl}
         </AppPreferenceRow>
         {dividers && <Divider />}
-        <AppPreferenceRow icon={<PaletteOutlinedIcon />} label={t('theme')}>
+        <AppPreferenceRow compact={compact} icon={<PaletteOutlinedIcon />} label={t('theme')}>
           {themeModeControl}
         </AppPreferenceRow>
-        <AppInstallButton menuItem divider={dividers} />
+        <AppInstallButton menuItem divider={dividers} compact={compact} />
       </Stack>
     );
   }

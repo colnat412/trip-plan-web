@@ -208,7 +208,11 @@ const NotificationInbox = ({
         titleAlign="left"
         mobilePresentation="screen"
         contentScroll="children"
-        paperSx={{ '& .MuiDialogTitle-root h2': { fontSize: 15 } }}
+        paperSx={{
+          // Child-owned scrolling needs a definite desktop height; mobile uses the full screen.
+          height: { sm: 'min(640px, var(--app-dialog-max-height))' },
+          '& .MuiDialogTitle-root h2': { fontSize: 15 },
+        }}
         headerActions={
           <Tooltip title={t('readAll')}>
             <Box component="span" sx={{ display: 'inline-flex' }}>

@@ -135,6 +135,12 @@
     "label": "Đang tải",
     "startup": "Đang mở Vi Vu…"
   },
+  "logoutConfirmation": {
+    "title": "Đăng xuất?",
+    "description": "Bạn có muốn đăng xuất khỏi tài khoản?",
+    "cancel": "Hủy",
+    "confirm": "Đăng xuất"
+  },
   "preferences": {
     "settings": "Cài đặt",
     "language": "Ngôn ngữ",
@@ -147,8 +153,9 @@
     "changeError": "Không thể đổi ngôn ngữ. Vui lòng thử lại.",
     "accountGroup": "Tài khoản",
     "applicationGroup": "Ứng dụng",
-    "securityGroup": "Bảo mật",
-    "systemGroup": "Hệ thống"
+    "securityGroup": "Quyền riêng tư",
+    "systemGroup": "Hệ thống",
+    "deleteAccount": "Xóa tài khoản"
   },
   "topBar": {
     "addExpense": "Thêm khoản chi",
@@ -1115,7 +1122,9 @@
       "fixMap": "Sửa bản đồ",
       "estimatedLabel": "Ước tính",
       "estimatedTooltip": "Khoảng cách ước tính. Không tìm thấy tọa độ đường đi trên bản đồ.",
-      "routeLabel": "Tuyến từ {origin} đến {destination}"
+      "routeLabel": "Tuyến từ {origin} đến {destination}",
+      "openGoogleMaps": "Mở chỉ đường trên Google Maps",
+      "openGoogleMapsRoute": "Mở Google Maps: từ {origin} đến {destination} (tab mới)"
     },
     "optimize": {
       "title": "Tối ưu lộ trình di chuyển (Ngày {day})",
@@ -1682,5 +1691,12 @@
     "logoutAnyway": "Vẫn đăng xuất",
     "goBack": "Quay lại",
     "logoutBody": "Lần sau, bạn vẫn có thể đăng nhập bằng Google."
+  },
+  "deleteAccount": {
+    "title": "Xóa tài khoản?",
+    "description": "Tài khoản và dữ liệu liên quan sẽ bị xóa vĩnh viễn, không thể khôi phục.",
+    "confirm": "Đồng ý xóa",
+    "cancel": "Hủy",
+    "failed": "Chưa thể xóa tài khoản. Vui lòng thử lại."
   }
 }

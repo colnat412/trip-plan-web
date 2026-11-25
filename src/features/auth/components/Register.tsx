@@ -25,10 +25,10 @@ import {
   AppButton,
   AppTextField,
   AppToast,
+  AppConfirmDialog,
 } from '@/base/components/ui';
-import AppPreferencesMenu from '@/base/components/preferences/AppPreferencesMenu';
 import OtpCodeInput from './OtpCodeInput';
-import LoginBrandPanel from './LoginBrandPanel';
+import AuthLayout from './AuthLayout';
 import useRegister from '@/features/auth/hooks/useRegister';
 import useVerifyOtp from '@/features/auth/hooks/useVerifyOtp';
 import useResendOtp from '@/features/auth/hooks/useResendOtp';
@@ -218,15 +218,18 @@ const Register = () => {
   };
 
   return (
-    <Box
-      component="section"
-      sx={{
-        minHeight: '100svh',
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        bgcolor: { xs: 'primary.dark', md: 'background.paper' },
-      }}
-    >
+    <AuthLayout showMascot={step === 'REGISTER'}>
+      <AppConfirmDialog
+        open={emailAlreadyRegistered}
+        title={t('register.emailAlreadyRegisteredTitle')}
+        description={t('register.emailAlreadyRegistered')}
+        intent="primary"
+        confirmText={t('login.submit')}
+        cancelText={t('register.useAnotherEmail')}
+        onClose={registerMutation.clearError}
+        onCancel={registerMutation.clearError}
+        onConfirm={() => router.push('/login')}
+      />
       <AppToast
         open={Boolean(activeErrorMessage) && !emailAlreadyRegistered}
         severity="error"
@@ -241,316 +244,264 @@ const Register = () => {
         onClose={() => setSuccessToast(null)}
       />
 
-      <Box
-        sx={{
-          display: step === 'OTP' ? { xs: 'none', md: 'contents' } : 'contents',
-        }}
-      >
-        <LoginBrandPanel />
-      </Box>
+      {step === 'REGISTER' ? (
+        <>
+          <Typography
+            component="h1"
+            sx={{
+              color: 'text.primary',
+              fontFamily: 'var(--font-display)',
+              fontSize: { xs: '24px', sm: '28px' },
+              textAlign: 'center',
+              fontWeight: 600,
+            }}
+          >
+            {t('register.title')}
+          </Typography>
+          <Typography color="text.secondary" sx={{ textAlign: 'center', fontSize: 14 }}>
+            {t('register.description')}
+          </Typography>
 
-      <Box
-        sx={{
-          display: 'flex',
-          flexGrow: 0.85,
-          flexShrink: 1,
-          flexBasis: 0,
-          minWidth: { xs: 0, md: '440px' },
-          alignItems: {
-            xs: 'flex-start',
-            md: 'center',
-          },
-          justifyContent: 'center',
-          p: { xs: '24px 24px max(32px, env(safe-area-inset-bottom))', sm: 5 },
-          minHeight: {
-            xs: step === 'OTP' ? '100svh' : 'calc(100svh - 240px)',
-            sm: step === 'OTP' ? '100svh' : 'calc(100svh - 280px)',
-            md: '100svh',
-          },
-          borderRadius: {
-            xs:
-              step === 'OTP'
-                ? 0
-                : 'var(--app-radius-dialog) var(--app-radius-dialog) 0 0',
-            md: 0,
-          },
-          bgcolor: 'background.paper',
-        }}
-      >
-        <Box
-          sx={{
-            width: '100%',
-            maxWidth: step === 'OTP' ? 400 : 480,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: step === 'OTP' ? '24px' : '16px',
-          }}
-        >
-          {step === 'REGISTER' ? (
-            <>
-              <Typography
-                component="h1"
-                sx={{
-                  color: 'text.primary',
-                  fontFamily: 'var(--font-display)',
-                  fontSize: { xs: '26px', sm: '32px' },
-                  fontWeight: 600,
-                }}
-              >
-                {t('register.title')}
+          <Stack
+            component="form"
+            spacing={2}
+            noValidate
+            onSubmit={handleRegisterSubmit}
+          >
+            <AppTextField
+              label={t('register.name')}
+              name="name"
+              placeholder={t('register.namePlaceholder')}
+              autoComplete="name"
+              required
+              value={name}
+              error={Boolean(formErrors.name)}
+              helperText={formErrors.name}
+              inputRef={nameInputRef}
+              disabled={registerMutation.isPending}
+              onChange={(event) => {
+                setName(event.target.value);
+                setFormErrors((current) => ({
+                  ...current,
+                  name: undefined,
+                }));
+                registerMutation.clearError();
+              }}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PersonOutlineOutlined fontSize="small" />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+
+            <AppTextField
+              label={t('login.email')}
+              name="email"
+              type="email"
+              placeholder="user@example.com"
+              autoComplete="email"
+              required
+              value={email}
+              error={Boolean(formErrors.email)}
+              helperText={formErrors.email}
+              inputRef={emailInputRef}
+              disabled={registerMutation.isPending}
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setFormErrors((current) => ({
+                  ...current,
+                  email:
+                    event.target.value.trim() &&
+                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+                      event.target.value.trim(),
+                    )
+                      ? t('validation.emailInvalid')
+                      : undefined,
+                }));
+                registerMutation.clearError();
+              }}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <EmailOutlined fontSize="small" />
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+
+            <AppTextField
+              label={t('login.password')}
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              placeholder={t('register.passwordPlaceholder')}
+              autoComplete="new-password"
+              required
+              value={password}
+              error={Boolean(formErrors.password)}
+              helperText={formErrors.password}
+              inputRef={passwordInputRef}
+              disabled={registerMutation.isPending}
+              onChange={(event) => {
+                setPassword(event.target.value);
+                setFormErrors((current) => ({
+                  ...current,
+                  password: undefined,
+                }));
+                registerMutation.clearError();
+              }}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <LockOutlined fontSize="small" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={
+                          showPassword
+                            ? t('login.hidePassword')
+                            : t('login.showPassword')
+                        }
+                        edge="end"
+                        onClick={() =>
+                          setShowPassword((current) => !current)
+                        }
+                      >
+                        {showPassword ? (
+                          <VisibilityOffOutlined />
+                        ) : (
+                          <VisibilityOutlined />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+
+            <AppButton
+              type="submit"
+              fullWidth
+              loading={registerMutation.isPending}
+              sx={{ minHeight: 48 }}
+            >
+              {t('register.submit')}
+            </AppButton>
+          </Stack>
+
+          <Divider>
+            <Typography variant="caption" color="text.secondary">
+              {t('login.orContinueWithEmail')}
+            </Typography>
+          </Divider>
+
+          <GoogleAuthButton text="signup_with" />
+
+          <Stack
+            spacing="4px"
+            direction="row"
+            sx={{ justifyContent: 'center', flexWrap: 'wrap', rowGap: 0.5 }}
+          >
+            <Typography align="center" color="text.secondary">
+              {t('register.hasAccount')}
+            </Typography>
+            <Box
+              component={Link}
+              href="/login"
+              sx={{
+                color: 'primary.main',
+                fontWeight: 700,
+                textDecoration: 'none',
+              }}
+            >
+              {t('register.loginNow')}
+            </Box>
+          </Stack>
+        </>
+      ) : (
+        <>
+          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+            <IconButton aria-label={t('register.changeEmail')} disabled={busy}
+              sx={{ width: 44, height: 44, color: 'text.secondary' }}
+              onClick={() => {
+                if (busy) return;
+                setStep('REGISTER');
+                setOtp('');
+                setFormErrors({});
+                setSuccessToast(null);
+                clearAllErrors();
+              }}>
+              <ChevronLeftRounded />
+            </IconButton>
+          </Stack>
+          <Stack spacing={1}>
+            <Typography component="h1" sx={{ fontSize: { xs: 22, sm: 24 }, fontWeight: 600, color: 'text.primary' }}>
+              {t('register.verifyTitle')}
+            </Typography>
+            <Typography sx={{ fontSize: 14, color: 'text.secondary', lineHeight: 1.6 }}>
+              {t('register.verifyDescription')}
+              <Box component="span" sx={{ display: 'block', fontWeight: 600, color: 'text.primary', overflowWrap: 'anywhere' }}>{email}</Box>
+            </Typography>
+          </Stack>
+          <Stack
+            component="form"
+            spacing={2}
+            noValidate
+            onSubmit={handleVerifyOtpSubmit}
+            aria-label={t('register.verifyTitle')}
+          >
+            <OtpCodeInput
+              value={otp}
+              error={formErrors.otp}
+              firstInputRef={otpInputRef}
+              disabled={busy}
+              onChange={(value) => {
+                setOtp(value);
+                setFormErrors(current => ({ ...current, otp: undefined }));
+                verifyOtpMutation.clearError();
+              }}
+            />
+            <AppButton
+              type="submit"
+              fullWidth
+              loading={verifyOtpMutation.isPending}
+              disabled={busy || !/^\d{6}$/.test(otp)}
+              sx={{ minHeight: 48 }}
+            >
+              {t('register.verifySubmit')}
+            </AppButton>
+            <Stack
+              spacing={0.5}
+              sx={{ alignItems: 'center', textAlign: 'center' }}
+            >
+              <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
+                {t('register.notReceived')}
               </Typography>
-              <Typography color="text.secondary">
-                {t('register.description')}
-              </Typography>
-
-              <Stack
-                component="form"
-                spacing={2}
-                noValidate
-                onSubmit={handleRegisterSubmit}
+              <AppButton
+                intent="text"
+                size="small"
+                disabled={countdown > 0 || busy}
+                loading={resendOtpMutation.isPending}
+                onClick={handleResendOtp}
+                sx={{ minHeight: 44 }}
               >
-                <AppTextField
-                  label={t('register.name')}
-                  name="name"
-                  placeholder={t('register.namePlaceholder')}
-                  autoComplete="name"
-                  required
-                  value={name}
-                  error={Boolean(formErrors.name)}
-                  helperText={formErrors.name}
-                  inputRef={nameInputRef}
-                  disabled={registerMutation.isPending}
-                  onChange={(event) => {
-                    setName(event.target.value);
-                    setFormErrors((current) => ({
-                      ...current,
-                      name: undefined,
-                    }));
-                    registerMutation.clearError();
-                  }}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <PersonOutlineOutlined fontSize="small" />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-
-                <AppTextField
-                  label={t('login.email')}
-                  name="email"
-                  type="email"
-                  placeholder="user@example.com"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  error={Boolean(formErrors.email) || emailAlreadyRegistered}
-                  helperText={
-                    formErrors.email ||
-                    (emailAlreadyRegistered
-                      ? t('register.emailAlreadyRegistered')
-                      : undefined)
-                  }
-                  inputRef={emailInputRef}
-                  disabled={registerMutation.isPending}
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                    setFormErrors((current) => ({
-                      ...current,
-                      email:
-                        event.target.value.trim() &&
-                        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-                          event.target.value.trim(),
-                        )
-                          ? t('validation.emailInvalid')
-                          : undefined,
-                    }));
-                    registerMutation.clearError();
-                  }}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <EmailOutlined fontSize="small" />
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-
-                <AppTextField
-                  label={t('login.password')}
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder={t('register.passwordPlaceholder')}
-                  autoComplete="new-password"
-                  required
-                  value={password}
-                  error={Boolean(formErrors.password)}
-                  helperText={formErrors.password}
-                  inputRef={passwordInputRef}
-                  disabled={registerMutation.isPending}
-                  onChange={(event) => {
-                    setPassword(event.target.value);
-                    setFormErrors((current) => ({
-                      ...current,
-                      password: undefined,
-                    }));
-                    registerMutation.clearError();
-                  }}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockOutlined fontSize="small" />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label={
-                              showPassword
-                                ? t('login.hidePassword')
-                                : t('login.showPassword')
-                            }
-                            edge="end"
-                            onClick={() =>
-                              setShowPassword((current) => !current)
-                            }
-                          >
-                            {showPassword ? (
-                              <VisibilityOffOutlined />
-                            ) : (
-                              <VisibilityOutlined />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-
-                <AppButton
-                  type="submit"
-                  fullWidth
-                  loading={registerMutation.isPending}
-                  sx={{ minHeight: '54px', height: '54px' }}
-                >
-                  {t('register.submit')}
-                </AppButton>
-              </Stack>
-
-              <Divider>
-                <Typography variant="caption" color="text.secondary">
-                  {t('login.orContinueWithEmail')}
-                </Typography>
-              </Divider>
-
-              <GoogleAuthButton text="signup_with" />
-
-              <Stack
-                spacing="4px"
-                direction="row"
-                sx={{ justifyContent: 'center' }}
-              >
-                <Typography align="center" color="text.secondary">
-                  {t('register.hasAccount')}
-                </Typography>
-                <Box
-                  component={Link}
-                  href="/login"
-                  sx={{
-                    color: 'primary.main',
-                    fontWeight: 700,
-                    textDecoration: 'none',
-                  }}
-                >
-                  {t('register.loginNow')}
-                </Box>
-              </Stack>
-            </>
-          ) : (
-            <>
-              <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                <IconButton aria-label={t('register.changeEmail')} disabled={busy}
-                  sx={{ width: 44, height: 44, color: 'text.secondary' }}
-                  onClick={() => {
-                    if (busy) return;
-                    setStep('REGISTER');
-                    setOtp('');
-                    setFormErrors({});
-                    setSuccessToast(null);
-                    clearAllErrors();
-                  }}>
-                  <ChevronLeftRounded />
-                </IconButton>
-                <Box sx={{ display: { xs: 'flex', md: 'none' } }}><AppPreferencesMenu /></Box>
-              </Stack>
-              <Stack spacing={1}>
-                <Typography component="h1" sx={{ fontSize: { xs: 22, sm: 24 }, fontWeight: 600, color: 'text.primary' }}>
-                  {t('register.verifyTitle')}
-                </Typography>
-                <Typography sx={{ fontSize: 14, color: 'text.secondary', lineHeight: 1.6 }}>
-                  {t('register.verifyDescription')}
-                  <Box component="span" sx={{ display: 'block', fontWeight: 600, color: 'text.primary', overflowWrap: 'anywhere' }}>{email}</Box>
-                </Typography>
-              </Stack>
-              <Stack
-                component="form"
-                spacing={2}
-                noValidate
-                onSubmit={handleVerifyOtpSubmit}
-                aria-label={t('register.verifyTitle')}
-              >
-                <OtpCodeInput
-                  value={otp}
-                  error={formErrors.otp}
-                  firstInputRef={otpInputRef}
-                  disabled={busy}
-                  onChange={(value) => {
-                    setOtp(value);
-                    setFormErrors(current => ({ ...current, otp: undefined }));
-                    verifyOtpMutation.clearError();
-                  }}
-                />
-                <AppButton
-                  type="submit"
-                  fullWidth
-                  loading={verifyOtpMutation.isPending}
-                  disabled={busy || !/^\d{6}$/.test(otp)}
-                  sx={{ minHeight: 48 }}
-                >
-                  {t('register.verifySubmit')}
-                </AppButton>
-                <Stack
-                  spacing={0.5}
-                  sx={{ alignItems: 'center', textAlign: 'center' }}
-                >
-                  <Typography sx={{ fontSize: 12, color: 'text.secondary' }}>
-                    {t('register.notReceived')}
-                  </Typography>
-                  <AppButton
-                    intent="text"
-                    size="small"
-                    disabled={countdown > 0 || busy}
-                    loading={resendOtpMutation.isPending}
-                    onClick={handleResendOtp}
-                    sx={{ minHeight: 44 }}
-                  >
-                    {countdown > 0
-                      ? t('register.resendCountdown', { seconds: countdown })
-                      : t('register.resendOtp')}
-                  </AppButton>
-                </Stack>
-              </Stack>
-            </>
-          )}
-        </Box>
-      </Box>
-    </Box>
+                {countdown > 0
+                  ? t('register.resendCountdown', { seconds: countdown })
+                  : t('register.resendOtp')}
+              </AppButton>
+            </Stack>
+          </Stack>
+        </>
+      )}
+    </AuthLayout>
   );
 };
 

@@ -20,9 +20,10 @@ import IOSInstallGuide from './IOSInstallGuide';
 interface AppInstallButtonProps {
   menuItem?: boolean;
   divider?: boolean;
+  compact?: boolean;
 }
 
-const AppInstallButton = ({ menuItem = false, divider = false }: AppInstallButtonProps) => {
+const AppInstallButton = ({ menuItem = false, divider = false, compact = false }: AppInstallButtonProps) => {
   const t = useTranslations('pwa');
   const [guideOpen, setGuideOpen] = useState(false);
   const { status, isInstalling, hasError } = useSyncExternalStore(
@@ -51,7 +52,7 @@ const AppInstallButton = ({ menuItem = false, divider = false }: AppInstallButto
                 else void requestInstallation();
               }}
               sx={{
-                display: 'flex', width: '100%', minHeight: 56,
+                display: 'flex', width: '100%', minHeight: compact ? 52 : 56,
                 px: 0, py: 0, textAlign: 'left', justifyContent: 'flex-start',
                 borderRadius: 'var(--app-radius-small)',
                 bgcolor: 'transparent', color: 'text.primary',
@@ -62,7 +63,7 @@ const AppInstallButton = ({ menuItem = false, divider = false }: AppInstallButto
                 '&.Mui-disabled': { color: 'text.disabled', bgcolor: 'transparent' },
               }}
             >
-              <AppPreferenceRow icon={<DownloadRoundedIcon />} label={t('install')}>
+              <AppPreferenceRow compact={compact} icon={<DownloadRoundedIcon />} label={t('install')}>
                 {isInstalling ? <AppLoadingIndicator /> : <ChevronRightRoundedIcon sx={{ fontSize: 20, color: 'text.secondary' }} />}
               </AppPreferenceRow>
             </ButtonBase>
