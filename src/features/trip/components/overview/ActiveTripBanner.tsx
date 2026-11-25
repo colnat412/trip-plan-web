@@ -73,7 +73,7 @@ const ActiveTripBanner = ({
           sx={{
             alignItems: 'center',
             flexWrap: 'wrap',
-            justifyContent: 'space-between',
+            justifyContent: 'flex-end',
           }}
         >
 

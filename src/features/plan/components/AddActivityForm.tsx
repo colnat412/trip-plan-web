@@ -81,6 +81,32 @@ const AddActivityForm = ({
     [tCat],
   );
 
+  const categoryField = (
+    <AppSelect
+      disabled={busy}
+      label={tDialog('categoryLabel')}
+      value={category}
+      onChange={(e) => setCategory(e.target.value as ActivityCategory)}
+      options={categoryOptions}
+      fullWidth
+    />
+  );
+  const timeField = (
+    <AppTimePicker
+      mode="range"
+      label={tDialog('timeRangeLabel')}
+      value={[startTime, endTime]}
+      disabled={busy}
+      error={!!timeError}
+      helperText={timeError}
+      onChange={([start, end]) => {
+        setStartTime(start);
+        setEndTime(end);
+        if (timeError) setTimeError('');
+      }}
+    />
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (busy || inFlight.current || discovering) return;
@@ -161,6 +187,9 @@ const AddActivityForm = ({
           fullWidth
         />
 
+        {initialValues && categoryField}
+        {initialValues && timeField}
+
         <Accordion expanded={detailsExpanded} onChange={(_, expanded) => setDetailsExpanded(expanded)} disableGutters elevation={0} sx={{ bgcolor: 'transparent', '&:before': { display: 'none' } }}>
           <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>{j('optional')}</AccordionSummary>
           <AccordionDetails sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
@@ -171,16 +200,7 @@ const AddActivityForm = ({
                 gap: 2,
               }}
             >
-              <Box sx={{ flex: 1, minWidth: 0 }}>
-                <AppSelect
-                  disabled={busy}
-                  label={tDialog('categoryLabel')}
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value as ActivityCategory)}
-                  options={categoryOptions}
-                  fullWidth
-                />
-              </Box>
+              {!initialValues && <Box sx={{ flex: 1, minWidth: 0 }}>{categoryField}</Box>}
               <Box sx={{ flex: 1, minWidth: 0 }}>
                 <AppNumberInput
                   emphasis="primary"
@@ -194,19 +214,7 @@ const AddActivityForm = ({
               </Box>
             </Box>
 
-            <AppTimePicker
-              mode="range"
-              label={tDialog('timeRangeLabel')}
-              value={[startTime, endTime]}
-              disabled={busy}
-              error={!!timeError}
-              helperText={timeError}
-              onChange={([start, end]) => {
-                setStartTime(start);
-                setEndTime(end);
-                if (timeError) setTimeError('');
-              }}
-            />
+            {!initialValues && timeField}
 
             <AppTextArea
               disabled={busy}

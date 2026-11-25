@@ -118,7 +118,7 @@ const AppSelectInput = ({
         String(option.value) === String(selectedOption.value)
       }
       filterOptions={(items, state) =>
-        items.filter((option) => matchesSearch(option.label, state.inputValue))
+        items.filter((option) => matchesSearch([option.label, option.searchText].filter(Boolean).join(' '), state.inputValue))
       }
       onKeyDown={(event) => {
         if (event.key === 'Enter' && isOpen) event.preventDefault();
@@ -164,6 +164,8 @@ const AppSelectInput = ({
             component="li"
             key={key}
             {...optionProps}
+            title={option.searchText}
+            aria-label={option.searchText ?? option.label}
             sx={{ display: 'flex', gap: 1, minWidth: 0 }}
           >
             {multiple && <AppSelectOptionCheckbox checked={state.selected} disabled={disabled || readOnly} />}
@@ -201,6 +203,7 @@ const AppSelectInput = ({
               htmlInput: {
                 ...inputProps,
                 ...params.slotProps.htmlInput,
+                ...(!Array.isArray(selected) && selected?.searchText ? { title: selected.searchText } : {}),
                 onBlur: (event: FocusEvent<HTMLInputElement>) => {
                   params.slotProps.htmlInput.onBlur?.(event);
                   onBlur?.(event);

@@ -20,9 +20,9 @@ import {
   type AppSelectOption,
   AppTextField,
   AppFilterChipGroup,
-  type AppFilterChipOption,
   type TableSortState,
 } from '@/base/components/ui';
+import { getDestinationFilterOptions } from '../../utils/destination-filter-options';
 
 export interface TripFilterValues {
   search: string;
@@ -65,7 +65,7 @@ const TripFilterBar = ({
 
   const destinationOptions: AppSelectOption[] = [
     { value: '', label: t('all') },
-    ...destinations.map((d) => ({ value: d, label: d })),
+    ...destinations.map((d) => ({ value: d, label: d.split(',')[0].trim() || d, searchText: d })),
   ];
 
 const currencyOptions: AppSelectOption[] = [
@@ -80,11 +80,7 @@ const currencyOptions: AppSelectOption[] = [
     { value: 'destinationAsc', label: t('sortDestination') },
   ];
 
-  const quickTagOptions: AppFilterChipOption<string>[] =
-    visitedDestinations.map((dest) => ({
-      value: dest,
-      label: dest,
-    }));
+  const quickTagOptions = getDestinationFilterOptions(visitedDestinations, destination);
 
   const getSortSelectValue = () => {
     if (!sort) return 'newest';
@@ -167,6 +163,7 @@ const currencyOptions: AppSelectOption[] = [
           <AppSelect
             variantType="filter"
             label={t('allDestinations')}
+            searchable
             value={destination}
             options={destinationOptions}
             onChange={(e) =>
@@ -189,12 +186,17 @@ const currencyOptions: AppSelectOption[] = [
       </Box>
 
       {quickTagOptions.length > 0 && <AppFilterChipGroup
-        label={t('popularKeywords')}
+        label={t('quickDestinations')}
         options={quickTagOptions}
         value={destination}
         onChange={(dest) => onFilterChange({ destination: dest })}
         allLabel={t('all') || 'Tất cả'}
         showAll
+        sx={{
+          minWidth: 0,
+          '& .MuiChip-root': { maxWidth: 160 },
+          '& .MuiChip-label': { minWidth: 0 },
+        }}
       />}
 
       <Box
@@ -231,7 +233,7 @@ const currencyOptions: AppSelectOption[] = [
             variantType="compact"
             label={t('pageSizeLabel')}
             value={rowsPerPage}
-            options={[6, 12, 24].map((size) => ({ value: size, label: `${size} ${t('perPageLabel')}` }))}
+            options={[3, 6, 12, 24].map((size) => ({ value: size, label: `${size} ${t('perPageLabel')}` }))}
             onChange={(event) => onRowsPerPageChange(Number(event.target.value))}
             sx={{ minWidth: { xs: 96, sm: 105 }, flexShrink: 0 }}
           />

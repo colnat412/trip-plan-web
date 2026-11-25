@@ -31,7 +31,7 @@ const MyTrips = () => {
     queryKey: ['trip', 'filter-options'], endPoint: '/trip/my-trips/filter-options',
   });
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(12);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
   const [sort, setSort] = useState<TableSortState | null>(null);
   const [filters, setFilters] = useState<Record<string, ColumnFilterValue>>({});
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');

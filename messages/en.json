@@ -456,7 +456,7 @@
     "all": "All",
     "allDestinations": "Location",
     "allCurrencies": "Currency",
-    "popularKeywords": "Suggested:",
+    "quickDestinations": "Destinations:",
     "resultsLabel": "results",
     "sortBy": "Sort by:",
     "sortNewest": "Newest",
@@ -960,6 +960,14 @@
   "plan": {
     "actionsLabel": "Itinerary actions",
     "activityActions": "Actions for {title}",
+    "reorder": {
+      "handle": "Drag to move {title}",
+      "instructions": "Press Space or Enter to pick up an activity, use the up and down arrow keys to move it, then press again to drop or Escape to cancel.",
+      "pickedUp": "Picked up {title}.",
+      "over": "{title} is at position {position}.",
+      "dropped": "Dropped {title} at position {position}.",
+      "cancelled": "Reordering cancelled."
+    },
     "map": {
       "title": "Stops for the day",
       "description": "Choose a stop to see its location on the map.",
@@ -1136,6 +1144,7 @@
       "deleteActivitySuccess": "Activity removed from itinerary.",
       "statusUpdateSuccess": "Activity status updated!",
       "optimizeSuccess": "Route optimized and updated successfully!",
+      "reorderSuccess": "Activity order saved.",
       "createChecklistSuccess": "Checklist item added!",
       "deleteChecklistSuccess": "Checklist item removed.",
       "resetDaySuccess": "All activities for this day have been cleared!",

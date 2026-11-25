@@ -13,7 +13,7 @@ import {
   type AppToastSeverity,
 } from '@/base/components/ui';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
@@ -64,6 +64,7 @@ import AiPlannerDialog from './AiPlannerDialog';
 import PlanMapPanel from './PlanMapPanel';
 import PlanMapWorkspace from './PlanMapWorkspace';
 import { useRouter } from 'next/navigation';
+import { saveActivityMove } from '../utils/activity-order';
 
 const PlanOverview = ({
   initialDayId = '',
@@ -100,6 +101,9 @@ const PlanOverview = ({
   const [checklistOpen, setChecklistOpen] = useState(false);
   const [resetDayConfirmOpen, setResetDayConfirmOpen] = useState(false);
   const [isLoadingRoute, setIsLoadingRoute] = useState(false);
+  const [isSavingOrder, setIsSavingOrder] = useState(false);
+  const savingOrder = useRef(false);
+  const orderContext = useRef('');
   const openingRoute = useRef(false);
   const [optimizeDialogOpen, setOptimizeDialogOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
@@ -142,6 +146,11 @@ const PlanOverview = ({
   const selectedDay =
     days.find((d) => String(d.id) === String(activeDayId)) ?? days[0] ?? null;
 
+  useEffect(() => {
+    orderContext.current = canWrite ? `${tripId}:${selectedDay?.id}` : '';
+    return () => { orderContext.current = ''; };
+  }, [tripId, selectedDay?.id, canWrite]);
+
   const {
     activities: dayActivities,
     isLoading: isLoadingActivities,
@@ -160,7 +169,7 @@ const PlanOverview = ({
     ]);
 
   const handleOpenOptimizeRoute = async () => {
-    if (openingRoute.current) return;
+    if (openingRoute.current || savingOrder.current) return;
     openingRoute.current = true;
     setIsLoadingRoute(true);
     try {
@@ -333,6 +342,39 @@ const PlanOverview = ({
     });
   };
 
+  const { reorderActivitiesAsync: saveManualOrder } = useReorderDayActivities({
+    tripId: tripId ?? '',
+    dayId: selectedDay?.id ?? '',
+  });
+  const handleReorderActivities = async (activeId: string, overId: string) => {
+    if (!canWrite || !selectedDay || savingOrder.current || openingRoute.current || optimizeDialogOpen) return;
+    const context = `${tripId}:${selectedDay.id}`;
+    savingOrder.current = true;
+    setIsSavingOrder(true);
+    try {
+      // The server requires the complete day, including activities not yet scrolled into view.
+      const changed = await saveActivityMove({
+        loadCompleteDay: fetchAllDayActivities,
+        saveOrder: activityIds => saveManualOrder({ activityIds }),
+        isCurrent: () => orderContext.current === context,
+        activeId,
+        overId,
+      });
+      if (!changed || orderContext.current !== context) return;
+      await refreshPlan();
+      if (orderContext.current === context) showToast(t('toasts.reorderSuccess'));
+    } catch (error) {
+      if (orderContext.current === context) {
+        mutationError();
+        await refreshPlan();
+      }
+      throw error;
+    } finally {
+      savingOrder.current = false;
+      setIsSavingOrder(false);
+    }
+  };
+
   if (tripError || planError) {
     return (
       <AppPageContainer embedded>
@@ -409,7 +451,7 @@ const PlanOverview = ({
           day={selectedDay}
           currency={overview?.baseCurrency ?? activeTrip.baseCurrency}
           onOptimizeRoute={canWrite ? () => void handleOpenOptimizeRoute() : undefined}
-          isLoadingRoute={isLoadingRoute}
+          isLoadingRoute={isLoadingRoute || isSavingOrder}
           onResetDay={
             canManage ? () => setResetDayConfirmOpen(true) : undefined
           }
@@ -444,7 +486,9 @@ const PlanOverview = ({
               <AppLoadingState sx={{ flex: 1 }} />
             ) : (
               <DayTimelineList
+                key={`${tripId}:${selectedDay?.id}`}
                 activities={dayActivities}
+                onReorder={canWrite && !isLoadingRoute && !optimizeDialogOpen && !planError ? handleReorderActivities : undefined}
                 currency={
                   overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
                 }

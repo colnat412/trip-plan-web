@@ -456,7 +456,7 @@
     "all": "Tất cả",
     "allDestinations": "Khu vực",
     "allCurrencies": "Tiền tệ",
-    "popularKeywords": "Gợi ý:",
+    "quickDestinations": "Điểm đến:",
     "resultsLabel": "kết quả",
     "sortBy": "Sắp xếp:",
     "sortNewest": "Mới nhất",
@@ -960,6 +960,14 @@
   "plan": {
     "actionsLabel": "Thao tác lịch trình",
     "activityActions": "Thao tác với {title}",
+    "reorder": {
+      "handle": "Kéo để đổi vị trí {title}",
+      "instructions": "Nhấn Space hoặc Enter để nhấc hoạt động, dùng phím mũi tên lên xuống để đổi vị trí, nhấn lần nữa để thả hoặc Escape để hủy.",
+      "pickedUp": "Đã nhấc {title}.",
+      "over": "{title} ở vị trí {position}.",
+      "dropped": "Đã thả {title} ở vị trí {position}.",
+      "cancelled": "Đã hủy đổi vị trí."
+    },
     "map": {
       "title": "Điểm dừng trong ngày",
       "description": "Chọn một điểm dừng để xem vị trí trên bản đồ.",
@@ -1136,6 +1144,7 @@
       "deleteActivitySuccess": "Đã xóa hoạt động khỏi lịch trình.",
       "statusUpdateSuccess": "Đã cập nhật trạng thái hoạt động!",
       "optimizeSuccess": "Đã tối ưu hóa và cập nhật thứ tự lộ trình thành công!",
+      "reorderSuccess": "Đã lưu thứ tự hoạt động.",
       "createChecklistSuccess": "Đã thêm mục chuẩn bị!",
       "deleteChecklistSuccess": "Đã xóa mục chuẩn bị.",
       "resetDaySuccess": "Đã đặt lại và xóa toàn bộ hoạt động trong ngày!",

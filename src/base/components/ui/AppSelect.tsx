@@ -25,6 +25,7 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 export interface AppSelectOption {
   value: string | number;
   label: string;
+  searchText?: string;
   icon?: React.ReactNode;
 }
 

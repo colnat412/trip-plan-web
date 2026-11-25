@@ -15,6 +15,7 @@ import {
 export interface AppFilterChipOption<T = string> {
   value: T;
   label: string;
+  title?: string;
   count?: number;
   icon?: React.ReactNode;
 }
@@ -41,8 +42,8 @@ export const AppFilterChip = ({
       onClick={onClick}
       aria-pressed={onClick ? selected : undefined}
       label={
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-          <span>{label}</span>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
+          <Box component="span" sx={{ minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</Box>
           {typeof count === 'number' && (
             <Box
               component="span"
@@ -161,6 +162,8 @@ export const AppFilterChipGroup = <T extends string | number>({
           <AppFilterChip
             key={String(opt.value)}
             label={opt.label}
+            title={opt.title}
+            aria-label={opt.title ?? opt.label}
             count={opt.count}
             icon={opt.icon as React.ReactElement | undefined}
             selected={isSelected}

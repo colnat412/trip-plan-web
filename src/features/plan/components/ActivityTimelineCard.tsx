@@ -1,5 +1,7 @@
 'use client';
 
+import type { ReactNode } from 'react';
+
 import { Box, ButtonBase, Tooltip, Typography } from '@mui/material';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
@@ -67,6 +69,7 @@ export interface ActivityTimelineCardProps<
   order?: number;
   // Ảnh của hoạt động; chưa có thì ô ảnh hiện khung trống.
   imageUrl?: string | null;
+  dragHandle?: ReactNode;
 }
 
 const ActivityTimelineCard = <T extends ActivityTimelineData>({
@@ -85,6 +88,7 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
   onSelect,
   order,
   imageUrl,
+  dragHandle,
 }: ActivityTimelineCardProps<T>) => {
   const locale = useLocale();
   const t = useTranslations('plan');
@@ -263,7 +267,10 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
         ) : undefined
       }
       actions={
-        hasActions ? (
+        hasActions || dragHandle ? (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {dragHandle}
+          {hasActions && (
           <AppActionMenu
             ariaLabel={t('activityActions', { title: activity.title })}
             trigger={
@@ -284,6 +291,8 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
             }
             items={menuItems}
           />
+          )}
+          </Box>
         ) : undefined
       }
     >
