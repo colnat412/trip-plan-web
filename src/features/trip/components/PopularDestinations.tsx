@@ -6,11 +6,13 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import { POPULAR_DESTINATIONS, getDestinationPhoto } from '../data/destination-photos';
 
-export default function PopularDestinations({ value, onChange, disabled = false }: {
+interface PopularDestinationsProps {
   value: string;
   onChange: (name: string) => void;
   disabled?: boolean;
-}) {
+}
+
+export default function PopularDestinations({ value, onChange, disabled = false }: PopularDestinationsProps) {
   return <Stack>
     <Stack component="ul" sx={{ listStyle: 'none', p: 0, m: 0 }}>
       {POPULAR_DESTINATIONS.map(place => {

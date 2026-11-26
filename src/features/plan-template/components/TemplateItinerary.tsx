@@ -10,13 +10,15 @@ import PlanDayTabs from '@/features/plan/components/PlanDayTabs';
 import ActivityTimelineCard from '@/features/plan/components/ActivityTimelineCard';
 import type { TemplateSnapshot } from '../types';
 
+interface TemplateItineraryProps {
+  snapshot: TemplateSnapshot;
+  currency: string;
+}
+
 const TemplateItinerary = ({
   snapshot,
   currency,
-}: {
-  snapshot: TemplateSnapshot;
-  currency: string;
-}) => {
+}: TemplateItineraryProps) => {
   const t = useTranslations('planTemplate');
   const [selectedDayId, setSelectedDayId] = useState('');
   const days = snapshot.days.map((day) => ({

@@ -8,7 +8,9 @@ import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
 import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
 import { useTranslations } from 'next-intl';
 
-export default function TripWorkspaceLinks({ tripId }: { tripId: string | number }) {
+interface TripWorkspaceLinksProps { tripId: string | number }
+
+export default function TripWorkspaceLinks({ tripId }: TripWorkspaceLinksProps) {
   const t = useTranslations('tripWorkspace');
   const destinations = [
     { label: 'plan', href: '/plan', icon: <CalendarMonthOutlinedIcon /> },

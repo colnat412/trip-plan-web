@@ -67,15 +67,21 @@ import PlanMapWorkspace from './PlanMapWorkspace';
 import { useRouter } from 'next/navigation';
 import { saveActivityMove } from '../utils/activity-order';
 
+
+
+interface PlanOverviewTimeParams { startTime: string; endTime: string }
+
+interface PlanOverviewProps {
+  initialDayId?: string;
+  initialAiOpen?: boolean;
+  initialPublishOpen?: boolean;
+}
+
 const PlanOverview = ({
   initialDayId = '',
   initialAiOpen = false,
   initialPublishOpen = false,
-}: {
-  initialDayId?: string;
-  initialAiOpen?: boolean;
-  initialPublishOpen?: boolean;
-}) => {
+}: PlanOverviewProps) => {
   const t = useTranslations('plan');
   const {
     activeTrip,
@@ -290,7 +296,7 @@ const PlanOverview = ({
   // Máy chủ ghi đè tiêu đề, giờ, địa chỉ, ghi chú nên gửi lại đủ các trường hiện có.
   const handleChangeActivityTime = (
     activity: PlanActivity,
-    time: { startTime: string; endTime: string },
+    time: PlanOverviewTimeParams,
   ) =>
     updateTime({
       activityId: activity.id,

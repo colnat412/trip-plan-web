@@ -16,17 +16,19 @@ interface ReceiptPayload {
   receiptUrl?: string;
 }
 
+interface UseExpenseReceiptMutationParams<TPayload extends ReceiptPayload> {
+  tripId: number | string;
+  expenseId?: number | string;
+  method: 'POST' | 'PUT';
+  options?: MutationCallbacks<ApiResponse<Expense>, TPayload>;
+}
+
 const useExpenseReceiptMutation = <TPayload extends ReceiptPayload>({
   tripId,
   expenseId,
   method,
   options,
-}: {
-  tripId: number | string;
-  expenseId?: number | string;
-  method: 'POST' | 'PUT';
-  options?: MutationCallbacks<ApiResponse<Expense>, TPayload>;
-}) => {
+}: UseExpenseReceiptMutationParams<TPayload>) => {
   const upload = useUploadFile();
   const target = `${tripId}/${expenseId ?? 'new'}`;
   const pendingUpload = useRef<{

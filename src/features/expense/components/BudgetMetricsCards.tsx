@@ -31,7 +31,7 @@ const BudgetMetricsCards = ({
   hasError,
   errorStatus,
   onRetry,
-}: BudgetMetricsCardsProps) => {
+}: MobileBudgetSummaryCardProps) => {
   const locale = useLocale();
   const t = useTranslations('expense.metrics');
   const totalBudget = summary?.totalBudget ?? 0;

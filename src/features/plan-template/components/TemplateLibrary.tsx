@@ -17,11 +17,13 @@ import TemplateCard from './TemplateCard';
 import TemplateLibraryCard from './TemplateLibraryCard';
 import { TemplateSaveProvider } from './TemplateSaveControls';
 
-const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
+interface TemplateLibraryProps {
   initialData?: TemplateListing | null;
   compact?: boolean;
   savedOnly?: boolean;
-}) => {
+}
+
+const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: TemplateLibraryProps) => {
   const t = useTranslations('planTemplate');
   const [search, setSearch] = useState('');
   const [duration, setDuration] = useState('');

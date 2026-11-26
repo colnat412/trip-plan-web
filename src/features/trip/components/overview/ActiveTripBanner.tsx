@@ -11,7 +11,7 @@ import { useTranslations } from 'next-intl';
 import { AppAvatarStack } from '@/base/components/ui';
 import { formatDateRange } from '@/base/utils';
 import { useTripContext } from '../../context/TripContext';
-import { useTripMembers } from '../../hooks/useTripMembers';
+import { useActiveTripMembers } from '../../hooks/useTripMembers';
 import type { Trip } from '../../types';
 import TripWeatherText from './TripWeatherText';
 import { getTripCoverUrl } from '../../utils/trip-cover';
@@ -33,7 +33,7 @@ const ActiveTripBanner = ({
   const tMembers = useTranslations('members');
   const coverUrl = getTripCoverUrl(trip);
   const { openMembers, isMembersOpen } = useTripContext();
-  const { activeMembers, isLoading, isStale, error } = useTripMembers({
+  const { activeMembers, isLoading, isStale, error } = useActiveTripMembers({
     tripId: trip.id,
     enabled: !isMembersOpen,
   });

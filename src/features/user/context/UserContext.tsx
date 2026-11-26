@@ -22,7 +22,9 @@ interface UserContextValue {
 
 const UserContext = createContext<UserContextValue | null>(null);
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
+interface UserProviderProps { children: ReactNode }
+
+export const UserProvider = ({ children }: UserProviderProps) => {
   const { user, isLoading, isFetching, error, refetch, replaceData } =
     useCurrentUser();
 

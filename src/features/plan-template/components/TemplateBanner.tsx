@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { Box } from '@mui/material';
 import RouteRoundedIcon from '@mui/icons-material/RouteRounded';
 
-export default function TemplateBanner({ src, title, compact = false, featured = false }: {
+interface TemplateBannerProps {
   src?: string | null;
   title: string;
   compact?: boolean;
   featured?: boolean;
-}) {
+}
+
+export default function TemplateBanner({ src, title, compact = false, featured = false }: TemplateBannerProps) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   const visibleSrc = src && src !== failedSrc ? src : null;
   return (

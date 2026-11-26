@@ -9,9 +9,11 @@ const destinations = [
   { id: 'mine', href: '/my-templates', label: 'navMine' },
 ] as const;
 
-export default function TemplateNavigation({ active }: {
+interface TemplateNavigationProps {
   active: 'explore' | 'saved' | 'mine';
-}) {
+}
+
+export default function TemplateNavigation({ active }: TemplateNavigationProps) {
   const t = useTranslations('planTemplate');
   return (
     <AppRouteTabs

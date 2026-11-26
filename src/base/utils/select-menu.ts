@@ -1,10 +1,16 @@
 export const SELECT_MENU_MAX_HEIGHT = 280;
 export const SELECT_MENU_VIEWPORT_GAP = 16;
 
+
+
+interface GetSelectMenuPlacementViewportParams { top: number; height: number }
+
 /** Choose the side with room, keeping the popup outside the select's rectangle. */
+interface GetSelectMenuPlacementAnchorParams { top: number; bottom: number }
+
 export const getSelectMenuPlacement = (
-  anchor: { top: number; bottom: number },
-  viewport: { top: number; height: number },
+  anchor: GetSelectMenuPlacementAnchorParams,
+  viewport: GetSelectMenuPlacementViewportParams,
 ) => {
   const above = Math.max(
     0,

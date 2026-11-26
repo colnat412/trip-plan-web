@@ -21,17 +21,19 @@ import TemplateCheckboxOption from './TemplateCheckboxOption';
 import TemplateItinerary from './TemplateItinerary';
 import TemplateBanner from './TemplateBanner';
 import { useTemplateCover, useTemplateCoverUpload } from '../hooks/useTemplateCover';
+interface PublishTemplateDialogProps {
+  trip: Trip;
+  checklists: PlanChecklist[];
+  open: boolean;
+  onClose: () => void;
+}
+
 const PublishTemplateDialog = ({
   trip,
   checklists,
   open,
   onClose,
-}: {
-  trip: Trip;
-  checklists: PlanChecklist[];
-  open: boolean;
-  onClose: () => void;
-}) => {
+}: PublishTemplateDialogProps) => {
   const t = useTranslations('planTemplate');
   const groupId = useId();
   const notify = useAppToast();

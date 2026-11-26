@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { formatCurrency, getUserInitials } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
 import type { SuggestedSettlement } from '../types';
+import SettlementStatusChip from './SettlementStatusChip';
 import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
 export interface SuggestedSettlementCardProps {
@@ -40,7 +41,7 @@ const SuggestedSettlementCard = ({ settlement, onSettle, pending = false }: Sugg
           <Typography noWrap title={transferLabel} sx={rowStyles.secondary}>
             {transferLabel}
           </Typography>
-          {pending && <Typography sx={{ ...rowStyles.secondary, color: 'warning.main' }}>{t('statuses.PENDING')}</Typography>}
+          {pending && <SettlementStatusChip status="PENDING" compact />}
         </Stack>
         <Typography sx={{ ...rowStyles.amount, textAlign: 'right' }}>
           {formatCurrency(settlement.amount, settlement.currency, locale)}

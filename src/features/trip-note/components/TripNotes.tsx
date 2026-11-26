@@ -18,7 +18,9 @@ import TripNoteForm from './TripNoteForm';
 import TripNoteImage from './TripNoteImage';
 import TripNoteHistoryDialog from './TripNoteHistoryDialog';
 
-function TripNotesPanel({ tripId }: { tripId: string }) {
+interface TripNotesPanelProps { tripId: string }
+
+function TripNotesPanel({ tripId }: TripNotesPanelProps) {
   const t = useTranslations('tripNotes');
   const query = useTripNotes(tripId);
   const [actionTarget, setActionTarget] = useState<{ noteId: string; element: HTMLElement } | null>(null);
@@ -148,7 +150,7 @@ function TripNotesPanel({ tripId }: { tripId: string }) {
       anchorEl={selectedNote ? actionTarget?.element ?? null : null}
       onClose={() => setActionTarget(null)}
       items={selectedNote ? actions(selectedNote) : []} />
-    {editing && <AppDialog open onClose={() => setEditing(null)} title={t('edit')} protectChanges closeDisabled={query.busy || editingSaving} maxWidth="sm">
+    {editing && <AppDialog open onClose={() => setEditing(null)} title={t('edit')} protectChanges closeDisabled={query.busy || editingSaving} maxWidth="xs">
       <Stack spacing={1.5}>
         {editError && <Typography role="alert" color="error" sx={{ fontSize: 13 }}>{editError}</Typography>}
         <TripNoteForm key={editing.id} initialContent={editing.content} initialImageUrl={editing.imageUrl} editing busy={query.busy} onSavingChange={setEditingSaving} onSubmit={async draft => {

@@ -12,8 +12,8 @@ import {
   type ColumnFilterValue,
   type TableSortState,
 } from '@/base/components/ui';
-import { useDebouncedValue, useQueryGet } from '@/base/hooks';
-import type { ApiResponse } from '@/base/api';
+import { useDebouncedValue } from '@/base/hooks';
+import useTripFilterOptions from '../hooks/useTripFilterOptions';
 import useMyTrips from '../hooks/useMyTrips';
 import { useTripContext } from '../context/TripContext';
 import MyTripsHeader from './my-trips/MyTripsHeader';
@@ -27,9 +27,8 @@ import type { Trip } from '../types';
 
 const MyTrips = () => {
   const router = useRouter();
-  const { data: filterOptions, refetch: refetchFilterOptions } = useQueryGet<ApiResponse<{ destinations: string[]; currencies: string[]; visitedDestinations: string[] }>>({
-    queryKey: ['trip', 'filter-options'], endPoint: '/trip/my-trips/filter-options',
-  });
+  const [destinationSearch, setDestinationSearch] = useState('');
+  const { options: filterOptions, refetch: refetchFilterOptions, loading: destinationOptionsLoading, error: destinationOptionsError } = useTripFilterOptions({ destinationSearch });
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
   const [sort, setSort] = useState<TableSortState | null>(null);
@@ -183,9 +182,12 @@ const MyTrips = () => {
 
       <TripFilterBar
         filters={filterValues}
-        destinations={filterOptions?.data?.destinations ?? []}
-        currencies={filterOptions?.data?.currencies ?? []}
-        visitedDestinations={filterOptions?.data?.visitedDestinations ?? []}
+        onDestinationSearch={setDestinationSearch}
+        destinationOptionsLoading={destinationOptionsLoading}
+        destinationOptionsError={Boolean(destinationOptionsError)}
+        destinations={filterOptions?.destinations ?? []}
+        currencies={filterOptions?.currencies ?? []}
+        visitedDestinations={filterOptions?.visitedDestinations ?? []}
         onFilterChange={handleFilterUpdate}
         sort={sort}
         onSortChange={handleSortChange}
@@ -224,7 +226,7 @@ const MyTrips = () => {
         </Box>
       ) : (
         <TripTable
-          currencies={filterOptions?.data?.currencies ?? []}
+          currencies={filterOptions?.currencies ?? []}
           trips={resultTrips}
           isLoading={isLoading || isStale || isDebouncing}
           loadingScope={loadingScope}

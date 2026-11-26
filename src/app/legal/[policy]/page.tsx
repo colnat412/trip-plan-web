@@ -4,11 +4,13 @@ import { Box, Stack, Typography } from '@mui/material';
 import { POLICY_IDS, type PolicyId } from '@/features/legal/constants';
 import PolicyDocument from '@/features/legal/components/PolicyDocument';
 
+interface LegalPageProps {
+  params: Promise<{ policy: string }>;
+}
+
 const LegalPage = async ({
   params,
-}: {
-  params: Promise<{ policy: string }>;
-}) => {
+}: LegalPageProps) => {
   const { policy } = await params;
   if (!POLICY_IDS.includes(policy as PolicyId)) notFound();
   const policyId = policy as PolicyId;

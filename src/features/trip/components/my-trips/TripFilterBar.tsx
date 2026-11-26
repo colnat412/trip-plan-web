@@ -33,6 +33,9 @@ export interface TripFilterValues {
 
 export interface TripFilterBarProps {
   filters: TripFilterValues;
+  onDestinationSearch: (query: string) => void;
+  destinationOptionsLoading: boolean;
+  destinationOptionsError: boolean;
   destinations: string[];
   currencies: string[];
   visitedDestinations: string[];
@@ -47,7 +50,7 @@ export interface TripFilterBarProps {
 }
 
 const TripFilterBar = ({
-  filters,
+  filters, onDestinationSearch, destinationOptionsLoading, destinationOptionsError,
   destinations, currencies, visitedDestinations,
   onFilterChange,
   sort,
@@ -166,6 +169,9 @@ const TripFilterBar = ({
             variantType="filter"
             label={t('allDestinations')}
             searchable
+            onSearchChange={onDestinationSearch}
+            optionsLoading={destinationOptionsLoading}
+            optionsError={destinationOptionsError}
             value={destination}
             options={destinationOptions}
             onChange={(e) =>

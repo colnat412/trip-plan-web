@@ -19,17 +19,21 @@ interface TokenResponse {
   error_uri?: string;
 }
 
+interface GoogleAuthButtonOverrideConfigParams { prompt?: string }
+
 interface TokenClient {
-  requestAccessToken: (overrideConfig?: { prompt?: string }) => void;
+  requestAccessToken: (overrideConfig?: GoogleAuthButtonOverrideConfigParams) => void;
 }
 
-interface GoogleOAuth2 {
-  initTokenClient: (config: {
+interface GoogleAuthButtonConfigParams {
     client_id: string;
     scope: string;
     callback: (response: TokenResponse) => void;
     error_callback?: (error: unknown) => void;
-  }) => TokenClient;
+  }
+
+interface GoogleOAuth2 {
+  initTokenClient: (config: GoogleAuthButtonConfigParams) => TokenClient;
 }
 
 declare global {

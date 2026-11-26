@@ -6,7 +6,9 @@ export type InstallStep = 'share' | 'home' | 'confirm';
 
 // Reconstructed Safari iOS 18 light-mode panels, not device screenshots.
 // Fixed colors belong to the illustrated OS interface, not the surrounding app.
-const SafariInstallIllustration = ({ step }: { step: InstallStep }) => {
+interface SafariInstallIllustrationProps { step: InstallStep }
+
+const SafariInstallIllustration = ({ step }: SafariInstallIllustrationProps) => {
   const t = useTranslations('pwa.guide');
   return (
     <svg viewBox="0 0 360 260" width="100%" role="img" aria-label={t(`${step}.alt`)} style={{ display: 'block', fontFamily: '-apple-system, BlinkMacSystemFont, Arial, sans-serif', colorScheme: 'light' }}>

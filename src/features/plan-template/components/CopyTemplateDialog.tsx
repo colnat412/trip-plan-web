@@ -9,15 +9,17 @@ import { AppDatePicker, AppDialog, AppButton, AppTextField } from '@/base/compon
 import useCopyPlanTemplate from '../hooks/useCopyPlanTemplate';
 import TemplateCheckboxOption from './TemplateCheckboxOption';
 import type { TemplateCardData } from '../types';
+interface CopyTemplateDialogProps {
+  template: TemplateCardData;
+  open: boolean;
+  onClose: () => void;
+}
+
 const CopyTemplateDialog = ({
   template,
   open,
   onClose,
-}: {
-  template: TemplateCardData;
-  open: boolean;
-  onClose: () => void;
-}) => {
+}: CopyTemplateDialogProps) => {
   const router = useRouter();
   const notify = useAppToast();
   const t = useTranslations('planTemplate');

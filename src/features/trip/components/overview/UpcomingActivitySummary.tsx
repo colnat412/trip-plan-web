@@ -7,7 +7,9 @@ import { formatDate } from '@/base/utils';
 import type { PlanActivity } from '@/features/plan/types';
 
 /** Three short lines for a read-only glance at the next activity. */
-export default function UpcomingActivitySummary({ activity, date }: { activity: PlanActivity; date: string }) {
+interface UpcomingActivitySummaryProps { activity: PlanActivity; date: string }
+
+export default function UpcomingActivitySummary({ activity, date }: UpcomingActivitySummaryProps) {
   const t = useTranslations('overview.nextActivity');
   const time = [activity.startTime, activity.endTime].filter(Boolean).map(value => value!.slice(0, 5)).join(' – ');
 

@@ -37,15 +37,17 @@ function saveHighlight(theme: Theme, saved: boolean) {
   };
 }
 
+interface TemplateSaveProviderProps {
+  ids: string[];
+  onChange?: () => void;
+  children: ReactNode;
+}
+
 export function TemplateSaveProvider({
   ids,
   onChange,
   children,
-}: {
-  ids: string[];
-  onChange?: () => void;
-  children: ReactNode;
-}) {
+}: TemplateSaveProviderProps) {
   const state = useTemplateSaves(ids, onChange);
   const t = useTranslations('planTemplate');
   return (
@@ -77,17 +79,19 @@ export function TemplateSaveProvider({
   );
 }
 
+interface TemplateSaveButtonProps {
+  id: string;
+  iconOnly?: boolean;
+  onImage?: boolean;
+  compact?: boolean;
+}
+
 export function TemplateSaveButton({
   id,
   iconOnly = false,
   onImage = false,
   compact = false,
-}: {
-  id: string;
-  iconOnly?: boolean;
-  onImage?: boolean;
-  compact?: boolean;
-}) {
+}: TemplateSaveButtonProps) {
   const state = useContext(SaveContext);
   const t = useTranslations('planTemplate');
   if (!state) return null;

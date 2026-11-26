@@ -8,7 +8,9 @@ import { financeStyles } from '@/base/theme/finance';
 const FinanceStyleContext = createContext(false);
 export const useFinanceStyle = () => useContext(FinanceStyleContext);
 
-export default function FinanceStyleProvider({ children, surface = true }: { children: ReactNode; surface?: boolean }) {
+interface FinanceStyleProviderProps { children: ReactNode; surface?: boolean }
+
+export default function FinanceStyleProvider({ children, surface = true }: FinanceStyleProviderProps) {
   return (
     <FinanceStyleContext.Provider value={true}>
       {surface ? (

@@ -22,12 +22,14 @@ export interface AppFilterChipOption<T = string> {
 
 export interface AppFilterChipProps extends Omit<ChipProps, 'onClick'> {
   selected?: boolean;
+  compact?: boolean;
   onClick?: () => void;
   count?: number;
 }
 
 export const AppFilterChip = ({
   selected = false,
+  compact = false,
   onClick,
   count,
   label,
@@ -65,7 +67,11 @@ export const AppFilterChip = ({
       }
       sx={[ (theme) => ({
         height: 'auto',
-        minHeight: onClick ? 44 : size === 'small' ? 28 : 34,
+        minHeight: onClick ? compact ? 36 : 44 : size === 'small' ? 28 : 34,
+        ...(compact && onClick && {
+          position: 'relative',
+          '&::after': { content: '""', position: 'absolute', insetInline: 0, top: -4, bottom: -4 },
+        }),
         minWidth: onClick ? 44 : undefined,
         fontSize: size === 'small' ? '12px' : '13px',
         fontWeight: selected ? 700 : 500,
@@ -97,6 +103,7 @@ export interface AppFilterChipGroupProps<T = string> {
   allLabel?: string;
   allValue?: T;
   scrollable?: boolean;
+  compact?: boolean;
   sx?: SxProps<Theme>;
 }
 
@@ -109,6 +116,7 @@ export const AppFilterChipGroup = <T extends string | number>({
   allLabel = 'Tất cả',
   allValue = '' as unknown as T,
   scrollable = true,
+  compact = false,
   sx,
 }: AppFilterChipGroupProps<T>) => {
   const isAllSelected = value === allValue;
@@ -123,7 +131,7 @@ export const AppFilterChipGroup = <T extends string | number>({
         alignItems: 'center',
         overflowX: scrollable ? 'auto' : 'visible',
         flexWrap: scrollable ? 'nowrap' : 'wrap',
-        py: 0.25,
+        py: compact ? 0.5 : 0.25,
         WebkitOverflowScrolling: 'touch',
         '::-webkit-scrollbar': { display: 'none' },
         scrollbarWidth: 'none',
@@ -147,6 +155,7 @@ export const AppFilterChipGroup = <T extends string | number>({
 
       {showAll && (
         <AppFilterChip
+          compact={compact}
           label={allLabel}
           selected={isAllSelected}
           onClick={() => onChange(allValue)}
@@ -161,6 +170,7 @@ export const AppFilterChipGroup = <T extends string | number>({
         return (
           <AppFilterChip
             key={String(opt.value)}
+            compact={compact}
             label={opt.label}
             title={opt.title}
             aria-label={opt.title ?? opt.label}

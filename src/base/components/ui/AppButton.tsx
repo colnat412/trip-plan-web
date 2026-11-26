@@ -13,16 +13,7 @@ import type { SxProps } from "@mui/system";
 export type AppButtonIntent =
   "primary" | "secondary" | "success" | "danger" | "text";
 
-export type AppButtonProps = Omit<ButtonProps, "color" | "variant"> &
-  Pick<AnchorHTMLAttributes<HTMLAnchorElement>, "target" | "rel"> & {
-    intent?: AppButtonIntent;
-    loading?: boolean;
-    round?: boolean;
-    mobileIconLabel?: boolean;
-    wrapLabel?: boolean;
-    selected?: boolean;
-    scroll?: boolean;
-  };
+
 
 function getPrimaryBackground(theme: Theme, strength = 28) {
   return brandSurface(theme, strength).backgroundColor;
@@ -247,6 +238,17 @@ function getMobileIconLabelStyles(intent: AppButtonIntent): SxProps<Theme> {
     };
   };
 }
+
+export interface AppButtonProps extends Omit<ButtonProps, "color" | "variant">,
+  Pick<AnchorHTMLAttributes<HTMLAnchorElement>, "target" | "rel"> {
+    intent?: AppButtonIntent;
+    loading?: boolean;
+    round?: boolean;
+    mobileIconLabel?: boolean;
+    wrapLabel?: boolean;
+    selected?: boolean;
+    scroll?: boolean;
+  }
 
 const AppButton = ({
   children,

@@ -3,9 +3,11 @@
 import { ButtonBase } from '@mui/material';
 
 /** A single accessible switch; the landscape is decorative SVG, not separate controls. */
-export default function AppThemeToggle({ dark, label, disabled = false, onChange }: {
+interface AppThemeToggleProps {
   dark: boolean; label: string; disabled?: boolean; onChange: (dark: boolean) => void;
-}) {
+}
+
+export default function AppThemeToggle({ dark, label, disabled = false, onChange }: AppThemeToggleProps) {
   return <ButtonBase role="switch" aria-checked={dark} aria-label={label} disabled={disabled}
     onClick={() => onChange(!dark)}
     sx={{ width: 88, height: 44, flexShrink: 0, borderRadius: '999px', overflow: 'hidden',

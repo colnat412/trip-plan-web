@@ -7,11 +7,13 @@ import { Box } from '@mui/material';
 const MAP_FADE_INSET = 72;
 
 /** The map dissolves into the page canvas; the itinerary follows in normal document flow. */
-export default function PlanMapWorkspace({ map, navigation, children }: {
+interface PlanMapWorkspaceProps {
   map: (bottomInset: number) => ReactNode;
   navigation: ReactNode;
   children: ReactNode;
-}) {
+}
+
+export default function PlanMapWorkspace({ map, navigation, children }: PlanMapWorkspaceProps) {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto', minWidth: 0 }}>
       <Box sx={(theme) => ({

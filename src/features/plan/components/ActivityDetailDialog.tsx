@@ -6,12 +6,14 @@ import { AppButton, AppCategoryChip, AppDialog, AppStatusChip } from '@/base/com
 import { formatCurrency } from '@/base/utils';
 import type { PlanActivity } from '../types';
 
-export default function ActivityDetailDialog({ activity, currency, onClose, onEdit }: {
+interface ActivityDetailDialogProps {
   activity: PlanActivity | null;
   currency: string;
   onClose: () => void;
   onEdit?: (activity: PlanActivity) => void;
-}) {
+}
+
+export default function ActivityDetailDialog({ activity, currency, onClose, onEdit }: ActivityDetailDialogProps) {
   const t = useTranslations('plan');
   if (!activity) return null;
   const time = [activity.startTime, activity.endTime].filter(Boolean).map(value => value!.slice(0, 5)).join(' – ');

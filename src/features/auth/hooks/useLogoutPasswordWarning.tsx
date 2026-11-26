@@ -8,9 +8,11 @@ import { useUserContext } from '@/features/user/context/UserContext';
 import PasswordDialog from '@/features/user/components/PasswordDialog';
 
 /** Confirm logout everywhere and retain the setup option for Google-only accounts. */
+interface UseLogoutPasswordWarningParams { busy?: boolean; canSetPassword?: boolean }
+
 export default function useLogoutPasswordWarning(onLogout: () => void | Promise<void>, {
   busy = false, canSetPassword = true,
-}: { busy?: boolean; canSetPassword?: boolean } = {}) {
+}: UseLogoutPasswordWarningParams = {}) {
   const t = useTranslations('passwordSettings');
   const c = useTranslations('logoutConfirmation');
   const { user } = useUserContext();

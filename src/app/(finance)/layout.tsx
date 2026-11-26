@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import FinanceSection from '@/features/expense/components/FinanceSection';
 
-export default function Layout({ children }: { children: ReactNode }) {
+interface LayoutProps { children: ReactNode }
+
+export default function Layout({ children }: LayoutProps) {
   return <FinanceSection>{children}</FinanceSection>;
 }

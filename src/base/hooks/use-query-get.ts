@@ -1,5 +1,6 @@
 'use client';
 
+import { subscribeDataRefresh } from '@/base/utils/data-refresh';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AxiosRequestConfig } from 'axios';
 
@@ -15,14 +16,7 @@ interface QueryCallbacks<TResponse> {
   onError?: (error: ApiError) => void | Promise<void>;
 }
 
-interface UseQueryGetParams<TResponse> {
-  queryKey: QueryKey;
-  endPoint: string;
-  enabled?: boolean;
-  options?: QueryCallbacks<TResponse>;
-  getEndPoint?: (endPoint: string) => string;
-  config?: AxiosRequestConfig;
-}
+
 
 interface InFlightRequestEntry {
   promise: Promise<unknown>;
@@ -31,6 +25,15 @@ interface InFlightRequestEntry {
 }
 
 const inFlightRequests = new Map<string, InFlightRequestEntry>();
+
+interface UseQueryGetParams<TResponse> {
+  queryKey: QueryKey;
+  endPoint: string;
+  enabled?: boolean;
+  options?: QueryCallbacks<TResponse>;
+  getEndPoint?: (endPoint: string) => string;
+  config?: AxiosRequestConfig;
+}
 
 const useQueryGet = <TResponse>({
   queryKey,
@@ -195,6 +198,10 @@ const useQueryGet = <TResponse>({
   const clearError = useCallback(() => {
     setError(null);
   }, []);
+
+  useEffect(() => {
+    if (enabled) return subscribeDataRefresh(refetch);
+  }, [enabled, refetch]);
 
   return {
     queryKey,

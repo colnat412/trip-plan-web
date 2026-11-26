@@ -47,6 +47,8 @@
     "dismiss": "Đóng gợi ý sử dụng điện thoại"
   },
   "select": {
+    "loading": "Đang tìm…",
+    "searchUnavailable": "Chưa tải được lựa chọn. Hãy thử lại.",
     "searchPlaceholder": "Tìm lựa chọn...",
     "searchLabel": "Tìm trong {label}",
     "noResults": "Không tìm thấy lựa chọn phù hợp",

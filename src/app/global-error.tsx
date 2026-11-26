@@ -14,12 +14,14 @@ const getLocale = (): 'en' | 'vi' =>
   document.documentElement.lang === 'en' ? 'en' : 'vi';
 const getServerLocale = (): 'vi' => 'vi';
 
-const GlobalErrorPage = ({
-  reset,
-}: {
+interface GlobalErrorPageProps {
   error: Error & { digest?: string };
   reset: () => void;
-}) => {
+}
+
+const GlobalErrorPage = ({
+  reset,
+}: GlobalErrorPageProps) => {
   const locale = useSyncExternalStore(subscribe, getLocale, getServerLocale);
   const messages = locale === 'en' ? en.errors : vi.errors;
   return (

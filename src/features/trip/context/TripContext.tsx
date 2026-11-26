@@ -46,7 +46,9 @@ interface TripContextValue {
 
 const TripContext = createContext<TripContextValue | null>(null);
 
-const TripProvider = ({ children }: { children: ReactNode }) => {
+interface TripProviderProps { children: ReactNode }
+
+const TripProvider = ({ children }: TripProviderProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const { trips, isLoading, isFetching, error, refetch } = useMyTrips({

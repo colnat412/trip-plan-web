@@ -13,12 +13,12 @@ import AppDialog from '@/base/components/ui/AppDialog';
 import AppButton from '@/base/components/ui/AppButton';
 import AppConfirmDialog from '@/base/components/ui/AppConfirmDialog';
 import AppToast, { type AppToastSeverity } from '@/base/components/ui/AppToast';
-import { axiosClient } from '@/base/api';
+import { normalizeApiError } from '@/base/api';
 import { useTripContext } from '../../context/TripContext';
 import { useUserContext } from '@/features/user/context/UserContext';
 import useCurrentUser from '@/features/user/hooks/useCurrentUser';
 import type { UserProfile } from '@/features/auth/types';
-import { useTripMembers, useInviteMember, useUpdateMemberRole, useRemoveMember, useLeaveTrip } from '../../hooks/useTripMembers';
+import { useTripMembers, useInviteMember, useUpdateMemberRole, useRemoveMember, useLeaveTrip, useAcceptMember } from '../../hooks/useTripMembers';
 import type { InviteMemberPayload, TripMember, TripMemberRole } from '../../types/member.types';
 import TripMemberList from './TripMemberList';
 import InviteMemberForm from './InviteMemberForm';
@@ -192,9 +192,10 @@ const TripMembersDialog = ({
     inviteMember(payload);
   };
 
+  const acceptMember = useAcceptMember({ tripId });
   const handleAcceptMember = async (member: TripMember) => {
     try {
-      await axiosClient.put(`/trip/${tripId}/members/${member.id}/accept`);
+      await acceptMember.acceptMemberAsync({ memberId: member.id });
       setToast({
         open: true,
         message: t('toasts.acceptSuccess'),
@@ -202,10 +203,10 @@ const TripMembersDialog = ({
       });
       refetch();
     } catch (err: unknown) {
-      const apiErr = err as { response?: { data?: { message?: string } } };
+      const apiErr = normalizeApiError(err);
       setToast({
         open: true,
-        message: apiErr.response?.data?.message || t('toasts.acceptError'),
+        message: apiErr.message || t('toasts.acceptError'),
         severity: 'error',
       });
     }

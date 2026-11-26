@@ -13,7 +13,9 @@ import { formatCurrency, safeHttpUrl } from '@/base/utils';
 import { TemplateSaveButton } from './TemplateSaveControls';
 import type { TemplateCardData } from '../types';
 
-const TemplateLibraryCard = ({ template }: { template: TemplateCardData }) => {
+interface TemplateLibraryCardProps { template: TemplateCardData }
+
+const TemplateLibraryCard = ({ template }: TemplateLibraryCardProps) => {
   const t = useTranslations('planTemplate');
   const locale = useLocale();
   const router = useRouter();

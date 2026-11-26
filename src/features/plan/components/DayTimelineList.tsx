@@ -14,6 +14,8 @@ import useDayRouteDistances from '../hooks/useDayRouteDistances';
 import SortableActivity from './SortableActivity';
 import { applyActivityOrder, moveActivity } from '../utils/activity-order';
 
+interface DayTimelineListTimeParams { startTime: string; endTime: string }
+
 export interface DayTimelineListProps {
   activities: PlanActivity[];
   currency: string;
@@ -27,7 +29,7 @@ export interface DayTimelineListProps {
   onConvertToExpense?: (activity: PlanActivity) => void;
   onChangeActivityTime?: (
     activity: PlanActivity,
-    time: { startTime: string; endTime: string },
+    time: DayTimelineListTimeParams,
   ) => void;
   readOnly?: boolean;
   canDeleteActivity?: (activity: PlanActivity) => boolean;

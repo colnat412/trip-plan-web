@@ -51,6 +51,8 @@ export function fetchDistanceMatrix(
   return request;
 }
 
+interface MapServiceRowParams { elements: Array<DistanceResult & { status: string }> }
+
 async function requestDistanceMatrix(
   origins: string[],
   destinations: string[],
@@ -92,7 +94,7 @@ async function requestDistanceMatrix(
       }
       data.rows.forEach(
         (
-          row: { elements: Array<DistanceResult & { status: string }> },
+          row: MapServiceRowParams,
           originIndex: number,
         ) => {
           if (
@@ -209,13 +211,15 @@ export async function getConsecutiveDistances(
   };
 }
 
-export async function solveOptimalRoute(
-  activities: PlanActivity[],
-  options?: {
+interface SolveOptimalRouteOptionsParams {
     startIndex?: number;
     lang?: string;
     destinationContext?: string;
-  },
+  }
+
+export async function solveOptimalRoute(
+  activities: PlanActivity[],
+  options?: SolveOptimalRouteOptionsParams,
 ): Promise<OptimizationResult> {
   const lang = options?.lang || 'vi';
   const startIndex = options?.startIndex ?? 0;

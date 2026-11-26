@@ -29,10 +29,15 @@ interface CommonDatePickerProps {
   maxDate?: string;
 }
 
-export type AppDatePickerProps = CommonDatePickerProps & (
-  | { mode?: 'single'; value: string; onChange: (value: string) => void; includeTime?: boolean }
-  | { mode: 'range'; value: CalendarRange; onChange: (value: CalendarRange) => void }
-);
+export interface AppDatePickerSingleProps extends CommonDatePickerProps {
+  mode?: 'single'; value: string; onChange: (value: string) => void; includeTime?: boolean;
+}
+
+export interface AppDatePickerRangeProps extends CommonDatePickerProps {
+  mode: 'range'; value: CalendarRange; onChange: (value: CalendarRange) => void;
+}
+
+export type AppDatePickerProps = AppDatePickerSingleProps | AppDatePickerRangeProps;
 
 const AppDatePicker = (props: AppDatePickerProps) => {
   const { label, disabled, required, error, helperText, minDate, maxDate, inline = false } = props;

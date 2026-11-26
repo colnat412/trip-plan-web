@@ -4,7 +4,7 @@ import React, { useId, useState } from 'react';
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import { useTranslations } from 'next-intl';
 import { AppButton, AppDialog } from '@/base/components/ui';
-import { useTripMembers } from '@/features/trip/hooks/useTripMembers';
+import { useActiveTripMembers } from '@/features/trip/hooks/useTripMembers';
 import AddExpenseForm from './AddExpenseForm';
 import { expenseFormPaperSx } from './expense-form.styles';
 import type { AddExpenseInitialData, CreateExpensePayload } from '../types';
@@ -31,7 +31,7 @@ const AddExpenseDialog = ({
   const t = useTranslations('expense');
   const formId = useId();
   const [isFormValid, setFormValid] = useState(false);
-  const { activeMembers } = useTripMembers({ tripId, enabled: open });
+  const { activeMembers } = useActiveTripMembers({ tripId, enabled: open });
 
   return (
     <AppDialog

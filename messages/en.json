@@ -47,6 +47,8 @@
     "dismiss": "Dismiss mobile experience tip"
   },
   "select": {
+    "loading": "Searching…",
+    "searchUnavailable": "Could not load options. Please try again.",
     "searchPlaceholder": "Search options...",
     "searchLabel": "Search in {label}",
     "noResults": "No matching options",

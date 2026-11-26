@@ -51,7 +51,9 @@ const sidebarDisabledPaths: readonly string[] = [
   '/print',
 ];
 
-const RootLayout = async ({ children }: { children: React.ReactNode }) => {
+interface RootLayoutProps { children: React.ReactNode }
+
+const RootLayout = async ({ children }: RootLayoutProps) => {
   const locale = await getLocale();
   const cookieStore = await cookies();
   const hasSession = AUTH_COOKIE_NAMES.some((name) =>

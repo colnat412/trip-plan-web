@@ -5,11 +5,13 @@ import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded';
 import { useTranslations } from 'next-intl';
 import AppLoadingIndicator from '@/base/components/ui/AppLoadingIndicator';
 
-export default function AppPullToRefreshIndicator({ distance, ready, refreshing }: {
+interface AppPullToRefreshIndicatorProps {
   distance: number;
   ready: boolean;
   refreshing: boolean;
-}) {
+}
+
+export default function AppPullToRefreshIndicator({ distance, ready, refreshing }: AppPullToRefreshIndicatorProps) {
   const t = useTranslations('pullToRefresh');
   return (
     <Box aria-hidden={distance === 0} sx={{

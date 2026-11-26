@@ -9,7 +9,9 @@ interface RecoveryState {
 }
 const Context = createContext<RecoveryState | null>(null);
 
-export function PasswordRecoveryProvider({ children }: { children: ReactNode }) {
+interface PasswordRecoveryProviderProps { children: ReactNode }
+
+export function PasswordRecoveryProvider({ children }: PasswordRecoveryProviderProps) {
   const [email, setEmail] = useState('');
   const [verified, setVerified] = useState(false);
   const [remaining, setRemaining] = useState(0);

@@ -4,11 +4,13 @@ import { useRef, useState } from 'react';
 import { useUploadFile } from '@/base/hooks';
 import { useUpdateActivityImage } from './usePlanMutation';
 
-const useActivityImage = (activity: {
+interface UseActivityImageActivityParams {
   id?: string;
   tripId?: string;
   imageUrl?: string | null;
-}, readOnly: boolean, onSaved?: () => void) => {
+}
+
+const useActivityImage = (activity: UseActivityImageActivityParams, readOnly: boolean, onSaved?: () => void) => {
   const upload = useUploadFile();
   const inFlight = useRef(false);
   const identity = `${activity.tripId}/${activity.id}`;

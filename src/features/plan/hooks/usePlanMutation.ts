@@ -112,13 +112,15 @@ export interface UpdateActivityTimePayload {
 }
 
 // Đổi nhanh giờ ngay trên thẻ; activityId nằm trong biến mutation nên dùng được cho mọi thẻ.
+interface UseUpdateActivityTimeParams {
+  tripId: string | number;
+  options?: MutationCallbacks<ApiResponse<PlanActivity>, UpdateActivityTimePayload>;
+}
+
 export function useUpdateActivityTime({
   tripId,
   options,
-}: {
-  tripId: string | number;
-  options?: MutationCallbacks<ApiResponse<PlanActivity>, UpdateActivityTimePayload>;
-}) {
+}: UseUpdateActivityTimeParams) {
   const mutation = useMutationRequest<ApiResponse<PlanActivity>, UpdateActivityTimePayload>({
     mutationKey: ['plan', 'activity', 'time', tripId],
     mutationFn: ({ activityId, payload }) =>
@@ -147,13 +149,15 @@ export function useUpdateActivityImage(tripId: string, activityId: string) {
   });
 }
 
+interface UseUpdateActivityStatusParams {
+  tripId: string | number;
+  options?: MutationCallbacks<ApiResponse<PlanActivity>, UpdateActivityStatusPayload>;
+}
+
 export function useUpdateActivityStatus({
   tripId,
   options,
-}: {
-  tripId: string | number;
-  options?: MutationCallbacks<ApiResponse<PlanActivity>, UpdateActivityStatusPayload>;
-}) {
+}: UseUpdateActivityStatusParams) {
   const mutation = useMutationRequest<ApiResponse<PlanActivity>, UpdateActivityStatusPayload>({
     mutationKey: ['plan', 'activity', 'status', tripId],
     mutationFn: ({ activityId, status }) =>
@@ -296,13 +300,15 @@ interface ChecklistActionPayload {
   checklistId: string | number;
 }
 
+interface UseToggleChecklistParams {
+  tripId: string | number;
+  options?: MutationCallbacks<ApiResponse<PlanChecklist>, ChecklistActionPayload>;
+}
+
 export function useToggleChecklist({
   tripId,
   options,
-}: {
-  tripId: string | number;
-  options?: MutationCallbacks<ApiResponse<PlanChecklist>, ChecklistActionPayload>;
-}) {
+}: UseToggleChecklistParams) {
   const mutation = useMutationRequest<ApiResponse<PlanChecklist>, ChecklistActionPayload>({
     mutationKey: ['plan', 'checklist', 'toggle', tripId],
     mutationFn: ({ checklistId }) =>
@@ -316,13 +322,15 @@ export function useToggleChecklist({
   };
 }
 
+interface UseDeleteChecklistParams {
+  tripId: string | number;
+  options?: MutationCallbacks<ApiResponse<null>, ChecklistActionPayload>;
+}
+
 export function useDeleteChecklist({
   tripId,
   options,
-}: {
-  tripId: string | number;
-  options?: MutationCallbacks<ApiResponse<null>, ChecklistActionPayload>;
-}) {
+}: UseDeleteChecklistParams) {
   const mutation = useMutationDelete<ApiResponse<null>, ChecklistActionPayload>({
     mutationKey: ['plan', 'checklist', 'delete', tripId],
     endPoint: `/trip/${tripId}/plan/checklists`,
@@ -337,15 +345,17 @@ export function useDeleteChecklist({
   };
 }
 
+interface UseReorderDayActivitiesParams {
+  tripId: string | number;
+  dayId: string | number;
+  options?: MutationCallbacks<ApiResponse<null>, { activityIds: (string | number)[] }>;
+}
+
 export function useReorderDayActivities({
   tripId,
   dayId,
   options,
-}: {
-  tripId: string | number;
-  dayId: string | number;
-  options?: MutationCallbacks<ApiResponse<null>, { activityIds: (string | number)[] }>;
-}) {
+}: UseReorderDayActivitiesParams) {
   const mutation = useMutationPut<ApiResponse<null>, { activityIds: (string | number)[] }>({
     mutationKey: ['plan', 'day', 'order', tripId, dayId],
     endPoint: `/trip/${tripId}/plan/days/${dayId}/activities/order`,

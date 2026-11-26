@@ -2,9 +2,11 @@ import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 
-export async function PATCH(request: NextRequest, context: {
+interface PATCHContextParams {
   params: Promise<{ id: string; activityId: string }>;
-}) {
+}
+
+export async function PATCH(request: NextRequest, context: PATCHContextParams) {
   const token = request.cookies.get('access_token')?.value;
   if (!token) return NextResponse.json({ status: 401, message: 'Unauthorized', data: null }, { status: 401 });
   let body: unknown;

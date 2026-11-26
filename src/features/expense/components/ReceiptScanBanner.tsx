@@ -3,7 +3,7 @@
 import { AppLoadingIndicator, AppButton } from '@/base/components/ui';
 
 import React, { useRef, useState } from 'react';
-import axios from 'axios';
+import { normalizeApiError } from '@/base/api';
 import { Box, Typography } from '@mui/material';
 import Alert from '@/base/components/ui/AppAlert';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
@@ -58,11 +58,8 @@ const ReceiptScanBanner = ({
     } catch (err: unknown) {
       console.error('Scan receipt error:', err);
       let errorMsg = tForm('scanReceiptError');
-      if (axios.isAxiosError(err) && err.response?.data?.message) {
-        errorMsg = err.response.data.message;
-      } else if (err instanceof Error && err.message) {
-        errorMsg = err.message;
-      }
+      const apiError = normalizeApiError(err);
+      if (apiError.message) errorMsg = apiError.message;
 
       setErrorMessage(errorMsg);
       onScanError?.(errorMsg);

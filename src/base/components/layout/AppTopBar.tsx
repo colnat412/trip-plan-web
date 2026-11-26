@@ -12,7 +12,9 @@ import AppTripBar from './AppTripBar';
 import AppDesktopNavigation from './AppDesktopNavigation';
 import { glassSurface } from '@/base/theme/surfaces';
 
-const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
+interface AppTopBarProps { guest?: boolean }
+
+const AppTopBar = ({ guest = false }: AppTopBarProps) => {
   const t = useTranslations('navigation');
   const pathname = usePathname();
   const workspace = !guest && ['/plan', '/expenses', '/settlement', '/notes'].includes(pathname);

@@ -6,9 +6,9 @@ import AppToastProvider from "./AppToastProvider";
 import appTheme from "../theme/theme";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
-type AppThemeProviderProps = {
+interface AppThemeProviderProps {
   children: ReactNode;
-};
+}
 
 const AppThemeProvider = ({ children }: AppThemeProviderProps) => {
   return (

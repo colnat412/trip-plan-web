@@ -8,7 +8,9 @@ import { AppLoadingState, AppErrorState } from '@/base/components/ui';
 import AppRouteTabs from '../ui/AppRouteTabs';
 import AppTabSection from './AppTabSection';
 
-const AppTripWorkspace = ({ children }: { children: ReactNode }) => {
+interface AppTripWorkspaceProps { children: ReactNode }
+
+const AppTripWorkspace = ({ children }: AppTripWorkspaceProps) => {
   const pathname = usePathname();
   const params = useSearchParams();
   const t = useTranslations('tripWorkspace');

@@ -1,15 +1,17 @@
 import TemplatePlanEntry from '@/features/plan-template/components/TemplatePlanEntry';
 
-const PlanPage = async ({
-  searchParams,
-}: {
+interface PlanPageProps {
   searchParams: Promise<{
     tripId?: string;
     dayId?: string;
     ai?: string;
     publish?: string;
   }>;
-}) => {
+}
+
+const PlanPage = async ({
+  searchParams,
+}: PlanPageProps) => {
   const params = await searchParams;
   return (
     <TemplatePlanEntry

@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
 
-const PlanPrintPage = async ({ params }: { params: Promise<{ tripId: string }> }) => {
+interface PlanPrintPageProps { params: Promise<{ tripId: string }> }
+
+const PlanPrintPage = async ({ params }: PlanPrintPageProps) => {
   const { tripId } = await params;
   redirect(`/export/plan/${encodeURIComponent(tripId)}`);
 };

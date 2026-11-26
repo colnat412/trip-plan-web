@@ -17,14 +17,17 @@ import {
 import UndoRoundedIcon from '@mui/icons-material/UndoRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppConfirmDialog, AppEmptyState, AppButton } from '@/base/components/ui';
+import { AppConfirmDialog, AppEmptyState, AppButton, AppPagination } from '@/base/components/ui';
 import { formatCurrency, formatDateTime, getUserInitials } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
-import type { Settlement, SettlementAction } from '../types';
+import type { Settlement, SettlementAction, SettlementPagination } from '../types';
+import SettlementStatusChip from './SettlementStatusChip';
 import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
 export interface SettlementHistoryTableProps {
   settlements: Settlement[];
+  pagination: SettlementPagination;
+  onPageChange: (page: number) => void;
   onRespond?: (settlement: Settlement, action: SettlementAction) => void;
   busy?: boolean;
   canDelete?: (settlement: Settlement) => boolean;
@@ -32,7 +35,7 @@ export interface SettlementHistoryTableProps {
 }
 
 const SettlementHistoryTable = ({
-  settlements,
+  settlements, pagination, onPageChange,
   canDelete,
   onDelete,
   onRespond, busy = false,
@@ -44,32 +47,35 @@ const SettlementHistoryTable = ({
   const [selectedSettlement, setSelectedSettlement] =
     useState<Settlement | null>(null);
 
-  const statusChip = (item: Settlement) => <Chip size="small" label={t(`statuses.${item.status}`)}
-    color={item.status === 'CONFIRMED' ? 'success' : item.status === 'PENDING' || item.status === 'DELETE_PENDING' ? 'warning' : 'default'}
-    sx={{ height: 20, fontSize: '11px', fontWeight: 600, borderRadius: 'var(--app-radius-badge)', flexShrink: 0, maxWidth: '100%' }} />;
-  const deleteAction = (item: Settlement) => item.status === 'PENDING' && onDelete && canDelete?.(item) ? (
+  const visibleSettlements = settlements;
+  const statusChip = (item: Settlement) => <SettlementStatusChip status={item.status} />;
+  const cancelAction = (item: Settlement) => item.status === 'PENDING' && onDelete && canDelete?.(item) ? (
     <AppButton intent="text" size="small" wrapLabel startIcon={<UndoRoundedIcon fontSize="small" />}
-      disabled={busy} onClick={() => setSelectedSettlement(item)} sx={{ minHeight: 44, color: 'text.secondary' }}>
+      disabled={busy} onClick={() => setSelectedSettlement(item)} sx={{ color: 'text.secondary' }}>
       {t('actions.cancelPayment')}
     </AppButton>
   ) : null;
   const actions = (item: Settlement) => {
-    const pending = item.status === 'PENDING';
-    const legacyDeletion = item.status === 'DELETE_PENDING';
-    const canRespond = (pending || legacyDeletion) && onRespond && (String(user?.id) === item.confirmationUserId || String(user?.id) === item.createdBy);
-    const deletion = deleteAction(item);
-    if (!canRespond && !deletion) return null;
-    return <Stack direction="row" useFlexGap spacing={1} sx={{
-      flexWrap: 'wrap', justifyContent: 'flex-end', minWidth: 0,
-      '& > .MuiButton-root': { flex: { xs: '1 1 auto', sm: '0 0 auto' }, minHeight: 44 },
+    const canApprove = item.status === 'PENDING' && onRespond && String(user?.id) === item.confirmationUserId;
+    const canCancelDeletion = item.status === 'DELETE_PENDING' && onRespond && String(user?.id) === item.createdBy;
+    const cancellation = cancelAction(item);
+    if (!canApprove && !canCancelDeletion && !cancellation) return null;
+    return <Stack direction="row" useFlexGap spacing={1.25} sx={{
+      flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'center', minWidth: 0, py: 0.75,
+      '& > .MuiButton-root': {
+        flex: '0 0 auto', minWidth: 0, minHeight: 32, px: 1, py: 0.5, fontSize: 11,
+        position: 'relative',
+        // Keep the visible button compact with a 44px vertical hit area.
+        '&::after': { content: '\"\"', position: 'absolute', insetInline: 0, top: -6, bottom: -6 },
+      },
     }}>
-      {pending && String(user?.id) === item.confirmationUserId && onRespond && <>
+      {canApprove && onRespond && <>
         <AppButton intent="primary" size="small" wrapLabel disabled={busy} onClick={() => onRespond(item, 'APPROVE')}>{t('actions.approve')}</AppButton>
         <AppButton intent="danger" size="small" wrapLabel disabled={busy} onClick={() => onRespond(item, 'REJECT')}>{t('actions.reject')}</AppButton>
       </>}
-      {legacyDeletion && String(user?.id) === item.createdBy && onRespond && <AppButton intent="secondary" size="small" wrapLabel disabled={busy}
+      {canCancelDeletion && onRespond && <AppButton intent="secondary" size="small" wrapLabel disabled={busy}
         onClick={() => onRespond(item, 'CANCEL')}>{t('actions.cancelDeletion')}</AppButton>}
-      {deletion}
+      {cancellation}
     </Stack>;
   };
 
@@ -81,7 +87,7 @@ const SettlementHistoryTable = ({
     <>
       <Box sx={{ width: '100%', minWidth: 0, overflow: 'hidden' }}>
         <Box role="list" sx={{ display: { xs: 'block', sm: 'none' } }}>
-          {settlements.map((settlement) => {
+          {visibleSettlements.map((settlement) => {
             const title = `${personName(settlement.payerId, settlement.payerName)} → ${personName(settlement.payeeId, settlement.payeeName)}`;
             const date = formatDateTime(settlement.settledAt);
             const method = t(settlement.paymentMethod === 'BANK_TRANSFER' ? 'methodBank' : settlement.paymentMethod === 'CASH' ? 'methodCash' : 'methodOther');
@@ -90,7 +96,7 @@ const SettlementHistoryTable = ({
                 borderBottom: 1, borderColor: 'divider', '&:last-child': { borderBottom: 0 } }}>
                 <Box sx={{ ...rowStyles.row, alignItems: 'flex-start', minHeight: 0, py: 0 }}>
                 <Avatar src={settlement.payerAvatarUrl || undefined} sx={rowStyles.avatar}>{getUserInitials(settlement.payerName || '')}</Avatar>
-                <Box sx={rowStyles.identity}>
+                <Box sx={{ ...rowStyles.identity, gap: 0.5 }}>
                   <Box sx={{ ...rowStyles.heading, alignItems: 'flex-start' }}>
                     <Box sx={{ ...rowStyles.identity }}>
                       <Typography sx={{ ...rowStyles.primary, overflowWrap: 'anywhere' }}>{title}</Typography>
@@ -100,14 +106,16 @@ const SettlementHistoryTable = ({
                       <Stack spacing={0.25} sx={{ alignItems: 'flex-end', flex: 1, minWidth: 0 }}>
                         <Typography sx={{ ...rowStyles.amount, whiteSpace: 'normal', overflowWrap: 'anywhere', textAlign: 'right' }}>{formatCurrency(settlement.amount, settlement.currency)}</Typography>
                         <Typography sx={{ ...rowStyles.secondary, textAlign: 'right' }}>{method}</Typography>
-                        {statusChip(settlement)}
                       </Stack>
                     </Box>
+                  </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, minWidth: 0 }}>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>{actions(settlement)}</Box>
+                    {statusChip(settlement)}
                   </Box>
                   {settlement.note && <Typography sx={{ ...rowStyles.secondary, overflowWrap: 'anywhere' }}>{settlement.note}</Typography>}
                 </Box>
                 </Box>
-                {actions(settlement)}
               </Stack>
             );
           })}
@@ -190,17 +198,12 @@ const SettlementHistoryTable = ({
                 >
                   {t('note')}
                 </TableCell>
-                {(onDelete || onRespond) && (
-                  <TableCell
-                    align="right"
-                    sx={{ py: 1.5, px: 2.5, width: 60 }}
-                  />
-                )}
+
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {settlements.map((s) => (
+              {visibleSettlements.map((s) => (
                 <TableRow
                   key={s.id}
                   hover
@@ -220,6 +223,7 @@ const SettlementHistoryTable = ({
                     >
                       {formatDateTime(s.settledAt)}
                     </Typography>
+                    {actions(s)}
                   </TableCell>
 
                   <TableCell sx={{ py: 1.75, px: 2 }}>
@@ -315,17 +319,15 @@ const SettlementHistoryTable = ({
                     </Typography>
                   </TableCell>
 
-                  {(onDelete || onRespond) && (
-                    <TableCell align="right" sx={{ py: 1.75, px: 2.5 }}>
-                      {actions(s)}
-                    </TableCell>
-                  )}
+
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Box>
+
+      {pagination.totalPages > 1 && <AppPagination size="small" page={pagination.page + 1} count={pagination.totalPages} onChange={(_, value) => onPageChange(value - 1)} />}
 
       {selectedSettlement && (
         <AppConfirmDialog

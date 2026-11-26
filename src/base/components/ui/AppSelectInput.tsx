@@ -7,7 +7,6 @@ import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownR
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import AppTextField from './AppTextField';
 import AppSelectOptionCheckbox from './AppSelectOptionCheckbox';
-import { matchesSearch } from '@/base/utils/search';
 import {
   SELECT_MENU_MAX_HEIGHT,
   SELECT_MENU_VIEWPORT_GAP,
@@ -27,7 +26,7 @@ const AppSelectInput = ({
   variantType = 'form',
   onChange,
   sx,
-  searchPlaceholder,
+  searchPlaceholder, onSearchChange, optionsLoading = false, optionsError = false,
   multiple = false,
   disabled,
   readOnly,
@@ -69,7 +68,9 @@ const AppSelectInput = ({
   return (
     <Autocomplete<AppSelectOption, boolean, false, false>
       id={id}
-      options={options}
+      options={optionsLoading || optionsError ? [] : options}
+      loading={optionsLoading}
+      loadingText={t('loading')}
       value={selected}
       multiple={multiple}
       disabled={disabled}
@@ -88,13 +89,14 @@ const AppSelectInput = ({
       }}
       onClose={(event) => {
         setInternalOpen(false);
+        onSearchChange?.('');
         onClose?.(event);
       }}
       popupIcon={<KeyboardArrowDownRoundedIcon />}
       clearText={t('clear')}
       openText={t('open')}
       closeText={t('close')}
-      noOptionsText={t('noResults')}
+      noOptionsText={t(optionsError ? 'searchUnavailable' : 'noResults')}
       slotProps={{
         listbox: {
           sx: {
@@ -117,9 +119,8 @@ const AppSelectInput = ({
       isOptionEqualToValue={(option, selectedOption) =>
         String(option.value) === String(selectedOption.value)
       }
-      filterOptions={(items, state) =>
-        items.filter((option) => matchesSearch([option.label, option.searchText].filter(Boolean).join(' '), state.inputValue))
-      }
+      filterOptions={items => items}
+      onInputChange={(_event, next, reason) => { if (reason === 'input' || reason === 'clear') onSearchChange?.(next); }}
       onKeyDown={(event) => {
         if (event.key === 'Enter' && isOpen) event.preventDefault();
       }}

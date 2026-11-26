@@ -7,11 +7,13 @@ import { AppButton, AppCategoryIcon } from '@/base/components/ui';
 import { TRIP_CATEGORIES } from '@/base/constants';
 import type { ExpenseCategory } from '../types';
 
-export default function ExpenseCategoryPicker({ value, onChange, disabled = false }: {
+interface ExpenseCategoryPickerProps {
   value: ExpenseCategory;
   onChange: (value: ExpenseCategory) => void;
   disabled?: boolean;
-}) {
+}
+
+export default function ExpenseCategoryPicker({ value, onChange, disabled = false }: ExpenseCategoryPickerProps) {
   const id = useId();
   const t = useTranslations('expense');
   return (

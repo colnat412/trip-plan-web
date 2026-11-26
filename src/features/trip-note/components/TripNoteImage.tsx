@@ -3,7 +3,9 @@
 import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
-export default function TripNoteImage({ src, onLoad }: { src?: string | null; onLoad?: () => void }) {
+interface TripNoteImageProps { src?: string | null; onLoad?: () => void }
+
+export default function TripNoteImage({ src, onLoad }: TripNoteImageProps) {
   const t = useTranslations('tripNotes');
   if (!src) return null;
   return <Box component="a" href={src} target="_blank" rel="noopener noreferrer" aria-label={t('openImage')}

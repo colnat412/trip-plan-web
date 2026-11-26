@@ -13,13 +13,15 @@ import TemplateBanner from './TemplateBanner';
 import TemplateItinerary from './TemplateItinerary';
 import CopyTemplateDialog from './CopyTemplateDialog';
 import { TemplateSaveProvider, TemplateSaveButton } from './TemplateSaveControls';
+interface TemplateDetailProps {
+  detail: TemplateDetailData | null;
+  status: number;
+}
+
 const TemplateDetail = ({
   detail,
   status,
-}: {
-  detail: TemplateDetailData | null;
-  status: number;
-}) => {
+}: TemplateDetailProps) => {
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations('planTemplate');

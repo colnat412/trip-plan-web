@@ -4,19 +4,21 @@ import { useEffect, useRef, useState } from 'react';
 import { solveOptimalRoute } from '../services/mapService';
 import type { OptimizationResult, PlanActivity } from '../types';
 
+interface UseOptimizedRouteParams {
+  open: boolean;
+  activities: PlanActivity[];
+  startIndex: number;
+  locale: string;
+  destinationContext?: string;
+}
+
 export default function useOptimizedRoute({
   open,
   activities,
   startIndex,
   locale,
   destinationContext,
-}: {
-  open: boolean;
-  activities: PlanActivity[];
-  startIndex: number;
-  locale: string;
-  destinationContext?: string;
-}) {
+}: UseOptimizedRouteParams) {
   const [retryAttempt, setRetryAttempt] = useState(0);
   const [response, setResponse] = useState<{
     key: string;

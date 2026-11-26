@@ -66,3 +66,23 @@ export interface CreateSettlementRequest {
   paymentMethod: PaymentMethod;
   note?: string;
 }
+
+export type HistoryFilter = 'ALL' | 'PENDING' | 'CONFIRMED';
+export type MemberBalanceFilter = BalanceStatus | 'ALL';
+export interface SettlementPagination {
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+  hasNext: boolean;
+}
+export interface SettlementPage<T> {
+  items: T[];
+  pagination: SettlementPagination;
+}
+export interface SettlementWorkspace {
+  summary: TripSettlementSummary;
+  memberBalances: SettlementPage<MemberBalance>;
+  suggestedSettlements: SettlementPage<SuggestedSettlement>;
+  settlementHistory: SettlementPage<Settlement>;
+}

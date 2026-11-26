@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Avatar,
   Box,
@@ -15,38 +15,40 @@ import {
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
-import { AppCard, AppEmptyState, AppFilterChipGroup, AppSectionHeader, AppStatusChip } from '@/base/components/ui';
+import { AppCard, AppEmptyState, AppFilterChipGroup, AppSectionHeader, AppStatusChip, AppPagination } from '@/base/components/ui';
 import { formatCurrency, getUserInitials } from '@/base/utils';
 import { useUserContext } from '@/features/user/context/UserContext';
-import type { BalanceStatus, MemberBalance } from '../types';
+import type { BalanceStatus, MemberBalance, MemberBalanceFilter, SettlementPagination } from '../types';
 import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
 export interface MemberBalancesTableProps {
   memberBalances: MemberBalance[];
   currency: string;
+  balanceFilter: MemberBalanceFilter;
+  onFilterChange: (value: MemberBalanceFilter) => void;
+  pagination: SettlementPagination;
+  onPageChange: (page: number) => void;
 }
 
 const MemberBalancesTable = ({
   memberBalances,
-  currency,
+  currency, balanceFilter, onFilterChange, pagination, onPageChange,
 }: MemberBalancesTableProps) => {
   const t = useTranslations('settlement');
   const { user } = useUserContext();
-  const [balanceFilter, setBalanceFilter] = useState<BalanceStatus | 'ALL'>('ALL');
-  const visibleMembers = balanceFilter === 'ALL'
-    ? memberBalances
-    : memberBalances.filter((member) => member.status === balanceFilter);
+  const visibleMembers = memberBalances;
 
   return (
     <AppCard component="section" sx={{ p: { xs: 2.5, sm: 3 }, minWidth: 0 }}>
     <Stack spacing={2} sx={{ width: '100%', minWidth: 0 }}>
-      <AppSectionHeader title={t('memberBalancesTitle')} count={memberBalances.length} />
+      <AppSectionHeader title={t('memberBalancesTitle')} count={pagination.totalElements} />
       <Box role="group" aria-label={t('balanceFilters.label')} sx={{ minWidth: 0 }}>
         <AppFilterChipGroup<BalanceStatus | 'ALL'>
+          compact
           showAll={false}
           allValue="ALL"
           value={balanceFilter}
-          onChange={setBalanceFilter}
+          onChange={onFilterChange}
           options={[
             { value: 'ALL', label: t('balanceFilters.all') },
             { value: 'OWES', label: t('balanceFilters.owes') },
@@ -72,23 +74,21 @@ const MemberBalancesTable = ({
                   '&:last-child': { borderBottom: 0 },
                 }}>
                   <Avatar src={member.avatarUrl || undefined} sx={rowStyles.avatar}>{getUserInitials(member.name)}</Avatar>
-                  <Stack spacing={0.25} sx={{ flex: 1, minWidth: 0 }}>
-                    <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', minWidth: 0 }}>
-                      <Typography noWrap title={name} sx={{ ...rowStyles.primary, flex: 1 }}>{name}</Typography>
-                      <Typography noWrap sx={{
-                        ...rowStyles.amount,
+                  <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, flex: 1, minWidth: 0 }}>
+                    <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography noWrap title={name} sx={rowStyles.primary}>{name}</Typography>
+                      <Typography title={paid} sx={{ ...rowStyles.secondary, overflowWrap: 'anywhere', fontVariantNumeric: 'tabular-nums' }}>{paid}</Typography>
+                      <Typography title={share} sx={{ ...rowStyles.secondary, overflowWrap: 'anywhere', fontVariantNumeric: 'tabular-nums' }}>{share}</Typography>
+                    </Stack>
+                    <Stack spacing={0.5} sx={{ alignItems: 'flex-end', flexShrink: 0, maxWidth: '48%', minWidth: 0 }}>
+                      <Typography sx={{
+                        ...rowStyles.amount, whiteSpace: 'normal', overflowWrap: 'anywhere', textAlign: 'right',
                         color: member.status === 'OWED' ? 'success.main' : member.status === 'OWES' ? 'error.main' : 'text.secondary',
                       }}>{formatCurrency(Math.abs(member.netBalance), currency)}</Typography>
+                      <AppStatusChip tone={member.status === 'OWED' ? 'success' : member.status === 'OWES' ? 'error' : 'neutral'}
+                        label={status} sx={{ alignSelf: 'flex-end', width: 'fit-content' }} />
                     </Stack>
-                    <Stack direction="row" spacing={1} sx={{ alignItems: 'baseline', minWidth: 0 }}>
-                      <Typography component="span" noWrap title={paid} sx={{ ...rowStyles.secondary, flex: 1, fontVariantNumeric: 'tabular-nums' }}>{paid}</Typography>
-                      <Typography component="span" noWrap title={status} sx={{ ...rowStyles.secondary, flexShrink: 0, textAlign: 'right' }}>{status}</Typography>
-                    </Stack>
-                    <Stack direction="row" spacing={0.5} title={share} sx={{ minWidth: 0, alignItems: 'baseline' }}>
-                      <Typography component="span" noWrap sx={rowStyles.secondary}>{t('owed')}:</Typography>
-                      <Typography component="span" noWrap sx={{ ...rowStyles.secondary, flexShrink: 0, fontVariantNumeric: 'tabular-nums' }}>{formatCurrency(member.totalOwed, currency)}</Typography>
-                    </Stack>
-                  </Stack>
+                  </Box>
                 </Stack>;
               })}
             </Box>
@@ -276,6 +276,7 @@ const MemberBalancesTable = ({
           </>
         )}
       </Box>
+      {pagination.totalPages > 1 && <AppPagination size="small" page={pagination.page + 1} count={pagination.totalPages} onChange={(_, value) => onPageChange(value - 1)} />}
     </Stack>
     </AppCard>
   );

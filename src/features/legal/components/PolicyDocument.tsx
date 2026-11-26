@@ -1,8 +1,10 @@
 import { Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
-import { POLICY_VERSION, type PolicyId } from '../constants';
+import type { PolicyId } from '../constants';
 
-const PolicyDocument = ({ policy }: { policy: PolicyId }) => {
+interface PolicyDocumentProps { policy: PolicyId }
+
+const PolicyDocument = ({ policy }: PolicyDocumentProps) => {
   const t = useTranslations('legal');
   return (
     <Stack spacing={2}>

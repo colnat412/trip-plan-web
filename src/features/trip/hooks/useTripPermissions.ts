@@ -5,14 +5,14 @@ import {
   canManageTrip,
   canManageCreatedRecord,
 } from '@/base/utils/trip-permissions';
-import { useTripMembers } from './useTripMembers';
+import { useActiveTripMembers } from './useTripMembers';
 
 export const useTripPermissions = (
   tripId?: string | number | null,
   enabled = true,
 ) => {
   const { user } = useUserContext();
-  const query = useTripMembers({ tripId, enabled });
+  const query = useActiveTripMembers({ tripId, enabled });
   const member =
     enabled && !query.isStale && !query.error
       ? query.activeMembers.find(

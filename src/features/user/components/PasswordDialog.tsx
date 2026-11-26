@@ -11,10 +11,12 @@ import { AppButton, AppDialog, AppTextField, AppToast } from '@/base/components/
 import { useUserContext } from '../context/UserContext';
 import usePasswordMutation from '../hooks/usePasswordMutation';
 
-function PasswordField({ name, label, value, onChange, error, disabled, autoComplete }: {
+interface PasswordFieldProps {
   name: string; label: string; value: string; onChange: (value: string) => void;
   error?: string; disabled: boolean; autoComplete: 'current-password' | 'new-password';
-}) {
+}
+
+function PasswordField({ name, label, value, onChange, error, disabled, autoComplete }: PasswordFieldProps) {
   const t = useTranslations('login');
   const [visible, setVisible] = useState(false);
   return <AppTextField
@@ -31,9 +33,11 @@ function PasswordField({ name, label, value, onChange, error, disabled, autoComp
   />;
 }
 
-function PasswordForm({ onClose, onSaved, onBusyChange }: {
+interface PasswordFormProps {
   onClose: () => void; onSaved: () => void; onBusyChange: (busy: boolean) => void;
-}) {
+}
+
+function PasswordForm({ onClose, onSaved, onBusyChange }: PasswordFormProps) {
   const t = useTranslations('passwordSettings');
   const { user, updateUser } = useUserContext();
   // Older profile responses are treated as having a password; Core decides from the stored hash.
@@ -106,7 +110,9 @@ function PasswordForm({ onClose, onSaved, onBusyChange }: {
   </Box>;
 }
 
-export default function PasswordDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+interface PasswordDialogProps { open: boolean; onClose: () => void }
+
+export default function PasswordDialog({ open, onClose }: PasswordDialogProps) {
   const t = useTranslations('passwordSettings');
   const { user } = useUserContext();
   const [busy, setBusy] = useState(false);

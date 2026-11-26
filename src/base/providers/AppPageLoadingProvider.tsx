@@ -9,12 +9,14 @@ export const AppPageLoadingContext = createContext<{
   registerLoading: () => () => void;
 } | null>(null);
 
-const AppPageLoadingProvider = ({ children, scope = 'page', contained = false }: {
+interface AppPageLoadingProviderProps {
   children: ReactNode;
   scope?: 'page' | 'section';
   /** Keep wrappers within their parent when children own scrolling. */
   contained?: boolean;
-}) => {
+}
+
+const AppPageLoadingProvider = ({ children, scope = 'page', contained = false }: AppPageLoadingProviderProps) => {
   // Each mounted section owns a token. Keep aggregating after the first load:
   // changing trips, retrying and dependent queries must use the same boundary.
   const [pending, setPending] = useState<Set<symbol>>(() => new Set());

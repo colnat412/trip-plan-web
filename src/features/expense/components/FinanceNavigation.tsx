@@ -8,9 +8,11 @@ const destinations = [
   { id: 'settlement', href: '/settlement' },
 ] as const;
 
-export default function FinanceNavigation({ active }: {
+interface FinanceNavigationProps {
   active: 'expenses' | 'settlement';
-}) {
+}
+
+export default function FinanceNavigation({ active }: FinanceNavigationProps) {
   const t = useTranslations('finance');
   return (
     <AppRouteTabs

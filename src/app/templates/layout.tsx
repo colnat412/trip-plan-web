@@ -1,6 +1,8 @@
 import { Box } from '@mui/material';
 
-const TemplatesLayout = ({ children }: { children: React.ReactNode }) => (
+interface TemplatesLayoutProps { children: React.ReactNode }
+
+const TemplatesLayout = ({ children }: TemplatesLayoutProps) => (
   <Box
     sx={{
       minHeight: '100%',

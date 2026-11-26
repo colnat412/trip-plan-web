@@ -7,22 +7,12 @@ import Alert from '@/base/components/ui/AppAlert';
 import AppExitButton from '@/base/components/ui/AppExitButton';
 import FactCheckRoundedIcon from '@mui/icons-material/FactCheckRounded';
 import { AppButton, AppCheckbox, AppDialog } from '@/base/components/ui';
-import { useMutationPost } from '@/base/hooks';
-import type { ApiResponse } from '@/base/api';
-import type { UserProfile } from '@/features/auth/types';
+import useAcceptPolicies from '../hooks/useAcceptPolicies';
 import { useUserContext } from '@/features/user/context/UserContext';
 import useLogout from '@/features/auth/hooks/useLogout';
 import useLogoutPasswordWarning from '@/features/auth/hooks/useLogoutPasswordWarning';
 import PolicyDocument from './PolicyDocument';
 import { POLICY_IDS, POLICY_VERSION } from '../constants';
-
-interface AcceptancePayload {
-  termsAccepted: boolean;
-  contentAccepted: boolean;
-  privacyAccepted: boolean;
-  version: string;
-  locale: string;
-}
 
 // Locale changes remount the reader so a translated document must be read again.
 export default function PolicyAcceptanceDialog() {
@@ -38,10 +28,7 @@ function PolicyReader() {
   const [readToEnd, setReadToEnd] = useState(false);
   const [error, setError] = useState(false);
   const [reader, setReader] = useState<HTMLDivElement | null>(null);
-  const acceptance = useMutationPost<ApiResponse<UserProfile>, AcceptancePayload>({
-    mutationKey: ['user', 'policies', 'accept'],
-    endPoint: '/users/me/policies/accept',
-  });
+  const acceptance = useAcceptPolicies();
   const logout = useLogout();
   const busy = acceptance.isPending || logout.isPending;
   const versionMatches = user?.requiredPolicyVersion === POLICY_VERSION;

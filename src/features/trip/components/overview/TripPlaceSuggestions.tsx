@@ -30,13 +30,15 @@ import {
 } from '../../utils/place-suggestions';
 import type { Trip } from '../../types';
 
+interface TripPlaceSuggestionsProps {
+  trip: Trip;
+  onActivityAdded: () => void;
+}
+
 const TripPlaceSuggestions = ({
   trip,
   onActivityAdded,
-}: {
-  trip: Trip;
-  onActivityAdded: () => void;
-}) => {
+}: TripPlaceSuggestionsProps) => {
   const t = useTranslations('overview.places');
   const p = useTranslations('plan');
   // Match the itinerary's membership permissions; completed trips remain editable.

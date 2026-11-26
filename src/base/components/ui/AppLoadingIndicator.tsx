@@ -5,7 +5,7 @@ import { Box, type BoxProps } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { LOADING_INDICATOR_SIZE } from '@/base/constants/loading';
 
-export type AppLoadingIndicatorProps = Omit<BoxProps, 'width' | 'height'>;
+export interface AppLoadingIndicatorProps extends Omit<BoxProps, 'width' | 'height'> {}
 
 const AppLoadingIndicator = ({
   sx,

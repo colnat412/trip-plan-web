@@ -10,7 +10,9 @@ import TripBudgetCard from './TripBudgetCard';
 import TemplateLibrary from '@/features/plan-template/components/TemplateLibrary';
 import TripPlaceSuggestions from './TripPlaceSuggestions';
 
-const OverviewDetails = ({ trip, now }: { trip: Trip; now: Date | null }) => {
+interface OverviewDetailsProps { trip: Trip; now: Date | null }
+
+const OverviewDetails = ({ trip, now }: OverviewDetailsProps) => {
   const desktop = useMediaQuery(useTheme().breakpoints.up('md'));
   const [planRevision, setPlanRevision] = useState(0);
   return <Stack spacing={3} sx={{ width: '100%', minWidth: 0 }}>

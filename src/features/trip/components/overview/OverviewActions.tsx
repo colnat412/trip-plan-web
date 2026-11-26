@@ -7,7 +7,9 @@ import AppMascot from '@/base/components/ui/AppMascot';
 import JourneyTrail from './JourneyTrail';
 import { tonalSurface } from '@/base/theme/surfaces';
 
-const OverviewActions = ({ onCreateTrip }: { onCreateTrip: () => void }) => {
+interface OverviewActionsProps { onCreateTrip: () => void }
+
+const OverviewActions = ({ onCreateTrip }: OverviewActionsProps) => {
   const t = useTranslations('journey');
   return (
     <Box component="section" sx={{ minWidth: 0 }}>

@@ -7,13 +7,7 @@ import { useTranslations } from 'next-intl';
 import { flushSync } from 'react-dom';
 import { waitForMobileOverlayHistory } from '@/base/hooks/use-mobile-overlay-back';
 import { useRouter } from 'next/navigation';
-import {
-  axiosDelete,
-  axiosGet,
-  axiosPatch,
-  axiosPost,
-  type ApiResponse,
-} from '@/base/api';
+import useNotificationActions from '../hooks/useNotificationActions';
 import {
   AppButton,
   AppDialog,
@@ -30,14 +24,17 @@ import NotificationList from './NotificationList';
 import AppSegmentedControl from '@/base/components/ui/AppSegmentedControl';
 import { getNotificationDestination } from '../lib/notification-navigation';
 
+interface NotificationInboxProps {
+  onClose: () => void;
+  initialId: string | null;
+}
+
 const NotificationInbox = ({
   onClose,
   initialId,
-}: {
-  onClose: () => void;
-  initialId: string | null;
-}) => {
+}: NotificationInboxProps) => {
   const notifications = useNotifications()!;
+  const actions = useNotificationActions();
   const t = useTranslations('notification');
   const router = useRouter();
   const { selectTrip, refetchTrips } = useTripContext();
@@ -68,28 +65,17 @@ const NotificationInbox = ({
       setActionError(null);
       const signal = actionController.current.signal;
       try {
-        const { data: item } = await axiosGet<ApiResponse<NotificationItem>>(
-          `/notifications/${encodeURIComponent(id)}`,
-          { signal },
-        );
+        const { data: item } = await actions.getItem({ id, signal });
         const unavailable =
           item.accessStatus && item.accessStatus !== 'AVAILABLE';
         if (unavailable || !item.tripId) {
           setNotice(item);
-          await axiosPatch(
-            `/notifications/${encodeURIComponent(id)}/read`,
-            {},
-            { signal },
-          );
+          await actions.markRead({ id, signal });
           await notifications.refresh();
           return;
         }
         const destination = getNotificationDestination(item, crypto.randomUUID());
-        await axiosPatch(
-          `/notifications/${encodeURIComponent(id)}/read`,
-          {},
-          { signal },
-        );
+        await actions.markRead({ id, signal });
         if (signal.aborted) return;
         selectTrip(item.tripId);
         // Finish closing the mobile sheet's Back entry before changing routes.
@@ -105,7 +91,7 @@ const NotificationInbox = ({
         if (!signal.aborted) setPending(false);
       }
     },
-    [notifications, onClose, refetchTrips, router, selectTrip],
+    [actions, notifications, onClose, refetchTrips, router, selectTrip],
   );
   const openRef = useRef(open);
   useEffect(() => {
@@ -124,11 +110,7 @@ const NotificationInbox = ({
     setActionError(null);
     const signal = actionController.current.signal;
     try {
-      await axiosPost(
-        '/notifications/read-all',
-        { through: page.through },
-        { signal },
-      );
+      await actions.readAll({ through: page.through, signal });
       await notifications.refresh();
     } catch {
       if (!signal.aborted) setActionError('openError');
@@ -147,9 +129,7 @@ const NotificationInbox = ({
     setActionError(null);
     const signal = actionController.current.signal;
     try {
-      await axiosDelete(`/notifications/${encodeURIComponent(id)}`, undefined, {
-        signal,
-      });
+      await actions.remove({ id, signal });
       // Refresh from the server so unread count and the current filter stay consistent.
       await notifications.refresh();
     } catch {
@@ -166,11 +146,7 @@ const NotificationInbox = ({
     setActionError(null);
     const signal = actionController.current.signal;
     try {
-      const result = await axiosPost<ApiResponse<NotificationItem>>(
-        `/notifications/${encodeURIComponent(id)}/invitation-response`,
-        { accept },
-        { signal },
-      );
+      const result = await actions.respond({ id, accept, signal });
       if (signal.aborted) return;
       page.updateItem(result.data);
       setNotice((previous) => (previous?.id === id ? result.data : previous));
@@ -180,10 +156,7 @@ const NotificationInbox = ({
         setActionError('invitationError');
         void page.reload();
         try {
-          const latest = await axiosGet<ApiResponse<NotificationItem>>(
-            `/notifications/${encodeURIComponent(id)}`,
-            { signal },
-          );
+          const latest = await actions.getItem({ id, signal });
           if (!signal.aborted) {
             page.updateItem(latest.data);
             setNotice((previous) =>

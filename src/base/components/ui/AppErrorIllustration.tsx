@@ -2,7 +2,9 @@
 
 import AppMascot, { type MascotMood } from './AppMascot';
 
-const AppErrorIllustration = ({ compact = false, mood = 'error' }: { compact?: boolean; mood?: MascotMood }) => (
+interface AppErrorIllustrationProps { compact?: boolean; mood?: MascotMood }
+
+const AppErrorIllustration = ({ compact = false, mood = 'error' }: AppErrorIllustrationProps) => (
   <AppMascot size={compact ? 88 : 144} mood={mood} />
 );
 export default AppErrorIllustration;

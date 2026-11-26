@@ -10,11 +10,13 @@ export interface AppFloatingActionButtonProps {
   label: string;
   onClick: () => void;
   icon?: ReactNode;
+  disabled?: boolean;
 }
 
 const AppFloatingActionButton = ({
   label,
   onClick,
+  disabled = false,
   icon = <AddRoundedIcon />,
 }: AppFloatingActionButtonProps) => {
   const finance = useFinanceStyle();
@@ -33,6 +35,7 @@ const AppFloatingActionButton = ({
         intent="primary"
         round
         onClick={onClick}
+        disabled={disabled}
         aria-label={label}
         sx={{
           minWidth: 56,

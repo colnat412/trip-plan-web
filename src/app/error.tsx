@@ -3,12 +3,14 @@
 import { useRouter } from 'next/navigation';
 import { AppErrorState, AppPageContainer } from '@/base/components/ui';
 
-const ErrorPage = ({
-  reset,
-}: {
+interface ErrorPageProps {
   error: Error & { digest?: string };
   reset: () => void;
-}) => {
+}
+
+const ErrorPage = ({
+  reset,
+}: ErrorPageProps) => {
   const router = useRouter();
   return (
     <AppPageContainer>

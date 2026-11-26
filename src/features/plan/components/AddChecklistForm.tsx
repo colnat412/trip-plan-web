@@ -63,7 +63,6 @@ const AddChecklistForm = ({
       }}
     >
       <AppSelect
-        searchable
         label={t('checklist.categorySelect')}
         value={category}
         onChange={(e) => setCategory(e.target.value as ChecklistCategory | '')}

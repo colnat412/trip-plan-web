@@ -9,7 +9,9 @@ import ThunderstormOutlinedIcon from '@mui/icons-material/ThunderstormOutlined';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
 import type { WeatherCondition } from '../../types/weather';
 
-const WeatherConditionIcon = ({ condition, ...props }: SvgIconProps & { condition: WeatherCondition }) => {
+interface WeatherConditionIconProps extends SvgIconProps { condition: WeatherCondition }
+
+const WeatherConditionIcon = ({ condition, ...props }: WeatherConditionIconProps) => {
   if (condition === 'CLEAR') return <WbSunnyOutlinedIcon {...props} />;
   if (condition === 'CLOUDY') return <CloudOutlinedIcon {...props} />;
   if (condition === 'FOG') return <FoggyIcon {...props} />;

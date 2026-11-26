@@ -1,5 +1,6 @@
 'use client';
 
+import { subscribeDataRefresh } from '@/base/utils/data-refresh';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
@@ -222,6 +223,10 @@ const useInfiniteQueryGet = <TItem>({
   }, [enabled, queryKeyValue, resetAndLoad]);
 
   const isStale = dataKey !== queryKeyValue;
+
+  useEffect(() => {
+    if (enabled) return subscribeDataRefresh(refetch);
+  }, [enabled, refetch]);
 
   return {
     queryKey,

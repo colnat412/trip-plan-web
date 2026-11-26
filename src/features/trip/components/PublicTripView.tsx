@@ -4,7 +4,7 @@ import AppEmptyState from '@/base/components/ui/AppEmptyState';
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Card, Chip, Container, Stack, Typography } from '@mui/material';
 import Alert from '@/base/components/ui/AppAlert';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -19,16 +19,18 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import { normalizeApiError } from '@/base/api';
+import usePublicTripViewer from '../hooks/usePublicTripViewer';
 
 import { AppButton, AppToast, type AppToastSeverity } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import PlanDayTabs from '@/features/plan/components/PlanDayTabs';
 import DayTimelineList from '@/features/plan/components/DayTimelineList';
 import type { PublicTripSnapshot } from '../types';
-import type { TripMemberStatus } from '../types/member.types';
 
-const PublicPageSurface = ({ children }: { children: React.ReactNode }) => (
+interface PublicPageSurfaceProps { children: React.ReactNode }
+
+const PublicPageSurface = ({ children }: PublicPageSurfaceProps) => (
   <Box
     sx={{
       flex: 1,
@@ -71,10 +73,7 @@ const PublicTripView = ({
   const [selectedDayId, setSelectedDayId] = useState<string>(
     plan?.days?.[0]?.id ? String(plan.days[0].id) : '',
   );
-  const [viewerStatus, setViewerStatus] = useState<TripMemberStatus | null>(
-    null,
-  );
-  const [isJoining, setIsJoining] = useState(false);
+  const { viewerStatus, isJoining, joinTrip } = usePublicTripViewer({ token, enabled: Boolean(trip) });
   const [toast, setToast] = useState<{
     open: boolean;
     message: string;
@@ -85,38 +84,17 @@ const PublicTripView = ({
     severity: 'success',
   });
 
-  useEffect(() => {
-    if (!trip) return;
-    let isMounted = true;
-
-    axios
-      .get(`/api/public/trips/${token}/me`)
-      .then((res) => {
-        if (isMounted)
-          setViewerStatus(res.data?.data?.currentUserStatus ?? null);
-      })
-      .catch(() => {});
-
-    return () => {
-      isMounted = false;
-    };
-  }, [token, trip]);
-
   const handleJoinTrip = async () => {
     try {
-      setIsJoining(true);
-      await axios.post(`/api/public/trips/${token}/join`);
-      setIsJoining(false);
-      setViewerStatus('INVITED');
+      await joinTrip();
       setToast({
         open: true,
         message: t('joinRequestedSuccess'),
         severity: 'success',
       });
     } catch (err: unknown) {
-      setIsJoining(false);
-      const axiosErr = err as { response?: { status?: number } };
-      if (axiosErr.response?.status === 401) {
+      const apiError = normalizeApiError(err);
+      if (apiError.status === 401) {
         router.push(`/login?redirect=/share/trip/${token}`);
       } else {
         setToast({

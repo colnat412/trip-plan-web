@@ -14,3 +14,5 @@ export { default as useMapLocation } from './use-map-location';
 export { default as useCurrentTime } from './use-current-time';
 
 export { default as useSelectMenu } from './use-select-menu';
+
+export { default as useLongPress } from './use-long-press';

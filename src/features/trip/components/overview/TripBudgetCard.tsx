@@ -25,13 +25,15 @@ import {
 import useTripBudgetSummary from '@/features/expense/hooks/useTripBudgetSummary';
 import type { Trip } from '../../types';
 
+interface TripBudgetCardProps {
+  trip: Trip;
+  compact?: boolean;
+}
+
 const TripBudgetCard = ({
   trip,
   compact = false,
-}: {
-  trip: Trip;
-  compact?: boolean;
-}) => {
+}: TripBudgetCardProps) => {
   const locale = useLocale();
   const t = useTranslations('overview');
   const tMetrics = useTranslations('expense.metrics');

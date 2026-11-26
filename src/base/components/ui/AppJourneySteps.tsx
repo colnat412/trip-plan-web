@@ -3,7 +3,9 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
-const AppJourneySteps = ({ labels, active }: { labels: string[]; active: number }) => {
+interface AppJourneyStepsProps { labels: string[]; active: number }
+
+const AppJourneySteps = ({ labels, active }: AppJourneyStepsProps) => {
   const t = useTranslations('journey');
   return (
     <Stack spacing={1.5}>

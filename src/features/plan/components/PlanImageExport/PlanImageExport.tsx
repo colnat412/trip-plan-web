@@ -26,7 +26,9 @@ interface ExportImage {
   dayNumber: number;
 }
 
-const PlanImageExport = ({ tripId }: { tripId: string }) => {
+interface PlanImageExportProps { tripId: string }
+
+const PlanImageExport = ({ tripId }: PlanImageExportProps) => {
   const t = useTranslations('plan.imageExport');
   const locale = useLocale();
   const theme = useTheme();

@@ -14,7 +14,9 @@ import OtpCodeInput from './OtpCodeInput';
 import usePasswordRecovery from '../hooks/usePasswordRecovery';
 import { usePasswordRecoveryState } from '../context/PasswordRecoveryContext';
 
-export default function ForgotPassword({ stage = 'EMAIL' }: { stage?: 'EMAIL' | 'OTP' | 'PASSWORD' }) {
+interface ForgotPasswordProps { stage?: 'EMAIL' | 'OTP' | 'PASSWORD' }
+
+export default function ForgotPassword({ stage = 'EMAIL' }: ForgotPasswordProps) {
   const t = useTranslations('forgotPassword');
   const validation = useTranslations('validation');
   const login = useTranslations('login');

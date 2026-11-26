@@ -4,7 +4,7 @@ import { useId, useState, type ReactNode, type SyntheticEvent } from 'react';
 import { Box, MenuItem, MenuList, Typography, type SelectChangeEvent } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import { matchesSearch } from '@/base/utils/search';
+import AppLoadingIndicator from './AppLoadingIndicator';
 import AppDialog from './AppDialog';
 import AppButton from './AppButton';
 import AppTextField from './AppTextField';
@@ -12,9 +12,11 @@ import AppSelectOptionCheckbox from './AppSelectOptionCheckbox';
 import type { AppSelectProps } from './AppSelect';
 
 /** Keep the form control in place; present choices as a mobile sheet. */
-export default function AppSelectSheet(props: AppSelectProps & {
+interface AppSelectSheetProps extends AppSelectProps {
   renderTrigger: (overrides: Partial<AppSelectProps>) => ReactNode;
-}) {
+}
+
+export default function AppSelectSheet(props: AppSelectSheetProps) {
   const { options, label, onChange, renderTrigger, multiple, searchable } = props;
   const t = useTranslations('select');
   const dialog = useTranslations('dialog');
@@ -28,12 +30,13 @@ export default function AppSelectSheet(props: AppSelectProps & {
   const close = () => {
     setInternalOpen(false);
     setSearch('');
+    props.onSearchChange?.('');
     if (openedBy) props.onClose?.(openedBy);
   };
   const isSelected = (optionValue: string | number) => multiple && Array.isArray(value)
     ? value.some((item) => String(item) === String(optionValue))
     : String(value) === String(optionValue);
-  const filtered = options.filter((option) => !searchable || matchesSearch(option.label, search));
+  const visibleOptions = props.optionsLoading || props.optionsError ? [] : options;
 
   return (
     <>
@@ -55,10 +58,12 @@ export default function AppSelectSheet(props: AppSelectProps & {
       })}
       <AppDialog open={open} onClose={close} title={label} showSheetHandle
         actions={multiple ? <AppButton data-dialog-action="primary" onClick={close}>{dialog('confirm')}</AppButton> : undefined}>
-        {searchable && <AppTextField value={search} onChange={(event) => setSearch(event.target.value)}
+        {searchable && <AppTextField value={search} onChange={(event) => { setSearch(event.target.value); props.onSearchChange?.(event.target.value); }}
           placeholder={props.searchPlaceholder ?? label} slotProps={{ htmlInput: { 'aria-label': props.searchPlaceholder ?? label } }} />}
+        {props.optionsLoading && <AppLoadingIndicator />}
+        {props.optionsError && <Typography role="alert" color="error">{t('searchUnavailable')}</Typography>}
         <MenuList id={listId} role="listbox" aria-label={label} aria-multiselectable={multiple || undefined} autoFocusItem={!searchable} sx={{ p: 0 }}>
-          {filtered.map((option) => {
+          {visibleOptions.map((option) => {
             const selected = isSelected(option.value);
             return <MenuItem key={String(option.value)} selected={selected}
               role="option" aria-selected={selected} disabled={props.disabled || props.readOnly}
@@ -82,7 +87,7 @@ export default function AppSelectSheet(props: AppSelectProps & {
             </MenuItem>;
           })}
         </MenuList>
-        {!filtered.length && <Typography color="text.secondary">{t('noResults')}</Typography>}
+        {!visibleOptions.length && <Typography color="text.secondary">{t('noResults')}</Typography>}
       </AppDialog>
     </>
   );

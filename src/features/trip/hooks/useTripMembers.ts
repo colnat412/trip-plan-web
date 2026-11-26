@@ -11,6 +11,7 @@ import {
 } from '@/base/hooks';
 import type {
   InviteMemberPayload,
+  TripMemberStatus,
   TripMember,
   UpdateRolePayload,
 } from '../types/member.types';
@@ -18,32 +19,33 @@ import type {
 export interface UseTripMembersParams {
   tripId?: number | string | null;
   enabled?: boolean;
+  status?: TripMemberStatus;
 }
 
 export function useTripMembers({
   tripId,
-  enabled = true,
+  enabled = true, status,
 }: UseTripMembersParams) {
   const isEnabled = enabled && Boolean(tripId);
 
   const query = useQueryGet<ApiResponse<TripMember[]>>({
-    queryKey: ['trip-members', tripId],
+    queryKey: ['trip-members', tripId, status ?? 'ALL'],
     endPoint: `/trip/${tripId}/members`,
-    enabled: isEnabled,
+    enabled: isEnabled, config: { params: { status } },
   });
 
   const rawMembers = query.data?.data;
   const members = useMemo(() => rawMembers ?? [], [rawMembers]);
-  const activeMembers = useMemo(
-    () => (rawMembers ?? []).filter((m) => m.status === 'ACTIVE'),
-    [rawMembers],
-  );
 
   return {
     ...query,
     members,
-    activeMembers,
   };
+}
+
+export function useActiveTripMembers(params: UseTripMembersParams) {
+  const query = useTripMembers({ ...params, status: 'ACTIVE' });
+  return { ...query, activeMembers: query.members };
 }
 
 export interface UseInviteMemberParams {
@@ -135,29 +137,17 @@ export function useLeaveTrip({ tripId, options }: UseLeaveTripParams) {
   };
 }
 
+export interface AcceptMemberPayload { memberId: number | string }
+
 export interface UseAcceptMemberParams {
   tripId: number | string;
-  memberId: number | string;
-  options?: MutationCallbacks<ApiResponse<TripMember>, Record<string, never>>;
+  options?: MutationCallbacks<ApiResponse<TripMember>, AcceptMemberPayload>;
 }
 
-export function useAcceptMember({
-  tripId,
-  memberId,
-  options,
-}: UseAcceptMemberParams) {
-  const mutation = useMutationPut<
-    ApiResponse<TripMember>,
-    Record<string, never>
-  >({
-    mutationKey: ['trip-members', 'accept', tripId, memberId],
-    endPoint: `/trip/${tripId}/members/${memberId}/accept`,
-    options,
+export function useAcceptMember({ tripId, options }: UseAcceptMemberParams) {
+  const mutation = useMutationPut<ApiResponse<TripMember>, AcceptMemberPayload>({
+    mutationKey: ['trip-members', 'accept', tripId], endPoint: `/trip/${tripId}/members`,
+    getEndPoint: (endPoint, payload) => `${endPoint}/${payload.memberId}/accept`, getPayload: () => ({}), options,
   });
-
-  return {
-    ...mutation,
-    acceptMember: mutation.mutate,
-    acceptMemberAsync: mutation.mutateAsync,
-  };
+  return { ...mutation, acceptMember: mutation.mutate, acceptMemberAsync: mutation.mutateAsync };
 }

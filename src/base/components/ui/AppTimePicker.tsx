@@ -15,6 +15,14 @@ import AppDialog from './AppDialog';
 import AppPickerField from './AppPickerField';
 import { formatPickerTimeRange, isTimeRangeValid, parsePickerTime, type TimeRange } from '@/base/utils/time';
 
+interface AppTimePickerContextParams {
+    value: string;
+    onOpen: () => void;
+    open: boolean;
+    dialogId: string;
+    disabled?: boolean;
+  }
+
 interface CommonTimePickerProps {
   label: string;
   disabled?: boolean;
@@ -22,19 +30,18 @@ interface CommonTimePickerProps {
   error?: boolean;
   helperText?: ReactNode;
   // Thay ô nhập mặc định bằng nút tuỳ ý (ví dụ nhãn giờ trên thẻ hoạt động).
-  renderTrigger?: (context: {
-    value: string;
-    onOpen: () => void;
-    open: boolean;
-    dialogId: string;
-    disabled?: boolean;
-  }) => ReactNode;
+  renderTrigger?: (context: AppTimePickerContextParams) => ReactNode;
 }
 
-export type AppTimePickerProps = CommonTimePickerProps & (
-  | { mode?: 'single'; value: string; onChange: (value: string) => void }
-  | { mode: 'range'; value: TimeRange; onChange: (value: TimeRange) => void }
-);
+export interface AppTimePickerSingleProps extends CommonTimePickerProps {
+  mode?: 'single'; value: string; onChange: (value: string) => void;
+}
+
+export interface AppTimePickerRangeProps extends CommonTimePickerProps {
+  mode: 'range'; value: TimeRange; onChange: (value: TimeRange) => void;
+}
+
+export type AppTimePickerProps = AppTimePickerSingleProps | AppTimePickerRangeProps;
 
 const AppTimePicker = (props: AppTimePickerProps) => {
   const { label, disabled, required = false, error, helperText, renderTrigger } = props;

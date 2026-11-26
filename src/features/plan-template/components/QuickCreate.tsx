@@ -4,7 +4,9 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
 import { AppButton } from '@/base/components/ui';
 import { useTripContext } from '@/features/trip/context/TripContext';
-const QuickCreate = ({ fullWidth = false }: { fullWidth?: boolean }) => {
+interface QuickCreateProps { fullWidth?: boolean }
+
+const QuickCreate = ({ fullWidth = false }: QuickCreateProps) => {
   const t = useTranslations('quickCreate');
   const { openCreateTrip } = useTripContext();
   return (

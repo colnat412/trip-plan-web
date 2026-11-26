@@ -5,7 +5,9 @@ import { usePathname } from 'next/navigation';
 import AppTabSection from '@/base/components/layout/AppTabSection';
 import TemplateNavigation from './TemplateNavigation';
 
-export default function TemplateSection({ children }: { children: ReactNode }) {
+interface TemplateSectionProps { children: ReactNode }
+
+export default function TemplateSection({ children }: TemplateSectionProps) {
   const pathname = usePathname();
   const active = pathname === '/my-templates' ? 'mine' : pathname === '/saved-templates' ? 'saved' : 'explore';
   return (

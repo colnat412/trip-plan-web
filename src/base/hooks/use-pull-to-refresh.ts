@@ -1,5 +1,6 @@
 'use client';
 
+import { refreshActiveData } from '@/base/utils/data-refresh';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 export const PULL_REFRESH_THRESHOLD = 64;
@@ -11,7 +12,7 @@ const IGNORE_TARGETS = 'a, button, input, textarea, select, form, [contenteditab
 export default function usePullToRefresh(
   scroller: HTMLElement | null,
   routeKey: string,
-  onRefresh: () => void | Promise<unknown> = () => window.location.reload(),
+  onRefresh: () => void | Promise<unknown> = refreshActiveData,
   enabled = true,
 ) {
   const context = useMemo(() => ({ scroller, routeKey, enabled }), [scroller, routeKey, enabled]);
@@ -29,7 +30,7 @@ export default function usePullToRefresh(
     let pull = 0;
     let pending = false;
     let disposed = false;
-    let reloadTimer: ReturnType<typeof setTimeout> | undefined;
+    let refreshTimer: ReturnType<typeof setTimeout> | undefined;
 
     const reset = () => {
       gesture = null;
@@ -71,7 +72,7 @@ export default function usePullToRefresh(
       gesture = null;
       updateFeedback(PULL_REFRESH_THRESHOLD, true);
       // Allow the loading feedback to paint before navigating.
-      reloadTimer = setTimeout(() => {
+      refreshTimer = setTimeout(() => {
         return Promise.resolve().then(() => {
           if (!disposed) return refreshRef.current();
         }).catch(() => undefined).finally(() => {
@@ -88,7 +89,7 @@ export default function usePullToRefresh(
     scroller.addEventListener('touchcancel', reset, { passive: true });
     return () => {
       disposed = true;
-      clearTimeout(reloadTimer);
+      clearTimeout(refreshTimer);
       scroller.removeEventListener('touchstart', start);
       scroller.removeEventListener('touchmove', move);
       scroller.removeEventListener('touchend', end);

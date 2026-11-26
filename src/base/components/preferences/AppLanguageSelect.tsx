@@ -9,9 +9,11 @@ import { useTranslations } from 'next-intl';
 import { AppDialog, AppPopover } from '@/base/components/ui';
 import { defaultLocale, locales, localeDisplay, type AppLocale } from '@/i18n/config';
 
-export default function AppLanguageSelect({ value, busy = false, fullLabel = false, onChange }: {
+interface AppLanguageSelectProps {
   value: AppLocale; busy?: boolean; fullLabel?: boolean; onChange: (value: AppLocale) => void;
-}) {
+}
+
+export default function AppLanguageSelect({ value, busy = false, fullLabel = false, onChange }: AppLanguageSelectProps) {
   const t = useTranslations('preferences');
   const theme = useTheme();
   const mobile = useMediaQuery(theme.breakpoints.down('sm'));

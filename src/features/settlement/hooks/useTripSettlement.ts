@@ -13,6 +13,7 @@ import type {
   Settlement,
   SettlementAction,
   TripSettlementSummary,
+  SettlementWorkspace, HistoryFilter, MemberBalanceFilter,
 } from '../types';
 
 export interface UseTripSettlementSummaryParams {
@@ -99,4 +100,24 @@ export function useRespondSettlement(tripId: number | string) {
     endPoint: `/trip/${tripId}/settlement`,
     getEndPoint: (endPoint, payload) => `${endPoint}/${payload.settlementId}/respond`,
   });
+}
+
+interface UseTripSettlementWorkspaceParams {
+  tripId?: number | string | null;
+  memberStatus: MemberBalanceFilter;
+  memberPage: number;
+  historyStatus: HistoryFilter;
+  historyPage: number;
+  suggestionPage: number;
+}
+
+export function useTripSettlementWorkspace({ tripId, memberStatus, memberPage, historyStatus, historyPage, suggestionPage }: UseTripSettlementWorkspaceParams) {
+  const params = { memberStatus, memberPage, historyStatus, historyPage, suggestionPage };
+  const query = useQueryGet<ApiResponse<SettlementWorkspace>>({
+    queryKey: [...settlementQueryKeys.all, 'workspace', tripId ? String(tripId) : null, params],
+    endPoint: `/trip/${tripId}/settlement/workspace`,
+    enabled: Boolean(tripId), config: { params },
+  });
+  const workspace = query.data?.data.summary.tripId === String(tripId) ? query.data.data : null;
+  return { ...query, workspace, summary: workspace?.summary ?? null };
 }

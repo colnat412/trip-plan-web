@@ -8,7 +8,9 @@ import { AppLoadingState } from '@/base/components/ui';
 import { useUserContext } from '@/features/user/context/UserContext';
 import PolicyAcceptanceDialog from './PolicyAcceptanceDialog';
 
-const PolicyAcceptanceGate = ({ children, bypass = false }: { children: ReactNode; bypass?: boolean }) => {
+interface PolicyAcceptanceGateProps { children: ReactNode; bypass?: boolean }
+
+const PolicyAcceptanceGate = ({ children, bypass = false }: PolicyAcceptanceGateProps) => {
   const { user, error, isFetching, refetchUser } = useUserContext();
   // Keep the error view mounted while refetch clears the query's error.
   // Success clears the remembered error; retries keep their countdown/button state.

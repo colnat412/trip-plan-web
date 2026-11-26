@@ -7,7 +7,9 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { useTranslations } from 'next-intl';
 import { safeHttpUrl } from '@/base/utils';
 
-const ExpenseReceiptPreview = ({ src }: { src: string }) => {
+interface ExpenseReceiptPreviewProps { src: string }
+
+const ExpenseReceiptPreview = ({ src }: ExpenseReceiptPreviewProps) => {
   const t = useTranslations('expense.receipt');
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const url = safeHttpUrl(src);

@@ -10,13 +10,15 @@ import { AppCard } from '@/base/components/ui';
 import { TemplateSaveButton } from './TemplateSaveControls';
 import type { TemplateCardData } from '../types';
 
+interface TemplateCardProps {
+  template: TemplateCardData;
+  compact?: boolean;
+}
+
 const TemplateCard = ({
   template,
   compact = false,
-}: {
-  template: TemplateCardData;
-  compact?: boolean;
-}) => {
+}: TemplateCardProps) => {
   const router = useRouter();
   const t = useTranslations('planTemplate');
   const href = `/templates/${template.id}`;

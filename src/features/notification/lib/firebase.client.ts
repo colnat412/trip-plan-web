@@ -23,12 +23,14 @@ export const getFirebaseMessaging = async () => {
   return { sdk, messaging: sdk.getMessaging(app) };
 };
 
-export const connectPush = async ({ accountKey, signal, onMessage, onError }: {
+interface ConnectPushParams {
   accountKey: string;
   signal: AbortSignal;
   onMessage: (notificationId: string) => void;
   onError: () => void;
-}) => {
+}
+
+export const connectPush = async ({ accountKey, signal, onMessage, onError }: ConnectPushParams) => {
   const connection = await getFirebaseMessaging();
   if (!connection) { if (!signal.aborted) onError(); return () => {}; }
   if (signal.aborted || Notification.permission !== 'granted') return () => {};

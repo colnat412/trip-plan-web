@@ -12,7 +12,9 @@ export function useAppToast(): Notify {
   return notify;
 }
 
-export default function AppToastProvider({ children }: { children: ReactNode }) {
+interface AppToastProviderProps { children: ReactNode }
+
+export default function AppToastProvider({ children }: AppToastProviderProps) {
   const [toast, setToast] = useState<{ message: string; severity: AppToastSeverity; id: number } | null>(null);
   const notify = useCallback<Notify>((message, severity = 'success') => {
     setToast((previous) => ({ message, severity, id: (previous?.id ?? 0) + 1 }));

@@ -36,16 +36,18 @@ export const useTripShareSettings = ({
   };
 };
 
-export const useUpdateShareSettings = ({
-  tripId,
-  options,
-}: {
+interface UseUpdateShareSettingsParams {
   tripId: string | number;
   options?: MutationCallbacks<
     ApiResponse<TripShareSettings>,
     UpdateShareSettingsPayload
   >;
-}) => {
+}
+
+export const useUpdateShareSettings = ({
+  tripId,
+  options,
+}: UseUpdateShareSettingsParams) => {
   const mutation = useMutationPut<
     ApiResponse<TripShareSettings>,
     UpdateShareSettingsPayload
@@ -62,16 +64,18 @@ export const useUpdateShareSettings = ({
   };
 };
 
-export const useRegenerateShareToken = ({
-  tripId,
-  options,
-}: {
+interface UseRegenerateShareTokenParams {
   tripId: string | number;
   options?: MutationCallbacks<
     ApiResponse<TripShareSettings>,
     Record<string, never>
   >;
-}) => {
+}
+
+export const useRegenerateShareToken = ({
+  tripId,
+  options,
+}: UseRegenerateShareTokenParams) => {
   const mutation = useMutationPost<
     ApiResponse<TripShareSettings>,
     Record<string, never>

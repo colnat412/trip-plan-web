@@ -2,7 +2,9 @@ import { CORE_SERVICE_URL } from '@/base/api/server/backend';
 import { NextResponse, type NextRequest } from 'next/server';
 import axios from 'axios';
 
-export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
+interface GETContextParams { params: Promise<{ id: string }> }
+
+export async function GET(request: NextRequest, context: GETContextParams) {
   const headers = { 'Cache-Control': 'no-store' };
   const token = request.cookies.get('access_token')?.value;
   if (!token) return NextResponse.json({ status: 401, message: 'Unauthorized', data: null }, { status: 401, headers });

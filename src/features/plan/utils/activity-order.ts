@@ -21,15 +21,17 @@ export function applyActivityOrder<T extends { id: string }>(items: T[], ids: st
   return [...ordered, ...byId.values()];
 }
 
-export async function saveActivityMove<T extends { id: string }>({
-  loadCompleteDay, saveOrder, isCurrent, activeId, overId,
-}: {
+interface SaveActivityMoveParams<T extends { id: string }> {
   loadCompleteDay: () => Promise<T[]>;
   saveOrder: (ids: string[]) => Promise<unknown>;
   isCurrent: () => boolean;
   activeId: string;
   overId: string;
-}): Promise<boolean> {
+}
+
+export async function saveActivityMove<T extends { id: string }>({
+  loadCompleteDay, saveOrder, isCurrent, activeId, overId,
+}: SaveActivityMoveParams<T>): Promise<boolean> {
   const completeDay = await loadCompleteDay();
   if (!isCurrent()) return false;
   const ordered = moveActivity(completeDay, activeId, overId);

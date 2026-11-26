@@ -6,9 +6,11 @@ import AppBrand from '@/base/components/layout/AppBrand';
 import AppPreferencesMenu from '@/base/components/preferences/AppPreferencesMenu';
 import AppMascot from '@/base/components/ui/AppMascot';
 
-export default function AuthLayout({ children, showMascot = true }: {
+interface AuthLayoutProps {
   children: ReactNode; showMascot?: boolean;
-}) {
+}
+
+export default function AuthLayout({ children, showMascot = true }: AuthLayoutProps) {
   return <Stack component="section" sx={{
     minHeight: '100svh', width: '100%', bgcolor: 'background.paper', alignItems: 'center',
     px: { xs: 2.5, sm: 4 },

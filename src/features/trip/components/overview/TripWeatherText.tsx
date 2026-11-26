@@ -8,7 +8,9 @@ import useTripWeather from '../../hooks/useTripWeather';
 import type { Trip } from '../../types';
 import WeatherConditionIcon from './WeatherConditionIcon';
 
-const TripWeatherText = ({ trip }: { trip: Trip }) => {
+interface TripWeatherTextProps { trip: Trip }
+
+const TripWeatherText = ({ trip }: TripWeatherTextProps) => {
   const t = useTranslations('weather');
   const { weather, enabled, isLoading, error } = useTripWeather(trip);
   if (!enabled || weather?.state === 'HIDDEN') return null;

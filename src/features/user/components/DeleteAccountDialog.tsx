@@ -5,7 +5,9 @@ import { useTranslations } from 'next-intl';
 import { AppConfirmDialog, AppToast } from '@/base/components/ui';
 import useDeleteAccountMutation from '../hooks/useDeleteAccountMutation';
 
-export default function DeleteAccountDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+interface DeleteAccountDialogProps { open: boolean; onClose: () => void }
+
+export default function DeleteAccountDialog({ open, onClose }: DeleteAccountDialogProps) {
   const t = useTranslations('deleteAccount');
   const mutation = useDeleteAccountMutation();
   const [busy, setBusy] = useState(false);

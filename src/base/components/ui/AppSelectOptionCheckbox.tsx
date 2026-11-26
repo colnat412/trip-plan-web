@@ -3,10 +3,12 @@
 import { Checkbox } from '@mui/material';
 
 /** The option owns interaction and aria-selected; this checkbox is its visual cue. */
-export default function AppSelectOptionCheckbox({ checked, disabled = false }: {
+interface AppSelectOptionCheckboxProps {
   checked: boolean;
   disabled?: boolean;
-}) {
+}
+
+export default function AppSelectOptionCheckbox({ checked, disabled = false }: AppSelectOptionCheckboxProps) {
   return (
     <Checkbox
       checked={checked}

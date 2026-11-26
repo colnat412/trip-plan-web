@@ -1,13 +1,11 @@
 'use client';
 
-import { TextFieldProps } from '@mui/material';
+import AppTextField, { type AppTextFieldProps } from './AppTextField';
 
-import AppTextField from './AppTextField';
-
-export type AppTextAreaProps = TextFieldProps & {
+export interface AppTextAreaProps extends AppTextFieldProps {
   minRows?: number;
   maxRows?: number;
-};
+}
 
 const AppTextArea = ({
   minRows = 4,

@@ -4,7 +4,9 @@ import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import AppMascot from './AppMascot';
 
-export default function AppMascotLoading({ message }: { message?: string }) {
+interface AppMascotLoadingProps { message?: string }
+
+export default function AppMascotLoading({ message }: AppMascotLoadingProps) {
   const t = useTranslations('loading');
   return <Box role="status" aria-label={message ?? t('label')} sx={{
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',

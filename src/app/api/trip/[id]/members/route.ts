@@ -21,11 +21,16 @@ export async function GET(request: NextRequest, context: RouteContext) {
       );
     }
 
+    const status = request.nextUrl.searchParams.get('status');
+    if (status && !['ACTIVE', 'INVITED', 'LEFT', 'REMOVED'].includes(status)) {
+      return NextResponse.json({ status: 400, message: 'Invalid member status', data: null }, { status: 400 });
+    }
     const { id } = await context.params;
 
     const response = await axios.get(
       `${CORE_SERVICE_URL}/api/trip/${id}/members`,
       {
+        params: status ? { status } : undefined,
         headers: {
           Authorization: `Bearer ${accessToken}`,
           Accept: 'application/json',

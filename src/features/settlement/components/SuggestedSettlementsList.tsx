@@ -1,49 +1,41 @@
 'use client';
 
-import { useId, useState } from 'react';
 import { Divider, Stack } from '@mui/material';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton, AppEmptyState } from '@/base/components/ui';
+import { AppPagination, AppEmptyState } from '@/base/components/ui';
 import { hasPendingPayment } from '../utils/pending-payments';
 import SuggestedSettlementCard from './SuggestedSettlementCard';
-import type { Settlement, SuggestedSettlement } from '../types';
+import type { Settlement, SuggestedSettlement, SettlementPagination } from '../types';
 
 export interface SuggestedSettlementsListProps {
   suggestedSettlements: SuggestedSettlement[];
   settlements?: Settlement[];
   canSettle?: (settlement: SuggestedSettlement) => boolean;
   onSettle: (settlement: SuggestedSettlement) => void;
+  pagination: SettlementPagination;
+  onPageChange: (page: number) => void;
 }
 
-const PREVIEW_COUNT = 3;
-
-const SuggestedSettlementsList = ({ suggestedSettlements, onSettle, canSettle, settlements = [] }: SuggestedSettlementsListProps) => {
+const SuggestedSettlementsList = ({ suggestedSettlements, onSettle, canSettle, settlements = [], pagination, onPageChange }: SuggestedSettlementsListProps) => {
   const t = useTranslations('settlement');
-  const [expanded, setExpanded] = useState(false);
-  const listId = useId();
 
   if (suggestedSettlements.length === 0) {
     return <AppEmptyState compact icon={<CheckCircleRoundedIcon color="success" />} title={t('suggestedEmpty')} />;
   }
 
-  const visible = expanded ? suggestedSettlements : suggestedSettlements.slice(0, PREVIEW_COUNT);
+  const visible = suggestedSettlements;
   return (
     <Stack spacing={1} sx={{ minWidth: 0 }}>
-      <Stack id={listId} role="list" aria-label={t('suggestedTitle')} divider={<Divider aria-hidden="true" />} sx={{ minWidth: 0 }}>
+      <Stack role="list" aria-label={t('suggestedTitle')} divider={<Divider aria-hidden="true" />} sx={{ minWidth: 0 }}>
         {visible.map((item, index) => (
           <SuggestedSettlementCard key={`${item.fromUserId}-${item.toUserId}-${index}`} settlement={item}
             pending={hasPendingPayment(settlements, item.fromUserId, item.toUserId, item.currency)}
             onSettle={canSettle?.(item) === false || hasPendingPayment(settlements, item.fromUserId, item.toUserId, item.currency) ? undefined : onSettle} />
         ))}
       </Stack>
-      {suggestedSettlements.length > PREVIEW_COUNT && (
-        <AppButton intent="text" size="small" aria-expanded={expanded} aria-controls={listId}
-          onClick={() => setExpanded(current => !current)} sx={{ alignSelf: 'center', minHeight: 44 }}>
-          {expanded ? t('collapseSuggestions') : t('showAllSuggestions', { count: suggestedSettlements.length })}
-        </AppButton>
-      )}
+      {pagination.totalPages > 1 && <AppPagination size="small" page={pagination.page + 1} count={pagination.totalPages} onChange={(_, value) => onPageChange(value - 1)} />}
     </Stack>
   );
 };

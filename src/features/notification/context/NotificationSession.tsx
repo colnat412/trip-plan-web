@@ -1,20 +1,20 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { useQueryGet } from '@/base/hooks';
-import type { ApiResponse } from '@/base/api';
+import useNotificationPreferences from '../hooks/useNotificationPreferences';
 import AppToast from '@/base/components/ui/AppToast';
 import { useTranslations } from 'next-intl';
 import { connectPush } from '../lib/firebase.client';
 import { createRefreshQueue } from '../lib/refresh-queue';
 import useNotificationUnread from '../hooks/useNotificationUnread';
 import useNotificationAlerts from '../hooks/useNotificationAlerts';
-import type { NotificationPreferences } from '../types';
 import { useTripContext } from '@/features/trip/context/TripContext';
 import NotificationOptInPrompt from '../components/NotificationOptInPrompt';
 import { NotificationContext } from './NotificationContext';
 
-const NotificationSession = ({ accountKey, children }: { accountKey: string; children: ReactNode }) => {
+interface NotificationSessionProps { accountKey: string; children: ReactNode }
+
+const NotificationSession = ({ accountKey, children }: NotificationSessionProps) => {
   const t = useTranslations('notification');
   const { refetchTrips } = useTripContext();
   const tripRefreshRef = useRef(refetchTrips);
@@ -22,9 +22,7 @@ const NotificationSession = ({ accountKey, children }: { accountKey: string; chi
   const { count, refetch } = useNotificationUnread(accountKey);
   const alerts = useNotificationAlerts(accountKey);
   const { receivePush } = alerts;
-  const preferenceQuery = useQueryGet<ApiResponse<NotificationPreferences>>({
-    queryKey: ['notifications', accountKey, 'preferences'], endPoint: '/notification-preferences',
-  });
+  const preferenceQuery = useNotificationPreferences(accountKey);
   const [inboxOpen, setInboxOpen] = useState(false);
   const [version, setVersion] = useState(0);
   const [pushError, setPushError] = useState(false);

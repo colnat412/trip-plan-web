@@ -9,7 +9,9 @@ import { SEGMENTED_RADIUS } from '@/base/theme/segmented-control';
 import { glassSurface } from '@/base/theme/surfaces';
 import AppCreateTripButton from './AppCreateTripButton';
 
-const AppBottomNavigation = ({ guest = false }: { guest?: boolean }) => {
+interface AppBottomNavigationProps { guest?: boolean }
+
+const AppBottomNavigation = ({ guest = false }: AppBottomNavigationProps) => {
   const pathname = usePathname();
   const t = useTranslations('navigation');
   const items = MOBILE_PRIMARY_NAVIGATION_ITEMS.filter(item => !guest || item.id !== 'settings');

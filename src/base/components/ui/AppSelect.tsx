@@ -34,6 +34,9 @@ export interface AppSelectProps extends Omit<SelectProps, 'onChange'> {
   options: AppSelectOption[];
   helperText?: string;
   searchable?: boolean;
+  onSearchChange?: (query: string) => void;
+  optionsLoading?: boolean;
+  optionsError?: boolean;
   searchPlaceholder?: string;
   error?: boolean;
   variantType?: 'form' | 'filter' | 'compact';
@@ -48,6 +51,7 @@ const AppSelectControl = ({
   options,
   helperText,
   searchable = false,
+  onSearchChange, optionsLoading = false, optionsError = false,
   searchPlaceholder,
   error,
   fullWidth,
@@ -76,6 +80,7 @@ const AppSelectControl = ({
         onChange={onChange}
         sx={sx}
         searchPlaceholder={searchPlaceholder}
+        onSearchChange={onSearchChange} optionsLoading={optionsLoading} optionsError={optionsError}
       />
     );
   }

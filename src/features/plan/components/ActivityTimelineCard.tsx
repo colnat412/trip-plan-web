@@ -44,6 +44,8 @@ export type ActivityTimelineData = Pick<
   | 'actualSpent'
 > & { id?: string; tripId?: string; imageUrl?: string | null };
 
+interface ActivityTimelineCardTimeParams { startTime: string; endTime: string }
+
 export interface ActivityTimelineCardProps<
   T extends ActivityTimelineData = PlanActivity,
 > {
@@ -57,7 +59,7 @@ export interface ActivityTimelineCardProps<
   // Có thì nhãn giờ trên thẻ bấm được để đổi giờ ngay, không cần mở form sửa.
   onChangeTime?: (
     activity: T,
-    time: { startTime: string; endTime: string },
+    time: ActivityTimelineCardTimeParams,
   ) => void;
   readOnly?: boolean;
   hasNext?: boolean;

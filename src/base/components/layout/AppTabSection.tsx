@@ -14,11 +14,13 @@ import { getTabIndex, isSameTabSection } from '@/base/utils/tab-section';
 const revealContent = keyframes`from { opacity: 0.35; } to { opacity: 1; }`;
 
 /** Navigation stays mounted in the layout; only the body participates in loading. */
-export default function AppTabSection({ navigation, children, contained = false }: {
+interface AppTabSectionProps {
   navigation: ReactNode;
   children: ReactNode;
   contained?: boolean;
-}) {
+}
+
+export default function AppTabSection({ navigation, children, contained = false }: AppTabSectionProps) {
   const pathname = usePathname();
   const [visit, setVisit] = useState({ pathname, direction: 0 });
   if (visit.pathname !== pathname) {

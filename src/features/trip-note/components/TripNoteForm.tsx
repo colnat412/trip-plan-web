@@ -3,21 +3,24 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { useTranslations } from 'next-intl';
-import { AppButton, AppImageUploader, AppTextArea } from '@/base/components/ui';
+import { AppImageUploader, AppTextArea } from '@/base/components/ui';
 import { useUploadFile } from '@/base/hooks';
 import useDialogDraft from '@/base/hooks/use-dialog-draft';
 import type { TripNoteDraft } from '../types';
 
-export default function TripNoteForm({ initialContent = '', initialImageUrl, busy, onSubmit, onSavingChange, editing = false }: {
+interface TripNoteFormProps {
   initialContent?: string;
   initialImageUrl?: string | null;
   busy: boolean;
   onSubmit: (draft: TripNoteDraft) => Promise<void>;
   editing?: boolean;
   onSavingChange?: (saving: boolean) => void;
-}) {
+}
+
+export default function TripNoteForm({ initialContent = '', initialImageUrl, busy, onSubmit, onSavingChange, editing = false }: TripNoteFormProps) {
   const t = useTranslations('tripNotes');
   const upload = useUploadFile();
   const [content, setContent] = useState(initialContent);
@@ -71,18 +74,19 @@ export default function TripNoteForm({ initialContent = '', initialImageUrl, bus
       <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', minWidth: 0 }}>
         <Tooltip title={t('addImage')}><span><IconButton aria-label={t('addImage')} disabled={disabled}
           onClick={() => imageInput.current?.click()} sx={{ width: 44, height: 44 }}><AddPhotoAlternateOutlinedIcon sx={{ fontSize: 20 }} /></IconButton></span></Tooltip>
-        <AppTextArea label={editing ? t('editContent') : undefined} placeholder={t(editing ? 'placeholder' : 'content')}
+        <AppTextArea placeholder={t('content')}
           value={content} onChange={event => setContent(event.target.value)} disabled={disabled}
           minRows={1} maxRows={4} fullWidth size="small"
           slotProps={{ htmlInput: { maxLength: 2000, 'aria-label': t(editing ? 'editContent' : 'content') } }}
-          sx={editing ? undefined : {
+          sx={{
             '& .MuiOutlinedInput-root': { minHeight: 40, px: 1.25, py: 1 },
             '& textarea.MuiInputBase-input': { p: 0, lineHeight: 1.4, fontSize: { xs: 16, sm: 14 } },
           }}
           helperText={content.length > 1800 ? t('characterCount', { count: content.length }) : undefined} />
-        {editing ? <AppButton type="submit" intent="primary" size="small" loading={disabled} disabled={!canSend} sx={{ minHeight: 44 }}>{t('save')}</AppButton>
-          : <Tooltip title={t('post')}><span><IconButton type="submit" aria-label={t('post')} disabled={disabled || !canSend}
-              sx={{ width: 44, height: 44, color: 'primary.main' }}><SendRoundedIcon sx={{ fontSize: 20 }} /></IconButton></span></Tooltip>}
+        <Tooltip title={t(editing ? 'save' : 'post')}><span><IconButton type="submit" aria-label={t(editing ? 'save' : 'post')} disabled={disabled || !canSend}
+          sx={{ width: 44, height: 44, color: 'primary.main' }}>
+          {editing ? <CheckRoundedIcon sx={{ fontSize: 20 }} /> : <SendRoundedIcon sx={{ fontSize: 20 }} />}
+        </IconButton></span></Tooltip>
       </Stack>
     </Stack>
   </Box>;
