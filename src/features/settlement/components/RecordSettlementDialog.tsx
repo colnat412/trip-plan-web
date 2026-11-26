@@ -6,12 +6,13 @@ import { useTranslations } from 'next-intl';
 
 import { AppDialog } from '@/base/components/ui';
 import RecordSettlementForm from './RecordSettlementForm';
-import type { CreateSettlementRequest } from '../types';
+import type { CreateSettlementRequest, Settlement } from '../types';
 
 export interface RecordSettlementDialogProps {
   open: boolean;
   onClose: () => void;
   members: { userId: string; name: string }[];
+  settlements?: Settlement[];
   initialData?: Partial<CreateSettlementRequest>;
   currency: string;
   fixedPayerId?: string;
@@ -23,6 +24,7 @@ const RecordSettlementDialog = ({
   open,
   onClose,
   members,
+  settlements = [],
   initialData,
   currency,
   fixedPayerId,
@@ -45,6 +47,7 @@ const RecordSettlementDialog = ({
     >
       <RecordSettlementForm
         members={members}
+        settlements={settlements}
         fixedPayerId={fixedPayerId}
         initialData={initialData}
         currency={currency}

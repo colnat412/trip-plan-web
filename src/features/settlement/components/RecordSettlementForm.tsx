@@ -1,9 +1,11 @@
 'use client';
 
+import { hasPendingPayment } from '../utils/pending-payments';
+
 import useDialogDraft from '@/base/hooks/use-dialog-draft';
 
 import React, { useState } from 'react';
-import { Box, Stack } from '@mui/material';
+import { Alert, Box, Stack } from '@mui/material';
 import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
 import AttachMoneyRoundedIcon from '@mui/icons-material/AttachMoneyRounded';
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded';
@@ -16,12 +18,13 @@ import {
   AppSelect,
   AppTextField,
 } from '@/base/components/ui';
-import type { CreateSettlementRequest, PaymentMethod } from '../types';
+import type { CreateSettlementRequest, PaymentMethod, Settlement } from '../types';
 import { useUserContext } from '@/features/user/context/UserContext';
 import { getZonedDateTime } from '@/base/utils';
 
 export interface RecordSettlementFormProps {
   members: { userId: string; name: string }[];
+  settlements?: Settlement[];
   initialData?: Partial<CreateSettlementRequest>;
   currency: string;
   fixedPayerId?: string;
@@ -32,6 +35,7 @@ export interface RecordSettlementFormProps {
 
 const RecordSettlementForm = ({
   members,
+  settlements = [],
   initialData,
   currency,
   fixedPayerId,
@@ -60,6 +64,8 @@ const RecordSettlementForm = ({
   const [note, setNote] = useState(initialData?.note || '');
   const [error, setError] = useState<string | null>(null);
 
+  const pendingPayment = hasPendingPayment(settlements, payerId, payeeId, currency);
+
   useDialogDraft(() => ({ payerId, payeeId, amount, settledAt, paymentMethod, note }));
 
   const memberOptions = members.map((m) => ({
@@ -87,7 +93,9 @@ const RecordSettlementForm = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
     setError(null);
+    if (pendingPayment) return;
 
     if (!payerId) {
       setError(tDialog('errors.payerRequired'));
@@ -142,6 +150,8 @@ const RecordSettlementForm = ({
             {error}
           </Box>
         )}
+
+        {pendingPayment && <Alert severity="info" role="status">{t('pendingPaymentNotice')}</Alert>}
 
         <AppNumberInput
           emphasis="primary"
@@ -239,7 +249,7 @@ const RecordSettlementForm = ({
           <AppButton data-dialog-action="cancel" intent="secondary" onClick={onCancel} disabled={isLoading}>
             {tDialog('cancelBtn')}
           </AppButton>
-          <AppButton data-dialog-action="primary" type="submit" intent="primary" loading={isLoading}>
+          <AppButton data-dialog-action="primary" type="submit" intent="primary" loading={isLoading} disabled={pendingPayment}>
             {tDialog('submitBtn')}
           </AppButton>
         </Box>

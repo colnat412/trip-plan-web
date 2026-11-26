@@ -1,6 +1,7 @@
 'use client';
 
 import { contentColumn } from '@/base/theme/content-layout';
+import { compactTouchTarget } from '@/base/theme/interactions';
 import AppEmptyState from '@/base/components/ui/AppEmptyState';
 
 import AppErrorState from '@/base/components/ui/AppErrorState';
@@ -11,7 +12,7 @@ import Alert from '@/base/components/ui/AppAlert';
 import { useTheme } from '@mui/material/styles';
 import DownloadRoundedIcon from '@mui/icons-material/DownloadRounded';
 import { useLocale, useTranslations } from 'next-intl';
-import { AppButton, AppLoadingState, AppPageContainer, AppPageHeader } from '@/base/components/ui';
+import { AppButton, AppLoadingState, AppPageContainer, AppBackHeader } from '@/base/components/ui';
 import { downloadBlob, loadCanvasFont } from '@/base/utils';
 import useTripDetail from '@/features/trip/hooks/useTripDetail';
 import useTripPlan from '../../hooks/useTripPlan';
@@ -165,32 +166,33 @@ const PlanImageExport = ({ tripId }: { tripId: string }) => {
 
   return (
     <AppPageContainer>
-      <AppPageHeader
+      <AppBackHeader
         title={t('title')}
-        actions={
-          images.length > 0 ? (
-            <AppButton
-              intent="primary"
-              startIcon={<DownloadRoundedIcon />}
-              onClick={downloadAll}
-            >
-              {t('downloadAll')}
-            </AppButton>
-          ) : undefined
-        }
+        titleAlign="left"
+        backHref={`/plan?tripId=${encodeURIComponent(tripId)}`}
       />
       <Stack spacing={2} sx={contentColumn}>
         {loadError || current?.error ? (
           <AppErrorState status={loadError?.status} onRetry={retry} />
         ) : !current ? (
-          <AppLoadingState />
+          <AppLoadingState local />
         ) : images.length === 0 ? (
           <AppEmptyState title={t('emptyPlan')} />
         ) : (
           <>
-            <Typography variant="body2" color="text.secondary">
-              {t('summary', { count: images.length })}
-            </Typography>
+            <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', justifyContent: 'space-between', minHeight: 44, minWidth: 0 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ flex: 1, minWidth: 0, overflowWrap: 'anywhere' }}>
+                {t('summary', { count: images.length })}
+              </Typography>
+              <AppButton intent="primary" size="small" startIcon={<DownloadRoundedIcon />} onClick={downloadAll}
+                sx={{
+                  ...compactTouchTarget,
+                  flexShrink: 0, height: 32, minHeight: 32, px: 1.25, py: 0.5, fontSize: 12,
+                  '& .MuiButton-startIcon > :nth-of-type(1)': { fontSize: 16 },
+                }}>
+                {t('downloadAll')}
+              </AppButton>
+            </Stack>
             {!coverUrl && <Alert severity="info">{t('noCover')}</Alert>}
             <Box
               sx={{
@@ -224,13 +226,6 @@ const PlanImageExport = ({ tripId }: { tripId: string }) => {
                       borderRadius: '16px',
                     }}
                   />
-                  <AppButton
-                    intent="secondary"
-                    startIcon={<DownloadRoundedIcon />}
-                    onClick={() => downloadBlob(image.blob, image.name)}
-                  >
-                    {t('downloadDay', { number: image.dayNumber })}
-                  </AppButton>
                 </Stack>
               ))}
             </Box>

@@ -10,7 +10,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { flushSync } from 'react-dom';
 import { waitForMobileOverlayHistory } from '@/base/hooks/use-mobile-overlay-back';
 import type { ApiError } from '@/base/api';
@@ -48,6 +48,7 @@ const TripContext = createContext<TripContextValue | null>(null);
 
 const TripProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { trips, isLoading, isFetching, error, refetch } = useMyTrips({
     size: 100,
   });
@@ -87,24 +88,6 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     [refetch],
   );
 
-  useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    const refreshOnReturn = () => {
-      if (document.visibilityState !== 'visible') return;
-      clearTimeout(timer);
-      timer = setTimeout(() => { void refetchTrips().catch(() => undefined); }, 0);
-    };
-    window.addEventListener('focus', refreshOnReturn);
-    window.addEventListener('online', refreshOnReturn);
-    document.addEventListener('visibilitychange', refreshOnReturn);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('focus', refreshOnReturn);
-      window.removeEventListener('online', refreshOnReturn);
-      document.removeEventListener('visibilitychange', refreshOnReturn);
-    };
-  }, [refetchTrips]);
-
   const needsSelectedDetail =
     selectedTripId !== null &&
     !trips.some((trip) => String(trip.id) === String(selectedTripId));
@@ -121,6 +104,29 @@ const TripProvider = ({ children }: { children: ReactNode }) => {
     if (needsSelectedDetail) requests.push(refetchSelectedTrip());
     return Promise.all(requests);
   }, [refetch, needsSelectedDetail, refetchSelectedTrip]);
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const refreshOnReturn = () => {
+      if (document.visibilityState !== 'visible') return;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        // Keep checking access on return without invalidating the open itinerary.
+        const isItinerary = pathname === '/plan' || pathname.startsWith('/export/plan/');
+        const refresh = isItinerary ? refreshTripList : refetchTrips;
+        void refresh().catch(() => undefined);
+      }, 0);
+    };
+    window.addEventListener('focus', refreshOnReturn);
+    window.addEventListener('online', refreshOnReturn);
+    document.addEventListener('visibilitychange', refreshOnReturn);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('focus', refreshOnReturn);
+      window.removeEventListener('online', refreshOnReturn);
+      document.removeEventListener('visibilitychange', refreshOnReturn);
+    };
+  }, [pathname, refetchTrips, refreshTripList]);
+
   const selectedTrip =
     !selectedDetail.error &&
     selectedDetail.trip &&

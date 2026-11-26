@@ -55,6 +55,7 @@ import ChecklistDialog from './ChecklistDialog';
 import DayTimelineList from './DayTimelineList';
 import DeleteActivityDialog from './DeleteActivityDialog';
 import EditActivityDialog from './EditActivityDialog';
+import ActivityDetailDialog from './ActivityDetailDialog';
 import OptimizeRouteDialog from './OptimizeRouteDialog';
 import PlanDayTabs from './PlanDayTabs';
 import PlanDayToolbar from './PlanDayToolbar';
@@ -109,6 +110,7 @@ const PlanOverview = ({
   const [publishOpen, setPublishOpen] = useState(initialPublishOpen);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [activityLogOpen, setActivityLogOpen] = useState(false);
+  const [viewingActivity, setViewingActivity] = useState<PlanActivity | null>(null);
   const [editingActivity, setEditingActivity] = useState<PlanActivity | null>(
     null,
   );
@@ -161,6 +163,12 @@ const PlanOverview = ({
     fetchAllPages: fetchAllDayActivities,
     refetch: refetchDayActivities,
   } = useDayActivities({ tripId, dayId: selectedDay?.id });
+
+  if (viewingActivity && (viewingActivity.tripId !== String(tripId) || viewingActivity.dayId !== String(selectedDay?.id))) {
+    setViewingActivity(null);
+  }
+  const detailActivity = viewingActivity?.tripId === String(tripId) && viewingActivity?.dayId === String(selectedDay?.id)
+    ? dayActivities.find(activity => activity.id === viewingActivity.id) ?? null : null;
 
   const refreshPlan = () =>
     Promise.allSettled([
@@ -493,6 +501,7 @@ const PlanOverview = ({
                   overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
                 }
                 destinationContext={activeTrip?.destination}
+                onViewActivity={setViewingActivity}
                 onEditActivity={(activity) => setEditingActivity(activity)}
                 canDeleteActivity={(activity) =>
                   canManageRecord(activity.createdBy)
@@ -534,6 +543,16 @@ const PlanOverview = ({
         tripCurrency={
           overview?.baseCurrency ?? activeTrip?.baseCurrency ?? 'VND'
         }
+      />
+
+      <ActivityDetailDialog
+        activity={detailActivity}
+        currency={overview?.baseCurrency ?? activeTrip.baseCurrency ?? 'VND'}
+        onClose={() => setViewingActivity(null)}
+        onEdit={canWrite ? (activity) => {
+          setViewingActivity(null);
+          setEditingActivity(activity);
+        } : undefined}
       />
 
       <EditActivityDialog

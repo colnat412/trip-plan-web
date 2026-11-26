@@ -2,9 +2,11 @@
 
 import { Box } from '@mui/material';
 import { usePathname } from 'next/navigation';
-import { useLayoutEffect, useRef, type ReactNode } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 
 import AppTopBar from './AppTopBar';
+import AppPullToRefreshIndicator from './AppPullToRefreshIndicator';
+import usePullToRefresh from '@/base/hooks/use-pull-to-refresh';
 import NotificationProvider from '@/features/notification/context/NotificationProvider';
 import NotificationTargetContent from '@/features/notification/components/NotificationTargetContent';
 import AppDeviceHint from './AppDeviceHint';
@@ -38,6 +40,13 @@ const AppShell = ({
   const tabSection = getTabSection(pathname);
   const tripWorkspace = ['/plan', '/expenses', '/settlement'].includes(pathname);
   const mainRef = useRef<HTMLElement | null>(null);
+  const [mainElement, setMainElement] = useState<HTMLElement | null>(null);
+  const attachMain = useCallback((element: HTMLElement | null) => {
+    mainRef.current = element;
+    setMainElement(element);
+  }, []);
+  const isItinerary = pathname === '/plan' || pathname.startsWith('/export/plan/');
+  const pullToRefresh = usePullToRefresh(mainElement, pathname, undefined, !isItinerary);
   const previousPath = useRef(pathname);
   useLayoutEffect(() => {
     const keepScroll = isSameTabSection(previousPath.current, pathname);
@@ -75,9 +84,10 @@ const AppShell = ({
     >
       <AppTopBar guest={!withAccount} />
       {withAccount && <AppDeviceHint />}
+      <AppPullToRefreshIndicator {...pullToRefresh} />
       <Box
         component="main"
-        ref={mainRef}
+        ref={attachMain}
         id="main-content"
         tabIndex={-1}
         sx={(theme) => ({

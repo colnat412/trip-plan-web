@@ -1,4 +1,9 @@
 {
+  "pullToRefresh": {
+    "pull": "Kéo xuống để tải lại",
+    "release": "Thả để tải lại",
+    "refreshing": "Đang tải lại…"
+  },
   "deviceExperience": {
     "message": "Trải nghiệm thuận tiện hơn trên điện thoại. Bạn vẫn có thể sử dụng đầy đủ trên máy tính.",
     "dismiss": "Đóng gợi ý sử dụng điện thoại"
@@ -878,7 +883,9 @@
     "actions": {
       "approve": "Xác nhận",
       "reject": "Từ chối",
-      "cancel": "Hủy yêu cầu"
+      "cancel": "Hủy yêu cầu",
+      "cancelPayment": "Hủy ghi nhận",
+      "cancelDeletion": "Hủy yêu cầu xóa cũ"
     },
     "pageTitle": "Chia tiền",
     "pageSubtitle": "Xem ai cần trả, ai được nhận.",
@@ -891,7 +898,6 @@
     "myStatusOwesDesc": "Đây là số tiền bạn còn cần trả cho nhóm.",
     "myStatusSettledDesc": "Bạn không còn khoản nào cần trả hoặc nhận.",
     "totalSpent": "Tổng đã chi",
-    "totalSettled": "Đã trả lại nhau",
     "suggestedTitle": "Ai trả cho ai?",
     "suggestedDesc": "Gợi ý cách chia ít lần chuyển tiền nhất.",
     "suggestedEmpty": "Không còn khoản nào cần trả.",
@@ -944,16 +950,16 @@
       }
     },
     "deleteConfirm": {
-      "title": "Yêu cầu xóa khoản trả?",
-      "desc": "Yêu cầu bên còn lại xóa <subject>{amount} từ {payer} cho {payee}</subject>? Khoản trả vẫn được tính đến khi họ xác nhận.",
-      "confirmBtn": "Yêu cầu xóa",
+      "title": "Hủy ghi nhận khoản trả?",
+      "desc": "Hủy ghi nhận <subject>{amount} từ {payer} cho {payee}</subject>? Khoản này chưa được xác nhận và chưa tính vào số dư. Lịch sử vẫn giữ trạng thái đã hủy.",
+      "confirmBtn": "Hủy ghi nhận",
       "cancelBtn": "Giữ lại"
     },
     "toasts": {
       "createSuccess": "Đã gửi khoản trả tiền chờ xác nhận.",
       "createError": "Chưa lưu được. Vui lòng thử lại.",
-      "deleteSuccess": "Đã gửi yêu cầu xóa chờ xác nhận.",
-      "deleteError": "Chưa xóa được. Vui lòng thử lại.",
+      "deleteSuccess": "Đã hủy ghi nhận khoản trả.",
+      "deleteError": "Chưa hủy được. Khoản đã xác nhận không thể hủy.",
       "responseSuccess": "Đã lưu phản hồi.",
       "responseError": "Chưa lưu được phản hồi. Vui lòng thử lại."
     },
@@ -962,9 +968,11 @@
     "youInSentence": "bạn",
     "you": "Bạn",
     "collapseSuggestions": "Thu gọn",
-    "showAllSuggestions": "Xem tất cả {count} khoản"
+    "showAllSuggestions": "Xem tất cả {count} khoản",
+    "pendingPaymentNotice": "Đã có khoản trả giữa hai người này đang chờ xác nhận. Vui lòng xác nhận hoặc hủy khoản đó trước khi ghi nhận thêm."
   },
   "plan": {
+    "activityDetail": { "title": "Chi tiết hoạt động", "actualSpent": "Đã chi" },
     "actionsLabel": "Thao tác lịch trình",
     "activityActions": "Thao tác với {title}",
     "reorder": {
@@ -1105,6 +1113,7 @@
       "confirmResetDay": "Xóa toàn bộ hoạt động"
     },
     "checklist": {
+      "chooseCategory": "Chọn loại trước khi nhập đồ dùng",
       "title": "Chuẩn bị chuyến đi",
       "subtitle": "Kiểm tra kỹ lưỡng hành lý trước khi lên đường",
       "inputPlaceholder": "Ví dụ: Hộ chiếu, sạc dự phòng",

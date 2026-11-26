@@ -6,10 +6,9 @@ import AccountBalanceWalletRoundedIcon from '@mui/icons-material/AccountBalanceW
 import SouthWestRoundedIcon from '@mui/icons-material/SouthWestRounded';
 import NorthEastRoundedIcon from '@mui/icons-material/NorthEastRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useTranslations } from 'next-intl';
 
-import { AppButton, AppCard, AppMetricValue } from '@/base/components/ui';
+import { AppCard, AppMetricValue } from '@/base/components/ui';
 import { formatCurrency } from '@/base/utils';
 import type { BalanceStatus } from '../types';
 
@@ -18,8 +17,6 @@ export interface MyBalanceCardProps {
   myStatus: BalanceStatus;
   currency: string;
   totalExpenses: number;
-  totalSettled: number;
-  onOpenRecordPayment: () => void;
 }
 
 const MyBalanceCard = ({
@@ -27,8 +24,6 @@ const MyBalanceCard = ({
   myStatus,
   currency,
   totalExpenses,
-  totalSettled,
-  onOpenRecordPayment,
 }: MyBalanceCardProps) => {
   const t = useTranslations('settlement');
 
@@ -145,14 +140,6 @@ const MyBalanceCard = ({
               {statusDesc}
             </Typography>
           </Stack>
-
-          {/* <AppButton
-            intent="primary"
-            startIcon={<AddRoundedIcon sx={{ fontSize: '18px' }} />}
-            onClick={onOpenRecordPayment}
-          >
-            {t('recordPayment')}
-          </AppButton> */}
         </Box>
 
         <Box
@@ -177,21 +164,6 @@ const MyBalanceCard = ({
             </Typography>
             <AppMetricValue tone="primary" sx={{ fontSize: '16px' }}>
               {formatCurrency(totalExpenses, currency)}
-            </AppMetricValue>
-          </Box>
-
-          <Box sx={{ flex: '1 1 160px', minWidth: 0 }}>
-            <Typography
-              sx={{
-                fontSize: '12px',
-                color: 'text.secondary',
-                fontWeight: 500,
-              }}
-            >
-              {t('totalSettled')}
-            </Typography>
-            <AppMetricValue tone="success" sx={{ fontSize: '16px' }}>
-              {formatCurrency(totalSettled, currency)}
             </AppMetricValue>
           </Box>
         </Box>

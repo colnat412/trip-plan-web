@@ -6,18 +6,20 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppButton, AppEmptyState } from '@/base/components/ui';
+import { hasPendingPayment } from '../utils/pending-payments';
 import SuggestedSettlementCard from './SuggestedSettlementCard';
-import type { SuggestedSettlement } from '../types';
+import type { Settlement, SuggestedSettlement } from '../types';
 
 export interface SuggestedSettlementsListProps {
   suggestedSettlements: SuggestedSettlement[];
+  settlements?: Settlement[];
   canSettle?: (settlement: SuggestedSettlement) => boolean;
   onSettle: (settlement: SuggestedSettlement) => void;
 }
 
 const PREVIEW_COUNT = 3;
 
-const SuggestedSettlementsList = ({ suggestedSettlements, onSettle, canSettle }: SuggestedSettlementsListProps) => {
+const SuggestedSettlementsList = ({ suggestedSettlements, onSettle, canSettle, settlements = [] }: SuggestedSettlementsListProps) => {
   const t = useTranslations('settlement');
   const [expanded, setExpanded] = useState(false);
   const listId = useId();
@@ -32,7 +34,8 @@ const SuggestedSettlementsList = ({ suggestedSettlements, onSettle, canSettle }:
       <Stack id={listId} role="list" aria-label={t('suggestedTitle')} divider={<Divider aria-hidden="true" />} sx={{ minWidth: 0 }}>
         {visible.map((item, index) => (
           <SuggestedSettlementCard key={`${item.fromUserId}-${item.toUserId}-${index}`} settlement={item}
-            onSettle={canSettle?.(item) === false ? undefined : onSettle} />
+            pending={hasPendingPayment(settlements, item.fromUserId, item.toUserId, item.currency)}
+            onSettle={canSettle?.(item) === false || hasPendingPayment(settlements, item.fromUserId, item.toUserId, item.currency) ? undefined : onSettle} />
         ))}
       </Stack>
       {suggestedSettlements.length > PREVIEW_COUNT && (

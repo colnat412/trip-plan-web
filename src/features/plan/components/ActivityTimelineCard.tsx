@@ -27,7 +27,6 @@ import {
 } from '@/base/components/ui';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import SkipNextRoundedIcon from '@mui/icons-material/SkipNextRounded';
-import { compactTouchTarget } from '@/base/theme/interactions';
 import { formatCurrency } from '@/base/utils';
 import useActivityImage from '../hooks/useActivityImage';
 import type { ActivityStatus, PlanActivity } from '../types';
@@ -62,6 +61,7 @@ export interface ActivityTimelineCardProps<
   ) => void;
   readOnly?: boolean;
   hasNext?: boolean;
+  spacingAfter?: number;
   compact?: boolean;
   selected?: boolean;
   onSelect?: () => void;
@@ -83,6 +83,7 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
   onChangeTime,
   readOnly = false,
   hasNext = false,
+  spacingAfter,
   compact = false,
   selected = false,
   onSelect,
@@ -94,6 +95,7 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
   const t = useTranslations('plan');
   const tStatus = useTranslations('plan.statuses');
   const tDialog = useTranslations('plan.dialog');
+  const tCategory = useTranslations('plan.categories');
   const photo = useActivityImage({ id: activity.id, tripId: activity.tripId,
     imageUrl: imageUrl ?? activity.imageUrl }, readOnly, onImageSaved);
   const canChangeImage = !readOnly && Boolean(activity.id && activity.tripId);
@@ -158,8 +160,8 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
   const hasAmount =
     !compact &&
     (activity.estimatedCost > 0 || Number(activity.actualSpent) > 0);
-  // Địa chỉ và ghi chú chỉ một dòng, đủ chữ xem nhanh; đầy đủ nằm trong hộp thoại sửa.
-  const details = [activity.location, !compact ? activity.note : null].filter(Boolean).join(' · ');
+  // Thẻ hiển thị tóm tắt; hộp chi tiết hiển thị đầy đủ địa chỉ và ghi chú.
+  const details = [tCategory(activity.category), activity.location, !compact ? activity.note : null].filter(Boolean).join(' · ');
   const oneLineSx = {
     minWidth: 0,
     overflow: 'hidden',
@@ -183,6 +185,7 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
           {isCompleted ? <CheckCircleRoundedIcon /> : activity.status === 'IN_PROGRESS' ? <AccessTimeRoundedIcon /> : <SkipNextRoundedIcon />}
         </Box></Tooltip>}
       hasNext={hasNext}
+      spacingAfter={spacingAfter}
       selected={selected}
       onSelect={onSelect}
       mediaUrl={imageUrl ?? activity.imageUrl}
@@ -226,7 +229,8 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
                 aria-controls={open ? dialogId : undefined}
                 aria-label={`${tDialog('timeRangeLabel')}: ${value || '--:--'}`}
                 sx={{
-                  ...compactTouchTarget,
+                  // Keep a real 44px touch target and place the visible time at its bottom.
+                  minHeight: 44, alignItems: 'flex-end',
                   alignSelf: 'flex-start', maxWidth: '100%', minWidth: 0,
                   p: 0, justifyContent: 'flex-start', borderRadius: 'var(--app-radius-small)',
                   '@media (hover: hover) and (pointer: fine)': { '&:hover [data-activity-time]': { bgcolor: 'action.hover' } },
@@ -279,8 +283,8 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
                 size="small"
                 aria-label={t('activityActions', { title: activity.title })}
                 sx={{
-                  ...compactTouchTarget,
                   minWidth: 44,
+                  minHeight: 44,
                   py: 0,
                   px: 0,
                   color: 'text.secondary',

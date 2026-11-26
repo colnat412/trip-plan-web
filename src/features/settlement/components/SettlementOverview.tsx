@@ -1,5 +1,8 @@
 'use client';
 
+import { ApiError } from '@/base/api';
+import { hasPendingPayment } from '../utils/pending-payments';
+
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
 import { AppLoadingState, AppEmptyState, AppButton, AppFloatingActionButton, AppCard, AppPageContainer, AppPageHeader, AppSectionHeader, AppFilterChipGroup, AppToast, type AppToastSeverity } from '@/base/components/ui';
@@ -78,8 +81,14 @@ const SettlementOverview = () => {
     tripId: tripId ?? '',
   });
 
+  const settlementHistory = summary?.settlementHistory ?? [];
+
   const handleOpenRecordPayment = (prefill?: SuggestedSettlement) => {
     if (!canWrite || (prefill && !canManage && prefill.fromUserId !== actorId)) {
+      return;
+    }
+    if (prefill && hasPendingPayment(settlementHistory, prefill.fromUserId, prefill.toUserId, prefill.currency)) {
+      showToast(t('pendingPaymentNotice'), 'info');
       return;
     }
     if (prefill) {
@@ -96,6 +105,11 @@ const SettlementOverview = () => {
   };
 
   const handleCreateSettlement = async (data: CreateSettlementRequest) => {
+    if (!canWrite || isCreating) return;
+    if (hasPendingPayment(settlementHistory, data.payerId, data.payeeId, data.currency)) {
+      showToast(t('pendingPaymentNotice'), 'info');
+      return;
+    }
     try {
       await createSettlementAsync(data);
       showToast(t('toasts.createSuccess'), 'success');
@@ -103,11 +117,13 @@ const SettlementOverview = () => {
       refetch();
     } catch (error) {
       console.error('Error creating settlement:', error);
-      showToast(t('toasts.createError'), 'error');
+      showToast(t(error instanceof ApiError && error.status === 409 ? 'pendingPaymentNotice' : 'toasts.createError'), 'error');
+      void refetch();
     }
   };
 
   const handleDeleteSettlement = async (settlement: Settlement) => {
+    if (!canWrite || isDeleting || settlement.status !== 'PENDING' || settlement.createdBy !== actorId) return;
     try {
       await deleteSettlementAsync({ settlementId: settlement.id });
       showToast(t('toasts.deleteSuccess'), 'info');
@@ -115,6 +131,7 @@ const SettlementOverview = () => {
     } catch (error) {
       console.error('Error deleting settlement:', error);
       showToast(t('toasts.deleteError'), 'error');
+      void refetch();
     }
   };
 
@@ -123,7 +140,10 @@ const SettlementOverview = () => {
       await respondAsync({ settlementId: settlement.id, action });
       showToast(t('toasts.responseSuccess'));
       void refetch();
-    } catch { showToast(t('toasts.responseError'), 'error'); }
+    } catch {
+      showToast(t('toasts.responseError'), 'error');
+      void refetch();
+    }
   };
   const history = (summary?.settlementHistory ?? []).filter(item =>
     historyFilter === 'ALL' || (historyFilter === 'PENDING'
@@ -179,8 +199,6 @@ const SettlementOverview = () => {
         myStatus={summary?.myStatus ?? 'SETTLED'}
         currency={currency}
         totalExpenses={summary?.totalExpenses ?? 0}
-        totalSettled={summary?.totalSettled ?? 0}
-        onOpenRecordPayment={() => handleOpenRecordPayment()}
       />
 
       <AppCard component="section" sx={{ p: { xs: 2.5, sm: 2.5 } }}>
@@ -189,6 +207,7 @@ const SettlementOverview = () => {
 
         <SuggestedSettlementsList
           suggestedSettlements={summary?.suggestedSettlements ?? []}
+          settlements={settlementHistory}
           canSettle={(item) =>
             canWrite && (canManage || item.fromUserId === actorId)
           }
@@ -220,7 +239,7 @@ const SettlementOverview = () => {
         <SettlementHistoryTable
           settlements={history}
           canDelete={(item) =>
-            item.status === 'CONFIRMED' && item.createdBy === actorId
+            canWrite && item.status === 'PENDING' && item.createdBy === actorId
           }
           onDelete={handleDeleteSettlement}
           onRespond={handleRespond}
@@ -233,6 +252,7 @@ const SettlementOverview = () => {
         <RecordSettlementDialog
           open={dialogOpen}
           onClose={() => setDialogOpen(false)}
+          settlements={settlementHistory}
           members={memberOptions}
           fixedPayerId={!canManage ? actorId : undefined}
           initialData={dialogInitialData}

@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useId, useRef, useState } from 'react';
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { useLocale, useTranslations } from 'next-intl';
 import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
-import { AppCard } from '@/base/components/ui';
 import type { ActivityStatus, PlanActivity, RouteSegment } from '../types';
 import ActivityTimelineCard from './ActivityTimelineCard';
 import ActivityDistanceConnector from './ActivityDistanceConnector';
@@ -21,6 +20,7 @@ export interface DayTimelineListProps {
   onImageSaved?: () => void;
   destinationContext?: string;
   onAddActivity?: () => void;
+  onViewActivity?: (activity: PlanActivity) => void;
   onEditActivity?: (activity: PlanActivity) => void;
   onDeleteActivity?: (activity: PlanActivity) => void;
   onToggleStatus?: (activity: PlanActivity, nextStatus: ActivityStatus) => void;
@@ -40,6 +40,7 @@ const DayTimelineList = ({
   onImageSaved,
   destinationContext,
   onAddActivity,
+  onViewActivity,
   onEditActivity,
   onDeleteActivity,
   onToggleStatus,
@@ -115,22 +116,15 @@ const DayTimelineList = ({
         },
       }}
     >
-    <AppCard
+    <Box
       component="section"
       aria-busy={saving || undefined}
-      variant="transparent"
       sx={{
         width: '100%',
         minWidth: 0,
-        p: { xs: 0, sm: 0 },
-        borderRadius: 'var(--app-radius-card)',
-        overflow: 'visible',
-      }}
-      contentSx={{
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
-        minWidth: 0,
       }}
     >
       <SortableContext items={displayed.map(activity => activity.id)} strategy={verticalListSortingStrategy}>
@@ -151,6 +145,8 @@ const DayTimelineList = ({
             nextActivity?.location && nextActivity.location.trim().length > 0,
           );
 
+          const showConnector = Boolean(nextActivity && hasLocationCurrent && hasLocationNext);
+
           const segment =
             nextActivity &&
             segmentMap.get(`${activity.id}->${nextActivity.id}`);
@@ -163,7 +159,9 @@ const DayTimelineList = ({
                 activity={activity}
                 onImageSaved={onImageSaved}
                 hasNext={idx < displayed.length - 1}
+                spacingAfter={showConnector ? 0 : 1.5}
                 currency={currency}
+                onSelect={onViewActivity && !saving ? () => onViewActivity(activity) : undefined}
                 onEdit={onEditActivity}
                 onDelete={
                   canDeleteActivity?.(activity) === false
@@ -177,7 +175,7 @@ const DayTimelineList = ({
                 order={idx + 1}
               />
 
-              {nextActivity && hasLocationCurrent && hasLocationNext && (
+              {nextActivity && showConnector && (
                 <ActivityDistanceConnector
                   originLocation={activity.location!}
                   destinationLocation={nextActivity.location!}
@@ -193,7 +191,7 @@ const DayTimelineList = ({
         })}
       </Stack>
       </SortableContext>
-    </AppCard>
+    </Box>
     <DragOverlay dropAnimation={null}>
       {dragged && <div aria-hidden="true"><ActivityTimelineCard activity={dragged} currency={currency} readOnly compact /></div>}
     </DragOverlay>

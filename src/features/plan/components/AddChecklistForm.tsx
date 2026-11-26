@@ -26,7 +26,7 @@ const AddChecklistForm = ({
   const tCat = useTranslations('plan.checklistCategories');
 
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState<ChecklistCategory>('DOCUMENTS');
+  const [category, setCategory] = useState<ChecklistCategory | ''>('');
 
   const categoryOptions: AppSelectOption[] = useMemo(
     () => [
@@ -42,7 +42,7 @@ const AddChecklistForm = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLoading || !title.trim()) return;
+    if (isLoading || !category || !title.trim()) return;
 
     onSubmit({
       title: title.trim(),
@@ -62,7 +62,18 @@ const AddChecklistForm = ({
         width: '100%',
       }}
     >
-      <Box sx={{ minWidth: 0 }}>
+      <AppSelect
+        searchable
+        label={t('checklist.categorySelect')}
+        value={category}
+        onChange={(e) => setCategory(e.target.value as ChecklistCategory | '')}
+        options={[{ value: '', label: t('checklist.chooseCategory') }, ...categoryOptions]}
+        disabled={isLoading}
+        size="small"
+        fullWidth
+      />
+
+      {category && <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
         <AppTextField
           label={t('checklist.itemLabel')}
           placeholder={t('checklist.inputPlaceholder')}
@@ -72,34 +83,19 @@ const AddChecklistForm = ({
           size="small"
           fullWidth
         />
-      </Box>
-
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
-        <Box sx={{ flex: 1, minWidth: 0 }}>
-          <AppSelect
-            searchable
-            label={t('checklist.categorySelect')}
-            value={category}
-            onChange={(e) => setCategory(e.target.value as ChecklistCategory)}
-            options={categoryOptions}
-            disabled={isLoading}
-            size="small"
-            fullWidth
-          />
-        </Box>
 
         <AppButton
           type="submit"
           intent="primary"
           size="small"
           startIcon={<AddRoundedIcon />}
-          disabled={!title.trim()}
+          disabled={isLoading || !title.trim()}
           loading={isLoading}
           sx={{ flexShrink: 0, minHeight: 44, px: 2 }}
         >
           {t('checklist.addBtn')}
         </AppButton>
-      </Box>
+      </Box>}
     </Box>
   );
 };

@@ -5,7 +5,6 @@ import {
   Avatar,
   Box,
   Chip,
-  IconButton,
   Stack,
   Table,
   TableBody,
@@ -13,11 +12,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
   Typography,
 } from '@mui/material';
-import type { Theme } from '@mui/material/styles';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import UndoRoundedIcon from '@mui/icons-material/UndoRounded';
 import { useTranslations } from 'next-intl';
 
 import { AppConfirmDialog, AppEmptyState, AppButton } from '@/base/components/ui';
@@ -33,31 +30,6 @@ export interface SettlementHistoryTableProps {
   canDelete?: (settlement: Settlement) => boolean;
   onDelete?: (settlement: Settlement) => void;
 }
-
-const deleteButtonSx = (theme: Theme) => {
-  const palette = theme.vars?.palette ?? theme.palette;
-  return {
-    width: 44,
-    height: 44,
-    flexShrink: 0,
-    color: palette.error.main,
-    bgcolor: 'transparent',
-    '& .settlement-delete-glyph': {
-      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      width: 28, height: 28, borderRadius: '50%',
-      bgcolor: `color-mix(in srgb, ${palette.error.main} 6%, transparent)`,
-    },
-    '&:hover': {
-      bgcolor: 'transparent',
-      '& .settlement-delete-glyph': { bgcolor: `color-mix(in srgb, ${palette.error.main} 12%, transparent)` },
-    },
-    '&:active': {
-      bgcolor: 'transparent',
-      '& .settlement-delete-glyph': { bgcolor: `color-mix(in srgb, ${palette.error.main} 18%, transparent)` },
-    },
-    '&.Mui-focusVisible': { outline: `2px solid ${palette.error.main}`, outlineOffset: 2 },
-  };
-};
 
 const SettlementHistoryTable = ({
   settlements,
@@ -75,17 +47,17 @@ const SettlementHistoryTable = ({
   const statusChip = (item: Settlement) => <Chip size="small" label={t(`statuses.${item.status}`)}
     color={item.status === 'CONFIRMED' ? 'success' : item.status === 'PENDING' || item.status === 'DELETE_PENDING' ? 'warning' : 'default'}
     sx={{ height: 20, fontSize: '11px', fontWeight: 600, borderRadius: 'var(--app-radius-badge)', flexShrink: 0, maxWidth: '100%' }} />;
-  const deleteAction = (item: Settlement) => onDelete && canDelete?.(item) ? (
-    <Tooltip title={t('deleteConfirm.title')}>
-      <IconButton disabled={busy} aria-label={t('deleteConfirm.title')} onClick={() => setSelectedSettlement(item)} sx={deleteButtonSx}>
-        <Box component="span" className="settlement-delete-glyph"><CloseRoundedIcon sx={{ fontSize: 16 }} /></Box>
-      </IconButton>
-    </Tooltip>
+  const deleteAction = (item: Settlement) => item.status === 'PENDING' && onDelete && canDelete?.(item) ? (
+    <AppButton intent="text" size="small" wrapLabel startIcon={<UndoRoundedIcon fontSize="small" />}
+      disabled={busy} onClick={() => setSelectedSettlement(item)} sx={{ minHeight: 44, color: 'text.secondary' }}>
+      {t('actions.cancelPayment')}
+    </AppButton>
   ) : null;
-  const actions = (item: Settlement, includeDelete = true) => {
-    const pending = item.status === 'PENDING' || item.status === 'DELETE_PENDING';
-    const canRespond = pending && onRespond && (String(user?.id) === item.confirmationUserId || String(user?.id) === item.createdBy);
-    const deletion = includeDelete ? deleteAction(item) : null;
+  const actions = (item: Settlement) => {
+    const pending = item.status === 'PENDING';
+    const legacyDeletion = item.status === 'DELETE_PENDING';
+    const canRespond = (pending || legacyDeletion) && onRespond && (String(user?.id) === item.confirmationUserId || String(user?.id) === item.createdBy);
+    const deletion = deleteAction(item);
     if (!canRespond && !deletion) return null;
     return <Stack direction="row" useFlexGap spacing={1} sx={{
       flexWrap: 'wrap', justifyContent: 'flex-end', minWidth: 0,
@@ -95,8 +67,8 @@ const SettlementHistoryTable = ({
         <AppButton intent="primary" size="small" wrapLabel disabled={busy} onClick={() => onRespond(item, 'APPROVE')}>{t('actions.approve')}</AppButton>
         <AppButton intent="danger" size="small" wrapLabel disabled={busy} onClick={() => onRespond(item, 'REJECT')}>{t('actions.reject')}</AppButton>
       </>}
-      {pending && String(user?.id) === item.createdBy && onRespond && <AppButton intent="secondary" size="small" wrapLabel disabled={busy}
-        onClick={() => onRespond(item, 'CANCEL')}>{t('actions.cancel')}</AppButton>}
+      {legacyDeletion && String(user?.id) === item.createdBy && onRespond && <AppButton intent="secondary" size="small" wrapLabel disabled={busy}
+        onClick={() => onRespond(item, 'CANCEL')}>{t('actions.cancelDeletion')}</AppButton>}
       {deletion}
     </Stack>;
   };
@@ -116,32 +88,26 @@ const SettlementHistoryTable = ({
             return (
               <Stack key={settlement.id} role="listitem" spacing={1} sx={{ py: 1.25, minWidth: 0,
                 borderBottom: 1, borderColor: 'divider', '&:last-child': { borderBottom: 0 } }}>
-                <Box sx={{ ...rowStyles.row, py: 0 }}>
+                <Box sx={{ ...rowStyles.row, alignItems: 'flex-start', minHeight: 0, py: 0 }}>
                 <Avatar src={settlement.payerAvatarUrl || undefined} sx={rowStyles.avatar}>{getUserInitials(settlement.payerName || '')}</Avatar>
                 <Box sx={rowStyles.identity}>
                   <Box sx={{ ...rowStyles.heading, alignItems: 'flex-start' }}>
                     <Box sx={{ ...rowStyles.identity }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 0.75, minWidth: 0 }}>
-                        <Typography sx={{ ...rowStyles.primary, overflowWrap: 'anywhere' }}>{title}</Typography>
-                        {statusChip(settlement)}
-                      </Box>
+                      <Typography sx={{ ...rowStyles.primary, overflowWrap: 'anywhere' }}>{title}</Typography>
                       <Typography sx={rowStyles.secondary}>{date}</Typography>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25, flexShrink: 0, width: '46%', minWidth: 0 }}>
                       <Stack spacing={0.25} sx={{ alignItems: 'flex-end', flex: 1, minWidth: 0 }}>
                         <Typography sx={{ ...rowStyles.amount, whiteSpace: 'normal', overflowWrap: 'anywhere', textAlign: 'right' }}>{formatCurrency(settlement.amount, settlement.currency)}</Typography>
                         <Typography sx={{ ...rowStyles.secondary, textAlign: 'right' }}>{method}</Typography>
+                        {statusChip(settlement)}
                       </Stack>
-                      {/* The action slot keeps data aligned for creators, recipients and observers. */}
-                      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, minHeight: 44, flexShrink: 0 }}>
-                        {deleteAction(settlement)}
-                      </Box>
                     </Box>
                   </Box>
                   {settlement.note && <Typography sx={{ ...rowStyles.secondary, overflowWrap: 'anywhere' }}>{settlement.note}</Typography>}
                 </Box>
                 </Box>
-                {actions(settlement, false)}
+                {actions(settlement)}
               </Stack>
             );
           })}
@@ -364,6 +330,7 @@ const SettlementHistoryTable = ({
       {selectedSettlement && (
         <AppConfirmDialog
           open={Boolean(selectedSettlement)}
+          loading={busy}
           title={t('deleteConfirm.title')}
           description={t.rich('deleteConfirm.desc', {
             amount: formatCurrency(selectedSettlement.amount, selectedSettlement.currency),
@@ -375,7 +342,7 @@ const SettlementHistoryTable = ({
           cancelText={t('deleteConfirm.cancelBtn')}
           intent="danger"
           onConfirm={() => {
-            if (selectedSettlement && onDelete) {
+            if (!busy && selectedSettlement?.status === 'PENDING' && canDelete?.(selectedSettlement) && onDelete) {
               onDelete(selectedSettlement);
             }
             setSelectedSettlement(null);

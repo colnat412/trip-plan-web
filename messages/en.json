@@ -1,4 +1,9 @@
 {
+  "pullToRefresh": {
+    "pull": "Pull down to refresh",
+    "release": "Release to refresh",
+    "refreshing": "Refreshing…"
+  },
   "deviceExperience": {
     "message": "For the best experience, use your phone. All features remain available on desktop.",
     "dismiss": "Dismiss mobile experience tip"
@@ -878,7 +883,9 @@
     "actions": {
       "approve": "Confirm",
       "reject": "Reject",
-      "cancel": "Cancel request"
+      "cancel": "Cancel request",
+      "cancelPayment": "Cancel payment",
+      "cancelDeletion": "Withdraw deletion request"
     },
     "pageTitle": "Split costs",
     "pageSubtitle": "See who pays and who gets paid.",
@@ -891,7 +898,6 @@
     "myStatusOwesDesc": "This is what you still owe the group.",
     "myStatusSettledDesc": "You have nothing left to pay or receive.",
     "totalSpent": "Total spent",
-    "totalSettled": "Paid back",
     "suggestedTitle": "Who pays whom?",
     "suggestedDesc": "Suggested payments with fewer transfers.",
     "suggestedEmpty": "No payments left to make.",
@@ -944,16 +950,16 @@
       }
     },
     "deleteConfirm": {
-      "title": "Request payment deletion?",
-      "desc": "Ask the other party to delete <subject>{amount} from {payer} to {payee}</subject>? The payment stays in the balance until they confirm.",
-      "confirmBtn": "Request deletion",
+      "title": "Cancel this payment record?",
+      "desc": "Cancel <subject>{amount} from {payer} to {payee}</subject>? This unconfirmed payment has not affected balances. It will remain in history as cancelled.",
+      "confirmBtn": "Cancel payment",
       "cancelBtn": "Keep it"
     },
     "toasts": {
       "createSuccess": "Payment sent for confirmation.",
       "createError": "Could not save. Please retry.",
-      "deleteSuccess": "Deletion sent for confirmation.",
-      "deleteError": "Could not delete. Please retry.",
+      "deleteSuccess": "Payment record cancelled.",
+      "deleteError": "Could not cancel. Confirmed payments cannot be cancelled.",
       "responseSuccess": "Response saved.",
       "responseError": "Could not save response. Please retry."
     },
@@ -962,9 +968,11 @@
     "youInSentence": "you",
     "you": "You",
     "collapseSuggestions": "Show less",
-    "showAllSuggestions": "View all {count} transfers"
+    "showAllSuggestions": "View all {count} transfers",
+    "pendingPaymentNotice": "A payment from this payer to this recipient is awaiting confirmation. Confirm or cancel it before recording another."
   },
   "plan": {
+    "activityDetail": { "title": "Activity details", "actualSpent": "Spent so far" },
     "actionsLabel": "Itinerary actions",
     "activityActions": "Actions for {title}",
     "reorder": {
@@ -1105,6 +1113,7 @@
       "confirmResetDay": "Clear all activities"
     },
     "checklist": {
+      "chooseCategory": "Choose a category before adding an item",
       "title": "Trip preparation",
       "subtitle": "Check off all essential items and tasks before departure",
       "inputPlaceholder": "E.g. passport, power bank",

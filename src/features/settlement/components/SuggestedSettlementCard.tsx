@@ -10,10 +10,11 @@ import { settlementRowStyles as rowStyles } from './settlement-row.styles';
 
 export interface SuggestedSettlementCardProps {
   settlement: SuggestedSettlement;
+  pending?: boolean;
   onSettle?: (settlement: SuggestedSettlement) => void;
 }
 
-const SuggestedSettlementCard = ({ settlement, onSettle }: SuggestedSettlementCardProps) => {
+const SuggestedSettlementCard = ({ settlement, onSettle, pending = false }: SuggestedSettlementCardProps) => {
   const t = useTranslations('settlement');
   const locale = useLocale();
   const { user } = useUserContext();
@@ -39,6 +40,7 @@ const SuggestedSettlementCard = ({ settlement, onSettle }: SuggestedSettlementCa
           <Typography noWrap title={transferLabel} sx={rowStyles.secondary}>
             {transferLabel}
           </Typography>
+          {pending && <Typography sx={{ ...rowStyles.secondary, color: 'warning.main' }}>{t('statuses.PENDING')}</Typography>}
         </Stack>
         <Typography sx={{ ...rowStyles.amount, textAlign: 'right' }}>
           {formatCurrency(settlement.amount, settlement.currency, locale)}
