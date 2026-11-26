@@ -5,11 +5,7 @@ interface InstallPromptEvent extends Event {
 
 type InstallStatus = 'unavailable' | 'prompt' | 'ios' | 'installed';
 
-interface InstallState {
-  status: InstallStatus;
-  isInstalling: boolean;
-  hasError: boolean;
-}
+
 
 const initialState: InstallState = {
   status: 'unavailable',
@@ -21,6 +17,12 @@ let state = initialState;
 let deferredPrompt: InstallPromptEvent | null = null;
 let installedInSession = false;
 const subscribers = new Set<() => void>();
+
+interface InstallState {
+  status: InstallStatus;
+  isInstalling: boolean;
+  hasError: boolean;
+}
 
 const publish = (next: InstallState) => {
   if (

@@ -7,10 +7,7 @@ import type { TripStatus } from '../types';
 
 import { TRIP_STATUS_PRESENTATION } from '../constants/trip-status';
 
-interface TripStatusBadgeProps {
-  status: TripStatus;
-  size?: 'small' | 'medium';
-}
+
 
 type StatusThemeVariant =
   | 'success'
@@ -77,6 +74,11 @@ const getThemeStatusColors = (theme: Theme, variant: StatusThemeVariant) => {
       };
   }
 };
+
+interface TripStatusBadgeProps {
+  status: TripStatus;
+  size?: 'small' | 'medium';
+}
 
 const TripStatusBadge = ({
   status,

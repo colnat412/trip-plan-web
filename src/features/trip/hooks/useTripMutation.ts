@@ -15,15 +15,9 @@ type UpdateTripWithCoverPayload = UpdateTripPayload & {
   coverFile?: File | null;
 };
 
-export interface UseUpdateTripParams {
-  tripId: number | string;
-  options?: MutationCallbacks<ApiResponse<Trip>, UpdateTripWithCoverPayload>;
-}
 
-export interface UseDeleteTripParams {
-  tripId: number | string;
-  options?: MutationCallbacks<ApiResponse<null>, Record<string, never>>;
-}
+
+
 
 type CreateTripWithCoverPayload = CreateTripPayload & { coverFile?: File | null };
 
@@ -55,6 +49,11 @@ export function useCreateTrip(
     createTrip: createMutation.mutate,
     createTripAsync: createMutation.mutateAsync,
   };
+}
+
+export interface UseUpdateTripParams {
+  tripId: number | string;
+  options?: MutationCallbacks<ApiResponse<Trip>, UpdateTripWithCoverPayload>;
 }
 
 export function useUpdateTrip({ tripId, options }: UseUpdateTripParams) {
@@ -107,6 +106,11 @@ export function useUpdateTrip({ tripId, options }: UseUpdateTripParams) {
     updateTrip: updateMutation.mutate,
     updateTripAsync: updateMutation.mutateAsync,
   };
+}
+
+export interface UseDeleteTripParams {
+  tripId: number | string;
+  options?: MutationCallbacks<ApiResponse<null>, Record<string, never>>;
 }
 
 export function useDeleteTrip({ tripId, options }: UseDeleteTripParams) {

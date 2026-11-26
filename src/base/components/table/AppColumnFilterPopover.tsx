@@ -21,15 +21,7 @@ import { useTranslations } from 'next-intl';
 import { AppButton, AppTextField } from '../ui';
 import type { AppTableColumn, ColumnFilterValue } from './types';
 
-interface AppColumnFilterPopoverProps<T> {
-  anchorEl: HTMLElement | null;
-  open: boolean;
-  onClose: () => void;
-  column: AppTableColumn<T>;
-  currentValue: ColumnFilterValue;
-  onApply: (value: ColumnFilterValue) => void;
-  onReset: () => void;
-}
+
 
 interface FilterPopoverFormProps<T> {
   column: AppTableColumn<T>;
@@ -306,6 +298,16 @@ function FilterPopoverForm<T>({
       </Stack>
     </Stack>
   );
+}
+
+interface AppColumnFilterPopoverProps<T> {
+  anchorEl: HTMLElement | null;
+  open: boolean;
+  onClose: () => void;
+  column: AppTableColumn<T>;
+  currentValue: ColumnFilterValue;
+  onApply: (value: ColumnFilterValue) => void;
+  onReset: () => void;
 }
 
 const AppColumnFilterPopover = <T,>({

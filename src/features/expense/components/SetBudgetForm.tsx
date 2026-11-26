@@ -14,6 +14,10 @@ import type {
   TripBudgetSummary,
 } from '../types';
 
+
+
+const CATEGORY_KEYS = TRIP_CATEGORIES;
+
 export interface SetBudgetFormProps {
   summary: TripBudgetSummary | null;
   tripCurrency?: string;
@@ -21,8 +25,6 @@ export interface SetBudgetFormProps {
   onSubmit: (payload: SetBudgetPayload) => void;
   formId: string;
 }
-
-const CATEGORY_KEYS = TRIP_CATEGORIES;
 
 const SetBudgetForm = ({
   summary,

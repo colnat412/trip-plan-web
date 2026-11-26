@@ -15,26 +15,17 @@ import type {
   UpdateExpensePayload,
 } from '../types';
 
+
+
+
+
+
+
+
+
 export interface UseCreateExpenseParams {
   tripId: number | string;
   options?: MutationCallbacks<ApiResponse<Expense>, CreateExpensePayload>;
-}
-
-export interface UseUpdateExpenseParams {
-  tripId: number | string;
-  expenseId: number | string;
-  options?: MutationCallbacks<ApiResponse<Expense>, UpdateExpensePayload>;
-}
-
-export interface UseDeleteExpenseParams {
-  tripId: number | string;
-  expenseId: number | string;
-  options?: MutationCallbacks<ApiResponse<null>, Record<string, never>>;
-}
-
-export interface UseSetBudgetParams {
-  tripId: number | string;
-  options?: MutationCallbacks<ApiResponse<TripBudgetSummary>, SetBudgetPayload>;
 }
 
 export function useCreateExpense({ tripId, options }: UseCreateExpenseParams) {
@@ -48,6 +39,12 @@ export function useCreateExpense({ tripId, options }: UseCreateExpenseParams) {
     createExpense: createMutation.mutate,
     createExpenseAsync: createMutation.mutateAsync,
   };
+}
+
+export interface UseUpdateExpenseParams {
+  tripId: number | string;
+  expenseId: number | string;
+  options?: MutationCallbacks<ApiResponse<Expense>, UpdateExpensePayload>;
 }
 
 export function useUpdateExpense({
@@ -65,6 +62,12 @@ export function useUpdateExpense({
     updateExpense: updateMutation.mutate,
     updateExpenseAsync: updateMutation.mutateAsync,
   };
+}
+
+export interface UseDeleteExpenseParams {
+  tripId: number | string;
+  expenseId: number | string;
+  options?: MutationCallbacks<ApiResponse<null>, Record<string, never>>;
 }
 
 export function useDeleteExpense({
@@ -87,6 +90,11 @@ export function useDeleteExpense({
     deleteExpense: deleteMutation.mutate,
     deleteExpenseAsync: deleteMutation.mutateAsync,
   };
+}
+
+export interface UseSetBudgetParams {
+  tripId: number | string;
+  options?: MutationCallbacks<ApiResponse<TripBudgetSummary>, SetBudgetPayload>;
 }
 
 export function useSetBudget({ tripId, options }: UseSetBudgetParams) {

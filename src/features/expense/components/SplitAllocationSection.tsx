@@ -17,6 +17,13 @@ export interface SplitMember {
   avatarUrl?: string | null;
 }
 
+
+
+interface CustomAllocation {
+  selected?: boolean;
+  amount?: number;
+}
+
 export interface SplitAllocationSectionProps {
   splitType: EditableSplitType;
   disabled?: boolean;
@@ -30,11 +37,6 @@ export interface SplitAllocationSectionProps {
     isValid: boolean,
     errorMessage?: string,
   ) => void;
-}
-
-interface CustomAllocation {
-  selected?: boolean;
-  amount?: number;
 }
 
 const SplitAllocationSection = ({

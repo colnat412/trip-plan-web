@@ -16,11 +16,7 @@ type NavigationId = (typeof NAVIGATION_IDS)[number];
 
 const MAX_MOBILE_NAVIGATION_ACTIONS = 5;
 
-export interface AppNavigationItem {
-  id: NavigationId;
-  href: string;
-  icon: ReactNode;
-}
+
 
 export const APP_NAVIGATION_ITEMS: AppNavigationItem[] =
   NAVIGATION_IDS.filter(id => id === 'overview' || id === 'trips' || id === 'templates' || id === 'settings').flatMap((id) => {
@@ -50,6 +46,12 @@ export const MOBILE_PRIMARY_NAVIGATION_ITEMS = [...PRIMARY_NAVIGATION_ITEMS].sor
 );
 
 // Library destinations share one main navigation entry.
+export interface AppNavigationItem {
+  id: NavigationId;
+  href: string;
+  icon: ReactNode;
+}
+
 export const isAppNavigationActive = (pathname: string, item: AppNavigationItem): boolean =>
   pathname === item.href || pathname.startsWith(`${item.href}/`) ||
   (item.id === 'expenses' && (pathname === '/settlement' || pathname.startsWith('/settlement/'))) ||

@@ -9,6 +9,11 @@ import {
 import usePlanMapStops from '../hooks/usePlanMapStops';
 import type { PlanActivity } from '../types';
 
+
+
+// Tâm mặc định (Việt Nam) chỉ dùng khi chưa có điểm nào; bản đồ được fitBounds ngay khi có điểm.
+const DEFAULT_CENTER = { latitude: 16.05, longitude: 108.2 };
+
 export interface PlanMapPanelProps {
   // Chỉ hoạt động của ngày đang chọn.
   activities: PlanActivity[];
@@ -16,9 +21,6 @@ export interface PlanMapPanelProps {
   loadingActivities?: boolean;
   bottomInset?: number;
 }
-
-// Tâm mặc định (Việt Nam) chỉ dùng khi chưa có điểm nào; bản đồ được fitBounds ngay khi có điểm.
-const DEFAULT_CENTER = { latitude: 16.05, longitude: 108.2 };
 
 const PlanMapPanel = ({
   activities, destination = '', loadingActivities = false, bottomInset = 0,

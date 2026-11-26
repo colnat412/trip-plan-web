@@ -25,11 +25,7 @@ import { useUserContext } from '@/features/user/context/UserContext';
 import usePlanActivityLogs from '../hooks/usePlanActivityLogs';
 import type { ActivityLogAction, PlanActivityLog } from '../types';
 
-export interface ActivityLogDialogProps {
-  open: boolean;
-  onClose: () => void;
-  tripId: string | number | null;
-}
+
 
 const ACTION_CONFIGS = {
   CREATED: {
@@ -90,6 +86,12 @@ const formatLogTime = (isoString: string) => {
     return isoString;
   }
 };
+
+export interface ActivityLogDialogProps {
+  open: boolean;
+  onClose: () => void;
+  tripId: string | number | null;
+}
 
 const ActivityLogDialog = ({
   open,

@@ -16,14 +16,7 @@ export type AppCardVariant =
   | 'flat'
   | 'danger';
 
-export interface AppCardProps extends Omit<CardProps, 'variant'> {
-  variant?: AppCardVariant;
-  interactive?: boolean;
-  icon?: ReactNode;
-  iconSize?: number | string;
-  contentSx?: SxProps<Theme>;
-  layout?: 'default' | 'row';
-}
+
 
 function getCardStyles(
   variant: AppCardVariant,
@@ -124,6 +117,15 @@ function getCardStyles(
       }),
     };
   };
+}
+
+export interface AppCardProps extends Omit<CardProps, 'variant'> {
+  variant?: AppCardVariant;
+  interactive?: boolean;
+  icon?: ReactNode;
+  iconSize?: number | string;
+  contentSx?: SxProps<Theme>;
+  layout?: 'default' | 'row';
 }
 
 const AppCard = ({

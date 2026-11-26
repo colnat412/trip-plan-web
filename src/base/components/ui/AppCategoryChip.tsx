@@ -7,9 +7,7 @@ import { type TripCategory, CATEGORY_CONFIG } from '@/base/constants';
 export type CategoryType = TripCategory | string;
 export { CATEGORY_CONFIG };
 
-export interface AppCategoryChipProps extends Omit<ChipProps, 'color'> {
-  category: CategoryType;
-}
+
 
 type KnownCategory =
   | 'ACCOMMODATION'
@@ -19,6 +17,10 @@ type KnownCategory =
   | 'SIGHTSEEING'
   | 'SHOPPING'
   | 'OTHER';
+
+export interface AppCategoryChipProps extends Omit<ChipProps, 'color'> {
+  category: CategoryType;
+}
 
 const AppCategoryChip = ({
   category,

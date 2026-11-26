@@ -11,6 +11,14 @@ import { useTranslations } from 'next-intl';
 import { AppButton, AppCard, AppCheckbox } from '@/base/components/ui';
 import type { PolicyId } from '../constants';
 
+
+
+const icons = {
+  terms: GavelRoundedIcon,
+  content: PolicyRoundedIcon,
+  privacy: ShieldRoundedIcon,
+};
+
 interface PolicyAcceptanceCardProps {
   policy: PolicyId;
   checked: boolean;
@@ -18,12 +26,6 @@ interface PolicyAcceptanceCardProps {
   onRead: () => void;
   onChange: (checked: boolean) => void;
 }
-
-const icons = {
-  terms: GavelRoundedIcon,
-  content: PolicyRoundedIcon,
-  privacy: ShieldRoundedIcon,
-};
 
 const PolicyAcceptanceCard = ({
   policy,

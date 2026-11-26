@@ -24,11 +24,7 @@ import { formatDate } from '@/base/utils';
 import { useTripContext } from '../context/TripContext';
 import { useCreateTrip } from '../hooks/useTripMutation';
 
-interface CreateTripDialogProps {
-  mode?: 'manual' | 'ai';
-  open: boolean;
-  onClose: () => void;
-}
+
 
 interface TripFormErrors {
   name?: string;
@@ -44,6 +40,12 @@ const CURRENCY_OPTIONS = [
   // { value: 'JPY', label: 'JPY' },
   // { value: 'THB', label: 'THB' },
 ];
+
+interface CreateTripDialogProps {
+  mode?: 'manual' | 'ai';
+  open: boolean;
+  onClose: () => void;
+}
 
 const CreateTripDialog = ({
   open,

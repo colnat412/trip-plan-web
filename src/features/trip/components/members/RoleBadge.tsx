@@ -4,11 +4,13 @@ import { Chip } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import type { TripMemberRole } from '../../types/member.types';
 
+
+
+const ROLE_COLORS = { OWNER: 'warning', VICE: 'secondary', MEMBER: 'success' } as const;
+
 interface RoleBadgeProps {
   role: TripMemberRole;
 }
-
-const ROLE_COLORS = { OWNER: 'warning', VICE: 'secondary', MEMBER: 'success' } as const;
 
 const RoleBadge = ({ role }: RoleBadgeProps) => {
   const t = useTranslations('members.roles');

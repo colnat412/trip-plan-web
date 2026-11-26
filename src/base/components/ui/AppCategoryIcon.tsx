@@ -4,11 +4,7 @@ import { Box } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { CATEGORY_CONFIG, type ActivityCategory } from '@/base/constants';
 
-export interface AppCategoryIconProps {
-  category: ActivityCategory | string;
-  size?: number;
-  bare?: boolean;
-}
+
 
 const CATEGORY_TONES = {
   ACCOMMODATION: 'primary',
@@ -18,6 +14,12 @@ const CATEGORY_TONES = {
   SIGHTSEEING: 'info',
   SHOPPING: 'secondary',
 } as const;
+
+export interface AppCategoryIconProps {
+  category: ActivityCategory | string;
+  size?: number;
+  bare?: boolean;
+}
 
 const AppCategoryIcon = ({ category, size = 40, bare = false }: AppCategoryIconProps) => {
   const t = useTranslations('expense.categories');

@@ -18,12 +18,7 @@ import DestinationAutocomplete from './DestinationAutocomplete';
 import { useUpdateTrip } from '../hooks/useTripMutation';
 import type { Trip } from '../types';
 
-interface EditTripFormProps {
-  trip: Trip;
-  onClose: () => void;
-  onSuccess?: (updatedTrip: Trip) => void;
-  onBusyChange: (busy: boolean) => void;
-}
+
 
 interface TripFormErrors {
   name?: string;
@@ -36,6 +31,13 @@ const CURRENCY_OPTIONS = [
   { value: 'VND', label: 'VND' },
   { value: 'USD', label: 'USD' },
 ];
+
+interface EditTripFormProps {
+  trip: Trip;
+  onClose: () => void;
+  onSuccess?: (updatedTrip: Trip) => void;
+  onBusyChange: (busy: boolean) => void;
+}
 
 const EditTripForm = ({
   trip,
