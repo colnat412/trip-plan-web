@@ -3,11 +3,11 @@
 import { contentColumn } from '@/base/theme/content-layout';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppPagination, AppLoadingState, AppButton, AppEmptyState, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
+import { AppPagination, AppLoadingState, AppButton, AppEmptyState, AppPageHeader, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { useTranslations } from 'next-intl';
 
 import useTemplateLibrary from '../hooks/useTemplateLibrary';
@@ -41,11 +41,7 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: {
           </AppSectionLink>
         } />
       ) : (
-        <Typography component="h1" sx={{
-          fontSize: { xs: 24, sm: 28 }, fontWeight: 700, overflowWrap: 'anywhere',
-        }}>
-          {t(savedOnly ? 'savedLibrary' : 'library')}
-        </Typography>
+        <AppPageHeader title={t(savedOnly ? 'savedLibrary' : 'library')} />
       )}
       {!compact && !savedOnly && (
         <TemplateFilters

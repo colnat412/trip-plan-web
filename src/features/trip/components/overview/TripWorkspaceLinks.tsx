@@ -5,6 +5,7 @@ import { ButtonBase, Divider, Stack, Typography } from '@mui/material';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
+import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
 import { useTranslations } from 'next-intl';
 
 export default function TripWorkspaceLinks({ tripId }: { tripId: string | number }) {
@@ -13,6 +14,7 @@ export default function TripWorkspaceLinks({ tripId }: { tripId: string | number
     { label: 'plan', href: '/plan', icon: <CalendarMonthOutlinedIcon /> },
     { label: 'expenses', href: '/expenses', icon: <AccountBalanceWalletOutlinedIcon /> },
     { label: 'settlement', href: '/settlement', icon: <PaymentsOutlinedIcon /> },
+    { label: 'notes', href: '/notes', icon: <NotesRoundedIcon /> },
   ] as const;
   return <Stack component="nav" aria-label={t('navigation')} direction="row" divider={<Divider orientation="vertical" flexItem />} sx={{ minWidth: 0 }}>
     {destinations.map(item => <ButtonBase key={item.href} component={Link} href={`${item.href}?tripId=${encodeURIComponent(String(tripId))}`} disableRipple sx={{

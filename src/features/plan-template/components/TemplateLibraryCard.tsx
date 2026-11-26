@@ -26,18 +26,21 @@ const TemplateLibraryCard = ({ template }: { template: TemplateCardData }) => {
       onClick={(event) => {
         if (!(event.target as HTMLElement).closest('a, button, [data-template-save]')) router.push(href);
       }}
-      sx={(theme) => ({
-        p: 0, minWidth: 0, height: '100%', cursor: 'pointer',
-        borderRadius: 'var(--app-radius-card)', border: 1, borderColor: 'divider',
-        backgroundColor: { xs: coverUrl ? alpha(theme.palette.common.black, 0.64) : tonalSurface(theme, 22).backgroundColor, sm: theme.palette.background.paper },
-        backgroundImage: { xs: coverUrl ? `url(${JSON.stringify(coverUrl)})` : 'none', sm: 'none' },
-        backgroundBlendMode: 'multiply', backgroundSize: 'cover', backgroundPosition: 'center',
-        color: { xs: coverUrl ? theme.palette.common.white : tonalSurface(theme).color, sm: theme.palette.text.primary },
-        '&:hover, &:focus-within': { borderColor: 'primary.main' },
-        '@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active)': {
-          backgroundColor: { xs: coverUrl ? theme.palette.common.black : theme.palette.background.paper, sm: theme.palette.background.paper },
-        },
-      })}
+      sx={(theme) => {
+        const palette = theme.vars?.palette ?? theme.palette;
+        return {
+          p: { xs: 0, sm: 0 }, minWidth: 0, height: '100%', cursor: 'pointer',
+          borderRadius: 'var(--app-radius-card)', border: 1, borderColor: 'divider',
+          backgroundColor: { xs: coverUrl ? alpha(theme.palette.common.black, 0.64) : tonalSurface(theme, 22).backgroundColor, sm: palette.background.paper },
+          backgroundImage: { xs: coverUrl ? `url(${JSON.stringify(coverUrl)})` : 'none', sm: 'none' },
+          backgroundBlendMode: 'multiply', backgroundSize: 'cover', backgroundPosition: 'center',
+          color: { xs: coverUrl ? theme.palette.common.white : tonalSurface(theme).color, sm: palette.text.primary },
+          '&:hover, &:focus-within': { borderColor: 'primary.main' },
+          '@media (prefers-reduced-transparency: reduce), (prefers-contrast: more), (forced-colors: active)': {
+            backgroundColor: { xs: coverUrl ? theme.palette.common.black : palette.background.paper, sm: palette.background.paper },
+          },
+        };
+      }}
       contentSx={{ display: 'flex', flexDirection: { xs: 'row', sm: 'column' }, height: '100%', minWidth: 0 }}
     >
       <Box sx={{

@@ -38,7 +38,7 @@ const AppShell = ({
 }: AppShellProps) => {
   const pathname = usePathname();
   const tabSection = getTabSection(pathname);
-  const tripWorkspace = ['/plan', '/expenses', '/settlement'].includes(pathname);
+  const tripWorkspace = ['/plan', '/expenses', '/settlement', '/notes'].includes(pathname);
   const mainRef = useRef<HTMLElement | null>(null);
   const [mainElement, setMainElement] = useState<HTMLElement | null>(null);
   const attachMain = useCallback((element: HTMLElement | null) => {
@@ -102,7 +102,7 @@ const AppShell = ({
           pr: 'env(safe-area-inset-right, 0px)',
         })}
       >
-        <AppPageLoadingProvider>
+        <AppPageLoadingProvider contained={pathname === '/notes'}>
           <NotificationTargetContent>
             {tripWorkspace && withAccount ? <AppTripWorkspace>{children}</AppTripWorkspace> : children}
           </NotificationTargetContent>

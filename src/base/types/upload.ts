@@ -1,4 +1,4 @@
-export type UploadPurpose = 'PROFILE_AVATAR' | 'TRIP_COVER' | 'EXPENSE_RECEIPT' | 'ACTIVITY_IMAGE';
+export type UploadPurpose = 'PROFILE_AVATAR' | 'TRIP_COVER' | 'EXPENSE_RECEIPT' | 'ACTIVITY_IMAGE' | 'TRIP_NOTE_IMAGE';
 export interface UploadedImage {
   uploadId: string;
   url: string;

@@ -188,6 +188,7 @@ const AppSelectInput = ({
         <>
           <AppTextField
             {...params}
+            fullWidth
             label={compact ? undefined : label}
             placeholder={searchPlaceholder ?? (compact ? label : undefined)}
             error={error}

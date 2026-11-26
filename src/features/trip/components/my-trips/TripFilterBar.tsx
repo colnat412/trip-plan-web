@@ -68,7 +68,7 @@ const TripFilterBar = ({
     ...destinations.map((d) => ({ value: d, label: d.split(',')[0].trim() || d, searchText: d })),
   ];
 
-const currencyOptions: AppSelectOption[] = [
+  const currencyOptions: AppSelectOption[] = [
     { value: '', label: t('all') },
     ...currencies.map((code) => ({ value: code, label: code })),
   ];
@@ -105,8 +105,8 @@ const currencyOptions: AppSelectOption[] = [
   };
 
   const filterSelectSx = {
-    flex: { xs: '1 1 calc(33.333% - 6px)', sm: '0 0 auto' },
-    minWidth: { xs: 80, sm: 120 },
+    flex: { xs: '1 1 calc(50% - 4px)', sm: '1 1 140px' },
+    minWidth: 0,
   };
 
   return (
@@ -149,7 +149,7 @@ const currencyOptions: AppSelectOption[] = [
               ) : null,
             },
           }}
-          sx={{ flex: 1 }}
+          sx={{ flex: 1, minWidth: 0 }}
         />
 
         <Box
@@ -157,7 +157,9 @@ const currencyOptions: AppSelectOption[] = [
             display: 'flex',
             flexWrap: { xs: 'wrap', sm: 'nowrap' },
             gap: 1,
-            width: { xs: '100%', md: 'auto' },
+            width: { xs: '100%', md: 400 },
+            minWidth: 0,
+            flexShrink: 0,
           }}
         >
           <AppSelect
@@ -169,10 +171,10 @@ const currencyOptions: AppSelectOption[] = [
             onChange={(e) =>
               onFilterChange({ destination: String(e.target.value ?? '') })
             }
-            sx={filterSelectSx}
+            sx={{ ...filterSelectSx, flexBasis: { xs: 'calc(50% - 4px)', sm: 240 } }}
           />
 
-<AppSelect
+          <AppSelect
             variantType="filter"
             label={t('allCurrencies')}
             value={currency}

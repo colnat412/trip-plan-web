@@ -14,9 +14,10 @@ import { getTabIndex, isSameTabSection } from '@/base/utils/tab-section';
 const revealContent = keyframes`from { opacity: 0.35; } to { opacity: 1; }`;
 
 /** Navigation stays mounted in the layout; only the body participates in loading. */
-export default function AppTabSection({ navigation, children }: {
+export default function AppTabSection({ navigation, children, contained = false }: {
   navigation: ReactNode;
   children: ReactNode;
+  contained?: boolean;
 }) {
   const pathname = usePathname();
   const [visit, setVisit] = useState({ pathname, direction: 0 });
@@ -26,16 +27,16 @@ export default function AppTabSection({ navigation, children }: {
     setVisit({ pathname, direction });
   }
   return (
-    <AppPageContainer sx={{ flex: 1, minHeight: 0 }}>
+    <AppPageContainer sx={{ flex: contained ? '1 1 0' : 1, minHeight: 0, ...(contained && { overflow: 'hidden' }) }}>
       <Box data-tab-navigation sx={{
         position: 'sticky', top: 0, zIndex: 2, flexShrink: 0,
         bgcolor: 'transparent', borderRadius: SEGMENTED_RADIUS,
       }}>
         {navigation}
       </Box>
-      <AppPageLoadingProvider scope="section">
+      <AppPageLoadingProvider scope="section" contained={contained}>
         <Box key={pathname} sx={{
-          ...contentColumn, position: 'relative',
+          ...contentColumn, position: 'relative', ...(contained && { flex: '1 1 0', overflow: 'hidden' }),
           animation: visit.direction === 0 ? 'none' : `${revealContent} 220ms cubic-bezier(0.2, 0, 0, 1)`,
           '@media (prefers-reduced-motion: reduce)': { animation: 'none' },
         }}>

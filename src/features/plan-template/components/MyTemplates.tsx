@@ -6,7 +6,7 @@ import AppErrorState from '@/base/components/ui/AppErrorState';
 import { AppPagination, AppLoadingState, AppEmptyState, AppPageHeader, AppButton } from '@/base/components/ui';
 import { useState } from 'react';
 import Link from 'next/link';
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import Alert from '@/base/components/ui/AppAlert';
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import { useTranslations } from 'next-intl';
@@ -53,14 +53,16 @@ const MyTemplates = () => {
             {t('unpublishError')}
           </Alert>
         )}
-        {currentData?.content.map((item) => (
-          <MyTemplateCard
-            key={item.id}
-            template={item}
-            isUnpublishing={unpublish.isPending}
-            onUnpublish={unpublish.mutate}
-          />
-        ))}
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, minWidth: 0 }}>
+          {currentData?.content.map((item) => (
+            <Box key={item.id} sx={{ minWidth: 0, display: 'flex', flex: {
+              xs: '0 0 100%', sm: '0 0 calc((100% - 16px) / 2)',
+              lg: '0 0 calc((100% - 32px) / 3)', xl: '0 0 calc((100% - 48px) / 4)',
+            } }}>
+              <MyTemplateCard template={item} isUnpublishing={unpublish.isPending} onUnpublish={unpublish.mutate} />
+            </Box>
+          ))}
+        </Box>
         {(currentData?.totalPages ?? 0) > 0 && (
           <AppPagination
             page={page}

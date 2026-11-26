@@ -35,6 +35,10 @@ export interface AppActionMenuProps {
   ariaLabel?: string;
   sheetTitle?: string;
   minTouchTarget?: boolean;
+  /** Optional external anchor for context menus; existing trigger-driven menus stay uncontrolled. */
+  anchorEl?: HTMLElement | null;
+  onClose?: () => void;
+  hideTrigger?: boolean;
 }
 
 const AppActionMenu = ({
@@ -45,23 +49,29 @@ const AppActionMenu = ({
   ariaLabel,
   sheetTitle,
   minTouchTarget = false,
+  anchorEl: externalAnchor,
+  onClose,
+  hideTrigger = false,
 }: AppActionMenuProps) => {
   const menuId = useId();
   const t = useTranslations('dialog');
   const menuLabel = ariaLabel ?? t('actions');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [internalAnchor, setAnchorEl] = useState<HTMLElement | null>(null);
+  const controlled = externalAnchor !== undefined;
+  const anchorEl = controlled ? externalAnchor : internalAnchor;
   const open = Boolean(anchorEl);
 
   const handleOpen = (event: MouseEvent<HTMLElement>) => {
     event.stopPropagation();
-    setAnchorEl(event.currentTarget);
+    if (!controlled) setAnchorEl(event.currentTarget);
   };
 
   const handleClose = (event?: MouseEvent) => {
     event?.stopPropagation();
-    setAnchorEl(null);
+    if (!controlled) setAnchorEl(null);
+    onClose?.();
   };
 
   const handleItemClick = async (item: AppActionMenuItem, event: MouseEvent) => {
@@ -128,7 +138,7 @@ const AppActionMenu = ({
 
   return (
     <>
-      {trigger ? (
+      {!hideTrigger && (trigger ? (
         <span onClick={handleOpen} style={{ display: 'inline-flex' }}>
           {trigger}
         </span>
@@ -151,7 +161,7 @@ const AppActionMenu = ({
         >
           {triggerIcon ?? <MoreVertRoundedIcon fontSize={size} />}
         </IconButton>
-      )}
+      ))}
 
       {isMobile ? (
         <AppDialog open={open} onClose={handleClose} title={sheetTitle ?? menuLabel} showSheetHandle hideHeader>

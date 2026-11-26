@@ -33,14 +33,16 @@ const MyTemplateCard = ({
     <AppCard
       component="article"
       sx={{
-        p: { xs: 2, sm: 2.5 },
+        p: { xs: 1.5, sm: 1.75 },
+        width: '100%',
+        height: '100%',
         borderRadius: 'var(--app-radius-card)',
         minWidth: 0,
         overflowWrap: 'anywhere',
       }}
     >
       <Stack spacing={1.5}>
-        {template.coverUrl && <TemplateBanner src={template.coverUrl} title={template.title} compact />}
+        <TemplateBanner src={template.coverUrl} title={template.title} compact />
         <Stack
           direction="row"
           useFlexGap
@@ -55,7 +57,7 @@ const MyTemplateCard = ({
             <Typography
               component="h2"
               title={template.title}
-              sx={{ fontSize: '17px', fontWeight: 700, ...previewTextSx }}
+              sx={{ fontSize: '14px', fontWeight: 700, ...previewTextSx }}
             >
               {template.title}
             </Typography>

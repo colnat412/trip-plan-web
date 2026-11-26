@@ -15,7 +15,7 @@ import { glassSurface } from '@/base/theme/surfaces';
 const AppTopBar = ({ guest = false }: { guest?: boolean }) => {
   const t = useTranslations('navigation');
   const pathname = usePathname();
-  const workspace = !guest && ['/plan', '/expenses', '/settlement'].includes(pathname);
+  const workspace = !guest && ['/plan', '/expenses', '/settlement', '/notes'].includes(pathname);
   return (
     <Box
       component="header"

@@ -292,16 +292,18 @@ const ExpenseOverview = () => {
 
       <AppCard component="section"
         sx={{ width: '100%', minWidth: 0, flexShrink: 0, p: { xs: 2, sm: 2.5 } }}
-        contentSx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+        contentSx={{ display: 'flex', flexDirection: { xs: 'column', xl: 'row' }, gap: { xs: 2, xl: 3 }, alignItems: { xl: 'center' } }}
       >
         <Box
           sx={{
             display: 'grid',
             gridTemplateColumns: {
               xs: '1fr',
-              sm: 'repeat(3, 1fr)',
+              sm: 'repeat(3, minmax(0, 1fr))',
             },
             gap: 2,
+            minWidth: 0,
+            flex: { xl: '1.2 1 0' },
             alignItems: 'stretch',
           }}
         >
@@ -315,7 +317,8 @@ const ExpenseOverview = () => {
         </Box>
 
         {summary?.categoryBreakdown && (
-          <Stack spacing={1.5} sx={{ minWidth: 0 }}>
+          <Stack spacing={1.5} sx={{ minWidth: 0, flex: { xl: '1 1 0' },
+            borderLeft: { xl: 1 }, borderColor: 'divider', pl: { xl: 3 } }}>
             <CategorySpendingChart
               compact
               key={String(tripId)}

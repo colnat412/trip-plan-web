@@ -18,8 +18,8 @@ const AppTripWorkspace = ({ children }: { children: ReactNode }) => {
   const tripId = requestedTrip ?? (activeTrip ? String(activeTrip.id) : null);
   const workspaceError = error ?? (requestedTrip === String(selectedTripId) ? selectedTripError : null);
   const waiting = requestedTrip && String(activeTrip?.id) !== requestedTrip;
-  return <AppTabSection navigation={<AppRouteTabs pill active={pathname} label={t('navigation')}
-    items={([['/plan', 'plan'], ['/expenses', 'expenses'], ['/settlement', 'settlement']] as const).map(([href, label]) => ({ id: href, href: tripId ? `${href}?tripId=${encodeURIComponent(tripId)}` : href, label: t(label) }))} />}>
+  return <AppTabSection contained={pathname === '/notes'} navigation={<AppRouteTabs pill active={pathname} label={t('navigation')}
+    items={([['/plan', 'plan'], ['/expenses', 'expenses'], ['/settlement', 'settlement'], ['/notes', 'notes']] as const).map(([href, label]) => ({ id: href, href: tripId ? `${href}?tripId=${encodeURIComponent(tripId)}` : href, label: t(label) }))} />}>
     {waiting ? workspaceError ? <AppErrorState status={workspaceError.status} onRetry={() => refetchTrips()} /> : <AppLoadingState /> : children}
   </AppTabSection>;
 };
