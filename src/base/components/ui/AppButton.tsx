@@ -83,12 +83,12 @@ function getButtonStyles(
 
           "&:hover": {
             color: palette.text.primary,
-            backgroundColor: palette.action.hover,
+            backgroundColor: `color-mix(in srgb, ${palette.primary.main} 6%, ${palette.background.paper})`,
             borderColor: palette.divider,
           },
 
           "&:active": {
-            backgroundColor: `color-mix(in srgb, ${palette.primary.main} 12%, transparent)`,
+            backgroundColor: `color-mix(in srgb, ${palette.primary.main} 12%, ${palette.background.paper})`,
           },
 
           "&.Mui-disabled": {
