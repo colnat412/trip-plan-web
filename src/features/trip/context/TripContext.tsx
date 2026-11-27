@@ -255,5 +255,7 @@ const useTripContext = (): TripContextValue => {
   return context;
 };
 
+export const useOptionalTripContext = (): TripContextValue | null => useContext(TripContext);
+
 export { TripProvider, useTripContext };
 export default TripProvider;

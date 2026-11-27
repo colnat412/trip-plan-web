@@ -85,7 +85,8 @@ const TripBudgetCard = ({
       <Stack
         component="section"
         aria-label={t('tripBudget')}
-        spacing={1.5}
+        spacing={2}
+        useFlexGap
         sx={{ width: '100%', minWidth: 0 }}
       >
         {header}

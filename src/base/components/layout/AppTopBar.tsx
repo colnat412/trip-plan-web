@@ -10,6 +10,7 @@ import NotificationBell from '@/features/notification/components/NotificationBel
 import { AppButton } from '@/base/components/ui';
 import AppTripBar from './AppTripBar';
 import AppDesktopNavigation from './AppDesktopNavigation';
+import { isProfilePath } from '@/base/utils/navigation';
 import { glassSurface } from '@/base/theme/surfaces';
 
 interface AppTopBarProps { guest?: boolean }
@@ -17,6 +18,7 @@ interface AppTopBarProps { guest?: boolean }
 const AppTopBar = ({ guest = false }: AppTopBarProps) => {
   const t = useTranslations('navigation');
   const pathname = usePathname();
+  const discovery = ['/explore', '/templates', '/saved-templates', '/my-templates'].some(path => pathname === path || pathname.startsWith(`${path}/`));
   const workspace = !guest && ['/plan', '/expenses', '/settlement', '/notes'].includes(pathname);
   return (
     <Box
@@ -75,7 +77,7 @@ const AppTopBar = ({ guest = false }: AppTopBarProps) => {
           >
             <AppBrand compactOnMobile showTag={false} />
           </Box>
-          {!guest && <AppTripBar />}</>}
+          {!guest && !discovery && !isProfilePath(pathname) && <AppTripBar />}</>}
         </Box>
         {!workspace && <AppDesktopNavigation />}
         {!guest && <NotificationBell />}

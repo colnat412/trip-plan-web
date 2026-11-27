@@ -104,7 +104,8 @@
       "templates": "Itinerary library",
       "savedTemplates": "Saved itineraries",
       "myTemplates": "My templates",
-      "settings": "Settings"
+      "settings": "Settings",
+      "profile": "Profile"
     },
     "mobile": {
       "overview": "Home",
@@ -114,7 +115,8 @@
       "settlement": "Split costs",
       "ai": "AI assistant",
       "templates": "Explore",
-      "settings": "Settings"
+      "settings": "Settings",
+      "profile": "Profile"
     },
     "more": "More",
     "moreDescription": "More tools for your trip",
@@ -319,7 +321,8 @@
     "noInProgressTrip": "No trip in progress",
     "noInProgressTripDesc": "Only trips in 'In Progress' status are displayed here.",
     "templates": "Itinerary library",
-    "settings": "Settings"
+    "settings": "Settings",
+    "profile": "Profile"
   },
   "login": {
     "banner": {
@@ -557,7 +560,11 @@
     "avatarUnauthorized": "Your session expired. Please sign in again.",
     "avatarUnavailable": "This upload is unavailable. Please select the image again.",
     "avatarTooLarge": "The image exceeds the size limit.",
-    "avatarOnlyNote": "You can only change your avatar."
+    "avatarOnlyNote": "You can only change your avatar.",
+    "pageTitle": "Profile",
+    "editProfile": "Edit profile",
+    "backToProfile": "Back to profile",
+    "collections": "Your collections"
   },
   "userMenu": {
     "profile": "My Profile",
@@ -1012,7 +1019,10 @@
     "pendingPaymentNotice": "A payment from this payer to this recipient is awaiting confirmation. Confirm or cancel it before recording another."
   },
   "plan": {
-    "activityDetail": { "title": "Activity details", "actualSpent": "Spent so far" },
+    "activityDetail": {
+      "title": "Activity details",
+      "actualSpent": "Spent so far"
+    },
     "actionsLabel": "Itinerary actions",
     "activityActions": "Actions for {title}",
     "reorder": {
@@ -1392,14 +1402,15 @@
   },
   "planTemplate": {
     "homeLibrary": "Featured itineraries",
-    "durationLabel": "{days} days",
+    "durationLabel": "{days, plural, one {# day} other {# days}}",
+    "durationNightsLabel": "{days, plural, one {# day} other {# days}} {nights, plural, one {# night} other {# nights}}",
     "activityLabel": "{count} activities",
     "allStyles": "All",
     "publishNeedsActivities": "Please add at least one itinerary activity before publishing a template.",
     "publishTooManyActivities": "Templates support up to 1,000 activities. Reduce the number of activities before publishing.",
     "publishPlanLoading": "Checking trip activities…",
     "publishPlanLoadError": "Unable to check trip activities. Please try again.",
-    "library": "Discover itineraries",
+    "library": "Community itineraries",
     "all": "View all",
     "home": "Home",
     "mine": "My templates",
@@ -1420,7 +1431,7 @@
     "day": "Day {number}",
     "restDay": "Free day, no activities yet.",
     "checklist": "Public checklist",
-    "use": "Use this template",
+    "use": "Use this itinerary",
     "name": "New trip name",
     "startDate": "Start date",
     "includeChecklist": "Copy checklist",
@@ -1467,14 +1478,14 @@
     "myUsage": "{count} uses",
     "templateActions": "Actions for {title}",
     "unpublishError": "Unable to unpublish the template. Please retry from its menu.",
-    "save": "Save template",
-    "unsave": "Unsave",
-    "savedLibrary": "Saved templates",
-    "savedEmpty": "You have not saved any itinerary templates yet.",
-    "saveError": "Could not update saved templates. Please try again.",
-    "saveStatusError": "Could not load saved status. Please try again.",
+    "save": "Like",
+    "unsave": "Unlike",
+    "savedLibrary": "Favorites",
+    "savedEmpty": "You have not liked any itineraries yet.",
+    "saveError": "Could not update favorites. Please try again.",
+    "saveStatusError": "Could not load favorites. Please try again.",
     "navExplore": "Explore",
-    "navSaved": "Saved",
+    "navSaved": "Favorites",
     "navMine": "My templates",
     "chooseTemplate": "Use a template",
     "chooseTemplateHint": "Create a new trip from an existing itinerary template.",
@@ -1484,7 +1495,39 @@
     "filters": "Filters",
     "filtersCount": "Filters ({count})",
     "clearFilters": "Clear filters",
-    "filtersDone": "Done"
+    "filtersDone": "Done",
+    "likesCount": "{count, number} likes",
+    "likesUnavailable": "Like count unavailable",
+    "likeLoginRequired": "Sign in to like this itinerary.",
+    "allDurations": "All",
+    "fourDaysPlus": "4+ days",
+    "resetSearch": "Clear search and filters",
+    "activeFilters": "Active filters",
+    "removeFilter": "Remove filter: {filter}",
+    "itinerary": "Day-by-day itinerary",
+    "backToExplore": "Back to Explore",
+    "mapTitle": "Itinerary map",
+    "mapStraightLines": "Straight lines show visit order, not road directions.",
+    "mapNoPositions": "Locations for this day could not be determined yet.",
+    "mapLoadError": "Could not load the itinerary map.",
+    "mapMissing": "Locations unavailable for {count} loaded activities.",
+    "mapLoadMore": "Show more map stops",
+    "addPlaceToTrip": "Add to trip",
+    "chooseTargetTrip": "Choose your trip",
+    "chooseTargetDay": "Choose a day",
+    "continueAddPlace": "Continue",
+    "moreTargetTrips": "Show more trips",
+    "createTargetTrip": "Create a trip",
+    "targetNoDays": "This trip has no days available for adding an activity.",
+    "placeAdded": "Place added to your trip.",
+    "placeAddFailed": "Could not add the place. Check trip access and the selected day, then try again.",
+    "openFullDetail": "Open full details",
+    "closePlanSheet": "Close itinerary",
+    "templateSheetUnavailable": "Could not load the published itinerary. It may have been unpublished or removed.",
+    "useWholeItinerary": "Use the whole itinerary",
+    "addPlaceShort": "Add",
+    "copyItinerary": "Copy",
+    "copyItineraryLabel": "Copy the entire itinerary"
   },
   "quickCreate": {
     "createTrip": "Create a trip",
@@ -1537,7 +1580,8 @@
   },
   "interactiveMap": {
     "unavailable": "The interactive map is unavailable.",
-    "retry": "Reload map"
+    "retry": "Reload map",
+    "mapLabel": "Places map"
   },
   "journey": {
     "destination": "Where shall we go?",
@@ -1774,5 +1818,54 @@
     "passwordDescription": "Create a new password for your account.",
     "verifyFailed": "Could not verify your code. Please try again.",
     "verificationExpired": "Your reset session has expired. Please verify again."
+  },
+  "explore": {
+    "search": "Search places",
+    "itineraries": "Itineraries",
+    "signIn": "Sign in",
+    "all": "All",
+    "places": "Places",
+    "searchArea": "Search this area",
+    "allAreas": "All areas",
+    "results": "{count} itineraries loaded",
+    "loading": "Loading…",
+    "empty": "No matching places in published itineraries.",
+    "directions": "Directions",
+    "categories": {
+      "SIGHT": "Sights",
+      "FOOD": "Food",
+      "STAY": "Stays",
+      "OTHER": "Other"
+    },
+    "clearSearch": "Clear search",
+    "viewList": "View list",
+    "closeList": "Close list",
+    "closePlace": "Close place",
+    "viewDetails": "View details",
+    "loadError": "Could not load places.",
+    "retry": "Retry",
+    "relatedCount": "{count} itineraries",
+    "relatedTemplates": "Related itineraries",
+    "loadMore": "Show more itineraries",
+    "missingCoordinates": "Some addresses could not be located. Their related itineraries are still available.",
+    "scanMore": "No places in this area yet. Load more to continue scanning published itineraries.",
+    "duration": "{days} days {nights} nights",
+    "missingCoordinatesShort": "Some itineraries have no map position yet.",
+    "filters": "Itinerary filters",
+    "areaFilter": "This area",
+    "viewItinerary": "View itinerary",
+    "publishedTrips": "Published itineraries",
+    "communityTrips": "Community itineraries",
+    "searchPublished": "Search community itineraries",
+    "hidePlan": "Hide plan",
+    "showPlan": "View plan",
+    "hidePublished": "Hide itineraries on the map",
+    "showPublished": "Show itineraries on the map",
+    "clearPublished": "Clear itinerary selection",
+    "pickedPosition": "Selected position",
+    "addToCurrentPlan": "Add to current plan",
+    "noMapResults": "No matching places.",
+    "mapSearchFailed": "Could not load place search results.",
+    "mapSearchLogin": "Sign in to search places"
   }
 }

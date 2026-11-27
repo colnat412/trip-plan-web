@@ -1,14 +1,14 @@
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import FlightTakeoffOutlinedIcon from '@mui/icons-material/FlightTakeoffOutlined';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
-import CollectionsBookmarkOutlinedIcon from '@mui/icons-material/CollectionsBookmarkOutlined';
+import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
 
 import type { SidebarMenuItem, SidebarTrip, SidebarUser } from './types';
 
 export const DEFAULT_SIDEBAR_MENU: SidebarMenuItem[] = [
-  { id: 'settings', href: '/settings', label: 'Cài đặt', messageKey: 'settings', icon: <SettingsOutlinedIcon /> },
+  { id: 'profile', href: '/profile', label: 'Cá nhân', messageKey: 'profile', icon: <PersonOutlineRoundedIcon /> },
   {
     id: 'overview',
     href: '/overview',
@@ -46,10 +46,10 @@ export const DEFAULT_SIDEBAR_MENU: SidebarMenuItem[] = [
   // },
   {
     id: 'templates',
-    href: '/templates',
+    href: '/explore',
     label: 'Thư viện lịch trình',
     messageKey: 'templates',
-    icon: <CollectionsBookmarkOutlinedIcon />,
+    icon: <ExploreOutlinedIcon />,
   },
   // { id: 'ai', href: '/ai', label: 'AI', icon: <SmartToyOutlinedIcon /> },
 ];

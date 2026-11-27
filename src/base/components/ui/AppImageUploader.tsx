@@ -27,7 +27,7 @@ interface AppImageUploaderProps {
   variant?: 'avatar' | 'cover' | 'receipt';
   showHint?: boolean;
   compact?: boolean;
-  layout?: 'field' | 'tile';
+  layout?: 'field' | 'tile' | 'inline';
   previewSelection?: boolean;
   allowCamera?: boolean;
   removeAction?: 'icon' | 'button' | 'none';
@@ -147,6 +147,24 @@ const AppImageUploader = ({
     setValidationError(null);
     onChange(null);
   };
+
+  if (variant === 'avatar' && layout === 'inline') {
+    return <Stack spacing={0.5} useFlexGap sx={{ alignItems: 'center', flexShrink: 0 }}>
+      {fileInput}
+      {sourcePicker}
+      <Tooltip title={t(displayed ? 'change' : 'choose')}>
+        <ButtonBase type="button" disabled={unavailable} onClick={chooseImage}
+          aria-label={`${t(displayed ? 'change' : 'choose')}: ${alt}`}
+          sx={{ borderRadius: '50%', minWidth: 64, minHeight: 64,
+            '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: 3 } }}>
+          <Avatar src={displayed} alt={alt} sx={{ width: 64, height: 64, bgcolor: 'action.selected', color: 'primary.main' }}>{fallback}</Avatar>
+        </ButtonBase>
+      </Tooltip>
+      {displayed && removeAction !== 'none' && <AppButton type="button" intent="text" size="small" disabled={unavailable} onClick={removeImage}
+        sx={{ minHeight: 44, px: 0.5, fontSize: 12 }}>{t('remove')}</AppButton>}
+      {error && <AppToast open message={error} severity="error" onClose={() => setValidationError(null)} />}
+    </Stack>;
+  }
 
   if (layout === 'tile' || variant === 'cover') {
     const frame = (

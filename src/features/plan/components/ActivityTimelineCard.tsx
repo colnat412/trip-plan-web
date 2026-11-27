@@ -303,7 +303,7 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
       }
     >
       {(details || hasAmount) && <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 }}>
-        {details && <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flex: 1, minWidth: 0, color: 'text.secondary' }}>
+        {details && <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flex: 1, minWidth: 0, color: selected ? 'inherit' : 'text.secondary' }}>
           {activity.location && <PlaceRoundedIcon sx={{ fontSize: 14, flexShrink: 0 }} />}
           <Typography component="span" title={details} sx={{ fontSize: 12, lineHeight: 1.5, ...oneLineSx }}>{details}</Typography>
         </Box>}
@@ -314,7 +314,6 @@ const ActivityTimelineCard = <T extends ActivityTimelineData>({
           currency={currency}
           compact
           notation="standard"
-          numberLocale="en-US"
           tone={
             activity.estimatedCost > 0 &&
             Number(activity.actualSpent) > activity.estimatedCost

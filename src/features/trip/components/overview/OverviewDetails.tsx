@@ -15,7 +15,7 @@ interface OverviewDetailsProps { trip: Trip; now: Date | null }
 const OverviewDetails = ({ trip, now }: OverviewDetailsProps) => {
   const desktop = useMediaQuery(useTheme().breakpoints.up('md'));
   const [planRevision, setPlanRevision] = useState(0);
-  return <Stack spacing={3} sx={{ width: '100%', minWidth: 0 }}>
+  return <Stack useFlexGap sx={{ width: '100%', minWidth: 0, gap: 'inherit' }}>
     <TripWorkspaceLinks tripId={trip.id} />
     <TripItineraryPreview key={`itinerary-${trip.id}-${planRevision}`} trip={trip} now={now} />
     <TripBudgetCard key={`budget-${trip.id}`} trip={trip} compact={!desktop} />

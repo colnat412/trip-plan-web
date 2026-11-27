@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server';
+import { hasSameRequestOrigin } from '@/base/api/server/request-origin';
 import { forwardIdentity, identityError } from '@/base/api/server/identity';
 import { IMAGE_MIME_TYPES, MAX_IMAGE_BYTES } from '@/base/types';
 
@@ -8,6 +9,7 @@ const MAX_REQUEST_BYTES = MAX_IMAGE_BYTES + 64 * 1024;
 export async function POST(request: NextRequest) {
   if (!request.cookies.get('access_token')?.value)
     return identityError(401, 'Unauthorized');
+  if (!hasSameRequestOrigin(request)) return identityError(403, 'Invalid origin');
   if (Number(request.headers.get('content-length')) > MAX_REQUEST_BYTES) {
     return identityError(413, 'File too large');
   }

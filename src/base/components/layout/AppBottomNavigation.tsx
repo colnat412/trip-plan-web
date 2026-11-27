@@ -8,13 +8,14 @@ import { isAppNavigationActive, MOBILE_PRIMARY_NAVIGATION_ITEMS, DESKTOP_NAV_BRE
 import { SEGMENTED_RADIUS } from '@/base/theme/segmented-control';
 import { glassSurface } from '@/base/theme/surfaces';
 import AppCreateTripButton from './AppCreateTripButton';
+import AppProfileNavigationAvatar from './AppProfileNavigationAvatar';
 
 interface AppBottomNavigationProps { guest?: boolean }
 
 const AppBottomNavigation = ({ guest = false }: AppBottomNavigationProps) => {
   const pathname = usePathname();
   const t = useTranslations('navigation');
-  const items = MOBILE_PRIMARY_NAVIGATION_ITEMS.filter(item => !guest || item.id !== 'settings');
+  const items = MOBILE_PRIMARY_NAVIGATION_ITEMS.filter(item => !guest || item.id !== 'profile');
   const activeIndex = items.findIndex(item => isAppNavigationActive(pathname, item));
   return <Box component="nav" aria-label={t('main')} sx={(theme) => ({
     position: 'fixed', insetInline: 0, bottom: 0, zIndex: theme.zIndex.appBar,
@@ -51,7 +52,7 @@ const AppBottomNavigation = ({ guest = false }: AppBottomNavigationProps) => {
               '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
               '&:hover': { bgcolor: 'action.hover' }, '&.Mui-focusVisible': { outline: '2px solid', outlineColor: 'primary.main', outlineOffset: -2 },
               '@media (forced-colors: active)': { bgcolor: active ? 'Highlight' : 'Canvas', color: active ? 'HighlightText' : 'CanvasText' },
-            }}>{item.icon}<Typography component="span" sx={{ fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap', maxWidth: active ? 110 : 0, overflow: 'hidden', opacity: active ? 1 : 0, transition: 'max-width 280ms ease, opacity 180ms ease', '@media (prefers-reduced-motion: reduce)': { transition: 'none' }, '@media (max-width: 359.95px)': { display: 'none' } }}>{t(`mobile.${item.id}`)}</Typography></ButtonBase></Tooltip>;
+            }}>{item.id === 'profile' ? <AppProfileNavigationAvatar active={active} /> : item.icon}<Typography component="span" sx={{ fontSize: '12px', fontWeight: 600, whiteSpace: 'nowrap', maxWidth: active ? 110 : 0, overflow: 'hidden', opacity: active ? 1 : 0, transition: 'max-width 280ms ease, opacity 180ms ease', '@media (prefers-reduced-motion: reduce)': { transition: 'none' }, '@media (max-width: 359.95px)': { display: 'none' } }}>{t(`mobile.${item.id}`)}</Typography></ButtonBase></Tooltip>;
         })}
       </Box>
       {!guest && <AppCreateTripButton />}

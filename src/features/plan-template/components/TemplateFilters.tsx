@@ -3,12 +3,14 @@
 import { useId, useState } from 'react';
 import { Box, MenuItem, Stack } from '@mui/material';
 import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { useTranslations } from 'next-intl';
 import {
   AppTextField,
   AppButton,
   AppDialog,
   AppFilterChipGroup,
+  AppFilterChip,
 } from '@/base/components/ui';
 import { TEMPLATE_TAGS } from '../types';
 
@@ -36,7 +38,14 @@ const TemplateFilters = ({
   const t = useTranslations('planTemplate');
   const id = useId();
   const [open, setOpen] = useState(false);
-  const extraFilters = Number(Boolean(tag)) + Number(sort !== 'recent');
+  const extraFilters = Number(Boolean(duration)) + Number(Boolean(tag)) + Number(sort !== 'recent');
+  const selectedTag = TEMPLATE_TAGS.find(value => value === tag);
+  const selectedTagLabel = selectedTag ? t(`tags.${selectedTag}`) : tag;
+  const clearFilters = () => {
+    onDuration('');
+    onTag('');
+    onSort('recent');
+  };
   return (
     <Stack spacing={1} sx={{ minWidth: 0 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
@@ -73,12 +82,22 @@ const TemplateFilters = ({
         label={t('days')}
         value={duration}
         onChange={onDuration}
-        showAll={false}
+        showAll
+        allLabel={t('allDurations')}
         options={['1', '2', '3', '4+'].map((value) => ({
           value,
-          label: value,
+          label: value === '4+' ? t('fourDaysPlus') : t('durationLabel', { days: Number(value) }),
         }))}
       />
+      {extraFilters > 0 && <Box aria-label={t('activeFilters')} sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, py: 0.5 }}>
+        {tag && <AppFilterChip selected label={selectedTagLabel} deleteIcon={<CloseRoundedIcon />}
+          onClick={() => onTag('')} onDelete={() => onTag('')}
+          aria-label={t('removeFilter', { filter: selectedTagLabel })} />}
+        {sort !== 'recent' && <AppFilterChip selected label={t('popular')} deleteIcon={<CloseRoundedIcon />}
+          onClick={() => onSort('recent')} onDelete={() => onSort('recent')}
+          aria-label={t('removeFilter', { filter: t('popular') })} />}
+        <AppButton intent="text" size="small" onClick={clearFilters}>{t('clearFilters')}</AppButton>
+      </Box>}
       <AppDialog
         open={open}
         onClose={() => setOpen(false)}
@@ -88,11 +107,7 @@ const TemplateFilters = ({
           <>
             <AppButton
               intent="text"
-              onClick={() => {
-                onDuration('');
-                onTag('');
-                onSort('recent');
-              }}
+              onClick={clearFilters}
             >
               {t('clearFilters')}
             </AppButton>

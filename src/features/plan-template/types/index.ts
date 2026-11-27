@@ -14,6 +14,7 @@ export interface TemplateCardData {
   contentVersion: number;
   authorName: string;
   usageCount: number;
+  likeCount?: number;
 }
 export interface TemplateSnapshot {
   schemaVersion: number;

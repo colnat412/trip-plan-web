@@ -1,7 +1,7 @@
 'use client';
 
 import { type FormEvent, useRef, useState } from 'react';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import {
   AppButton,
@@ -18,16 +18,18 @@ import type { SidebarUser } from '@/base/components/layout/sidebar/types';
 import type { UserProfile } from '@/features/auth/types';
 
 interface ProfileFormProps {
-  onClose: () => void;
-  onSaved: () => void;
+  onClose?: () => void;
+  onSaved?: () => void;
   user?: Partial<SidebarUser> | UserProfile;
-  onBusyChange: (busy: boolean) => void;
+  onBusyChange?: (busy: boolean) => void;
+  inline?: boolean;
 }
 const ProfileForm = ({
   onClose,
   onSaved,
   user,
   onBusyChange,
+  inline = false,
 }: ProfileFormProps) => {
   const t = useTranslations('profile');
   const { user: currentUser, updateUser, refetchUser } = useUserContext();
@@ -57,7 +59,7 @@ const ProfileForm = ({
     }
     submitting.current = true;
     setIsSaving(true);
-    onBusyChange(true);
+    onBusyChange?.(true);
     let saved = false;
     let savingAvatar = false;
     try {
@@ -90,66 +92,83 @@ const ProfileForm = ({
     } finally {
       submitting.current = false;
       setIsSaving(false);
-      onBusyChange(false);
+      onBusyChange?.(false);
     }
-    if (saved) onSaved();
+    if (saved) {
+      if (inline) setToast({ message: t('saveSuccess'), severity: 'success' });
+      onSaved?.();
+    }
   };
 
+  const cancelChanges = () => {
+    setName(profile?.name || '');
+    setNameError('');
+    setSelection(undefined);
+    setToast(null);
+  };
+  const nameField = <AppTextField
+    label={t('fullName')}
+    value={name}
+    placeholder={t('fullNamePlaceholder')}
+    required
+    size={inline ? 'small' : 'medium'}
+    disabled={isSaving}
+    error={Boolean(nameError)}
+    helperText={nameError}
+    onChange={(event) => {
+      setName(event.target.value);
+      setNameError('');
+    }}
+  />;
+  const avatarField = <AppImageUploader
+    variant="avatar"
+    layout={inline ? 'inline' : 'field'}
+    src={profile?.avatarUrl}
+    file={inline ? selection : undefined}
+    previewSelection={!inline}
+    alt={profile?.name || t('title')}
+    fallback={getUserInitials(profile?.name || '')}
+    disabled={isSaving}
+    showHint={false}
+    onChange={setSelection}
+  />;
   return (
-    <Box component="form" onSubmit={handleSubmit} aria-busy={isSaving}>
-      <Stack spacing={2.5}>
-        <AppImageUploader
-          variant="avatar"
-          src={profile?.avatarUrl}
-          alt={profile?.name || t('title')}
-          fallback={getUserInitials(profile?.name || '')}
-          disabled={isSaving}
-          showHint={false}
-          onChange={setSelection}
-        />
-        <AppTextField
-          label={t('fullName')}
-          value={name}
-          placeholder={t('fullNamePlaceholder')}
-          required
-          disabled={isSaving}
-          error={Boolean(nameError)}
-          helperText={nameError}
-          onChange={(event) => {
-            setName(event.target.value);
-            setNameError('');
-          }}
-        />
-        <AppTextField
-          label={t('email')}
-          value={profile?.email || ''}
-          disabled
-        />
-        <Stack
-          direction="row"
-          spacing={1.5}
-          useFlexGap
-          sx={{ justifyContent: 'flex-end', flexWrap: 'wrap', gap: 1.5 }}
-        >
+    <Box component="form" onSubmit={handleSubmit} aria-busy={isSaving} noValidate>
+      <Stack spacing={inline ? 2 : 2.5} useFlexGap>
+        {inline ? <Stack direction="row" spacing={1.5} useFlexGap sx={{ alignItems: 'flex-start', minWidth: 0 }}>
+          {avatarField}
+          <Stack spacing={1} useFlexGap sx={{ flex: 1, minWidth: 0 }}>
+            {nameField}
+            <Typography sx={{ fontSize: 13, color: 'text.secondary', overflowWrap: 'anywhere' }}>{profile?.email}</Typography>
+          </Stack>
+        </Stack> : <>
+          {avatarField}
+          {nameField}
+          <AppTextField label={t('email')} value={profile?.email || ''} disabled />
+        </>}
+        {(!inline || nameChanged || selection !== undefined) && <Stack direction="row" spacing={1.5} useFlexGap
+          sx={{ justifyContent: 'flex-end', flexWrap: 'wrap' }}>
           <AppButton
-            data-dialog-action="cancel"
+            data-dialog-action={inline ? undefined : 'cancel'}
             type="button"
             intent="secondary"
+            size={inline ? 'small' : 'large'}
             disabled={isSaving}
-            onClick={onClose}
+            onClick={inline ? cancelChanges : onClose}
           >
-            {t('close')}
+            {t(inline ? 'cancel' : 'close')}
           </AppButton>
           <AppButton
-            data-dialog-action="primary"
+            data-dialog-action={inline ? undefined : 'primary'}
             type="submit"
+            size={inline ? 'small' : 'large'}
             loading={isSaving}
             disabled={!nameChanged && selection === undefined}
             aria-label={t('saveChanges')}
           >
             {t('saveChanges')}
           </AppButton>
-        </Stack>
+        </Stack>}
       </Stack>
       <AppToast
         open={toast !== null}

@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { isProfilePath } from '@/base/utils/navigation';
 import { DEFAULT_SIDEBAR_MENU } from '../sidebar/config';
 
 export const DESKTOP_NAV_BREAKPOINT = 1440;
@@ -10,7 +11,7 @@ const NAVIGATION_IDS = [
   'plan',
   'expenses',
   'ai',
-  'settings',
+  'profile',
 ] as const;
 type NavigationId = (typeof NAVIGATION_IDS)[number];
 
@@ -19,7 +20,7 @@ const MAX_MOBILE_NAVIGATION_ACTIONS = 5;
 
 
 export const APP_NAVIGATION_ITEMS: AppNavigationItem[] =
-  NAVIGATION_IDS.filter(id => id === 'overview' || id === 'trips' || id === 'templates' || id === 'settings').flatMap((id) => {
+  NAVIGATION_IDS.filter(id => id === 'overview' || id === 'trips' || id === 'templates' || id === 'profile').flatMap((id) => {
     const item = DEFAULT_SIDEBAR_MENU.find((item) => item.id === id);
     return item ? [{ id, href: item.href, icon: item.icon }] : [];
   });
@@ -38,14 +39,14 @@ export const MORE_NAVIGATION_ITEMS = APP_NAVIGATION_ITEMS.slice(
 );
 
 const MOBILE_NAVIGATION_IDS: readonly NavigationId[] = [
-  'overview', 'trips', 'plan', 'expenses', 'templates', 'ai', 'settings',
+  'overview', 'trips', 'plan', 'expenses', 'templates', 'ai', 'profile',
 ];
 
 export const MOBILE_PRIMARY_NAVIGATION_ITEMS = [...PRIMARY_NAVIGATION_ITEMS].sort(
   (left, right) => MOBILE_NAVIGATION_IDS.indexOf(left.id) - MOBILE_NAVIGATION_IDS.indexOf(right.id),
 );
 
-// Library destinations share one main navigation entry.
+// Main destinations own their related routes, including Profile collections.
 export interface AppNavigationItem {
   id: NavigationId;
   href: string;
@@ -56,6 +57,5 @@ export const isAppNavigationActive = (pathname: string, item: AppNavigationItem)
   pathname === item.href || pathname.startsWith(`${item.href}/`) ||
   (item.id === 'expenses' && (pathname === '/settlement' || pathname.startsWith('/settlement/'))) ||
   (item.id === 'overview' && pathname === '/') ||
-  (item.id === 'templates' && (
-    pathname === '/saved-templates' || pathname === '/my-templates'
-  ));
+  (item.id === 'templates' && (pathname === '/templates' || pathname.startsWith('/templates/'))) ||
+  (item.id === 'profile' && isProfilePath(pathname));

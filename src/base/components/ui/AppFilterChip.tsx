@@ -29,7 +29,7 @@ export interface AppFilterChipProps extends Omit<ChipProps, 'onClick'> {
 
 export const AppFilterChip = ({
   selected = false,
-  compact = false,
+  compact = true,
   onClick,
   count,
   label,
@@ -116,7 +116,7 @@ export const AppFilterChipGroup = <T extends string | number>({
   allLabel = 'Tất cả',
   allValue = '' as unknown as T,
   scrollable = true,
-  compact = false,
+  compact = true,
   sx,
 }: AppFilterChipGroupProps<T>) => {
   const isAllSelected = value === allValue;

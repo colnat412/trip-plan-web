@@ -3,7 +3,7 @@
 import { contentColumn } from '@/base/theme/content-layout';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppPagination, AppLoadingState, AppButton, AppEmptyState, AppPageHeader, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
+import { AppPagination, AppLoadingState, AppButton, AppEmptyState, AppPageHeader, AppBackHeader, AppSectionHeader, AppSectionLink } from '@/base/components/ui';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -25,6 +25,7 @@ interface TemplateLibraryProps {
 
 const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: TemplateLibraryProps) => {
   const t = useTranslations('planTemplate');
+  const profile = useTranslations('profile');
   const [search, setSearch] = useState('');
   const [duration, setDuration] = useState('');
   const [tag, setTag] = useState('');
@@ -35,7 +36,7 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: Te
   });
   const data = query.error ? null : query.listing;
   const content = (
-    <Stack component={compact ? 'section' : 'div'} spacing={2} sx={{ ...(!compact ? contentColumn : {}), width: '100%', minWidth: 0 }}>
+    <Stack component={compact ? 'section' : 'div'} useFlexGap spacing={2} sx={{ ...(!compact ? contentColumn : {}), width: '100%', minWidth: 0 }}>
       {compact ? (
         <AppSectionHeader title={t('homeLibrary')} actions={
           <AppSectionLink href="/templates">
@@ -43,7 +44,8 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: Te
           </AppSectionLink>
         } />
       ) : (
-        <AppPageHeader title={t(savedOnly ? 'savedLibrary' : 'library')} />
+        savedOnly ? <AppBackHeader title={t('savedLibrary')} backHref="/profile" backLabel={profile('backToProfile')} titleAlign="left" />
+          : <AppPageHeader title={t('library')} />
       )}
       {!compact && !savedOnly && (
         <TemplateFilters
@@ -65,10 +67,14 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: Te
             <AppButton component={Link} href="/templates" intent="secondary" size="medium">
               {t('navExplore')}
             </AppButton>
+          ) : search || duration || tag ? (
+            <AppButton intent="secondary" size="medium" wrapLabel onClick={() => {
+              setSearch(''); setDuration(''); setTag(''); setSort('recent'); setPage(1);
+            }}>{t('resetSearch')}</AppButton>
           ) : undefined}
         />
       )}
-      <TemplateSaveProvider
+      {!!data?.content.length && <TemplateSaveProvider
         key={data?.content.map((item) => item.id).join(',') ?? ''}
         ids={data?.content.map((item) => item.id) ?? []}
         onChange={savedOnly ? () => {
@@ -81,11 +87,9 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: Te
           aria-label={compact ? t('homeLibrary') : undefined}
           tabIndex={compact ? 0 : undefined}
           sx={{
-            display: compact ? 'flex' : 'grid',
-            gridTemplateColumns: compact
-              ? undefined
-              : { xs: 'minmax(0, 1fr)', sm: 'repeat(2, minmax(0, 1fr))', lg: 'repeat(3, minmax(0, 1fr))', xl: 'repeat(4, minmax(0, 1fr))' },
-            gap: compact ? { xs: 1.5, sm: 2 } : 2,
+            display: 'flex',
+            flexWrap: compact ? 'nowrap' : 'wrap',
+            gap: { xs: 1.5, sm: 2 },
             minWidth: 0,
             overflowX: compact ? 'auto' : undefined,
             overscrollBehaviorX: compact ? 'contain' : undefined,
@@ -98,7 +102,10 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: Te
         >
           {data?.content.map((item) => (
             <Box key={item.id} sx={{
-              flex: compact ? { xs: '0 0 152px', sm: '0 0 192px' } : undefined,
+              flex: compact ? { xs: '0 0 152px', sm: '0 0 192px' } : {
+                xs: '0 0 calc((100% - 12px) / 2)', sm: '0 0 calc((100% - 16px) / 2)',
+                lg: '0 0 calc((100% - 32px) / 3)', xl: '0 0 calc((100% - 48px) / 4)',
+              },
               scrollSnapAlign: compact ? 'start' : undefined,
               minWidth: 0,
               maxWidth: compact ? '75%' : undefined,
@@ -107,8 +114,8 @@ const TemplateLibrary = ({ initialData, compact = false, savedOnly = false }: Te
             </Box>
           ))}
         </Box>
-      </TemplateSaveProvider>
-      {!compact && data && data.totalPages > 0 && (
+      </TemplateSaveProvider>}
+      {!compact && data && data.totalPages > 1 && (
         <AppPagination page={page} count={data.totalPages} onChange={(_, value) => setPage(value)} />
       )}
     </Stack>

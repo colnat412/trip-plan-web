@@ -3,7 +3,7 @@
 import { contentColumn } from '@/base/theme/content-layout';
 import AppErrorState from '@/base/components/ui/AppErrorState';
 
-import { AppPagination, AppLoadingState, AppEmptyState, AppPageHeader, AppButton } from '@/base/components/ui';
+import { AppPagination, AppLoadingState, AppEmptyState, AppBackHeader, AppButton } from '@/base/components/ui';
 import { useState } from 'react';
 import Link from 'next/link';
 import { Box, Stack } from '@mui/material';
@@ -16,6 +16,7 @@ import { useUnpublishPlanTemplate } from '../hooks/usePlanTemplateMutation';
 import MyTemplateCard from './MyTemplateCard';
 const MyTemplates = () => {
   const t = useTranslations('planTemplate');
+  const profile = useTranslations('profile');
   const [page, setPage] = useState(1);
   const query = useMyTemplates({ page });
   const unpublish = useUnpublishPlanTemplate({
@@ -26,7 +27,10 @@ const MyTemplates = () => {
   const currentData = query.error ? null : query.listing;
   return (
       <Stack spacing={2} sx={contentColumn}>
-        <AppPageHeader
+        <AppBackHeader
+          backHref="/profile"
+          backLabel={profile('backToProfile')}
+          titleAlign="left"
           title={t('mine')}
           actions={
             <AppButton
@@ -63,7 +67,7 @@ const MyTemplates = () => {
             </Box>
           ))}
         </Box>
-        {(currentData?.totalPages ?? 0) > 0 && (
+        {(currentData?.totalPages ?? 0) > 1 && (
           <AppPagination
             page={page}
             count={currentData!.totalPages}

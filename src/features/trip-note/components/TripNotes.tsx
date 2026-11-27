@@ -119,7 +119,7 @@ function TripNotesPanel({ tripId }: TripNotesPanelProps) {
                     '&:focus-visible': { outline: '2px solid', outlineColor: 'primary.light', outlineOffset: 2 },
                     '@media (pointer: coarse)': { userSelect: 'none', WebkitTouchCallout: 'none' } }}>
                   <Stack spacing={0.75}>
-                    <Typography sx={{ fontSize: 11, fontWeight: 600, overflowWrap: 'anywhere', color: own ? 'inherit' : 'text.secondary' }}>{author}</Typography>
+                    {!own && <Typography sx={{ fontSize: 11, fontWeight: 600, overflowWrap: 'anywhere', color: 'text.secondary' }}>{author}</Typography>}
                     {note.content && <Typography sx={{ fontSize: 14, lineHeight: 1.5, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{note.content}</Typography>}
                     <TripNoteImage src={note.imageUrl} onLoad={() => {
                       const list = listRef.current;

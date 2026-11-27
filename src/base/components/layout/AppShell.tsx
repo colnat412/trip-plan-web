@@ -24,6 +24,7 @@ import { DESKTOP_NAV_BREAKPOINT } from './navigation/config';
 import AppPageLoadingProvider from '@/base/providers/AppPageLoadingProvider';
 import { contentColumn } from '@/base/theme/content-layout';
 import { pageBackground } from '@/base/theme/page-background';
+import { isProfilePath } from '@/base/utils/navigation';
 
 export interface AppShellProps {
   children: ReactNode;
@@ -46,7 +47,7 @@ const AppShell = ({
     setMainElement(element);
   }, []);
   const isItinerary = pathname === '/plan' || pathname.startsWith('/export/plan/');
-  const pullToRefresh = usePullToRefresh(mainElement, pathname, undefined, !isItinerary);
+  const pullToRefresh = usePullToRefresh(mainElement, pathname, undefined, !isItinerary && pathname !== '/explore');
   const previousPath = useRef(pathname);
   useLayoutEffect(() => {
     const keepScroll = isSameTabSection(previousPath.current, pathname);
@@ -64,7 +65,7 @@ const AppShell = ({
     (path) => pathname === path || pathname.startsWith(`${path}/`),
   );
   const isLibrary =
-    pathname === '/templates' || pathname.startsWith('/templates/');
+    pathname === '/explore' || pathname === '/templates' || pathname.startsWith('/templates/');
   const renderFrame = (withAccount: boolean) => (
     <Box
       sx={(theme) => ({
@@ -82,8 +83,8 @@ const AppShell = ({
         },
       })}
     >
-      <AppTopBar guest={!withAccount} />
-      {withAccount && <AppDeviceHint />}
+      {pathname !== '/explore' && <AppTopBar guest={!withAccount} />}
+      {withAccount && pathname !== '/explore' && <AppDeviceHint />}
       <AppPullToRefreshIndicator {...pullToRefresh} />
       <Box
         component="main"
@@ -102,11 +103,11 @@ const AppShell = ({
           pr: 'env(safe-area-inset-right, 0px)',
         })}
       >
-        <AppPageLoadingProvider contained={pathname === '/notes'}>
+        <AppPageLoadingProvider contained={pathname === '/notes' || pathname === '/explore'}>
           <NotificationTargetContent>
             {tripWorkspace && withAccount ? <AppTripWorkspace>{children}</AppTripWorkspace> : children}
           </NotificationTargetContent>
-          {withAccount && !tabSection && <GlobalLoadingHost />}
+          {withAccount && !tabSection && !isLibrary && !isProfilePath(pathname) && <GlobalLoadingHost />}
         </AppPageLoadingProvider>
       </Box>
       {!tripWorkspace && <AppBottomNavigation guest={!withAccount} />}

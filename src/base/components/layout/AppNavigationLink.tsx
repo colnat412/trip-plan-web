@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ButtonBase, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import type { AppNavigationItem } from './navigation/config';
+import AppProfileNavigationAvatar from './AppProfileNavigationAvatar';
 import { interactionTransition } from '@/base/theme/interactions';
 
 interface AppNavigationLinkProps {
@@ -56,7 +57,7 @@ const AppNavigationLink = ({
         '& .MuiSvgIcon-root': { fontSize: '20px', flexShrink: 0 },
       })}
     >
-      {expanded && item.icon}
+      {item.id === 'profile' ? <AppProfileNavigationAvatar active={active} /> : expanded && item.icon}
       <Typography
         component="span"
         sx={{

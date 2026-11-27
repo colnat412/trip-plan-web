@@ -15,6 +15,7 @@ export interface AppPopoverProps extends Omit<
   children: ReactNode;
   contentMaxHeight?: number | string;
   contentRef?: Ref<HTMLDivElement>;
+  surface?: 'glass' | 'solid';
 }
 
 const AppPopover = ({
@@ -26,6 +27,7 @@ const AppPopover = ({
   children,
   contentMaxHeight,
   contentRef,
+  surface = 'glass',
   anchorOrigin = { vertical: 'bottom', horizontal: 'left' },
   transformOrigin = { vertical: 'top', horizontal: 'left' },
   ...props
@@ -48,6 +50,18 @@ const AppPopover = ({
           borderRadius: 'var(--app-radius-card)',
           border: 1,
           borderColor: 'divider',
+          ...(surface === 'solid' && {
+            bgcolor: 'background.paper',
+            color: 'text.primary',
+            backgroundImage: 'none',
+            backdropFilter: 'none',
+            WebkitBackdropFilter: 'none',
+            '@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)))': {
+              bgcolor: 'background.paper',
+              backdropFilter: 'none',
+              WebkitBackdropFilter: 'none',
+            },
+          }),
         },
       },
     }}

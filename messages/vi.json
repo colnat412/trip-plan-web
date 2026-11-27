@@ -104,7 +104,8 @@
       "templates": "Thư viện lịch trình",
       "savedTemplates": "Lịch trình đã lưu",
       "myTemplates": "Mẫu của tôi",
-      "settings": "Cài đặt"
+      "settings": "Cài đặt",
+      "profile": "Cá nhân"
     },
     "mobile": {
       "overview": "Trang chủ",
@@ -114,7 +115,8 @@
       "settlement": "Chia tiền",
       "ai": "Trợ lý AI",
       "templates": "Khám phá",
-      "settings": "Cài đặt"
+      "settings": "Cài đặt",
+      "profile": "Cá nhân"
     },
     "more": "Thêm",
     "moreDescription": "Các tiện ích cho chuyến đi của bạn",
@@ -319,7 +321,8 @@
     "noInProgressTrip": "Không có chuyến đi đang diễn ra",
     "noInProgressTripDesc": "Chỉ các chuyến đi có trạng thái Đang đi mới hiển thị tại đây.",
     "templates": "Thư viện lịch trình",
-    "settings": "Cài đặt"
+    "settings": "Cài đặt",
+    "profile": "Cá nhân"
   },
   "login": {
     "banner": {
@@ -557,7 +560,11 @@
     "avatarUnauthorized": "Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.",
     "avatarUnavailable": "Ảnh không còn khả dụng. Vui lòng chọn lại ảnh.",
     "avatarTooLarge": "Ảnh vượt quá dung lượng cho phép.",
-    "avatarOnlyNote": "Bạn có thể thay đổi ảnh đại diện. Các thông tin khác vui lòng liên hệ QTV."
+    "avatarOnlyNote": "Bạn có thể thay đổi ảnh đại diện. Các thông tin khác vui lòng liên hệ QTV.",
+    "pageTitle": "Cá nhân",
+    "editProfile": "Chỉnh sửa thông tin",
+    "backToProfile": "Về trang cá nhân",
+    "collections": "Bộ sưu tập của bạn"
   },
   "userMenu": {
     "profile": "Thông tin tài khoản",
@@ -1012,7 +1019,10 @@
     "pendingPaymentNotice": "Đã có khoản trả giữa hai người này đang chờ xác nhận. Vui lòng xác nhận hoặc hủy khoản đó trước khi ghi nhận thêm."
   },
   "plan": {
-    "activityDetail": { "title": "Chi tiết hoạt động", "actualSpent": "Đã chi" },
+    "activityDetail": {
+      "title": "Chi tiết hoạt động",
+      "actualSpent": "Đã chi"
+    },
     "actionsLabel": "Thao tác lịch trình",
     "activityActions": "Thao tác với {title}",
     "reorder": {
@@ -1393,13 +1403,14 @@
   "planTemplate": {
     "homeLibrary": "Lịch trình nổi bật",
     "durationLabel": "{days} ngày",
+    "durationNightsLabel": "{days} ngày {nights} đêm",
     "activityLabel": "{count} hoạt động",
     "allStyles": "Tất cả",
     "publishNeedsActivities": "Hãy thêm ít nhất một hoạt động vào lịch trình trước khi đăng mẫu.",
     "publishTooManyActivities": "Mẫu lịch trình chỉ hỗ trợ tối đa 1.000 hoạt động. Hãy giảm số hoạt động trước khi đăng mẫu.",
     "publishPlanLoading": "Đang kiểm tra hoạt động của chuyến đi…",
     "publishPlanLoadError": "Không thể kiểm tra hoạt động của chuyến đi. Vui lòng thử lại.",
-    "library": "Khám phá lịch trình",
+    "library": "Lịch trình cộng đồng",
     "all": "Xem tất cả",
     "home": "Trang chủ",
     "mine": "Mẫu của tôi",
@@ -1420,7 +1431,7 @@
     "day": "Ngày {number}",
     "restDay": "Ngày tự do, chưa có hoạt động.",
     "checklist": "Checklist công khai",
-    "use": "Dùng mẫu này",
+    "use": "Dùng lịch trình",
     "name": "Tên chuyến mới",
     "startDate": "Ngày bắt đầu",
     "includeChecklist": "Sao chép checklist",
@@ -1467,14 +1478,14 @@
     "myUsage": "{count} lượt dùng",
     "templateActions": "Thao tác với mẫu {title}",
     "unpublishError": "Không gỡ được mẫu. Vui lòng thử lại từ menu của mẫu.",
-    "save": "Lưu mẫu",
-    "unsave": "Bỏ lưu",
-    "savedLibrary": "Đã lưu",
-    "savedEmpty": "Bạn chưa lưu mẫu lịch trình nào.",
-    "saveError": "Không thể cập nhật mẫu đã lưu. Vui lòng thử lại.",
-    "saveStatusError": "Không thể tải trạng thái đã lưu. Vui lòng thử lại.",
+    "save": "Yêu thích",
+    "unsave": "Bỏ yêu thích",
+    "savedLibrary": "Yêu thích",
+    "savedEmpty": "Bạn chưa yêu thích lịch trình nào.",
+    "saveError": "Không thể cập nhật yêu thích. Vui lòng thử lại.",
+    "saveStatusError": "Không thể tải trạng thái yêu thích. Vui lòng thử lại.",
     "navExplore": "Khám phá",
-    "navSaved": "Đã lưu",
+    "navSaved": "Yêu thích",
     "navMine": "Mẫu của tôi",
     "chooseTemplate": "Dùng mẫu",
     "chooseTemplateHint": "Tạo chuyến mới từ một mẫu lịch trình có sẵn.",
@@ -1484,7 +1495,39 @@
     "filters": "Bộ lọc",
     "filtersCount": "Bộ lọc ({count})",
     "clearFilters": "Xóa bộ lọc",
-    "filtersDone": "Xong"
+    "filtersDone": "Xong",
+    "likesCount": "{count, number} lượt thích",
+    "likesUnavailable": "Chưa tải được số lượt thích",
+    "likeLoginRequired": "Đăng nhập để yêu thích lịch trình.",
+    "allDurations": "Tất cả",
+    "fourDaysPlus": "4 ngày trở lên",
+    "resetSearch": "Xóa tìm kiếm và bộ lọc",
+    "activeFilters": "Bộ lọc đang áp dụng",
+    "removeFilter": "Bỏ bộ lọc: {filter}",
+    "itinerary": "Lịch trình từng ngày",
+    "backToExplore": "Quay lại Khám phá",
+    "mapTitle": "Bản đồ hành trình",
+    "mapStraightLines": "Các đoạn thẳng nối thứ tự ghé thăm, không phải tuyến đường di chuyển.",
+    "mapNoPositions": "Chưa xác định được vị trí các hoạt động trong ngày này.",
+    "mapLoadError": "Chưa tải được bản đồ hành trình.",
+    "mapMissing": "Chưa xác định được vị trí của {count} hoạt động đã tải.",
+    "mapLoadMore": "Xem thêm điểm trên bản đồ",
+    "addPlaceToTrip": "Thêm vào chuyến đi",
+    "chooseTargetTrip": "Chọn chuyến đi của bạn",
+    "chooseTargetDay": "Chọn ngày",
+    "continueAddPlace": "Tiếp tục",
+    "moreTargetTrips": "Xem thêm chuyến đi",
+    "createTargetTrip": "Tạo chuyến đi",
+    "targetNoDays": "Chuyến đi này chưa có ngày để thêm hoạt động.",
+    "placeAdded": "Đã thêm địa điểm vào chuyến đi.",
+    "placeAddFailed": "Chưa thêm được địa điểm. Kiểm tra quyền và ngày của chuyến đi rồi thử lại.",
+    "openFullDetail": "Mở chi tiết đầy đủ",
+    "closePlanSheet": "Đóng lịch trình",
+    "templateSheetUnavailable": "Chưa tải được lịch trình đã đăng. Mẫu có thể đã được ẩn hoặc xóa.",
+    "useWholeItinerary": "Dùng cả lịch trình",
+    "addPlaceShort": "Thêm",
+    "copyItinerary": "Sao chép",
+    "copyItineraryLabel": "Sao chép cả lịch trình"
   },
   "quickCreate": {
     "createTrip": "Tạo chuyến đi",
@@ -1537,7 +1580,8 @@
   },
   "interactiveMap": {
     "unavailable": "Chưa thể hiển thị bản đồ tương tác.",
-    "retry": "Tải lại bản đồ"
+    "retry": "Tải lại bản đồ",
+    "mapLabel": "Bản đồ địa điểm"
   },
   "journey": {
     "destination": "Bạn muốn đi đâu?",
@@ -1774,5 +1818,54 @@
     "passwordDescription": "Tạo mật khẩu mới cho tài khoản của bạn.",
     "verifyFailed": "Chưa thể xác thực mã. Vui lòng thử lại.",
     "verificationExpired": "Phiên đặt lại mật khẩu đã hết hạn. Vui lòng xác thực lại."
+  },
+  "explore": {
+    "search": "Tìm địa điểm",
+    "itineraries": "Lịch trình",
+    "signIn": "Đăng nhập",
+    "all": "Tất cả",
+    "places": "Địa điểm",
+    "searchArea": "Tìm trong khu vực này",
+    "allAreas": "Mọi khu vực",
+    "results": "{count} lịch trình đã tải",
+    "loading": "Đang tải…",
+    "empty": "Chưa có địa điểm phù hợp trong mẫu đã đăng.",
+    "directions": "Chỉ đường",
+    "categories": {
+      "SIGHT": "Tham quan",
+      "FOOD": "Ăn uống",
+      "STAY": "Lưu trú",
+      "OTHER": "Khác"
+    },
+    "clearSearch": "Xóa tìm kiếm",
+    "viewList": "Xem danh sách",
+    "closeList": "Đóng danh sách",
+    "closePlace": "Đóng địa điểm",
+    "viewDetails": "Xem chi tiết",
+    "loadError": "Chưa tải được địa điểm.",
+    "retry": "Thử lại",
+    "relatedCount": "{count} mẫu lịch trình",
+    "relatedTemplates": "Lịch trình liên quan",
+    "loadMore": "Xem thêm lịch trình",
+    "missingCoordinates": "Một số địa chỉ chưa xác định được vị trí. Bạn vẫn có thể xem lịch trình liên quan.",
+    "scanMore": "Chưa thấy địa điểm trong vùng này. Tải thêm để tiếp tục tìm trong các mẫu đã đăng.",
+    "duration": "{days} ngày {nights} đêm",
+    "missingCoordinatesShort": "Một số lịch trình chưa có vị trí trên map.",
+    "filters": "Bộ lọc lịch trình",
+    "areaFilter": "Khu vực này",
+    "viewItinerary": "Xem lịch trình",
+    "publishedTrips": "Lịch trình công khai",
+    "communityTrips": "Lịch trình cộng đồng",
+    "searchPublished": "Tìm lịch trình cộng đồng",
+    "hidePlan": "Ẩn plan",
+    "showPlan": "Xem plan",
+    "hidePublished": "Ẩn lịch trình trên map",
+    "showPublished": "Hiện lại lịch trình trên map",
+    "clearPublished": "Bỏ chọn lịch trình",
+    "pickedPosition": "Vị trí đã chọn",
+    "addToCurrentPlan": "Thêm vào plan hiện tại",
+    "noMapResults": "Không có địa điểm phù hợp.",
+    "mapSearchFailed": "Không tải được kết quả tìm địa điểm.",
+    "mapSearchLogin": "Đăng nhập để tìm địa điểm"
   }
 }

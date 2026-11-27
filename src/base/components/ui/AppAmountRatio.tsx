@@ -1,9 +1,8 @@
 'use client';
 
 import { Box } from '@mui/material';
-import { useLocale } from 'next-intl';
-import { formatCurrency, formatCompactCurrency } from '@/base/utils';
-import AppMetricValue, { type AppMetricValueProps } from './AppMetricValue';
+import type { AppMetricValueProps } from './AppMetricValue';
+import AppMoneyText from './AppMoneyText';
 
 export interface AppAmountRatioProps {
   amount: number;
@@ -14,7 +13,6 @@ export interface AppAmountRatioProps {
   highlighted?: boolean;
   compact?: boolean;
   notation?: 'standard' | 'compact';
-  numberLocale?: string;
 }
 
 const AppAmountRatio = ({
@@ -26,12 +24,7 @@ const AppAmountRatio = ({
   highlighted = false,
   compact = false,
   notation = compact ? 'compact' : 'standard',
-  numberLocale,
 }: AppAmountRatioProps) => {
-  const locale = useLocale();
-  const displayAmount = (value: number) => notation === 'compact'
-    ? formatCompactCurrency(value, currency, numberLocale ?? locale)
-    : formatCurrency(value, currency, numberLocale ?? locale);
   return (
     <Box
       role="group"
@@ -59,16 +52,17 @@ const AppAmountRatio = ({
         };
       }}
     >
-      <AppMetricValue
+      <AppMoneyText
+        amount={amount}
+        currency={currency}
+        compact={notation === 'compact'}
         tone={tone}
         sx={{
           whiteSpace: 'nowrap',
           fontSize: compact ? '12px' : highlighted ? '13px' : '20px',
           ...(highlighted && !compact && { color: 'text.primary' }),
         }}
-      >
-        {displayAmount(amount)}
-      </AppMetricValue>
+      />
       <Box
         component="span"
         sx={{
@@ -83,7 +77,7 @@ const AppAmountRatio = ({
       >
         <span>/</span>
         <span>
-          {total == null ? '—' : displayAmount(total)}
+          {total == null ? '—' : <AppMoneyText amount={total} currency={currency} compact={notation === 'compact'} sx={{ color: 'inherit', fontWeight: 'inherit' }} />}
         </span>
       </Box>
     </Box>

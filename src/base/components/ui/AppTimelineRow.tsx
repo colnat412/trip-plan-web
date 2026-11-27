@@ -48,7 +48,7 @@ const AppTimelineRow = ({
   } as const : {};
   const textSx = {
     display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 0.5,
-    minWidth: 0, width: '100%', textAlign: 'left', color: 'text.primary',
+    minWidth: 0, width: '100%', textAlign: 'left', color: selected ? 'inherit' : 'text.primary',
   } as const;
   return <Box sx={{ display: 'flex', width: '100%', alignItems: 'stretch', minWidth: 0, gap: { xs: 'var(--app-timeline-gap, 6px)', sm: 'var(--app-timeline-gap, 8px)' } }}>
     {(icon || railDetails) && <AppTimelineRail marker={icon} details={railDetails} width={railWidth} hasNext={hasNext} />}
@@ -76,7 +76,7 @@ const AppTimelineRow = ({
           ...contentLayerSx,
           width: { xs: 64, sm: 72 }, height: { xs: 64, sm: 72 }, aspectRatio: '1 / 1',
           flexShrink: 0, display: 'flex', overflow: 'hidden', borderRadius: 'var(--app-radius-small)',
-          alignItems: 'center', justifyContent: 'center', bgcolor: 'action.selected', color: 'text.disabled',
+          alignItems: 'center', justifyContent: 'center', bgcolor: 'action.selected', color: selected ? 'inherit' : 'text.disabled',
           backgroundImage: !media && mediaUrl ? `url(${JSON.stringify(mediaUrl)})` : undefined,
           backgroundSize: 'cover', backgroundPosition: 'center',
         }}>

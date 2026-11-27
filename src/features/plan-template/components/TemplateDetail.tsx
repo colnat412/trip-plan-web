@@ -1,108 +1,192 @@
-'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
-import AppErrorState from '@/base/components/ui/AppErrorState';
-import { IconButton, Stack, Typography } from '@mui/material';
-import { useLocale, useTranslations } from 'next-intl';
-import { AppPageContainer, AppPageHeader, AppButton } from '@/base/components/ui';
-import { formatCurrency } from '@/base/utils';
-import type { TemplateDetailData } from '../types';
-import TemplateBanner from './TemplateBanner';
-import TemplateItinerary from './TemplateItinerary';
-import CopyTemplateDialog from './CopyTemplateDialog';
-import { TemplateSaveProvider, TemplateSaveButton } from './TemplateSaveControls';
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Stack, Typography } from "@mui/material";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  AppPageContainer,
+  AppBackHeader,
+  AppButton,
+} from "@/base/components/ui";
+import AppBottomActionBar from "@/base/components/ui/AppBottomActionBar";
+import AppErrorState from "@/base/components/ui/AppErrorState";
+import { formatCurrency } from "@/base/utils";
+import { normalizeActivityCategory } from "@/base/constants";
+import AddTemplatePlaceDialog, {
+  type TemplatePlaceSeed,
+} from "./AddTemplatePlaceDialog";
+import type { TemplateDetailData } from "../types";
+import TemplateBanner from "./TemplateBanner";
+import TemplateItinerary from "./TemplateItinerary";
+import CopyTemplateDialog from "./CopyTemplateDialog";
+import {
+  TemplateSaveProvider,
+  TemplateSaveButton,
+} from "./TemplateSaveControls";
 interface TemplateDetailProps {
   detail: TemplateDetailData | null;
   status: number;
+  backHref?: "/explore" | "/templates";
 }
-
-const TemplateDetail = ({
+export default function TemplateDetail({
   detail,
   status,
-}: TemplateDetailProps) => {
+  backHref = "/templates",
+}: TemplateDetailProps) {
   const locale = useLocale();
   const router = useRouter();
-  const t = useTranslations('planTemplate');
+  const t = useTranslations("planTemplate");
   const [copyOpen, setCopyOpen] = useState(false);
+  const [placeToAdd, setPlaceToAdd] = useState<TemplatePlaceSeed | null>(null);
+  const backLabel = t(
+    backHref === "/explore" ? "backToExplore" : "backToLibrary",
+  );
   return (
-    <AppPageContainer>
-      <Stack spacing={2} sx={{ minWidth: 0, overflowWrap: 'anywhere' }}>
-        <AppPageHeader
-          title={t('backToLibrary')}
-          icon={
-            <IconButton
-              component={Link}
-              href="/templates"
-              aria-label={t('backToLibrary')}
-              sx={{ width: 44, height: 44, color: 'text.primary' }}
+    <AppPageContainer
+      floatingAction={
+        detail ? (
+          <AppBottomActionBar>
+            <AppButton
+              intent="primary"
+              size="medium"
+              wrapLabel
+              onClick={() => setCopyOpen(true)}
+              sx={{ flex: 1, minWidth: 0 }}
             >
-              <ChevronLeftRoundedIcon />
-            </IconButton>
-          }
-        />
+              {t("use")}
+            </AppButton>
+          </AppBottomActionBar>
+        ) : undefined
+      }
+    >
+      <Stack
+        spacing={2.5}
+        useFlexGap
+        sx={{
+          width: "100%",
+          maxWidth: 1040,
+          alignSelf: "center",
+          minWidth: 0,
+          overflowWrap: "anywhere",
+        }}
+      >
         {!detail ? (
-          <AppErrorState
-            variant={status === 404 ? 'notFound' : status === 403 ? 'forbidden' : 'load'}
-            onRetry={() => router.refresh()}
-          />
+          <>
+            <AppBackHeader
+              title={t("itinerary")}
+              backHref={backHref}
+              backLabel={backLabel}
+              titleAlign="left"
+            />
+            <AppErrorState
+              variant={
+                status === 404
+                  ? "notFound"
+                  : status === 403
+                    ? "forbidden"
+                    : "load"
+              }
+              onRetry={() => router.refresh()}
+            />
+          </>
         ) : (
-          <TemplateSaveProvider key={detail.template.id} ids={[detail.template.id]}>
-            {detail.template.coverUrl && <TemplateBanner src={detail.template.coverUrl} title={detail.template.title} />}
-            <Stack spacing={1} sx={{ minWidth: 0 }}>
-              <Typography component="h2" sx={{ fontSize: { xs: '22px', sm: '24px' }, lineHeight: 1.3, fontWeight: 700 }}>
+          <TemplateSaveProvider
+            key={detail.template.id}
+            ids={[detail.template.id]}
+          >
+            <AppBackHeader
+              title={t("itinerary")}
+              headingComponent="h2"
+              backHref={backHref}
+              backLabel={backLabel}
+              titleAlign="left"
+              actions={
+                <TemplateSaveButton
+                  id={detail.template.id}
+                  likeCount={detail.template.likeCount}
+                  iconOnly
+                  showCount
+                />
+              }
+            />
+            <TemplateBanner
+              src={detail.template.coverUrl}
+              title={detail.template.title}
+            />
+            <Stack spacing={1} useFlexGap sx={{ minWidth: 0 }}>
+              <Typography
+                component="h1"
+                sx={{
+                  fontSize: { xs: 24, sm: 30 },
+                  fontWeight: 800,
+                  lineHeight: 1.3,
+                }}
+              >
                 {detail.template.title}
               </Typography>
-              <Typography variant="body2">{detail.template.destination}</Typography>
-              <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>
-                {t('summary', {
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                {detail.template.destination}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t("durationNightsLabel", {
                   days: detail.template.durationDays,
-                  activities: detail.snapshot.days.reduce((total, day) => total + day.activities.length, 0),
+                  nights: Math.max(0, detail.template.durationDays - 1),
+                })}{" "}
+                ·{" "}
+                {t("activityLabel", {
+                  count: detail.snapshot.days.reduce(
+                    (total, day) => total + day.activities.length,
+                    0,
+                  ),
                 })}
               </Typography>
-              {detail.template.description?.trim() && (
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                  {detail.template.description}
-                </Typography>
-              )}
-              <Stack direction="row" sx={{ flexWrap: 'wrap', alignItems: 'baseline', columnGap: 1, rowGap: 0.5 }}>
-                <Typography sx={{ fontSize: '13px', color: 'text.secondary' }}>{t('cost')}:</Typography>
-                <Typography sx={{ fontSize: { xs: '16px', sm: '18px' }, fontWeight: 700, color: 'primary.main', fontVariantNumeric: 'tabular-nums' }}>
-                  {formatCurrency(detail.template.estimatedCost, detail.template.currency, locale)}
-                </Typography>
-              </Stack>
-              <Typography sx={{ fontSize: '12px', color: 'text.secondary' }}>
-                {t('author', {
+              <Typography variant="caption" color="text.secondary">
+                {t("author", {
                   name: detail.template.authorName,
                   count: detail.template.usageCount,
                 })}
               </Typography>
-            </Stack>
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{
-                alignSelf: 'flex-start',
-                width: { xs: '100%', sm: 'auto' },
-                maxWidth: '100%',
-                '& > .MuiButton-root': { minHeight: 44, px: 1.5, fontSize: '14px' },
-              }}
-            >
-              <AppButton
-                intent="primary"
-                size="medium"
-                wrapLabel
-                onClick={() => setCopyOpen(true)}
-                sx={{ flex: { xs: '1 1 0', sm: '0 1 auto' }, minWidth: 0 }}
+              {detail.template.description?.trim() && (
+                <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+                  {detail.template.description}
+                </Typography>
+              )}
+              <Stack
+                direction="row"
+                sx={{ flexWrap: "wrap", alignItems: "baseline", gap: 1 }}
               >
-                {t('use')}
-              </AppButton>
-              <TemplateSaveButton id={detail.template.id} />
+                <Typography variant="body2" color="text.secondary">
+                  {t("cost")}:
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: "primary.main",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {formatCurrency(
+                    detail.template.estimatedCost,
+                    detail.template.currency,
+                    locale,
+                  )}
+                </Typography>
+              </Stack>
             </Stack>
             <TemplateItinerary
               snapshot={detail.snapshot}
               currency={detail.template.currency}
+              templateId={detail.template.id}
+              templateVersion={detail.template.contentVersion}
+              onRefreshTemplate={() => router.refresh()}
+              onChoosePlace={(activity) =>
+                setPlaceToAdd({
+                  title: activity.title,
+                  location: activity.location ?? undefined,
+                  category: normalizeActivityCategory(activity.category),
+                })
+              }
             />
             <CopyTemplateDialog
               key={`${detail.template.id}:${detail.template.contentVersion}`}
@@ -110,10 +194,16 @@ const TemplateDetail = ({
               open={copyOpen}
               onClose={() => setCopyOpen(false)}
             />
+            {placeToAdd && (
+              <AddTemplatePlaceDialog
+                place={placeToAdd}
+                templateId={detail.template.id}
+                onClose={() => setPlaceToAdd(null)}
+              />
+            )}
           </TemplateSaveProvider>
         )}
       </Stack>
     </AppPageContainer>
   );
-};
-export default TemplateDetail;
+}

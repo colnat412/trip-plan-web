@@ -58,4 +58,9 @@ export function useUserContext(): UserContextValue {
   return context;
 }
 
+/** Navigation can also render in the public guest shell. */
+export function useOptionalUserContext(): UserContextValue | null {
+  return useContext(UserContext);
+}
+
 export default UserProvider;

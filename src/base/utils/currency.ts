@@ -12,76 +12,49 @@ function resolveLocale(locale?: string): string {
   return 'vi';
 }
 
-export function formatCurrency(
+/** One number + ISO-code convention for every money label. */
+export function formatMoney(
   amount: number | string | null | undefined,
   currency = 'VND',
   locale?: string,
 ): string {
-  const numericAmount = amount == null || isNaN(Number(amount)) ? 0 : Number(amount);
-  const curr = currency.toUpperCase();
-  const resolved = resolveLocale(locale);
-  const isEnglish = resolved.toLowerCase().startsWith('en');
-  const targetLocale = isEnglish ? 'en-US' : 'vi-VN';
-
-  if (curr === 'VND') {
-    const formatted = numericAmount.toLocaleString(targetLocale, {
-      maximumFractionDigits: 0,
-    });
-    return `${formatted} VND`;
-  }
-
+  const numericAmount = Number.isFinite(Number(amount)) ? Number(amount) : 0;
+  const code = currency.trim().toUpperCase() || 'VND';
+  const targetLocale = resolveLocale(locale).toLowerCase().startsWith('en') ? 'en-US' : 'vi-VN';
+  let digits = 2;
   try {
-    return new Intl.NumberFormat(targetLocale, {
-      style: 'currency',
-      currency: curr,
-      maximumFractionDigits: 2,
-    }).format(numericAmount);
-  } catch {
-    return `${numericAmount.toLocaleString(targetLocale)} ${currency}`;
-  }
+    digits = new Intl.NumberFormat(targetLocale, { style: 'currency', currency: code })
+      .resolvedOptions().maximumFractionDigits ?? 2;
+  } catch { /* Unknown currency codes still get a readable numeric label. */ }
+  return `${new Intl.NumberFormat(targetLocale, { maximumFractionDigits: digits }).format(numericAmount)} ${code}`;
 }
 
-export function formatCompactCurrency(
+export function formatMoneyCompact(
   amount: number | string | null | undefined,
   currency = 'VND',
   locale?: string,
 ): string {
-  const numericAmount = amount == null || isNaN(Number(amount)) ? 0 : Number(amount);
-  const curr = currency.toUpperCase();
-  const resolved = resolveLocale(locale);
-  const isEnglish = resolved.toLowerCase().startsWith('en');
-  const targetLocale = isEnglish ? 'en-US' : 'vi-VN';
-
-  if (curr === 'VND') {
-    const abs = Math.abs(numericAmount);
-    const sign = numericAmount < 0 ? '-' : '';
-
-    if (abs >= 1_000_000_000) {
-      const val = (abs / 1_000_000_000).toFixed(1).replace(/\.0$/, '');
-      return `${sign}${val}${isEnglish ? 'B' : ' tỷ'} VND`;
-    }
-    if (abs >= 1_000_000) {
-      const val = (abs / 1_000_000).toFixed(1).replace(/\.0$/, '');
-      return `${sign}${val}${isEnglish ? 'M' : ' tr'} VND`;
-    }
-    if (abs >= 1_000) {
-      const val = (abs / 1_000).toFixed(1).replace(/\.0$/, '');
-      return `${sign}${val}${isEnglish ? 'K' : 'k'} VND`;
-    }
-    return `${numericAmount.toLocaleString(targetLocale)} VND`;
+  const numericAmount = Number.isFinite(Number(amount)) ? Number(amount) : 0;
+  const code = currency.trim().toUpperCase() || 'VND';
+  const english = resolveLocale(locale).toLowerCase().startsWith('en');
+  const targetLocale = english ? 'en-US' : 'vi-VN';
+  if (code !== 'VND') {
+    return `${new Intl.NumberFormat(targetLocale, { notation: 'compact', maximumFractionDigits: 1 }).format(numericAmount)} ${code}`;
   }
-
-  try {
-    return new Intl.NumberFormat(targetLocale, {
-      style: 'currency',
-      currency: curr,
-      notation: 'compact',
-      maximumFractionDigits: 1,
-    }).format(numericAmount);
-  } catch {
-    return formatCurrency(numericAmount, currency, targetLocale);
-  }
+  // Choose the unit after rounding, so 999,999 does not become "1.000 k".
+  const rounded = Math.round(Math.abs(numericAmount) / 100) * 100;
+  const unit = rounded >= 1_000_000_000 ? 1_000_000_000
+    : rounded >= 1_000_000 ? 1_000_000 : rounded >= 1_000 ? 1_000 : 1;
+  if (unit === 1) return formatMoney(numericAmount, code, locale);
+  const suffix = unit === 1_000_000_000 ? (english ? 'B' : 'tỷ')
+    : unit === 1_000_000 ? (english ? 'M' : 'tr') : (english ? 'K' : 'k');
+  const value = new Intl.NumberFormat(targetLocale, { maximumFractionDigits: 1 }).format(numericAmount / unit);
+  return `${value} ${suffix} ${code}`;
 }
+
+// Existing screens, notifications and exports share the same implementation.
+export const formatCurrency = formatMoney;
+export const formatCompactCurrency = formatMoneyCompact;
 
 export function formatNumber(
   value: number | string | null | undefined,
